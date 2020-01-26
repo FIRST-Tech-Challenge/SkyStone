@@ -24,13 +24,13 @@ public class Joulestest extends AutoOpMode {
         colorSensor = hardwareMap.colorSensor.get("colour");
         //colorSensorDown = hardwareMap.colorSensor.get("ColourDown");
         //StoneDist = hardwareMap.get(DistanceSensor.class, "Distance");
-        joules.ScissorLift.setPosition(0.2);
+//        joules.ScissorLift.setPosition(0.2);
 
         waitForStart();
-        joules.ScissorLift.setPosition(0.3);
-
-
-        sleep(300000);
+//        joules.ScissorLift.setPosition(0.3);
+//
+//
+//        sleep(300000);
 
 
 
@@ -58,12 +58,12 @@ public class Joulestest extends AutoOpMode {
 */
 //17
 //25
-//      while (opModeIsActive()) {
+      while (opModeIsActive()) {
 //
 //
 //
-////            telemetry.addData("red", colorSensor.red());
-//            telemetry.addData("red", colorSensor.red());}
+            telemetry.addData("blue", colorSensor.blue());
+            telemetry.addData("red", colorSensor.red());}
 //            RC.t.addData("stone dist", StoneDist.getDistance(DistanceUnit.MM));
 //          RC.t.addData("Stone dist", StoneDist.getDistance(DistanceUnit.MM)); //distance sensor
             //RC.t.addData("bLUE", colorSensor.blue()); // colour sensor for stones blue value

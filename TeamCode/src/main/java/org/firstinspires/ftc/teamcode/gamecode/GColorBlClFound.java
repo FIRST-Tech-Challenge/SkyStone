@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.robots.Joules;
 
 @Autonomous
 
-public class GColorBlFarFound extends AutoOpMode {
+public class GColorBlClFound extends AutoOpMode {
     private VoltageSensor ExpansionHub2_VoltageSensor;
     public void runOp() throws InterruptedException {
         Joules joules = new Joules();
@@ -112,12 +112,6 @@ public class GColorBlFarFound extends AutoOpMode {
         joules.SlidesDown();
         sleep(500);
         joules.SlidesStop();
-
-        joules.DriveForward(0.4);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),650));
-        joules.Stop();
-
-        sleep(100);
 
         joules.StrafeRight(0.5);
         sleep(800);

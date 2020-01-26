@@ -58,8 +58,9 @@ public class GColorRedFarFound extends AutoOpMode {
         joules.Stop();
 
         clearTimer(1);
-        while (opModeIsActive() && colorSensor.blue()<RedFoundVal && getMilliSeconds(1)< 10000){
-            telemetry.addData("secondss", getMilliSeconds(1)/1000);
+        while (opModeIsActive() && colorSensor.red()<RedFoundVal && getMilliSeconds(1)< 4000){
+            telemetry.addData("seconds", getMilliSeconds(1)/1000);
+            telemetry.addData("red value", colorSensor.red());
             joules.DriveForward(0.001);
         }
 
@@ -100,11 +101,11 @@ public class GColorRedFarFound extends AutoOpMode {
 
 
 
-        joules.StrafeRight(0.3);
+        joules.StrafeLeft(0.3);
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 800));
         joules.Stop();
 
-        joules.StrafeRight(0.5);
+        joules.StrafeLeft(0.5);
         sleep(800);
         joules.Stop();
 
@@ -118,7 +119,7 @@ public class GColorRedFarFound extends AutoOpMode {
 
         sleep(100);
 
-        joules.StrafeRight(0.5);
+        joules.StrafeLeft(0.5);
         sleep(800);
         joules.Stop();
 

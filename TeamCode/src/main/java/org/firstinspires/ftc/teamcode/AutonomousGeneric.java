@@ -69,6 +69,7 @@ public class AutonomousGeneric extends LinearOpMode {
 
 //        robotHardware = new RobotHardware();
 //        robotHardware.init(hardwareMap, robotProfile);
+        RobotFactory.reset();
         robotHardware = RobotFactory.getRobotHardware(hardwareMap,robotProfile);
         robotHardware.setClampPosition(RobotHardware.ClampPosition.INITIAL);
         robotHardware.setMotorStopBrake(true);
@@ -79,7 +80,6 @@ public class AutonomousGeneric extends LinearOpMode {
 
         robotHardware.getBulkData1();
         robotHardware.getBulkData2();
-        robotHardware.retractBlockHolderWheel();
 
         driverOptions = new DriverOptions();
 

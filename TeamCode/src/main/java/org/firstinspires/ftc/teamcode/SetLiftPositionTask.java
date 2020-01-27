@@ -10,6 +10,7 @@ public class SetLiftPositionTask implements RobotControl {
     long timeDuration;
     double percentComplete;
     transient long timeStart;
+    transient long timeOut = 3000;
 
     public SetLiftPositionTask(RobotHardware robot, RobotProfile profile, int targetPosition, long timeDuration) {
         this.robot = robot;
@@ -45,7 +46,8 @@ public class SetLiftPositionTask implements RobotControl {
 
     public boolean isDone() {
         //Logger.logFile("Lift Position isDone:" + robot.getEncoderCounts(RobotHardware.EncoderType.LIFT));
-        return Math.abs(robot.getEncoderCounts(RobotHardware.EncoderType.LIFT) - liftPosition) < 5;
+        return (Math.abs(robot.getEncoderCounts(RobotHardware.EncoderType.LIFT) - liftPosition) < 5) ||
+                (System.currentTimeMillis()-timeStart>timeOut);
 
     }
 

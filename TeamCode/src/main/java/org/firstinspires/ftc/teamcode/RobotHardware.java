@@ -21,8 +21,10 @@ public class RobotHardware {
     ExpansionHubMotor rrMotor, rlMotor, frMotor, flMotor, intakeMotorLeft, intakeMotorRight, liftMotor, sliderMotor;
     ExpansionHubEx expansionHub1, expansionHub2;
     RevBulkData bulkData1, bulkData2;
-    ExpansionHubServo clampRotationServo, blockHolderServo1, blockHolderServo2, leftFoundationServo, rightFoundationServo, capStoneServo, blockHolderWheelPosServo;
-    Servo blockHolderWheel;
+    ExpansionHubServo clampRotationServo, blockHolderServo1, blockHolderServo2, leftFoundationServo, rightFoundationServo,
+            capStoneServo;
+
+    Servo conveyor1, conveyor2, tapeDrive;
     DigitalChannel sliderTouchChannel;
     Rev2mDistanceSensor rightDistanceSensor;
     //AnalogInput rightDistanceSensor, leftBackDistanceSensor, rightBackDistanceSensor;
@@ -53,7 +55,6 @@ public class RobotHardware {
         imu1 = hardwareMap.get(BNO055IMU.class, "imu1");
         imu1.initialize(parameters);
         capStoneServo = (ExpansionHubServo) hardwareMap.servo.get("CapStoneServo");
-        blockHolderWheel = hardwareMap.servo.get("BlockHolderWheel");
 
         frMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         rrMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -78,7 +79,9 @@ public class RobotHardware {
             blockHolderServo2 = (ExpansionHubServo) hardwareMap.servo.get("BlockHolderServo2");
             leftFoundationServo = (ExpansionHubServo) hardwareMap.servo.get("LeftFoundationServo");
             rightFoundationServo = (ExpansionHubServo) hardwareMap.servo.get("RightFoundationServo");
-            blockHolderWheelPosServo = (ExpansionHubServo) hardwareMap.servo.get("BlockHolderWheelPosServo");
+            conveyor1 = hardwareMap.servo.get("Conveyor1");
+            conveyor2 = hardwareMap.servo.get("Conveyor2");
+            tapeDrive = hardwareMap.servo.get("TapeDrive");
             rightDistanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "RightDistanceSensor");
             //leftBackDistanceSensor = hardwareMap.analogInput.get("LeftBackDistanceSensor");
             //rightBackDistanceSensor = hardwareMap.analogInput.get("RightBackDistanceSensor");
@@ -245,16 +248,17 @@ public class RobotHardware {
     }
 
     public void setLiftPosition(int liftPosition, double power){
-        long currPos = this.getEncoderCounts(EncoderType.LIFT);
-        if (liftPosition>currPos) {
-            // going up, then can not higher than 3000
-            liftMotor.setTargetPosition(Math.min(liftPosition, 3000));
-        }
-        else {
-            // going down, then can not go lower than 0
-            liftMotor.setTargetPosition(Math.max(0, liftPosition));
-        }
-        // Make sure the lift position >0 and < 4000 (around 11 bricks)
+//        long currPos = this.getEncoderCounts(EncoderType.LIFT);
+//        if (liftPosition>currPos) {
+//            // going up, then can not higher than 3000
+//            liftMotor.setTargetPosition(Math.min(liftPosition, 3000));
+//        }
+//        else {
+//            // going down, then can not go lower than 0
+////            liftMotor.setTargetPosition(Math.max(0, liftPosition));
+//        }
+//        // Make sure the lift position >0 and < 4000 (around 11 bricks)
+        liftMotor.setTargetPosition(liftPosition);
         liftMotor.setPower(power);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
@@ -319,19 +323,22 @@ public class RobotHardware {
     public void startIntakeWheels() {
         intakeMotorLeft.setPower(0.5);
         intakeMotorRight.setPower(-0.5);
-        setBlockHolderWheel(IntakeDirection.TAKE_IN);
+        conveyor1.setPosition(0.2);
+        conveyor2.setPosition(0.2);
     }
 
     public void stopIntakeWheels() {
         intakeMotorLeft.setPower(0);
         intakeMotorRight.setPower(0);
-        setBlockHolderWheel(IntakeDirection.STOP);
+        conveyor1.setPosition(0.5);
+        conveyor2.setPosition(0.5);
     }
 
     public void reverseIntakeWheels(){
         intakeMotorLeft.setPower(-0.5);
         intakeMotorRight.setPower(0.5);
-        setBlockHolderWheel(IntakeDirection.RELEASE);
+        conveyor1.setPosition(0.8);
+        conveyor2.setPosition(0.8);
     }
 
     public void setIntakeDirection(IntakeDirection direction){
@@ -371,25 +378,16 @@ public class RobotHardware {
             clampRotationServo.setPosition(profile.hardwareSpec.clampAngleBack);
     }
 
-    // Controls the small green mecanum wheel that holds the block in place
-    public void setBlockHolderWheel(IntakeDirection intakeDirection) {
-        if(intakeDirection == IntakeDirection.TAKE_IN) {
-            //blockHolderWheel.setPower(profile.hardwareSpec.holderWheelIn);
-            blockHolderWheel.setPosition(0.1);
-        } else if(intakeDirection == IntakeDirection.RELEASE){
-            //blockHolderWheel.setPower(profile.hardwareSpec.holderWheelOut);
-            blockHolderWheel.setPosition(0.9);
-        } else {
-            blockHolderWheel.setPosition(0.5);
-        }
+    public void extendTape() {
+        tapeDrive.setPosition(0.2);
     }
 
-    public void engageBlockHolderWheel() {
-        blockHolderWheelPosServo.setPosition(profile.hardwareSpec.holderWheelServoEngage);
+    public void retractTake() {
+        tapeDrive.setPosition(0.8);
     }
 
-    public void retractBlockHolderWheel() {
-        blockHolderWheelPosServo.setPosition(profile.hardwareSpec.holderWheelServoRetract);
+    public void stopTape() {
+        tapeDrive.setPosition(0.5);
     }
 
     /**

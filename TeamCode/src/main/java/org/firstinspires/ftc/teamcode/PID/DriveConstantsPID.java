@@ -40,6 +40,7 @@ public class DriveConstantsPID {
     public static boolean USING_BULK_READ = false;
     public static boolean USING_STRAFE_DIAGNAL = true;
     public static double odoEncoderTicksPerRev = 1565.0;
+    public static double imuPollingInterval = 10;
 
     public static boolean ENABLE_LOGGING = false;
     private static String TAG = "DriveConstants";
@@ -226,6 +227,7 @@ public class DriveConstantsPID {
         RobotLog.dd(TAG, "Heading PID   hP: "+Double.toString(hP) + " hI: "+Double.toString(hI) + " hD: " + Double.toString(hD));
         RobotLog.dd(TAG, "test distance: " + Double.toString(TEST_DISTANCE) + "  " + Double.toString(TEST_DISTANCE_0));
         RobotLog.dd(TAG, "using IMU in localizer? : " + Integer.toString(RUN_USING_IMU_LOCALIZER?1:0));
+        RobotLog.dd(TAG, "IMU polling interval? : " + Double.toString(imuPollingInterval));
         RobotLog.dd(TAG, "correcting drv in automonous? : " + Integer.toString(drvCorrection?1:0));
         RobotLog.dd(TAG, "using STRAFE in diagonal move? : " + Integer.toString(USING_STRAFE_DIAGNAL?1:0));
         RobotLog.dd(TAG, "using Vuforia in localizer (override IMU and odom)? : " + Integer.toString(USE_VUFORIA_LOCALIZER?1:0));
@@ -315,6 +317,10 @@ public class DriveConstantsPID {
             v_int = (int) v_double;
             BRAKE_ON_ZERO = (v_int==0)?false:true;
         }
+        v_double = getTeamCodePropertyValue("debug.ftc.imuInterval");
+        if (v_double != 0 && v_double != Double.MAX_VALUE)
+            imuPollingInterval = v_double;
+
         v_double = getTeamCodePropertyValue("debug.ftc.maxVel");
         if (v_double != 0 && v_double != Double.MAX_VALUE)
             maxVel = v_double;

@@ -6,14 +6,16 @@ Chassis Hardware Map :
         front_right_drive : ExHub2 : Motors : Port 1 : Unspecified Motor
         back_left_drive : ExHub2 : Motors : Port 2 : Unspecified Motor
         back_right_drive : ExHub2 : Motors : Port 3 : Unspecified Motor
-    frontleftChassisTouchSensor:
-        ch_touch_sensor : ExHub2 : Digtial Devices : Port 7
+    frontChassisTouchSensor:
+        left_touch_sensor : ExHub2 : Digtial Devices : Port 7
+        right_touch_sensor : ExHub2 : Digtial Devices : Port 5
     Left and right ColorSensors :
-        ch_left_color  : ExHub2 : I2C Bus 0 : Port 0
-        ch_right_color : ExHub2 : I2C Buz 1 : Port 0
-
+        left_color  : ExHub2 : I2C Bus 0 : Port 0
+        right_color : ExHub2 : I2C Buz 1 : Port 0
     Hook  Servo:
-        Hold = 0.87, Release up = 0.22
+        left_hook : ExHub2 : Servo : Port 1
+        right_hook : ExHub2 : Servo : Port 0
+        //old hook: Hold = 0.87, Release up = 0.22
 
 
 Arm Hardware Map :

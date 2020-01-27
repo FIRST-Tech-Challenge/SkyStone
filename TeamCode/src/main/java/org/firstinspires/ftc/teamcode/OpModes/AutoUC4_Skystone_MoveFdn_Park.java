@@ -209,7 +209,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         callingOpMode.sleep(250);
 
         //Move forward till Chassis bumber limit switch is pressed
-        autoUCChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(18, 0.25, callingOpMode);
+        autoUCChassis.runFwdTill_frontChassisTouchSensor_Pressed(18, 0.25, callingOpMode);
 
         // Drop block
         autoUCIntake.openGrip();

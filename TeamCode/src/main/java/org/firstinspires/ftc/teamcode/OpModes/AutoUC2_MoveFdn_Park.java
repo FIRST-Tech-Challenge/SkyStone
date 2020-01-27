@@ -78,7 +78,7 @@ public class AutoUC2_MoveFdn_Park {
 
         callingOpMode.sleep(200);
         //Move forward till Chassis bumber limit switch is pressed.
-        autoUCChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(7, 0.1, callingOpMode);
+        autoUCChassis.runFwdTill_frontChassisTouchSensor_Pressed(7, 0.1, callingOpMode);
         callingOpMode.sleep(250);
 
         //Drop Arm and Hook to OnFoundation level

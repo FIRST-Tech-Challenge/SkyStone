@@ -286,10 +286,10 @@ public class HzGamepad1 {
      * @param hookChassis
      * @return scaled value of trigger input to move the hook servo
      */
-    public double scaleHookToRange(double stickInputHook, Chassis hookChassis){
+    /*public double scaleHookToRange(double stickInputHook, Chassis hookChassis){
         double hook_scale_factor = hookChassis.HOOK_HOLD - hookChassis.HOOK_RELEASED;
         return (hookChassis.HOOK_RELEASED + stickInputHook * hook_scale_factor);
-    }
+    }*/
 
     /**
      * Method to convert Gamepad commands to actions on Robot
@@ -311,8 +311,13 @@ public class HzGamepad1 {
         gpChassis.runByGamepadCommand(targetAngle, turn, power);
 
         //Move Hook to position set by Left Trigger
-        double hookPosition = scaleHookToRange(getLeftTrigger(), gpChassis);
-        gpChassis.moveHookServo(hookPosition);
+        //double hookPosition = scaleHookToRange(getLeftTrigger(), gpChassis);
+        //gpChassis.moveHookServo(hookPosition);
+        if(getLeftTrigger()>0.5){
+            gpChassis.moveHook_holdFoundation();
+        }else{
+            gpChassis.moveHook_Released();
+        }
 
         //Arm Actions :
         //If right bumper is pressed, move up a level

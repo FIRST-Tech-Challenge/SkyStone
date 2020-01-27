@@ -67,7 +67,7 @@ public class SensorCaliberation extends LinearOpMode{
             telemetry.addData("Chassis.Left.Hue", hzChassis.leftColorSensor.argb() );
 
             //Display touch sensor pressed or not
-            telemetry.addData("Chassis.touch.Pressed", hzChassis.frontleftChassisTouchSensorIsPressed() );
+            telemetry.addData("Chassis.touch.Pressed", hzChassis.frontChassisTouchSensorIsPressed() );
 
             telemetry.update();
 

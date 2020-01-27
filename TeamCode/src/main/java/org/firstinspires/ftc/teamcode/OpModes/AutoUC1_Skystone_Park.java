@@ -195,7 +195,7 @@ public class AutoUC1_Skystone_Park{
 
         //Move forward till Chassis bumber limit switch is pressed.
         double expectedMaxDistanceToFoundation = 80 + (5 - skystonePosition) * stoneTostone;; // was 40 --> 70
-        autoUCChassis.runFwdTill_frontleftChassisTouchSensor_Pressed(expectedMaxDistanceToFoundation, 0.25, callingOpMode);
+        autoUCChassis.runFwdTill_frontChassisTouchSensor_Pressed(expectedMaxDistanceToFoundation, 0.25, callingOpMode);
 
         // Drop block
         autoUCIntake.openGrip();

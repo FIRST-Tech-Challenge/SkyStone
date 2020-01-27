@@ -101,7 +101,9 @@ public class NewArmConfiguration extends LinearOpMode{
         telemetry.addData("backRightDrive.getCurrentPosition()", hzChassis.backLeft.getCurrentPosition());
         telemetry.addData("backRightDrive.getCurrentPosition()", hzChassis.frontRight.getCurrentPosition());
         telemetry.addData("backRightDrive.getCurrentPosition()", hzChassis.frontLeft.getCurrentPosition());
-        telemetry.addData("hzChassis.hook.getPosition : ", hzChassis.hook.getPosition());
+        //telemetry.addData("hzChassis.hook.getPosition : ", hzChassis.hook.getPosition());
+        telemetry.addData("hzChassis.lefthook.getPosition : ", hzChassis.lefthook.getPosition());
+        telemetry.addData("hzChassis.righthook.getPosition : ", hzChassis.righthook.getPosition());
         telemetry.addData("armMotor.isBusy : ", hzArm.armMotor.isBusy());
         telemetry.addData("armMotor.getTargetPosition : ", hzArm.armMotor.getTargetPosition());
         telemetry.addData("armMotor.getCurrentPosition : ", hzArm.armMotor.getCurrentPosition());

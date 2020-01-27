@@ -45,7 +45,7 @@ public class Arm {
     //Encoder Countable Events Per Revolution (Output Shaft)	1,497.325 (Rises & Falls of Ch A & B)
     //Arm move 90degrees so max level is 1497.325/4 = 374 counts. Add 30 counts for slippage compensation
 
-    int[] blockLevel = {
+    public int[] blockLevel = {
             +20, //ground level
             -130, //block level 1
             -220, //block level 2

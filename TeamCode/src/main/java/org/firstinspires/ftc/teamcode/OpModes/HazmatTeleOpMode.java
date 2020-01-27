@@ -68,13 +68,17 @@ public class HazmatTeleOpMode extends LinearOpMode{
         telemetry.addData("backRightDrive.getCurrentPosition()", hzChassis.frontRight.getCurrentPosition());
         telemetry.addData("backRightDrive.getCurrentPosition()", hzChassis.frontLeft.getCurrentPosition());
         telemetry.addData("hzGamepad1.getLeftTrigger()",hzGamepad1.getLeftTrigger());
-        telemetry.addData("hzChassis.hook.getPosition : ", hzChassis.hook.getPosition());
+        //telemetry.addData("hzChassis.hook.getPosition : ", hzChassis.hook.getPosition());
+        telemetry.addData("hzChassis.lefthook.getPosition : ", hzChassis.lefthook.getPosition());
+        telemetry.addData("hzChassis.righthook.getPosition : ", hzChassis.righthook.getPosition());
+        telemetry.addData("hzChassis.frontleftChassisTouchSensor.isPressed : ", hzChassis.frontleftChassisTouchSensor.isPressed());
+        telemetry.addData("hzChassis.frontrightChassisTouchSensor.isPressed : ", hzChassis.frontrightChassisTouchSensor.isPressed());
         telemetry.addData("armMotor.isBusy : ", hzArm.armMotor.isBusy());
         telemetry.addData("armMotor.getTargetPosition : ", hzArm.armMotor.getTargetPosition());
         telemetry.addData("armMotor.getCurrentPosition : ", hzArm.armMotor.getCurrentPosition());
         telemetry.addData("armMotor.getMode : ", hzArm.armMotor.getMode());
         telemetry.addData("Arm.currentLevel : ", hzArm.currentLevel);
-        telemetry.addData("Arm.currentLevelPosition : ", -(hzArm.currentLevel)*50);
+        telemetry.addData("Arm.currentLevelPosition : ", hzArm.blockLevel[hzArm.currentLevel]);
         telemetry.addData("Intake.left_grip.getPosition : ", hzIntake.left_grip.getPosition());
         telemetry.addData("Intake.right_grip.getPosition : ", hzIntake.right_grip.getPosition());
         telemetry.addData("Intake.wristCurrentPosition : ", hzIntake.wristCurrentPosition);
@@ -117,7 +121,7 @@ public class HazmatTeleOpMode extends LinearOpMode{
         // While automation button combo is pressed (LeftTrigger and Right Trigger are both fully pressed)
         // Robot moves back distance such that block is right above the tower
         if(hzGamepad1.getRightTrigger()==1 && hzGamepad1.getLeftTrigger()==1
-                && hzChassis.frontleftChassisTouchSensorIsPressed()){
+                && hzChassis.frontChassisTouchSensorIsPressed()){
             hzChassis.runFwdBackLeftRight(blockLevelDistance[hzArm.currentLevel],0, 0.1, this);
         }
 

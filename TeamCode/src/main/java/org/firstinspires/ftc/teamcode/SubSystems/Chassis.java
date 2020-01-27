@@ -51,14 +51,16 @@ public class Chassis {
     public DcMotor backLeft;
     public DcMotor backRight;
 
-    //Declare TouchSensor on front left of Chassis
+    //Declare TouchSensor on front left and right of Chassis
     public TouchSensor frontleftChassisTouchSensor;
+    public TouchSensor frontrightChassisTouchSensor;
 
     //Declare Color Sensors
     public ColorSensor leftColorSensor;
     public ColorSensor rightColorSensor;
 
     // public Servo hook;
+    //public Servo hook;
     public Servo lefthook;
     public Servo righthook;
 
@@ -77,8 +79,8 @@ public class Chassis {
     //public double HOOK_HOLD = 0.87;
     //public double HOOK_RELEASED = 0.22;
 
-    public double LEFT_HOOK_HOLD = 1;
-    public double LEFT_HOOK_RELEASED = 0.54;
+    public double LEFT_HOOK_HOLD = 0.78;
+    public double LEFT_HOOK_RELEASED = 0.31;
 
     public double RIGHT_HOOK_HOLD = 0.46;
     public double RIGHT_HOOK_RELEASED = 0.93;
@@ -98,14 +100,17 @@ public class Chassis {
         backRight = hardwareMap.dcMotor.get("back_right_drive");
 
         //Map TouchSensor from configuration
-        frontleftChassisTouchSensor = hardwareMap.touchSensor.get("ch_touch_sensor");
+        frontleftChassisTouchSensor = hardwareMap.touchSensor.get("left_touch_sensor");
+        frontrightChassisTouchSensor = hardwareMap.touchSensor.get("right_touch_sensor");
 
         //Map ColorSensors from configuration
-        leftColorSensor = hardwareMap.get(ColorSensor.class, "ch_left_color");
-        rightColorSensor = hardwareMap.get(ColorSensor.class, "ch_right_color");
+        leftColorSensor = hardwareMap.get(ColorSensor.class, "left_color");
+        rightColorSensor = hardwareMap.get(ColorSensor.class, "right_color");
 
         //Map Hook from configuration
         //hook = hardwareMap.servo.get("hook");
+        lefthook = hardwareMap.servo.get("left_hook");
+        righthook = hardwareMap.servo.get("right_hook");
 
         //Configure Robot to dimensions and modified for wheel type
         configureRobot();
@@ -134,7 +139,9 @@ public class Chassis {
         resetChassis();
         setZeroBehavior(DcMotor.ZeroPowerBehavior.FLOAT); // To avoid jerk at start
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        hook.setPosition(HOOK_RELEASED);
+        //hook.setPosition(HOOK_RELEASED);
+        lefthook.setPosition(LEFT_HOOK_RELEASED);
+        righthook.setPosition(RIGHT_HOOK_RELEASED);
     }
 
     /**
@@ -347,7 +354,7 @@ public class Chassis {
      * @param power to run motors
      * @param callingOpMode passed for checking for isStopRequested()
      */
-    public void runFwdTill_frontleftChassisTouchSensor_Pressed(
+    public void runFwdTill_frontChassisTouchSensor_Pressed(
             double max_stop_distance,
             double power,
             LinearOpMode callingOpMode) {
@@ -358,7 +365,7 @@ public class Chassis {
         double targetRotations = max_stop_distance/(2*Math.PI*wheelRadius);
 
         while (!callingOpMode.isStopRequested() &&
-                (!frontleftChassisTouchSensor.isPressed() &&
+                (!frontleftChassisTouchSensor.isPressed() && !frontrightChassisTouchSensor.isPressed() &&
                         (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * targetRotations)
                         )
                 )
@@ -599,13 +606,14 @@ public class Chassis {
      * frontleftChassisTouchSensor.getState() return true when not touched.
      *
      */
-    public boolean frontleftChassisTouchSensorIsPressed(){
-        if (frontleftChassisTouchSensor.isPressed()){
+    public boolean frontChassisTouchSensorIsPressed(){
+        if (frontleftChassisTouchSensor.isPressed() || frontrightChassisTouchSensor.isPressed()){
             return true;
         } else {
             return false;
         }
     }
+
 
     /**
      * Method to move hook  to hold on foundation
@@ -627,7 +635,10 @@ public class Chassis {
 
     /**
      * Mothod to move the hook to the set level
-     * @param hookLevel
+     * //@param hookLevel
+     * LEFT_HOOK_HOLD = 1, LEFT_HOOK_RELEASED = 0.54
+     * RIGHT_HOOK_HOLD = 0.46, RIGHT_HOOK_RELEASED = 0.93
+
      */
     public void moveHookServo(double lefthookLevel, double righthookLevel) {
     /*    if (hookLevel <= HOOK_RELEASED) {
@@ -638,6 +649,7 @@ public class Chassis {
             hookLevel = HOOK_HOLD;
         }
     */
+        //Limit hook level to max values : LEFT_HOOK_HOLD = 1, LEFT_HOOK_RELEASED = 0.54
         if (lefthookLevel <= LEFT_HOOK_RELEASED) {
             lefthookLevel = LEFT_HOOK_RELEASED;
         }
@@ -646,11 +658,12 @@ public class Chassis {
             lefthookLevel = LEFT_HOOK_HOLD;
         }
 
-        if (righthookLevel <= RIGHT_HOOK_RELEASED) {
+        //Limit hook level to max values : RIGHT_HOOK_HOLD = 0.46, RIGHT_HOOK_RELEASED = 0.93
+        if (righthookLevel >= RIGHT_HOOK_RELEASED) {
             righthookLevel = RIGHT_HOOK_RELEASED;
         }
 
-        if (righthookLevel >= RIGHT_HOOK_HOLD) {
+        if (righthookLevel <= RIGHT_HOOK_HOLD) {
             righthookLevel = RIGHT_HOOK_HOLD;
         }
 
@@ -659,12 +672,5 @@ public class Chassis {
         lefthook.setPosition(lefthookLevel);
         righthook.setPosition(righthookLevel);
     }
-
-    public void gripFoundation(double hookLevel){
-        hookLevel = -
-
-    }
-
-
 
 }

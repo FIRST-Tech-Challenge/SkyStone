@@ -51,10 +51,9 @@ public class Path {
     //VuforiaCamLocalizer vu;
 
     public Path(HardwareMap hwMap, LinearOpMode opMode, SampleMecanumDriveBase straightDrive,
-                SampleMecanumDriveBase strafeDrive, Pose2d startingPos,
+                Pose2d startingPos,
                 com.qualcomm.robotcore.hardware.HardwareMap hardwareMap, BNO055IMU imu) {
         this.straightDrive = straightDrive;
-        this.strafeDrive = strafeDrive;
         this.startingPos = startingPos;
         this.hwMap = hwMap;
         this.opMode = opMode;
@@ -126,7 +125,7 @@ public class Path {
         //RobotLogger.dd(TAG, "vuforia localization info: %s", vu.getPoseEstimate().toString());
 
         if (DriveConstantsPID.RECREATE_DRIVE_AND_BUILDER)
-            _drive = new SampleMecanumDriveREV(hardwareMap, isStrafe, init_imu);
+            _drive = new SampleMecanumDriveREV(hardwareMap, isStrafe);
         else
             _drive.resetFollowerWithParameters(isStrafe, rotating);
 

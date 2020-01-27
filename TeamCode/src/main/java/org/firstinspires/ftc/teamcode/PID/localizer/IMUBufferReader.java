@@ -13,21 +13,6 @@ import org.firstinspires.ftc.teamcode.PID.util.LynxModuleUtil;
 
 import java.util.concurrent.Semaphore;
 
-
-/*
- * Sample tracking wheel localizer implementation assuming the standard configuration:
- *
- *    /--------------\
- *    |     ____     |
- *    |     ----     |
- *    | ||        || |
- *    | ||        || |
- *    |              |
- *    |              |
- *    \--------------/
- *
- * Note: this could be optimized significantly with REV bulk reads
- */
 public class IMUBufferReader implements Runnable{
     private BNO055IMU imu;
     private BNO055IMU.Parameters parameters;

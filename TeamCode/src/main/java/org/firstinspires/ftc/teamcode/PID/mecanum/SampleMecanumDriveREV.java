@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.RobotLogger;
+import org.firstinspires.ftc.teamcode.PID.localizer.IMUBufferReader;
 import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.PID.localizer.TrackingWheelLocalizerWithIMU;
 import org.firstinspires.ftc.teamcode.PID.localizer.VuforiaCamLocalizer;
@@ -39,33 +40,22 @@ import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.getMotorVeloc
 public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
-    private BNO055IMU imu;
-    BNO055IMU.Parameters parameters;
+    private IMUBufferReader imuReader;
+    private float lastIMU = 0;
+
     private static String TAG = "SampleMecanumDriveREV";
+
     public SampleMecanumDriveREV(HardwareMap hardwareMap, boolean strafe) {
         super(strafe);
         create_instance(hardwareMap, strafe);
-        imu.initialize(parameters);
     }
 
-    public SampleMecanumDriveREV(HardwareMap hardwareMap, boolean strafe, boolean imuInit) {
-        super(strafe);
-        create_instance(hardwareMap, strafe);
-        if(imuInit) {
-            RobotLogger.dd(TAG, "start IMU init");
-            imu.initialize(parameters);
-            RobotLogger.dd(TAG, "IMU init done");
-        }
-    }
-    private void create_instance(HardwareMap hardwareMap, boolean strafe)
-    {
+
+    private void create_instance(HardwareMap hardwareMap, boolean strafe) {
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
         // TODO: adjust the names of the following hardware devices to match your configuration
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        //imu.initialize(parameters);
+        imuReader = new IMUBufferReader(hardwareMap);
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
@@ -84,11 +74,11 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
             if (RUN_USING_ENCODER) {
                 motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
-            motor.setZeroPowerBehavior(DriveConstantsPID.BRAKE_ON_ZERO?DcMotor.ZeroPowerBehavior.BRAKE:DcMotor.ZeroPowerBehavior.FLOAT);
+            motor.setZeroPowerBehavior(DriveConstantsPID.BRAKE_ON_ZERO ? DcMotor.ZeroPowerBehavior.BRAKE : DcMotor.ZeroPowerBehavior.FLOAT);
         }
 
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
-            RobotLogger.dd(TAG,"MOTOR_VELO_PID!=0, to setPIDCoefficients " + Double.toString(MOTOR_VELO_PID.kP)
+            RobotLogger.dd(TAG, "MOTOR_VELO_PID!=0, to setPIDCoefficients " + Double.toString(MOTOR_VELO_PID.kP)
                     + " " + Double.toString(MOTOR_VELO_PID.kI) + " " + Double.toString(MOTOR_VELO_PID.kD));
             setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
@@ -102,8 +92,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL == true) {
             RobotLogger.dd(TAG, "to setLocalizer to StandardTrackingWheelLocalizer");
             setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
-        }
-        else
+        } else
             RobotLogger.dd(TAG, "use default 4 wheel localizer");
     }
 
@@ -117,6 +106,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         }
         RobotLogger.dd(TAG, "setBrakeonZeroPower " + flag);
     }
+
     @Override
     public PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode) {
         PIDFCoefficients coefficients = leftFront.getPIDFCoefficients(runMode);
@@ -145,7 +135,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
             double t1 = motor.getCurrentPosition();
             double t2 = encoderTicksToInches(t1);
             //RobotLogger.dd(TAG, motor.getDeviceName() + "getWheelPositions: " + "position: " + Double.toString(t1) +
-              //      " inches: " + Double.toString(t2));
+            //      " inches: " + Double.toString(t2));
 
             wheelPositions.add(encoderTicksToInches(motor.getCurrentPosition()));
         }
@@ -175,29 +165,31 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         }
         return motorPowers;
     }
+
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
-        RobotLogger.dd(TAG, "setMotorPowers "+"leftFront: " + Double.toString(v));
+        RobotLogger.dd(TAG, "setMotorPowers " + "leftFront: " + Double.toString(v));
         leftFront.setPower(v);
         leftRear.setPower(v1);
         rightRear.setPower(v2);
         rightFront.setPower(v3);
-        RobotLogger.dd(TAG, "setMotorPowers "+"leftRear: "+Double.toString(v1));
-        RobotLogger.dd(TAG, "setMotorPowers "+"rightRear: "+Double.toString(v2));
-        RobotLogger.dd(TAG, "setMotorPowers"+"rightFront: "+Double.toString(v3));
+        RobotLogger.dd(TAG, "setMotorPowers " + "leftRear: " + Double.toString(v1));
+        RobotLogger.dd(TAG, "setMotorPowers " + "rightRear: " + Double.toString(v2));
+        RobotLogger.dd(TAG, "setMotorPowers" + "rightFront: " + Double.toString(v3));
     }
 
     @Override
     public double getRawExternalHeading() {
-        double t = 0;
+        float t = lastIMU;
         try {
             RobotLogger.dd(TAG, "to getRawExternalHeading");
-            t = imu.getAngularOrientation().firstAngle;
+            t = imuReader.getLatestIMUData();
             RobotLogger.dd(TAG, "getRawExternalHeading: " + Double.toString(t));
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        lastIMU = t;
         return t;
     }
 }

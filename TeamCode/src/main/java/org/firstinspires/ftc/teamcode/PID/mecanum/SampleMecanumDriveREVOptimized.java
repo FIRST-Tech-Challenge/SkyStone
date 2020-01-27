@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.RobotLogger;
+import org.firstinspires.ftc.teamcode.PID.localizer.IMUBufferReader;
 import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.PID.localizer.TrackingWheelLocalizerWithIMU;
 import org.firstinspires.ftc.teamcode.PID.localizer.VuforiaCamLocalizer;
@@ -36,23 +37,15 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
     private ExpansionHubEx hubMotors;
     private ExpansionHubMotor leftFront, leftRear, rightRear, rightFront;
     private List<ExpansionHubMotor> motors;
-    private BNO055IMU imu;
-    BNO055IMU.Parameters parameters;
+    private IMUBufferReader imuReader;
+    private float lastIMU = 0;
+
     private String TAG = "SampleMecanumDriveREVOptimized";
     public SampleMecanumDriveREVOptimized(HardwareMap hardwareMap, boolean strafe) {
         super(strafe);
         create_instance(hardwareMap);
-        imu.initialize(parameters);
     }
-    public SampleMecanumDriveREVOptimized(HardwareMap hardwareMap, boolean strafe, boolean imuInit) {
-        super(strafe);
-        create_instance(hardwareMap);
-        if(imuInit) {
-            RobotLogger.dd(TAG, "start IMU init");
-            imu.initialize(parameters);
-            RobotLogger.dd(TAG, "IMU init done");
-        }
-    }
+
     private void create_instance(HardwareMap hardwareMap){
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -60,10 +53,7 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         // for simplicity, we assume that the desired IMU and drive motors are on the same hub
         // if your motors are split between hubs, **you will need to add another bulk read**
         hubMotors = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");  // TODO: Hub3???
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        //imu.initialize(parameters);
+        imuReader = new IMUBufferReader(hardwareMap);
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
@@ -196,15 +186,16 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
 
     @Override
     public double getRawExternalHeading() {
-        double t = 0;
+        float t = lastIMU;
         try {
             RobotLogger.dd(TAG, "to getRawExternalHeading");
-            t = imu.getAngularOrientation().firstAngle;
+            t = imuReader.getLatestIMUData();
             RobotLogger.dd(TAG, "getRawExternalHeading: " + Double.toString(t));
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        lastIMU = t;
         return t;
     }
 }

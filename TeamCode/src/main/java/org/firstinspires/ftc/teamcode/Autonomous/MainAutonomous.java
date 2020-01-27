@@ -117,16 +117,16 @@ public class MainAutonomous extends LinearOpMode {
                 telemetry.addData("STATUS", "Calibrating IMU...");
                 telemetry.update();
                 straightDrive = new SampleMecanumDriveREV(hardwareMap, false);
+                /*
                 strafeDrive = new SampleMecanumDriveREV(hardwareMap, true);
                 imu = hardwareMap.get(BNO055IMU.class, "imu");
                 BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
                 parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
                 imu.initialize(parameters);
-
-
+                */
                 telemetry.addData("STATUS", "Done!");
                 telemetry.update();
-                path = new Path(hwMap, this, straightDrive, strafeDrive, startingPos, hardwareMap, imu);
+                path = new Path(hwMap, this, straightDrive, startingPos, hardwareMap, imu);
 
                 if (fieldPosition == FieldPosition.RED_QUARY || fieldPosition == FieldPosition.BLUE_QUARY) {
                     telemetry.addData("STATUS", "Initializing TensorFlow...");

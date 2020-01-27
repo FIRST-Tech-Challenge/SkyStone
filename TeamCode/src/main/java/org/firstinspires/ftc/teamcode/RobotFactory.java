@@ -18,4 +18,8 @@ public class RobotFactory {
         }
         return theRobot;
     }
+
+    public static void reset() {
+        theRobot = null;
+    }
 }

@@ -79,6 +79,7 @@ public class Chassis {
     //public double HOOK_HOLD = 0.87;
     //public double HOOK_RELEASED = 0.22;
 
+    
     public double LEFT_HOOK_HOLD = 0.78;
     public double LEFT_HOOK_RELEASED = 0.31;
 

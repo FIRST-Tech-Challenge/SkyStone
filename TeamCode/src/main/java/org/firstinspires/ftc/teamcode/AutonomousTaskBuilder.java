@@ -204,6 +204,10 @@ public class AutonomousTaskBuilder {
 
     //the robot is either on RED3 or BLUE3, not for RED2 or BLUE2 since possibility crash might be high
     public ArrayList<RobotControl> buildMovePlatformAndParkTask() {
+        if (this.delay > 0) {   // add 1 sleep anyway for debug
+            taskList.add(new RobotSleep(delay * 1000 ));
+        }
+
         populateCommonTask();
         taskList.add(releaseWheelTask);
         addMovement(new RobotPosition(0, 0, 0), new RobotPosition(parkWall, 0, 0));
@@ -380,7 +384,7 @@ public class AutonomousTaskBuilder {
         // open clamp side ways
         slideUpExtendTaskList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN_SIDEWAYS));
         // lift down to base
-        slideUpExtendTaskList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase + 45, 100));
+        slideUpExtendTaskList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase + 60, 100));
         slideUpExtendTask.setTaskList(slideUpExtendTaskList);
 
         // set up moves

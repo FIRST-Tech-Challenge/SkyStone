@@ -33,25 +33,37 @@ import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.getMotorVeloc
  * trajectory following performance with moderate additional complexity.
  */
 public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
-    private ExpansionHubEx hubLeft, hubRight;
+    private ExpansionHubEx hubMotors;
     private ExpansionHubMotor leftFront, leftRear, rightRear, rightFront;
-    private List<ExpansionHubMotor> motors, motorsLeft, motorsRight;
+    private List<ExpansionHubMotor> motors;
     private BNO055IMU imu;
+    BNO055IMU.Parameters parameters;
     private String TAG = "SampleMecanumDriveREVOptimized";
     public SampleMecanumDriveREVOptimized(HardwareMap hardwareMap, boolean strafe) {
         super(strafe);
-
+        create_instance(hardwareMap);
+        imu.initialize(parameters);
+    }
+    public SampleMecanumDriveREVOptimized(HardwareMap hardwareMap, boolean strafe, boolean imuInit) {
+        super(strafe);
+        create_instance(hardwareMap);
+        if(imuInit) {
+            RobotLogger.dd(TAG, "start IMU init");
+            imu.initialize(parameters);
+            RobotLogger.dd(TAG, "IMU init done");
+        }
+    }
+    private void create_instance(HardwareMap hardwareMap){
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
         // TODO: adjust the names of the following hardware devices to match your configuration
         // for simplicity, we assume that the desired IMU and drive motors are on the same hub
         // if your motors are split between hubs, **you will need to add another bulk read**
-        hubLeft = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
-        hubRight = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 3");
+        hubMotors = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");  // TODO: Hub3???
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);
+        //imu.initialize(parameters);
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
@@ -63,8 +75,6 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         rightFront = hardwareMap.get(ExpansionHubMotor.class, "frontRight");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
-        motorsLeft = Arrays.asList(leftFront, leftRear);
-        motorsRight = Arrays.asList(rightRear, rightFront);
         RobotLogger.dd(TAG, "SampleMecanumDriveREVOptimized created");
 
         for (ExpansionHubMotor motor : motors) {
@@ -72,8 +82,9 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
             if (RUN_USING_ENCODER) {
                 motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
-            motor.setZeroPowerBehavior(DriveConstantsPID.BRAKE_ON_ZERO?DcMotor.ZeroPowerBehavior.BRAKE:DcMotor.ZeroPowerBehavior.FLOAT);
+            //motor.setZeroPowerBehavior(DriveConstantsPID.BRAKE_ON_ZERO?DcMotor.ZeroPowerBehavior.BRAKE:DcMotor.ZeroPowerBehavior.FLOAT);
         }
+        setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
 
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
             RobotLogger.dd(TAG,"MOTOR_VELO_PID!=0, to setPIDCoefficients");
@@ -125,52 +136,37 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
-        RevBulkData bulkDataLeft = hubLeft.getBulkInputData();
-        RevBulkData bulkDataRight = hubRight.getBulkInputData();
-        if ((bulkDataLeft == null) || (bulkDataRight == null)) {
+        RevBulkData bulkData = hubMotors.getBulkInputData();
+        if (bulkData == null) {
             RobotLogger.dd(TAG, "bulk data = null");
             return Arrays.asList(0.0, 0.0, 0.0, 0.0);
         }
 
         List<Double> wheelPositions = new ArrayList<>();
-        for (ExpansionHubMotor motor : motorsLeft) {
-            double t1 = bulkDataLeft.getMotorCurrentPosition(motor);
+        for (ExpansionHubMotor motor : motors) {
+            double t1 = bulkData.getMotorCurrentPosition(motor);
             double t2 = encoderTicksToInches(t1);
             RobotLogger.dd(TAG, "getWheelPositions: " + "position: " + Double.toString(t1) + " inches: " + Double.toString(t2));
-
             wheelPositions.add(t2);
         }
-        for (ExpansionHubMotor motor : motorsRight) {
-            double t1 = bulkDataRight.getMotorCurrentPosition(motor);
-            double t2 = encoderTicksToInches(t1);
-            RobotLogger.dd(TAG, "getWheelPositions: " + "position: " + Double.toString(t1) + " inches: " + Double.toString(t2));
 
-            wheelPositions.add(t2);
-        }
         return wheelPositions;
     }
 
     @Override
     public List<Double> getWheelVelocities() {
-        RevBulkData bulkDataLeft = hubLeft.getBulkInputData();
-        RevBulkData bulkDataRight = hubRight.getBulkInputData();
-        if ((bulkDataLeft == null)||(bulkDataRight == null)) {
+        RevBulkData bulkData = hubMotors.getBulkInputData();
+        if (bulkData == null){
+            RobotLogger.dd(TAG, "bulk data = null");
             return Arrays.asList(0.0, 0.0, 0.0, 0.0);
         }
 
         List<Double> wheelVelocities = new ArrayList<>();
-        for (ExpansionHubMotor motor : motorsLeft) {
-            double t1 = bulkDataLeft.getMotorVelocity(motor);
+        for (ExpansionHubMotor motor : motors) {
+            double t1 = bulkData.getMotorVelocity(motor);
             double t2 = encoderTicksToInches(t1);
             RobotLogger.dd(TAG, "getWheelVelocities: " + "velocity: " + Double.toString(t1) + " inches: " + Double.toString(t2));
             
-            wheelVelocities.add(t2);
-        }
-        for (ExpansionHubMotor motor : motorsRight) {
-            double t1 = bulkDataRight.getMotorVelocity(motor);
-            double t2 = encoderTicksToInches(t1);
-            RobotLogger.dd(TAG, "getWheelVelocities: " + "velocity: " + Double.toString(t1) + " inches: " + Double.toString(t2));
-
             wheelVelocities.add(t2);
         }
         return wheelVelocities;
@@ -178,7 +174,7 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
     @Override
     public List<Double> getMotorPowers(List<DcMotorEx> motors) {
         List<Double> motorPowers = new ArrayList<>();
-        for (DcMotorEx motor : motors) {
+        for (DcMotorEx motor : motors)  {
             double t = motor.getPower();
             RobotLogger.dd(TAG, "getMotorPowers: " + "power: " + Double.toString(t));
 
@@ -189,19 +185,26 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
         RobotLogger.dd(TAG, "setMotorPowers "+"leftFront: " + Double.toString(v));
-        RobotLogger.dd(TAG, "setMotorPowers "+"leftRear: "+Double.toString(v1));
-        RobotLogger.dd(TAG, "setMotorPowers "+"rightRear: "+Double.toString(v2));
-        RobotLogger.dd(TAG, "setMotorPowers"+"rightFront: "+Double.toString(v3));
         leftFront.setPower(v);
         leftRear.setPower(v1);
         rightRear.setPower(v2);
         rightFront.setPower(v3);
+        RobotLogger.dd(TAG, "setMotorPowers "+"leftRear: "+Double.toString(v1));
+        RobotLogger.dd(TAG, "setMotorPowers "+"rightRear: "+Double.toString(v2));
+        RobotLogger.dd(TAG, "setMotorPowers"+"rightFront: "+Double.toString(v3));
     }
 
     @Override
     public double getRawExternalHeading() {
-        double t = imu.getAngularOrientation().firstAngle;
-        //RobotLogger.dd(TAG, "getRawExternalHeading: " + Double.toString(t));
+        double t = 0;
+        try {
+            RobotLogger.dd(TAG, "to getRawExternalHeading");
+            t = imu.getAngularOrientation().firstAngle;
+            RobotLogger.dd(TAG, "getRawExternalHeading: " + Double.toString(t));
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         return t;
     }
 }

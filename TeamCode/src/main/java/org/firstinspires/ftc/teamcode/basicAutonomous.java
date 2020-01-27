@@ -89,7 +89,7 @@ public class basicAutonomous extends LinearOpMode{
 
         /*This will use the skystone position determined by vuforia and the
         alliance color to determine the skystone position*/
-        if (Webcam.PS == Webcam.PS.CENTER && AllianceColor == true){
+        /*if (Webcam.PS == Webcam.PS.CENTER && AllianceColor == true){
             Skystone = SkystonePosition.R2;
         } else if (Webcam.PS == Webcam.PS.LEFT && AllianceColor == true){
             Skystone = SkystonePosition.R3;
@@ -101,7 +101,7 @@ public class basicAutonomous extends LinearOpMode{
             Skystone = SkystonePosition.B3;
         } else {
             Skystone = SkystonePosition.B1;
-        }
+        }*/
 
         // wait for PLAY button to be pressed on driver station
         telemetry.addLine(">> Press PLAY to start");
@@ -129,7 +129,7 @@ public class basicAutonomous extends LinearOpMode{
                         Drive.TimeDelay(5.0);
                     }
                     if (willPark == true){
-                        newState(State.Park);
+                        newState(State.AutoPark);
                     }
                     else {
                         newState(State.GrabStone);
@@ -181,8 +181,9 @@ public class basicAutonomous extends LinearOpMode{
                         Drive.turnLeftDistance(0.5,50);
                     }
                     Lift.MoveDownTime(0.4);
+                    Grabber.close();
                     //FoundationGrabber.open();
-                    newState(State.AutoPark);
+                    newState(State.Park);
                     break;
 
 
@@ -197,7 +198,9 @@ public class basicAutonomous extends LinearOpMode{
                     Drive.moveBackwardDistance(0.8,60);
                     Lift.MoveDownTime(0.4);
                     /*Drive backwards until under skybridge*/
-                    Drive.moveForwardDistance(0.8,100);
+                    Drive.moveForwardDistance(0.8,65);
+                    Drive.turnLeftDistance(0.8,50);
+                    Drive.moveForwardDistance(0.8,70);
                     newState(State.Stop);
                     break;
 

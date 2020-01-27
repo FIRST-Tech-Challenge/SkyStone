@@ -36,6 +36,7 @@ public class newAutonomous extends LinearOpMode{
     //This is a list of all of the states
     private enum State {
         Initial,
+        FoundationAndPark,
         FoundationTest,
         GrabStone,
         MoveToBuildZone,
@@ -130,26 +131,50 @@ public class newAutonomous extends LinearOpMode{
                         Drive.TimeDelay(5.0);
                     }
                     if (willPark == true){
-                        newState(State.Park);
+                        newState(State.FoundationAndPark);
                     }
                     else {
-                    newState(State.FoundationTest);
+                    newState(State.GrabStone);
                     }
                     break;
 
 
-                case FoundationTest:
+                /*case FoundationTest:
                     FoundationGrabber.close();
                     Drive.TimeDelay(1.0);
                     Drive.moveForwardDistance(0.8,70);
-                    Drive.turnRightDistance(0.2,50);
+                    if (AllianceColor == true) {
+                        Drive.turnRightDistance(0.5, 50);
+                    }
+                    else {
+                        Drive.turnLeftDistance(0.5,50);
+                    }
                     FoundationGrabber.open();
-                    Drive.turnRightDistance(0.5,25);
+                    if (AllianceColor == true) {
+                        Drive.turnRightDistance(0.5, 50);
+                    }
+                    else {
+                        Drive.turnLeftDistance(0.5,50);
+                    }
                     Drive.moveForwardDistance(0.8, 80);
+                    newState(State.Stop);
+                    break;*/
+
+                case FoundationAndPark:
+                    Drive.moveBackwardDistance(0.8,65);
+                    FoundationGrabber.close();
+                    Drive.TimeDelay(1.0);
+                    Drive.moveForwardDistance(0.8,50);
+                    FoundationGrabber.open();
+                    if (AllianceColor == true) {
+                        Drive.strafeRightDistance(0.8,120);
+                    }
+                    else {
+                        Drive.strafeLeftDistance(0.8,120);
+                    }
                     newState(State.Stop);
                     break;
 
-                    
                 case GrabStone:
                     telemetry.addLine("grab skystone");
                     telemetry.update();
@@ -184,18 +209,48 @@ public class newAutonomous extends LinearOpMode{
                     }
                     Lift.MoveUpTime(0.4);
                     Drive.moveForwardDistance(0.5, 35);
+                    if (AllianceColor == false) {
+                        Drive.strafeLeftDistance(0.5, 20);
+                    }
+                    else {
+                        Drive.strafeRightDistance(0.5,20);
+                    }
                     Grabber.open();
                     Drive.TimeDelay(1.0);
-                    Drive.moveBackwardDistance(0.8, 25);
+                    Drive.moveBackwardDistance(0.8,25);
+                    Lift.MoveDownTime(0.4);
+                    Grabber.close();
                     if (AllianceColor == false) {
+                        Drive.turnRightDistance(0.5, 100);
+                    }
+                    else {
+                        Drive.turnLeftDistance(0.5,100);
+                    }
+                    if (AllianceColor == false) {
+                        Drive.strafeLeftDistance(0.5, 20);
+                    }
+                    else {
+                        Drive.strafeRightDistance(0.5,20);
+                    }
+                    Drive.moveBackwardDistance(0.8, 25);
+                    FoundationGrabber.close();
+                    Drive.TimeDelay(1.0);
+                    Drive.moveForwardDistance(0.8,70);
+                    if (AllianceColor == true) {
                         Drive.turnRightDistance(0.5, 50);
                     }
                     else {
                         Drive.turnLeftDistance(0.5,50);
                     }
-                    Lift.MoveDownTime(0.4);
-                    //FoundationGrabber.open();
-                    newState(State.AutoPark);
+                    FoundationGrabber.open();
+                    if (AllianceColor == true) {
+                        Drive.turnRightDistance(0.5, 50);
+                    }
+                    else {
+                        Drive.turnLeftDistance(0.5,50);
+                    }
+                    Drive.moveForwardDistance(0.8, 80);
+                    newState(State.Stop);
                     break;
 
 

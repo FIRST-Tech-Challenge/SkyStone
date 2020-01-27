@@ -206,6 +206,9 @@ public class AutonomousOptions2 extends OpMode {
             if(value.equals("RED_3") || value.equals("BLUE_3")){
                 editor.putString(STONE_PREF, "group2");
             }
+            if (value.equals("RED_2") || value.equals("BLUE_2")) {
+                editor.putString(STONE_PREF, "group1"); // default
+            }
         }
         if(key.equals(PARKING_ONLY_PREF) && value.equals("yes")) {
             editor.putString(STONE_PREF, "no");

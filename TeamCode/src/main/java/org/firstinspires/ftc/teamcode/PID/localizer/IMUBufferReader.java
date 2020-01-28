@@ -17,8 +17,9 @@ public class IMUBufferReader implements Runnable{
     private BNO055IMU imu;
     private BNO055IMU.Parameters parameters;
     private static IMUBufferReader single_instance = null;
-
     private Semaphore mutex = new Semaphore(1);
+    private boolean keepRunning = true;
+    private String TAG = "IMUBufferReader";
 
     private boolean IMUReaderRunning = false;
     private float[] pingPongBuffer = new float[2];
@@ -34,14 +35,20 @@ public class IMUBufferReader implements Runnable{
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         resetIMU();
 
-        IMUReaderRunning = true;
         thread = new Thread(this);
         thread.start();
+        IMUReaderRunning = true;
     }
+    public void finalize() throws Throwable{
+        stop();
+        IMUReaderRunning = false;
+    }
+
     public boolean resetIMU()
     {
         return(imu.initialize(parameters));
     }
+
     public static IMUBufferReader getSingle_instance(HardwareMap hardwareMap)
     {
         if (single_instance == null) {
@@ -52,6 +59,13 @@ public class IMUBufferReader implements Runnable{
     }
     public float getLatestIMUData()
     {
+        if (IMUReaderRunning == false)
+        {
+            RobotLogger.dd(TAG, "IMU reader restarted");
+            thread = new Thread(this);
+            thread.start();
+            IMUReaderRunning = true;
+        }
         float t = pingPongBuffer[0];
         try {
             mutex.acquire();
@@ -64,22 +78,32 @@ public class IMUBufferReader implements Runnable{
 
         return t;
     }
-
-    public void run(){
+    public void stop()
+    {
+        keepRunning = false;
         try {
-            float t = imu.getAngularOrientation().firstAngle;
-            mutex.acquire();
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    public void run(){
+        while (keepRunning) {
+            try {
+                float t = imu.getAngularOrientation().firstAngle;
+                mutex.acquire();
 
-            if (latestIndex == 0)
-                latestIndex = 1;
-            else
-                latestIndex = 0;
-            pingPongBuffer[latestIndex] = t;
-            mutex.release();
-            Thread.sleep((long)DriveConstantsPID.imuPollingInterval);
+                if (latestIndex == 0)
+                    latestIndex = 1;
+                else
+                    latestIndex = 0;
+                pingPongBuffer[latestIndex] = t;
+                mutex.release();
+                Thread.sleep((long) DriveConstantsPID.imuPollingInterval);
+            } catch (InterruptedException exc) {
+                System.out.println(exc);
+            }
         }
-        catch (InterruptedException exc) {
-            System.out.println(exc);
-        }
+        RobotLogger.dd(TAG, "IMU thread stops");
     }
 }

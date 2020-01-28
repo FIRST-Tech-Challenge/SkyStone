@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.All.FourWheelMecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.Autonomous.Vision.Detect;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
+import org.firstinspires.ftc.teamcode.PID.RobotLogger;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
 
@@ -184,8 +185,13 @@ public class MainAutonomous extends LinearOpMode {
             tfod.shutdown();
 
         waitForStart();
-
+        if (tfod != null) {
+            RobotLogger.dd("", "to shutdown tensor flow");
+            tfod.shutdown();
+            RobotLogger.dd("", "tensor flow is shutdown");
+        }
         if (opModeIsActive() && fieldPosition != null) {
+
             sendData();
             //resetLiftEncoder();
             switch (fieldPosition) {

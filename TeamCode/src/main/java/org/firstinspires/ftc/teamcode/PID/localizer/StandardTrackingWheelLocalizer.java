@@ -49,8 +49,12 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
     public static double FORWARD_OFFSET = -5.49; // in; offset of the lateral wheel
     private String TAG = "StandardTrackingWheelLocalizer";
     private ExpansionHubEx hubMotors;
-    private ExpansionHubMotor leftEncoder, rightEncoder, frontEncoder;
-    private List<ExpansionHubMotor> motors;
+    //private ExpansionHubMotor leftEncoder, rightEncoder, frontEncoder;
+    private DcMotor leftEncoder, rightEncoder, frontEncoder;
+    //private List<ExpansionHubMotor> motors;
+
+    //private DcMotor leftEncoder0, rightEncoder0, frontEncoder0;
+    private List<DcMotor> motors;
 
     private IMUBufferReader imuReader;
     Pose2d poseEstimate_new = new Pose2d(0, 0, 0);
@@ -61,16 +65,22 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
                 new Pose2d(1.0, -DriveConstantsPID.ODOMETRY_TRACK_WIDTH / 2, 0), // right
                 new Pose2d(DriveConstantsPID.ODOMERY_FORWARD_OFFSET, -0.7, Math.toRadians(90)) // front
         ));
-        hubMotors = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");  // TODO: Hub3???
-
-        leftEncoder = hardwareMap.get(ExpansionHubMotor.class, "leftIntake");
-        rightEncoder = hardwareMap.get(ExpansionHubMotor.class, "liftTwo");
-        frontEncoder = hardwareMap.get(ExpansionHubMotor.class, "rightIntake");
+        if (DriveConstantsPID.USING_BULK_READ) {
+            hubMotors = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");  // TODO: Hub3???
+            leftEncoder = hardwareMap.get(ExpansionHubMotor.class, "leftIntake");
+            rightEncoder = hardwareMap.get(ExpansionHubMotor.class, "liftTwo");
+            frontEncoder = hardwareMap.get(ExpansionHubMotor.class, "rightIntake");
+        }
+        else {
+            leftEncoder = hardwareMap.dcMotor.get("leftIntake");
+            rightEncoder = hardwareMap.dcMotor.get("liftTwo");
+            frontEncoder = hardwareMap.dcMotor.get("rightIntake");
+        }
         RobotLogger.dd(TAG, "StandardTrackingWheelLocalizer created");
 
         motors = Arrays.asList(leftEncoder, rightEncoder, frontEncoder);
 
-        for (ExpansionHubMotor motor : motors) {
+        for (DcMotor motor : motors) {
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
         imuReader = new IMUBufferReader(hardwareMap);
@@ -86,16 +96,26 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
-        RobotLogger.dd(TAG, "to getOdomWheelPositions");
-        RevBulkData bulkData = hubMotors.getBulkInputData();
-        if (bulkData == null) {
-            RobotLogger.dd(TAG, "bulk data = null");
-            return Arrays.asList(0.0, 0.0, 0.0, 0.0);
-        }
+        int x, y, z;
+        RobotLogger.dd(TAG, "to getOdomWheelPositions (bulk? %d)", DriveConstantsPID.USING_BULK_READ);
 
-        int x = bulkData.getMotorCurrentPosition(leftEncoder);
-        int y = bulkData.getMotorCurrentPosition(rightEncoder);
-        int z = bulkData.getMotorCurrentPosition(frontEncoder);
+        if (DriveConstantsPID.USING_BULK_READ) {
+            RevBulkData bulkData = hubMotors.getBulkInputData();
+            if (bulkData == null) {
+                RobotLogger.dd(TAG, "bulk data = null");
+                return Arrays.asList(0.0, 0.0, 0.0, 0.0);
+            }
+
+            x = bulkData.getMotorCurrentPosition(leftEncoder);
+            y = bulkData.getMotorCurrentPosition(rightEncoder);
+            z = bulkData.getMotorCurrentPosition(frontEncoder);
+        }
+        else
+        {
+            x = leftEncoder.getCurrentPosition();
+            y = rightEncoder.getCurrentPosition();
+            z = frontEncoder.getCurrentPosition();
+        }
         RobotLogger.dd(TAG, "getOdomWheelPositions");
         //RobotLogger.dd(TAG, "leftEncoder: " + x);
         //RobotLogger.dd(TAG, "rightEncoder: " + y);

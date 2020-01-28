@@ -109,7 +109,7 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
     Deadline ledCycleDeadline;
     Deadline gamepadRateLimit;
 
-    DigitalChannel blockbutton; // Hardware Device Object
+   // DigitalChannel blockbutton; // Hardware Device Object
 
 
     protected enum DisplayKind {
@@ -148,7 +148,7 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
         Top_Sensor_Front = hardwareMap.get(DigitalChannel.class, "Top_Sensor_Front");
         bottom_touch = hardwareMap.get(DigitalChannel.class, "bottom_touch");
         top_touch = hardwareMap.get(DigitalChannel.class, "top_touch");
-        blockbutton = hardwareMap.get(DigitalChannel.class, "blockbutton");
+       // blockbutton = hardwareMap.get(DigitalChannel.class, "blockbutton");
 
 
         lift_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -201,7 +201,7 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
         patternName = telemetry.addData("Pattern: ", pattern.toString());
 
         // set the digital channel to input.
-        blockbutton.setMode(DigitalChannel.Mode.INPUT);
+      //  blockbutton.setMode(DigitalChannel.Mode.INPUT);
 
         telemetry.addData("Single Cycle", "Incomplete");
         telemetry.update();
@@ -215,7 +215,7 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
         while (opModeIsActive()) {
 
 
-            if (blockbutton.getState() == true) {
+          /*  if (blockbutton.getState() == true) {
                 telemetry.addData("Digital Touch", "Is Not Pressed");
                 //set color black
                 pattern = com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.BLACK;
@@ -228,6 +228,8 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
             }
             blinkinLedDriver.setPattern(pattern);
             //telemetry.update();
+
+           */
 
         /*
         if (displayKind == DisplayKind.AUTO) {
@@ -416,59 +418,63 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
             rear_right.setPower(rightPower);
         } else if (gamepad1.right_stick_x < -0.4 && gamepad1.right_stick_y < 0) {
             telemetry.addData("DriveTrain", "Up and Left");
+            front_left.setPower(-(0.25 + front_left_modifier));
+            rear_left.setPower((1 + rear_left_modifier));
+            front_right.setPower((1 + front_right_modifier));
+            rear_right.setPower(-(0.25 + rear_right_modifier));
+           /*
             front_left.setPower((1 + front_left_modifier));
             rear_left.setPower(-(1 + rear_left_modifier));
             front_right.setPower(-(1 + front_right_modifier));
             rear_right.setPower((1 + rear_right_modifier));
-
-           /* front_left.setPower(-(0.5 + front_left_modifier));
-            rear_left.setPower((1 + rear_left_modifier));
-            front_right.setPower((1 + front_right_modifier));
-            rear_right.setPower(-(0.5 + rear_right_modifier));
 
             */
 
         } else if (gamepad1.right_stick_x > 0.4 && gamepad1.right_stick_y < 0) {
             telemetry.addData("DriveTrain", "Up and Right");
-            front_left.setPower(-(1 + front_left_modifier));
-            rear_left.setPower((1 + rear_left_modifier));
-            front_right.setPower((1 + front_right_modifier));
-            rear_right.setPower(-(1 + rear_right_modifier));
 
-            /*front_left.setPower((1 + front_left_modifier));
-            rear_left.setPower(-(.5 + rear_left_modifier));
-            front_right.setPower(-(.5 + front_right_modifier));
-            rear_right.setPower((1 + rear_right_modifier));
-
-             */
-
-        } else if (gamepad1.right_stick_x < -0.4 && gamepad1.right_stick_y > 0) {
-            telemetry.addData("DriveTrain", "Down and Left");
             front_left.setPower((1 + front_left_modifier));
-            rear_left.setPower(-(1 + rear_left_modifier));
-            front_right.setPower(-(1 + front_right_modifier));
+            rear_left.setPower(-(.25 + rear_left_modifier));
+            front_right.setPower(-(.25 + front_right_modifier));
             rear_right.setPower((1 + rear_right_modifier));
 
             /*front_left.setPower(-(1 + front_left_modifier));
-            rear_left.setPower((0.5 + rear_left_modifier));
-            front_right.setPower((0.5 + front_right_modifier));
+            rear_left.setPower((1 + rear_left_modifier));
+            front_right.setPower((1 + front_right_modifier));
             rear_right.setPower(-(1 + rear_right_modifier));
+             */
+
+
+
+
+        } else if (gamepad1.right_stick_x < -0.4 && gamepad1.right_stick_y > 0) {
+            telemetry.addData("DriveTrain", "Down and Left");
+
+            front_left.setPower(-(1 + front_left_modifier));
+            rear_left.setPower((0.2 + rear_left_modifier));
+            front_right.setPower((0.2 + front_right_modifier));
+            rear_right.setPower(-(1 + rear_right_modifier));
+
+                /*front_left.setPower((1 + front_left_modifier));
+            rear_left.setPower(-(1 + rear_left_modifier));
+            front_right.setPower(-(1 + front_right_modifier));
+            rear_right.setPower((1 + rear_right_modifier));
 
              */
 
         } else if (gamepad1.right_stick_x > 0.4 && gamepad1.right_stick_y > 0) {
             telemetry.addData("DriveTrain", "Down and Right");
-            front_left.setPower(-(1 + front_left_modifier));
+
+            front_left.setPower((0.25 + front_left_modifier));
+            rear_left.setPower(-(1 + rear_left_modifier));
+            front_right.setPower(-(1 + front_right_modifier));
+            rear_right.setPower((0.25 + rear_right_modifier));
+
+            /*front_left.setPower(-(1 + front_left_modifier));
             rear_left.setPower((1 + rear_left_modifier));
             front_right.setPower((1 + front_right_modifier));
             rear_right.setPower(-(1 + rear_right_modifier));
-
-           /* front_left.setPower((0.5 + front_left_modifier));
-            rear_left.setPower(-(1 + rear_left_modifier));
-            front_right.setPower(-(1 + front_right_modifier));
-            rear_right.setPower((0.5 + rear_right_modifier));
-
-            */
+             */
 
         } else if (gamepad1.right_stick_y > 0) {
             telemetry.addData("DriveTrain", "Moving Backwards");
@@ -485,28 +491,28 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
             front_right.setPower((1 + front_right_modifier));
             rear_right.setPower((1 + rear_right_modifier));
 
-        } else if (gamepad1.right_stick_x > 0) {
+        } else if (gamepad1.right_stick_x < 0) {
             telemetry.addData("DriveTrain", "Strafing Right");
             front_left.setPower(-(1 + front_left_modifier));
             rear_left.setPower((1 + rear_left_modifier));
             front_right.setPower((1 + front_right_modifier));
             rear_right.setPower(-(1 + rear_right_modifier));
 
-        } else if (gamepad1.right_stick_x < 0) {
+        } else if (gamepad1.right_stick_x > 0) {
             telemetry.addData("DriveTrain", "Strafing Left");
             front_left.setPower((1 + front_left_modifier));
             rear_left.setPower(-(1 + rear_left_modifier));
             front_right.setPower(-(1 + front_right_modifier));
             rear_right.setPower((1 + rear_right_modifier));
 
-        } else if (gamepad1.dpad_right) {
+        } else if (gamepad1.dpad_left) {
             telemetry.addData("DriveTrain", "Strafing Right");
             front_left.setPower(-(1 + front_left_modifier));
             rear_left.setPower((1 + rear_left_modifier));
             front_right.setPower((1 + front_right_modifier));
             rear_right.setPower(-(1 + rear_right_modifier));
 
-        } else if (gamepad1.dpad_left) {
+        } else if (gamepad1.dpad_right) {
             telemetry.addData("DriveTrain", "Strafing Left");
             front_left.setPower((1 + front_left_modifier));
             rear_left.setPower(-(1 + rear_left_modifier));

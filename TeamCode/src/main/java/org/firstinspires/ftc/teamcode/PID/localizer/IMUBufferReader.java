@@ -109,10 +109,10 @@ public class IMUBufferReader implements Runnable{
                 pingPongBuffer[latestIndex] = t;
                 mutex.release();
                 Thread.sleep((long) DriveConstantsPID.imuPollingInterval);
-            } catch (Exception exc) {
-                RobotLogger.dd(TAG, "IMU read failure");
+            } catch (Throwable e) {
                 keepRunning = false;
-                System.out.println(exc);
+                RobotLogger.dd(TAG, "IMU read failure");
+                System.out.println(e);
             }
         }
         RobotLogger.dd(TAG, "IMU thread stops");

@@ -181,4 +181,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         lastIMU = t;
         return t;
     }
+    public void finalize() throws Throwable {
+        imuReader.stop();
+    }
 }

@@ -66,7 +66,7 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
                 new Pose2d(DriveConstantsPID.ODOMERY_FORWARD_OFFSET, -0.7, Math.toRadians(90)) // front
         ));
         if (DriveConstantsPID.USING_BULK_READ) {
-            hubMotors = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 3");  // TODO: Hub3???
+            hubMotors = hardwareMap.get(ExpansionHubEx.class, "ExpansionHub3");  // TODO: Hub3???
             leftEncoder = hardwareMap.get(ExpansionHubMotor.class, "leftIntake");
             rightEncoder = hardwareMap.get(ExpansionHubMotor.class, "liftTwo");
             frontEncoder = hardwareMap.get(ExpansionHubMotor.class, "rightIntake");

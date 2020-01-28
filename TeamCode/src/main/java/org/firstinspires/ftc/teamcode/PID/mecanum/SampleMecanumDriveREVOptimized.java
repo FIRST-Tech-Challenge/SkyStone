@@ -34,7 +34,7 @@ import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.getMotorVeloc
  * trajectory following performance with moderate additional complexity.
  */
 public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
-    private ExpansionHubEx hubMotors;
+    private ExpansionHubEx hubMotors, hubMotors0;
     private ExpansionHubMotor leftFront, leftRear, rightRear, rightFront;
     private List<ExpansionHubMotor> motors;
     private IMUBufferReader imuReader;
@@ -52,7 +52,8 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         // TODO: adjust the names of the following hardware devices to match your configuration
         // for simplicity, we assume that the desired IMU and drive motors are on the same hub
         // if your motors are split between hubs, **you will need to add another bulk read**
-        hubMotors = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");  // TODO: Hub3???
+        hubMotors = hardwareMap.get(ExpansionHubEx.class, "ExpansionHub2");  //
+        hubMotors0 = hardwareMap.get(ExpansionHubEx.class, "ExpansionHub3");  //
         imuReader = new IMUBufferReader(hardwareMap);
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
@@ -126,6 +127,15 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
+        RevBulkData bulkData0 = hubMotors0.getBulkInputData();
+        if (bulkData0 == null)
+        {
+            RobotLogger.dd(TAG, "bulk data = null");
+            return Arrays.asList(0.0, 0.0, 0.0, 0.0);
+        }
+        double t01 = bulkData0.getMotorCurrentPosition(motors.get(2));  // back right motor on a seperate hub!!!
+        double t02 = encoderTicksToInches(t01);
+
         RevBulkData bulkData = hubMotors.getBulkInputData();
         if (bulkData == null) {
             RobotLogger.dd(TAG, "bulk data = null");
@@ -133,16 +143,23 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         }
 
         List<Double> wheelPositions = new ArrayList<>();
+        double t1, t2;
         for (ExpansionHubMotor motor : motors) {
-            double t1 = bulkData.getMotorCurrentPosition(motor);
-            double t2 = encoderTicksToInches(t1);
-            RobotLogger.dd(TAG, "getWheelPositions: " + "position: " + Double.toString(t1) + " inches: " + Double.toString(t2));
+            if (motor == motors.get(2)) {
+                RobotLogger.dd(TAG, "getWheelPositions: " + "position: " + Double.toString(t01) + " inches: " + Double.toString(t02));
+                t2 = t02;
+            }
+            else {
+                t1 = bulkData.getMotorCurrentPosition(motor);
+                t2 = encoderTicksToInches(t1);
+                RobotLogger.dd(TAG, "getWheelPositions: " + "position: " + Double.toString(t1) + " inches: " + Double.toString(t2));
+            }
             wheelPositions.add(t2);
         }
 
         return wheelPositions;
     }
-
+    // TODO
     @Override
     public List<Double> getWheelVelocities() {
         RevBulkData bulkData = hubMotors.getBulkInputData();
@@ -187,5 +204,8 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         }
         lastIMU = t;
         return t;
+    }
+    public void finalize() throws Throwable {
+        imuReader.stop();
     }
 }

@@ -52,6 +52,7 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
+    private ElapsedTime craneSafetyTimer = new ElapsedTime();
     private DcMotor front_left = null;
     private DcMotor rear_left = null;
     private DcMotor front_right = null;
@@ -328,7 +329,7 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
         }
     }
 
-
+    private static int CraneSafetyTimeout = 2000;
     public void UpdateCrane() {
 //Crane
 //            if (gamepad2.dpad_left && Top_Sensor_Rear.getState()) {
@@ -346,9 +347,10 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
 //
         if (gamepad2.dpad_left) {
             crane_state = 1;
-
+            craneSafetyTimer.reset();
         } else if (gamepad2.dpad_right) {
             crane_state = 2;
+            craneSafetyTimer.reset();
         } else if (gamepad2.dpad_down) {
             crane_state = 0;
         }
@@ -357,10 +359,10 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
         if (crane_state == 0) {
             top_motor.setPower(0);
 
-        } else if (crane_state == 1 && Top_Sensor_Rear.getState()) {
+        } else if (crane_state == 1 && Top_Sensor_Rear.getState() && craneSafetyTimer.milliseconds() < CraneSafetyTimeout) {
             top_motor.setPower(1);
 
-        } else if (crane_state == 2 && Top_Sensor_Front.getState()) {
+        } else if (crane_state == 2 && Top_Sensor_Front.getState() && craneSafetyTimer.milliseconds() < CraneSafetyTimeout) {
             top_motor.setPower(-1);
 
         } else {

@@ -34,7 +34,7 @@ public class ManualParamTest extends LinearOpMode {
     private final int polling_interval = 500;
     private String TAG = "ManualParamTest";
     Localizer localizer = null;
-    IMUBufferReader imu;
+    IMUBufferReader imu = IMUBufferReader.getSingle_instance(hardwareMap);
 
     @Override
     public void runOpMode() throws InterruptedException {

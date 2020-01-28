@@ -57,6 +57,7 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
     private List<DcMotor> motors;
 
     private IMUBufferReader imuReader;
+
     Pose2d poseEstimate_new = new Pose2d(0, 0, 0);
 
     public StandardTrackingWheelLocalizer(HardwareMap hardwareMap) {
@@ -83,7 +84,7 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
         for (DcMotor motor : motors) {
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
-        imuReader = new IMUBufferReader(hardwareMap);
+        imuReader = IMUBufferReader.getSingle_instance(hardwareMap);
     }
 
     public static double encoderTicksToInches(int ticks) {
@@ -158,5 +159,8 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
         }
         RobotLogger.dd(TAG, "poseEstimate: "+Double.toString(poseEstimate_new.getX()) + ", " + Double.toString(poseEstimate_new.getY()) + ", " +
                 Double.toString(poseEstimate_new.getHeading()));
+    }
+    public void finalize() throws Throwable {
+        imuReader.cleanUP();
     }
 }

@@ -55,7 +55,6 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
         // TODO: adjust the names of the following hardware devices to match your configuration
-        imuReader = new IMUBufferReader(hardwareMap);
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
@@ -89,6 +88,9 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+
+        imuReader = IMUBufferReader.getSingle_instance(hardwareMap);
+
         if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL == true) {
             RobotLogger.dd(TAG, "to setLocalizer to StandardTrackingWheelLocalizer");
             setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
@@ -182,6 +184,6 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         return t;
     }
     public void finalize() throws Throwable {
-        imuReader.stop();
+        imuReader.cleanUP();
     }
 }

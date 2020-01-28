@@ -32,11 +32,11 @@ import java.util.List;
 @Config
 public class DriveConstantsPID {
 
-    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = false;
+    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = true;
 
     public static boolean RUN_USING_ODOMETRY_WHEEL = true;
     public static boolean RUN_USING_IMU_LOCALIZER = true;
-    public static boolean BRAKE_ON_ZERO = false;
+    public static boolean BRAKE_ON_ZERO = true;
     public static boolean USING_BULK_READ = true;
     public static boolean USING_STRAFE_DIAGNAL = true;
     public static double odoEncoderTicksPerRev = 1565.0;

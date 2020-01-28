@@ -18,15 +18,15 @@ public class IMUBufferReader implements Runnable{
     private BNO055IMU.Parameters parameters;
     private static IMUBufferReader single_instance = null;
     private Semaphore mutex = new Semaphore(1);
-    private boolean keepRunning = true;
     private String TAG = "IMUBufferReader";
 
+    private static boolean keepRunning = true;
     private boolean IMUReaderRunning = false;
     private float[] pingPongBuffer = new float[2];
     private int latestIndex = 0;
     Thread thread;
 
-    public IMUBufferReader(HardwareMap hardwareMap) {
+    private IMUBufferReader(HardwareMap hardwareMap) {
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
         // TODO: adjust the names of the following hardware devices to match your configuration
@@ -34,22 +34,23 @@ public class IMUBufferReader implements Runnable{
         parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         resetIMU();
+        while(!imu.isGyroCalibrated())
+        {
+            RobotLogger.dd(TAG, "IMU calibrating");
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
         thread = new Thread(this);
         thread.start();
         IMUReaderRunning = true;
-    }
-    public void finalize() throws Throwable{
-        stop();
-        IMUReaderRunning = false;
+        RobotLogger.dd(TAG, "IMU reader created");
     }
 
-    public boolean resetIMU()
-    {
-        return(imu.initialize(parameters));
-    }
-
-    public static IMUBufferReader getSingle_instance(HardwareMap hardwareMap)
+    synchronized  public static IMUBufferReader getSingle_instance(HardwareMap hardwareMap)
     {
         if (single_instance == null) {
             single_instance = new IMUBufferReader(hardwareMap);
@@ -57,11 +58,35 @@ public class IMUBufferReader implements Runnable{
 
         return single_instance;
     }
+
+    synchronized  public static void cleanUP()    {
+        stop_running();
+        single_instance = null;
+    }
+
+    public void finalize() throws Throwable{
+        IMUBufferReader.stop_running();
+    }
+
+    private static void stop_running()
+    {
+        keepRunning = false;
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    private boolean resetIMU()
+    {
+        return(imu.initialize(parameters));
+    }
+
     public float getLatestIMUData()
     {
         if (IMUReaderRunning == false)
         {
-            RobotLogger.dd(TAG, "IMU reader restarted");
+            RobotLogger.dd(TAG, "IMU reader started");
             thread = new Thread(this);
             thread.start();
             IMUReaderRunning = true;
@@ -78,28 +103,18 @@ public class IMUBufferReader implements Runnable{
 
         return t;
     }
-    public void stop()
-    {
-        keepRunning = false;
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+
     public void run(){
-        while (keepRunning) {
+        while (IMUBufferReader.keepRunning) {
             try {
-                float t = imu.getAngularOrientation().firstAngle;
                 if (imu.getSystemError() != BNO055IMU.SystemError.NO_ERROR)
                 {
                     keepRunning = false;
                     RobotLogger.dd(TAG, "IMU error, stop thread");
                     continue;
                 }
-                if (!imu.isGyroCalibrated()) {
-                    RobotLogger.dd(TAG, "GRYO not calibrated");
-                }
+                float t = imu.getAngularOrientation().firstAngle;
+
                 mutex.acquire();
 
                 if (latestIndex == 0)
@@ -108,8 +123,10 @@ public class IMUBufferReader implements Runnable{
                     latestIndex = 0;
                 pingPongBuffer[latestIndex] = t;
                 mutex.release();
+
                 Thread.sleep((long) DriveConstantsPID.imuPollingInterval);
             } catch (Throwable e) {
+                IMUReaderRunning = false;
                 keepRunning = false;
                 RobotLogger.dd(TAG, "IMU read failure");
                 System.out.println(e);

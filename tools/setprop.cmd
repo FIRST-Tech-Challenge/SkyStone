@@ -1,11 +1,13 @@
+adb shell setprop debug.ftc.logging 1
+adb shell setprop debug.ftc.bulk 1
 adb shell setprop debug.ftc.imu 1
+adb shell setprop debug.ftc.imuInterval 10
 adb shell setprop debug.ftc.odom 1
 adb shell setprop debug.ftc.vuforia 0
 adb shell setprop debug.ftc.brake 0
-adb shell setprop debug.ftc.bulk 0
 adb shell setprop debug.ftc.recreateDrv 0
-adb shell setprop debug.ftc.drvCorrect 0
-adb shell setprop debug.ftc.distance 60
+adb shell setprop debug.ftc.drvCorrect 1
+adb shell setprop debug.ftc.distance 48
 adb shell setprop debug.ftc.distance0 24
 adb shell setprop debug.ftc.strafeDiag 1
 adb shell setprop debug.ftc.trackwidth 14.2

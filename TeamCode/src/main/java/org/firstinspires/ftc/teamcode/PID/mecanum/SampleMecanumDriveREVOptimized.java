@@ -54,7 +54,6 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         // if your motors are split between hubs, **you will need to add another bulk read**
         hubMotors = hardwareMap.get(ExpansionHubEx.class, "ExpansionHub2");  //
         hubMotors0 = hardwareMap.get(ExpansionHubEx.class, "ExpansionHub3");  //
-        imuReader = new IMUBufferReader(hardwareMap);
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
@@ -88,6 +87,9 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
         //setLocalizer(new TrackingWheelLocalizerWithIMU(hardwareMap, imu));
+
+        imuReader = IMUBufferReader.getSingle_instance(hardwareMap);
+
         if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
             RobotLogger.dd(TAG, "to setLocalizer to StandardTrackingWheelLocalizer");
             setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
@@ -183,12 +185,13 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
     public void setMotorPowers(double v, double v1, double v2, double v3) {
         RobotLogger.dd(TAG, "setMotorPowers "+"leftFront: " + Double.toString(v));
         leftFront.setPower(v);
-        leftRear.setPower(v1);
-        rightRear.setPower(v2);
-        rightFront.setPower(v3);
         RobotLogger.dd(TAG, "setMotorPowers "+"leftRear: "+Double.toString(v1));
+        leftRear.setPower(v1);
         RobotLogger.dd(TAG, "setMotorPowers "+"rightRear: "+Double.toString(v2));
+        rightRear.setPower(v2);
         RobotLogger.dd(TAG, "setMotorPowers"+"rightFront: "+Double.toString(v3));
+        rightFront.setPower(v3);
+        RobotLogger.dd(TAG, "setMotorPowers"+" done: ");
     }
 
     @Override
@@ -206,6 +209,6 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         return t;
     }
     public void finalize() throws Throwable {
-        imuReader.stop();
+        imuReader.cleanUP();
     }
 }

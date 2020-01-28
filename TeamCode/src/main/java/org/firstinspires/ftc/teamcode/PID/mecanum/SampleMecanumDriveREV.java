@@ -78,8 +78,8 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         }
 
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
-            RobotLogger.dd(TAG, "MOTOR_VELO_PID!=0, to setPIDCoefficients " + Double.toString(MOTOR_VELO_PID.kP)
-                    + " " + Double.toString(MOTOR_VELO_PID.kI) + " " + Double.toString(MOTOR_VELO_PID.kD));
+            RobotLogger.dd(TAG, "MOTOR_VELO_PID!=0, to setPIDCoefficients %f, %f, %f" , MOTOR_VELO_PID.kP,
+                    MOTOR_VELO_PID.kI, MOTOR_VELO_PID.kD);
             setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
@@ -154,17 +154,6 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         return wheelVelocities;
     }
 
-    @Override
-    public List<Double> getMotorPowers(List<DcMotorEx> motors) {
-        List<Double> motorPowers = new ArrayList<>();
-        for (DcMotorEx motor : motors) {
-            double t = motor.getPower();
-            RobotLogger.dd(TAG, "getMotorPowers: " + "power: " + Double.toString(t));
-
-            motorPowers.add(t);
-        }
-        return motorPowers;
-    }
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {

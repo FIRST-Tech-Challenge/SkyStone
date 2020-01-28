@@ -71,10 +71,6 @@ public class ManualParamTest extends LinearOpMode {
             RobotLogger.dd(TAG, "wheel positions");
             drive.print_list_double(positions);
 
-            List<Double> w_powers = drive.getMotorPowers(motors);
-            RobotLogger.dd(TAG, "wheel powers");
-            drive.print_list_double(w_powers);
-
             double heading = drive.getExternalHeading();
             RobotLogger.dd(TAG, "getExternalHeading: x " + heading);
 

@@ -156,22 +156,12 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
             double t1 = bulkData.getMotorVelocity(motor);
             double t2 = encoderTicksToInches(t1);
             RobotLogger.dd(TAG, "getWheelVelocities: " + "velocity: " + Double.toString(t1) + " inches: " + Double.toString(t2));
-            
+
             wheelVelocities.add(t2);
         }
         return wheelVelocities;
     }
-    @Override
-    public List<Double> getMotorPowers(List<DcMotorEx> motors) {
-        List<Double> motorPowers = new ArrayList<>();
-        for (DcMotorEx motor : motors)  {
-            double t = motor.getPower();
-            RobotLogger.dd(TAG, "getMotorPowers: " + "power: " + Double.toString(t));
 
-            motorPowers.add(t);
-        }
-        return motorPowers;
-    }
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
         RobotLogger.dd(TAG, "setMotorPowers "+"leftFront: " + Double.toString(v));

@@ -105,18 +105,7 @@ public class SampleMecanumDriveMR extends SampleMecanumDriveBase {
         }
         return wheelPositions;
     }
-    @Override
-    public List<Double> getMotorPowers(List<DcMotorEx> motors) {
-        List<Double> wheelPowers = new ArrayList<>();
-        for (DcMotorEx motor : motors) {
-            double t = motor.getPower();
 
-            RobotLogger.dd(TAG, "getMotorPowers: " + "power: " + Double.toString(t));
-
-            wheelPowers.add(t);
-        }
-        return wheelPowers;
-    }
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
         leftFront.setPower(v);

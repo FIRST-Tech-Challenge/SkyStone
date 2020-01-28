@@ -66,7 +66,7 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
                 new Pose2d(DriveConstantsPID.ODOMERY_FORWARD_OFFSET, -0.7, Math.toRadians(90)) // front
         ));
         if (DriveConstantsPID.USING_BULK_READ) {
-            hubMotors = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");  // TODO: Hub3???
+            hubMotors = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 3");  // TODO: Hub3???
             leftEncoder = hardwareMap.get(ExpansionHubMotor.class, "leftIntake");
             rightEncoder = hardwareMap.get(ExpansionHubMotor.class, "liftTwo");
             frontEncoder = hardwareMap.get(ExpansionHubMotor.class, "rightIntake");
@@ -97,7 +97,7 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
     @Override
     public List<Double> getWheelPositions() {
         int x, y, z;
-        RobotLogger.dd(TAG, "to getOdomWheelPositions (bulk? %d)", DriveConstantsPID.USING_BULK_READ);
+        RobotLogger.dd(TAG, "to getOdomWheelPositions (bulk? %d)", (DriveConstantsPID.USING_BULK_READ==true?1:0));
 
         if (DriveConstantsPID.USING_BULK_READ) {
             RevBulkData bulkData = hubMotors.getBulkInputData();
@@ -106,14 +106,14 @@ public class  StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer
                 return Arrays.asList(0.0, 0.0, 0.0, 0.0);
             }
 
-            x = bulkData.getMotorCurrentPosition(leftEncoder);
+            x = bulkData.getMotorCurrentPosition(leftEncoder) * (-1);
             y = bulkData.getMotorCurrentPosition(rightEncoder);
             z = bulkData.getMotorCurrentPosition(frontEncoder);
         }
         else
         {
-            x = leftEncoder.getCurrentPosition();
-            y = rightEncoder.getCurrentPosition();
+            x = leftEncoder.getCurrentPosition() * (-1);
+            y = rightEncoder.getCurrentPosition() ;
             z = frontEncoder.getCurrentPosition();
         }
         RobotLogger.dd(TAG, "getOdomWheelPositions");

@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.localization.Localizer;
 
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.RobotLogger;
+import org.firstinspires.ftc.teamcode.PID.localizer.IMUBufferReader;
 import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
@@ -26,13 +27,15 @@ import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.RUN_USING_ENC
  * This is a simple routine to test turning capabilities.
  */
 @Config
-@Autonomous(group = "drive")
+@Autonomous(name = "ManualParamTest", group = "drive")
 public class ManualParamTest extends LinearOpMode {
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
-    private final int polling_interval = 200;
+    private final int polling_interval = 500;
     private String TAG = "ManualParamTest";
     Localizer localizer = null;
+    IMUBufferReader imu;
+
     @Override
     public void runOpMode() throws InterruptedException {
         DriveConstantsPID.updateConstantsFromProperties();
@@ -84,6 +87,8 @@ public class ManualParamTest extends LinearOpMode {
             RobotLogger.dd(TAG, "yError " + error.getY());
             RobotLogger.dd(TAG, "headingError "  + error.getHeading());
             Thread.sleep(polling_interval);
-        }
+        };
+        imu = IMUBufferReader.getSingle_instance(hardwareMap);
+        imu.stop();
     }
 }

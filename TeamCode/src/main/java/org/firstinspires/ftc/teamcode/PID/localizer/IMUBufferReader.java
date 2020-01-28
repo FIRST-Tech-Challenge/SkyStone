@@ -91,6 +91,15 @@ public class IMUBufferReader implements Runnable{
         while (keepRunning) {
             try {
                 float t = imu.getAngularOrientation().firstAngle;
+                if (imu.getSystemError() != BNO055IMU.SystemError.NO_ERROR)
+                {
+                    keepRunning = false;
+                    RobotLogger.dd(TAG, "IMU error, stop thread");
+                    continue;
+                }
+                if (!imu.isGyroCalibrated()) {
+                    RobotLogger.dd(TAG, "GRYO not calibrated");
+                }
                 mutex.acquire();
 
                 if (latestIndex == 0)
@@ -100,7 +109,9 @@ public class IMUBufferReader implements Runnable{
                 pingPongBuffer[latestIndex] = t;
                 mutex.release();
                 Thread.sleep((long) DriveConstantsPID.imuPollingInterval);
-            } catch (InterruptedException exc) {
+            } catch (Exception exc) {
+                RobotLogger.dd(TAG, "IMU read failure");
+                keepRunning = false;
                 System.out.println(exc);
             }
         }

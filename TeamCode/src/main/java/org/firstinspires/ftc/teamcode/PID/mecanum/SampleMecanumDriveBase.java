@@ -199,6 +199,7 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     }
 
     public void update() {
+        RobotLogger.dd(TAG, "roadrunner control loop starts");
         TimingLogger timings = new TimingLogger(TAG, "roadrunner control loop");
         updatePoseEstimate();
         timings.addSplit("updatePoseEstimate");

@@ -31,19 +31,15 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-
-import java.util.List;
-
 
 /**
  * This file contains basic code to run a 4 wheeled Mecanum wheel setup. The d-pad controls
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 
-@Autonomous(name = "Test_Encoder_DriveFunction", group = "Linear Opmode")
+@Autonomous(name = "BridgeOnly", group = "Linear Opmode")
 //@Disabled
-public class Skystone_Test_EncoderDriveFunction extends BaseAutoOpMode {
+public class Skystone_Autonomous_BridgeOnly extends BaseAutoOpMode {
 
 
     @Override
@@ -61,7 +57,11 @@ public class Skystone_Test_EncoderDriveFunction extends BaseAutoOpMode {
         runtime.reset();
         resetAngle();
 
-        EncoderDrive(DriveDirection.BACKWARD, 2000);
+        UnfoldRobot();
+
+        PrepareForBridge();
+
+        EncoderDrive(DriveDirection.FORWARD, 700);
 
 
     }

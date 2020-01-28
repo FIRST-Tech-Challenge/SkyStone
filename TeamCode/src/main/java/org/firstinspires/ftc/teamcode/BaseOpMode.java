@@ -393,15 +393,42 @@ public abstract class BaseOpMode extends LinearOpMode {
         }
 
         if (direction == DriveDirection.STRAFE_LEFT) {
+            SetDriveMode(Mode.RUN_WITHOUT_ENCODERS);
 
 
-            // NEED TO ASK DOUG FOR POWER VALUES
+            while(front_left.getCurrentPosition() > -EncoderValue) {
+                front_left.setPower(-1);
+                front_right.setPower(1);
+                rear_left.setPower(1);
+                rear_right.setPower(-1);
+                sleep(1);
+
+                telemetry.addData("Encoder", front_left.getCurrentPosition());
+                telemetry.update();
+            }
+
+            SetDriveMode(Mode.STOP_RESET_ENCODER);
+
+
 
         }
         if (direction == DriveDirection.STRAFE_RIGHT) {
+            SetDriveMode(Mode.RUN_WITHOUT_ENCODERS);
 
 
-            // NEED TO ASK DOUG FOR POWER VALUES
+            while(front_left.getCurrentPosition() < EncoderValue) {
+                front_left.setPower(1);
+                front_right.setPower(-1);
+                rear_left.setPower(-1);
+                rear_right.setPower(1);
+                sleep(1);
+
+                telemetry.addData("Encoder", front_left.getCurrentPosition());
+                telemetry.update();
+            }
+
+            SetDriveMode(Mode.STOP_RESET_ENCODER);
+
 
         }
 

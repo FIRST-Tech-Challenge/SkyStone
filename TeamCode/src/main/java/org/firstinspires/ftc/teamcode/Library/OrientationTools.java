@@ -45,9 +45,6 @@ public class OrientationTools {
         this.opMode = opMode;
     }
 
-    public OrientationTools(HardwareChassis hwchss) {
-        this.hwchss = hwchss;
-    }
     /**
      * Used to set all motors at once
      * @param SpeedFrontLeft Speed of FrontLeftMotor
@@ -143,88 +140,8 @@ public class OrientationTools {
         op.msStuckDetectLoop = msStuckinLoopStart;
     }
 
-    public void driveSidewardEncoder(int[] cm, double power, double smoothness, BNO055IMU imu, OmniWheel wheel, OpMode op){
-        double current = this.getDegree360(imu);
-        double offset;
-        int msStuckinLoopStart = op.msStuckDetectLoop;
-        op.msStuckDetectLoop = 1073741824;
-        int[] encValuesStart;
-        encValuesStart = new int[]{
-                              wheel.robot.motor_front_left.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
-                              wheel.robot.motor_front_right.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
-                              wheel.robot.motor_rear_left.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
-                              wheel.robot.motor_rear_right.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM)};
-        int[] encValuesCurrent;
-        boolean doit = true;
-        while(doit){
-            op.telemetry.addData("rr",wheel.robot.motor_rear_right.getCurrentPosition());
-            op.telemetry.addData("rl",wheel.robot.motor_rear_left.getCurrentPosition());
-            op.telemetry.addData("fr",wheel.robot.motor_front_right.getCurrentPosition());
-            op.telemetry.addData("fl",wheel.robot.motor_front_left.getCurrentPosition());
-            op.telemetry.update();
-            encValuesCurrent = new int[]{
-                    wheel.robot.motor_front_left.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
-                    wheel.robot.motor_front_right.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
-                    wheel.robot.motor_rear_left.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
-                    wheel.robot.motor_rear_right.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM)};
-            if(     (encValuesCurrent[0] > encValuesStart[0]+cm[0])||
-                    (encValuesCurrent[1] > encValuesStart[1]+cm[1])||
-                    (encValuesCurrent[2] > encValuesStart[3]+cm[3])||
-                    (encValuesCurrent[3] > encValuesStart[3]+cm[3])){doit = false; op.telemetry.addData("ewrewrewrew","AEFAWERFRAWRAWRAR"); op.telemetry.update(); throw new Error("JAJAJAJAJAJAJA");}
-            offset  = this.getDegree360(imu) - current;
-            wheel.setMotors(0, power, offset / smoothness);
-        }
-        wheel.setMotors(0,0,0);
-        op.msStuckDetectLoop = msStuckinLoopStart;
-    }
 
-
-    public void driveSidewardEncoderV2(int cm, double power, double smoothness, BNO055IMU imu, OmniWheel wheel, OpMode op,double current){
-        double offset;
-        int msStuckinLoopStart = op.msStuckDetectLoop;
-        op.msStuckDetectLoop = 1073741824;
-
-
-
-        double[] wheelSpeeds = OmniWheel.calculate( WHEEL_DIAMETER_CMS / 2, 38, 24, 0, Math.abs(cm)/cm, 0);
-
-        // Determine new target position
-        double[] targets = {
-                wheel.robot.motor_front_left.getCurrentPosition() + wheelSpeeds[0] * (COUNTS_PER_CM * Math.abs(cm)),
-                wheel.robot.motor_front_right.getCurrentPosition() + wheelSpeeds[1] * (COUNTS_PER_CM * Math.abs(cm)),
-                wheel.robot.motor_rear_left.getCurrentPosition() + wheelSpeeds[2] * (COUNTS_PER_CM * Math.abs(cm)),
-                wheel.robot.motor_rear_right.getCurrentPosition() + wheelSpeeds[3] * (COUNTS_PER_CM * Math.abs(cm))};
-
-
-
-
-
-        int[] encValuesCurrent;
-        boolean doit = true;
-        while(doit){
-            op.telemetry.addData("rr",wheel.robot.motor_rear_right.getCurrentPosition());
-            op.telemetry.addData("rl",wheel.robot.motor_rear_left.getCurrentPosition());
-            op.telemetry.addData("fr",wheel.robot.motor_front_right.getCurrentPosition());
-            op.telemetry.addData("fl",wheel.robot.motor_front_left.getCurrentPosition());
-            op.telemetry.update();
-            encValuesCurrent = new int[]{
-                    wheel.robot.motor_front_left.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
-                    wheel.robot.motor_front_right.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
-                    wheel.robot.motor_rear_left.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM),
-                    wheel.robot.motor_rear_right.getCurrentPosition()*(int)(ControlledExtender.COUNTS_PER_CM)};
-            if(     (Math.abs(targets[0]) > Math.abs(encValuesCurrent[0]))||
-                    (Math.abs(targets[1]) > Math.abs(encValuesCurrent[1]))||
-                    (Math.abs(targets[2]) > Math.abs(encValuesCurrent[2]))||
-                    (Math.abs(targets[3]) > Math.abs(encValuesCurrent[3]))){doit = false; op.telemetry.addData("ewrewrewrew","AEFAWERFRAWRAWRAR"); op.telemetry.update(); throw new Error("JAJAJAJAJAJAJA");}
-            offset  = this.getDegree360(imu) - current;
-            wheel.setMotors(0, power, offset / smoothness);
-        }
-        wheel.setMotors(0,0,0);
-        op.msStuckDetectLoop = msStuckinLoopStart;
-    }
-
-
-    public void simeoncopytry(double distanceForward, double distanceSideways, double speed,OmniWheel wheel, double startPos, BNO055IMU imu, double smoothness) {
+    public void simeoncopytry(OpMode op,double distanceForward, double distanceSideways, double speed,OmniWheel wheel, double startPos, BNO055IMU imu, double smoothness) {
         double maxDistance = Math.max(Math.abs(distanceForward), Math.abs(distanceSideways));
 
         double[] wheelSpeeds = OmniWheel.calculate(WHEEL_DIAMETER_CMS / 2, 38, 24, distanceForward / maxDistance, distanceSideways / maxDistance, 0);
@@ -250,15 +167,35 @@ public class OrientationTools {
         wheel.robot.motor_rear_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         wheel.robot.motor_rear_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        double offset;
-        while(wheel.robot.motor_front_right.isBusy()) {
+        double offset = 0;
+        while(wheel.robot.motor_front_right.isBusy() && wheel.robot.motor_front_left.isBusy() && wheel.robot.motor_rear_left.isBusy() && wheel.robot.motor_rear_right.isBusy()) {
             offset  = this.getDegree360(imu) - startPos;
             // reset the timeout time and start motion.
-            wheel.robot.motor_front_left.setPower(wheelSpeeds[0] * speed + offset/smoothness);
-            wheel.robot.motor_front_right.setPower(wheelSpeeds[1] * speed + offset/smoothness);
-            wheel.robot.motor_rear_left.setPower(wheelSpeeds[2] * speed + offset/smoothness);
-            wheel.robot.motor_rear_right.setPower(wheelSpeeds[3] * speed + offset/smoothness);
+            //wheel.robot.motor_front_left.setPower(wheelSpeeds[0] * speed + offset/smoothness);
+            //wheel.robot.motor_front_right.setPower(wheelSpeeds[1] * speed + offset/smoothness);
+            //wheel.robot.motor_rear_left.setPower(wheelSpeeds[2] * speed + offset/smoothness);
+            //wheel.robot.motor_rear_right.setPower(wheelSpeeds[3] * speed + offset/smoothness);
+            op.telemetry.addData("dsfsdf",offset);
+            op.telemetry.update();
+            wheel.setMotors(0,speed,offset/smoothness);
         }
+
+
+        wheel.robot.motor_front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        wheel.robot.motor_front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        wheel.robot.motor_rear_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        wheel.robot.motor_rear_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        while(Math.abs(offset)>2 && opMode.opModeIsActive()){
+            offset  = this.getDegree360(imu) - startPos;
+            wheel.setMotors(0,0,offset/smoothness);
+            op.telemetry.addData("°",offset);
+            op.telemetry.addData("abs",Math.abs(offset));
+            op.telemetry.addData("condition",Math.abs(offset)<5);
+            op.telemetry.update();
+        }
+        wheel.setMotors(0,0,0);
+
     }
 
 

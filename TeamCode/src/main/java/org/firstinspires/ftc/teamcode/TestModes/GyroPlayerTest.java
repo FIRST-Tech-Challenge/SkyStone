@@ -28,7 +28,7 @@ public class GyroPlayerTest extends OpMode {
         robot = new HardwareChassis(hardwareMap);
         colorTools = new ColorTools();
         oWheel = new OmniWheel(robot);
-        oTool = new OrientationTools(robot);
+        //oTool = new OrientationTools(robot);
 
 
     }

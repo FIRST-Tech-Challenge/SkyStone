@@ -44,7 +44,7 @@ public class ConceptGyroAutonomousRed extends LinearOpMode {
         omniWheel = new OmniWheel(robot);
         controlledLift = new ControlledLift(robot, telemetry);
         controlledExtender = new ControlledExtender(robot, telemetry);
-        orientationTools = new OrientationTools(robot);
+        orientationTools = new OrientationTools(robot, hardwareMap, this);
         robotGyro = new HardwareChassisGyro(hardwareMap);
 
 

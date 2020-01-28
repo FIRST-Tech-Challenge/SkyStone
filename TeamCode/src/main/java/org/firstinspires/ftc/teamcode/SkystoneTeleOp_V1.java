@@ -69,7 +69,7 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
     //private Servo Block_Kickout = null;
     private Servo Capstone = null;
     private Servo Release_Servo = null;
-   // private Servo Release_Servo2 = null;
+    // private Servo Release_Servo2 = null;
     private DigitalChannel Top_Sensor_Front = null;
     private DigitalChannel Top_Sensor_Rear = null;
     private DigitalChannel bottom_touch = null;
@@ -100,16 +100,7 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
      */
     private final static int GAMEPAD_LOCKOUT = 500;
 
-    com.qualcomm.hardware.rev.RevBlinkinLedDriver blinkinLedDriver;
-    com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern pattern;
-
-    Telemetry.Item patternName;
-    Telemetry.Item display;
-    RevBlinkinLedDriver.DisplayKind displayKind;
-    Deadline ledCycleDeadline;
-    Deadline gamepadRateLimit;
-
-   // DigitalChannel blockbutton; // Hardware Device Object
+        // DigitalChannel blockbutton; // Hardware Device Object
 
 
     protected enum DisplayKind {
@@ -148,7 +139,7 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
         Top_Sensor_Front = hardwareMap.get(DigitalChannel.class, "Top_Sensor_Front");
         bottom_touch = hardwareMap.get(DigitalChannel.class, "bottom_touch");
         top_touch = hardwareMap.get(DigitalChannel.class, "top_touch");
-       // blockbutton = hardwareMap.get(DigitalChannel.class, "blockbutton");
+        // blockbutton = hardwareMap.get(DigitalChannel.class, "blockbutton");
 
 
         lift_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -189,19 +180,10 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
         feeder_motor.setDirection(DcMotor.Direction.REVERSE);
         top_motor.setDirection(DcMotor.Direction.FORWARD);
 
-        displayKind = RevBlinkinLedDriver.DisplayKind.AUTO;
-
-        blinkinLedDriver = hardwareMap.get(com.qualcomm.hardware.rev.RevBlinkinLedDriver.class, "blinkinLedDriver");
-        pattern = com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.ORANGE;
 
 
-        blinkinLedDriver.setPattern(pattern);
 
-        display = telemetry.addData("Display Kind: ", displayKind.toString());
-        patternName = telemetry.addData("Pattern: ", pattern.toString());
 
-        // set the digital channel to input.
-      //  blockbutton.setMode(DigitalChannel.Mode.INPUT);
 
         telemetry.addData("Single Cycle", "Incomplete");
         telemetry.update();
@@ -219,26 +201,20 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
                 telemetry.addData("Digital Touch", "Is Not Pressed");
                 //set color black
                 pattern = com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.BLACK;
-
             } else {
                 telemetry.addData("Digital Touch", "Is Pressed");
                 ///SET COLOR ORANGE
                 pattern = com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern.ORANGE;
-
             }
             blinkinLedDriver.setPattern(pattern);
             //telemetry.update();
-
            */
 
         /*
         if (displayKind == DisplayKind.AUTO) {
-
             doAutoDisplay();
         } else {
-
             // * MANUAL mode: Nothing to do, setting the pattern as a result of a gamepad event.
-
         }
         */
 
@@ -320,19 +296,15 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
         if (gamepad1.right_trigger > 0 && feederServoPosition < 1) {
             telemetry.addData("FeederServo", "Feeder Servo Close");
             telemetry.addData("Angle", feederServoPosition);
-
             Feeder_Servo.setPosition(feederServoPosition);
             feederServoPosition = feederServoPosition + 0.1f;
-
         } else if (gamepad1.right_bumper && feederServoPosition > 0) {
             telemetry.addData("FeederServo", "Feeder Servo Open");
             telemetry.addData("Angle", feederServoPosition);
             Feeder_Servo.setPosition(feederServoPosition);
             feederServoPosition = feederServoPosition - 0.1f;
-
         }
     }
-
     */
 
     public void UpdateLift() {
@@ -427,7 +399,6 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
             rear_left.setPower(-(1 + rear_left_modifier));
             front_right.setPower(-(1 + front_right_modifier));
             rear_right.setPower((1 + rear_right_modifier));
-
             */
 
         } else if (gamepad1.right_stick_x > 0.4 && gamepad1.right_stick_y < 0) {
@@ -459,7 +430,6 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
             rear_left.setPower(-(1 + rear_left_modifier));
             front_right.setPower(-(1 + front_right_modifier));
             rear_right.setPower((1 + rear_right_modifier));
-
              */
 
         } else if (gamepad1.right_stick_x > 0.4 && gamepad1.right_stick_y > 0) {
@@ -565,52 +535,12 @@ public class SkystoneTeleOp_V1 extends LinearOpMode {
         if (gamepad2.y) {
             telemetry.addData("ReleaseServo", "feeder release");
             Release_Servo.setPosition(0.2);
-          //  sleep(1000);
-          //  Release_Servo2.setPosition(1);
+            //  sleep(1000);
+            //  Release_Servo2.setPosition(1);
             sleep(1000);
             feeder_motor.setPower(1);
         }
     }
 
-    protected void handleGamepad() {
-        if (!gamepadRateLimit.hasExpired()) {
-            return;
-        }
 
-        if (gamepad1.a) {
-            setDisplayKind(RevBlinkinLedDriver.DisplayKind.MANUAL);
-            gamepadRateLimit.reset();
-        } else if (gamepad1.b) {
-            setDisplayKind(RevBlinkinLedDriver.DisplayKind.AUTO);
-            gamepadRateLimit.reset();
-        } else if ((displayKind == RevBlinkinLedDriver.DisplayKind.MANUAL) && (gamepad1.left_bumper)) {
-            pattern = pattern.previous();
-            displayPattern();
-            gamepadRateLimit.reset();
-        } else if ((displayKind == RevBlinkinLedDriver.DisplayKind.MANUAL) && (gamepad1.right_bumper)) {
-            pattern = pattern.next();
-            displayPattern();
-            gamepadRateLimit.reset();
-
-        }
-    }
-
-    protected void setDisplayKind(RevBlinkinLedDriver.DisplayKind displayKind) {
-        this.displayKind = displayKind;
-        display.setValue(displayKind.toString());
-    }
-
-    protected void doAutoDisplay() {
-        if (ledCycleDeadline.hasExpired()) {
-            pattern = pattern.next();
-            displayPattern();
-            ledCycleDeadline.reset();
-        }
-    }
-
-    protected void displayPattern() {
-        blinkinLedDriver.setPattern(pattern);
-        patternName.setValue(pattern.toString());
-    }
 }
-

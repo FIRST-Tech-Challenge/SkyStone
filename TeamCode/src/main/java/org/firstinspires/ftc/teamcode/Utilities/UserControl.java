@@ -68,6 +68,20 @@ public class UserControl {
         return willPark;
     }
 
+    public boolean getPos (String prompt) {
+        boolean bridge = false;
+
+        telemetry.addData("[X = Park by Skybridge, B = Park by Wall]", prompt);
+        telemetry.update();
+        do {
+            egamepad1.updateEdge();
+        } while (!egamepad1.x.pressed && !egamepad1.b.pressed && !opmode.isStopRequested());
+        if (egamepad1.b.pressed)
+            bridge = false;
+        egamepad1.updateEdge();
+        return bridge;
+    }
+
     public boolean getYesNo(String prompt) {
         boolean isYes = false;
 

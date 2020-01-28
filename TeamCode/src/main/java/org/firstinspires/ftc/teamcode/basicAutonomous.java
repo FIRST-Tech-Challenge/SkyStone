@@ -13,15 +13,12 @@ import org.firstinspires.ftc.teamcode.SubAssembly.FoundationGrabber.FoundationGr
 import org.firstinspires.ftc.teamcode.SubAssembly.Grabber.GrabberControl;
 import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
 import org.firstinspires.ftc.teamcode.Utilities.UserControl;
-import org.firstinspires.ftc.teamcode.Utilities.ConceptVuforiaSkyStoneNavigationWebcam;
-
 
 @Autonomous(name = "Basic Autonomous", group = "Auto")
 public class basicAutonomous extends LinearOpMode{
     //This gives the control programs shortened names to refer to them in this program
     DriveControl Drive = new DriveControl();
     GrabberControl Grabber = new GrabberControl();
-    ConceptVuforiaSkyStoneNavigationWebcam Webcam = new ConceptVuforiaSkyStoneNavigationWebcam();
     FoundationGrabberControl FoundationGrabber = new FoundationGrabberControl();
     LiftControl Lift = new LiftControl();
 
@@ -30,31 +27,20 @@ public class basicAutonomous extends LinearOpMode{
         mCurrentState = newState;
         Drive.stop();
         Drive.TimeDelay(0.1);
-        //resetClock();
     }
 
     //This is a list of all of the states
     private enum State {
         Initial,
+        MoveToStone,
         GrabStone,
         MoveToBuildZone,
+        MoveToFoundation,
         PlaceStone,
-        AutoPark,
+        ParkFromQuarry,
         Park,
         Stop
     }
-
-    //This is a list of all the possible skystone positions
-    private enum SkystonePosition {
-        R1,
-        R2,
-        R3,
-        B1,
-        B2,
-        B3,
-    }
-    //This sets the skystone to a default position
-    private SkystonePosition Skystone = SkystonePosition.B1;
 
     //This sets the default starting state
     private State mCurrentState = State.Initial;
@@ -81,27 +67,13 @@ public class basicAutonomous extends LinearOpMode{
         boolean bAnswer;
         boolean AllianceColor;
         boolean willPark;
+        boolean bridgeanswer;
 
         //This asks whether you want to delay start or not and whether you are red or blue
         bAnswer = User.getYesNo("Wait?");
         AllianceColor = User.getRedBlue("Alliance Color");
         willPark = User.getPark("Park?");
-
-        /*This will use the skystone position determined by vuforia and the
-        alliance color to determine the skystone position*/
-        /*if (Webcam.PS == Webcam.PS.CENTER && AllianceColor == true){
-            Skystone = SkystonePosition.R2;
-        } else if (Webcam.PS == Webcam.PS.LEFT && AllianceColor == true){
-            Skystone = SkystonePosition.R3;
-        } else if (Webcam.PS == Webcam.PS.RIGHT && AllianceColor == true){
-            Skystone = SkystonePosition.R1;
-        } else if (Webcam.PS == Webcam.PS.CENTER && AllianceColor == false){
-            Skystone = SkystonePosition.B2;
-        } else if (Webcam.PS == Webcam.PS.RIGHT && AllianceColor == false){
-            Skystone = SkystonePosition.B3;
-        } else {
-            Skystone = SkystonePosition.B1;
-        }*/
+        bridgeanswer = User.getYesNo("Bridge or Wall?");
 
         // wait for PLAY button to be pressed on driver station
         telemetry.addLine(">> Press PLAY to start");
@@ -129,25 +101,29 @@ public class basicAutonomous extends LinearOpMode{
                         Drive.TimeDelay(5.0);
                     }
                     if (willPark == true){
-                        newState(State.AutoPark);
+                        newState(State.ParkFromQuarry);
                     }
                     else {
                         newState(State.GrabStone);
                     }
                     break;
 
-
-                case GrabStone:
-                    telemetry.addLine("grab skystone");
+                case MoveToStone:
+                    telemetry.addLine("move to stone");
                     telemetry.update();
                     Grabber.open();
                     Grabber.Pos1();
                     Drive.moveForwardDistance(0.8, 80);
+                    newState(State.GrabStone);
+                    break;
+
+                case GrabStone:
+                    telemetry.addLine("grab stone");
+                    telemetry.update();
                     Grabber.close();
                     Drive.TimeDelay(0.5);
                     newState(State.MoveToBuildZone);
                     break;
-
 
                 case MoveToBuildZone:
                     Drive.moveBackwardDistance(0.8,40);
@@ -158,56 +134,71 @@ public class basicAutonomous extends LinearOpMode{
                         Drive.turnLeftDistance(0.5,50);
                     }
                     Drive.moveForwardDistance(0.8, 175);
-                    newState(State.PlaceStone);
+                    newState(State.MoveToFoundation);
                     break;
 
 
-                case PlaceStone:
-                    if (AllianceColor == false) {
-                        Drive.turnRightDistance(0.5, 50);
+                case MoveToFoundation:
+                    if (AllianceColor == true) {
+                        Drive.turnLeftDistance(0.5, 50);
                     }
                     else {
-                        Drive.turnLeftDistance(0.5,50);
+                        Drive.turnRightDistance(0.5,50);
                     }
                     Lift.MoveUpTime(0.4);
                     Drive.moveForwardDistance(0.5, 35);
+                    newState(State.PlaceStone);
+
+                case PlaceStone:
                     Grabber.open();
                     Drive.TimeDelay(1.0);
-                    Drive.moveBackwardDistance(0.8, 25);
-                    if (AllianceColor == false) {
-                        Drive.turnRightDistance(0.5, 50);
+                    if (bridgeanswer == true) {
+                        Drive.turnLeftDistance(0.5, 50);
                     }
                     else {
-                        Drive.turnLeftDistance(0.5,50);
+                        Drive.turnRightDistance(0.5,50);
                     }
+
+
+                case Park:
+
+                    Drive.moveBackwardDistance(0.8, 25);
                     Lift.MoveDownTime(0.4);
                     Grabber.close();
-                    //FoundationGrabber.open();
-                    newState(State.Park);
-                    break;
-
-
-                case AutoPark:
-                    telemetry.addLine("Park");
-                    telemetry.update();
-                    /*Drive.moveForwardDistance(0.8, 30.0);
-                    Drive.turnLeftDistance(0.8, 100);
-                    Lift.MoveUpTime(0.4);
-                    Drive.moveForwardDistance(0.8,60.0);
-                    Grabber.open();
-                    Drive.moveBackwardDistance(0.8,60);
-                    Lift.MoveDownTime(0.4);
-                    /*Drive backwards until under skybridge*/
-                    Drive.moveForwardDistance(0.8,65);
-                    Drive.turnLeftDistance(0.8,50);
-                    Drive.moveForwardDistance(0.8,70);
+                    if (bridgeanswer == true) {
+                        if (AllianceColor == true) {
+                            Drive.strafeLeftDistance(0.8, 50);//insert actual distance
+                            Drive.moveForwardDistance(0.8, 50/*insert actual distance*/);
+                            Drive.strafeLeftDistance(0.8, 50/*insert actual distance*/);
+                        } else {
+                            Drive.strafeRightDistance(0.8, 50);//insert actual distance
+                            Drive.moveForwardDistance(0.8, 50/*insert actual distance*/);
+                            Drive.strafeRightDistance(0.8, 50/*insert actual distance*/);
+                        }
+                    }
+                    else {
+                            if (AllianceColor == true){
+                                Drive.strafeLeftDistance(0.8, 50);//insert actual distance
+                            }
+                            else {
+                                Drive.strafeRightDistance(0.8, 50);//insert actual distance
+                            }
+                    }
                     newState(State.Stop);
                     break;
 
-                case Park:
+
+                case ParkFromQuarry:
                     telemetry.addLine("Park");
                     telemetry.update();
-                    Drive.moveForwardDistance(0.8, 60);
+                    Drive.moveForwardDistance(0.8,65);
+                    if (AllianceColor == true) {
+                        Drive.turnLeftDistance(0.8, 50);
+                    }
+                    else {
+                        Drive.turnRightDistance(0.8, 50);
+                    }
+                    Drive.moveForwardDistance(0.8,70);
                     newState(State.Stop);
                     break;
 

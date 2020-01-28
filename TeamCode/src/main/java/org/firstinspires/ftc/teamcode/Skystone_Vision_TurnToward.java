@@ -83,24 +83,24 @@ public class Skystone_Vision_TurnToward extends BaseAutoOpMode {
             {
                 telemetry.addData("Status", "Detected " + Skystones.size() + " Skystones");
 
+
                 //first stone in the list should be the closest
                 Recognition stone = Skystones.get(0);
+
+                telemetry.addData("Object 0", stone.getLabel());
+
                 double angleToStone = stone.estimateAngleToObject(AngleUnit.DEGREES);
-                if( Math.abs(angleToStone) < 5)
-                {
+                if (Math.abs(angleToStone) < 5) {
                     Drive(DriveDirection.BACKWARD);
                     sleep(1000);
                     StopAllDrive();
-                }
-                else
-                {
-                    if(angleToStone < 0) //turn left
-                    {
-                        Drive(DriveDirection.LEFT);
-                    }
-                    else //turn right
+                } else {
+                    if (angleToStone < 0) //turn left, but we're backwards
                     {
                         Drive(DriveDirection.RIGHT);
+                    } else //turn right
+                    {
+                        Drive(DriveDirection.LEFT);
                     }
                 }
 

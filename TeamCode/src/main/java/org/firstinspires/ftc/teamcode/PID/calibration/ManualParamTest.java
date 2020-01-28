@@ -89,6 +89,6 @@ public class ManualParamTest extends LinearOpMode {
             Thread.sleep(polling_interval);
         };
         imu = IMUBufferReader.getSingle_instance(hardwareMap);
-        imu.stop();
+        imu.cleanUP();
     }
 }

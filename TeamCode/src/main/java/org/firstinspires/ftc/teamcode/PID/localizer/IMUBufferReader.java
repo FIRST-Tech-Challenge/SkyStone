@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.PID.localizer;
 
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 
 
@@ -19,6 +20,8 @@ public class IMUBufferReader implements Runnable{
     private static IMUBufferReader single_instance = null;
     private Semaphore mutex = new Semaphore(1);
     private String TAG = "IMUBufferReader";
+    private float lastGyroValue = 0;
+    private long lastGyroTime = 0;
 
     private static boolean keepRunning = true;
     private boolean IMUReaderRunning = false;
@@ -43,11 +46,11 @@ public class IMUBufferReader implements Runnable{
                 e.printStackTrace();
             }
         }
+        RobotLogger.dd(TAG, "IMU calibrating done");
 
         thread = new Thread(this);
         thread.start();
         IMUReaderRunning = true;
-        RobotLogger.dd(TAG, "IMU reader created");
     }
 
     synchronized  public static IMUBufferReader getSingle_instance(HardwareMap hardwareMap)
@@ -82,8 +85,27 @@ public class IMUBufferReader implements Runnable{
         return(imu.initialize(parameters));
     }
 
-    public float getLatestIMUData()
+    synchronized public float getLatestIMUData()
     {
+        float v;
+        if (imu.getSystemError() != BNO055IMU.SystemError.NO_ERROR)
+        {
+            RobotLogger.dd(TAG, "IMU error");
+            v = lastGyroValue;
+        }
+        else
+        {
+            long delta = SystemClock.elapsedRealtime() - lastGyroTime;
+            RobotLogger.dd(TAG, "IMU gyro time delta: " + delta);
+            if (delta > 20) {
+                v = imu.getAngularOrientation().firstAngle;
+                lastGyroTime = SystemClock.elapsedRealtime();
+            }
+            else
+                v = lastGyroValue;
+        }
+
+        /*
         if (IMUReaderRunning == false)
         {
             RobotLogger.dd(TAG, "IMU reader started");
@@ -100,11 +122,16 @@ public class IMUBufferReader implements Runnable{
         catch (InterruptedException exc) {
             System.out.println(exc);
         }
+        */
 
-        return t;
+        return v;
     }
 
     public void run(){
+        // polling in dedicated thread is not good idea;
+        IMUReaderRunning = true;
+        return;
+        /*
         while (IMUBufferReader.keepRunning) {
             try {
                 if (imu.getSystemError() != BNO055IMU.SystemError.NO_ERROR)
@@ -133,5 +160,6 @@ public class IMUBufferReader implements Runnable{
             }
         }
         RobotLogger.dd(TAG, "IMU thread stops");
+         */
     }
 }

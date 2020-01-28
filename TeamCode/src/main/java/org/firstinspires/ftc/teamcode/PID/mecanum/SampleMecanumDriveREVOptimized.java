@@ -129,6 +129,7 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
+        // temporary hack for motors connecting to two seperate HUB;
         RevBulkData bulkData0 = hubMotors0.getBulkInputData();
         if (bulkData0 == null)
         {
@@ -138,6 +139,7 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         double t01 = bulkData0.getMotorCurrentPosition(motors.get(2));  // back right motor on a seperate hub!!!
         double t02 = encoderTicksToInches(t01);
 
+        ////////////////////
         RevBulkData bulkData = hubMotors.getBulkInputData();
         if (bulkData == null) {
             RobotLogger.dd(TAG, "bulk data = null");
@@ -148,14 +150,14 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         double t1, t2;
         for (ExpansionHubMotor motor : motors) {
             if (motor == motors.get(2)) {
-                RobotLogger.dd(TAG, "getWheelPositions: " + "position: " + Double.toString(t01) + " inches: " + Double.toString(t02));
+                t1 = t01;
                 t2 = t02;
             }
             else {
                 t1 = bulkData.getMotorCurrentPosition(motor);
                 t2 = encoderTicksToInches(t1);
-                RobotLogger.dd(TAG, "getWheelPositions: " + "position: " + Double.toString(t1) + " inches: " + Double.toString(t2));
             }
+            RobotLogger.dd(TAG, "getWheelPositions: " + "position: " + Double.toString(t1) + " inches: " + Double.toString(t2));
             wheelPositions.add(t2);
         }
 
@@ -164,16 +166,34 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
     // TODO
     @Override
     public List<Double> getWheelVelocities() {
+        // temporary hack for motors connecting to two seperate HUB;
+        RevBulkData bulkData0 = hubMotors0.getBulkInputData();
+        if (bulkData0 == null)
+        {
+            RobotLogger.dd(TAG, "bulk data = null");
+            return Arrays.asList(0.0, 0.0, 0.0, 0.0);
+        }
+        double t01 = bulkData0.getMotorVelocity(motors.get(2));  // back right motor on a seperate hub!!!
+        double t02 = encoderTicksToInches(t01);
+
+        ////////////////////////////
+
         RevBulkData bulkData = hubMotors.getBulkInputData();
         if (bulkData == null){
             RobotLogger.dd(TAG, "bulk data = null");
             return Arrays.asList(0.0, 0.0, 0.0, 0.0);
         }
-
+        double t1, t2;
         List<Double> wheelVelocities = new ArrayList<>();
         for (ExpansionHubMotor motor : motors) {
-            double t1 = bulkData.getMotorVelocity(motor);
-            double t2 = encoderTicksToInches(t1);
+            if (motor == motors.get(2)) {
+                t1 = t01;
+                t2 = t02;
+            }
+            else {
+                t1 = bulkData.getMotorVelocity(motor);
+                t2 = encoderTicksToInches(t1);
+            }
             RobotLogger.dd(TAG, "getWheelVelocities: " + "velocity: " + Double.toString(t1) + " inches: " + Double.toString(t2));
 
             wheelVelocities.add(t2);

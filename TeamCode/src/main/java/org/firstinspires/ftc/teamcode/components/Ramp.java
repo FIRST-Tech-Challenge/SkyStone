@@ -31,6 +31,10 @@ package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
 //@Disabled
 public class Ramp extends BotComponent {
@@ -38,7 +42,7 @@ public class Ramp extends BotComponent {
     private String rampServoName2;
     public Servo rampServo1 = null;
     public Servo rampServo2 = null;
-    double SERVO_DOWN_POSITION = 0;
+    double SERVO_DOWN_POSITION = 0.5;
     double SERVO_UP_POSITION = 1;
 public Ramp(){
 }
@@ -60,13 +64,13 @@ public void init( ){
     logger .logInfo("Grapple","isAvailable: %b",isAvailable);
 }
 
-public void rampDown(){
+public void rampDown(double x){
     logger.logDebug("servoMoveDown", "walrus");
-    rampServo1.setPosition(SERVO_DOWN_POSITION);
+    rampServo1.setPosition(x);
 }
 
-public void ramp2Down(){
-    rampServo2.setPosition(SERVO_DOWN_POSITION);
+public void ramp2Down(double x){
+    rampServo2.setPosition(x);
 }
 
 public void rampUp(){

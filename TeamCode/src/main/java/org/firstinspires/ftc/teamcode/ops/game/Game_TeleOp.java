@@ -119,8 +119,11 @@ public class Game_TeleOp extends LinearOpMode {
                 robot.ramp.ramp2Up();
             }
             if(gamepad1.right_bumper){
-                robot.ramp.rampDown();
-                robot.ramp.ramp2Down();
+                robot.ramp.rampDown(0.5);
+                robot.ramp.ramp2Down(0.5);
+                sleep(500);
+                robot.ramp.rampDown(1);
+                robot.ramp.ramp2Down(1);
             }
 
             if(gamepad1.x){

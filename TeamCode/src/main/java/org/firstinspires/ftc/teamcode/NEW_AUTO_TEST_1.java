@@ -30,6 +30,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.Rotation;
 
 
 /**
@@ -41,6 +44,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 public class NEW_AUTO_TEST_1 extends BaseAutoOpMode {
 
 
+    private ElapsedTime craneSafetyTimer = new ElapsedTime();
 
     double globalAngle, power = 1, correction;
 
@@ -65,6 +69,27 @@ public class NEW_AUTO_TEST_1 extends BaseAutoOpMode {
 //unfolds here
         UnfoldRobot();
 
+        //Grabs First Block
+        feeder_motor.setPower(1);
+
+        EncoderDrive(DriveDirection.BACKWARD, 3500);
+        EncoderDrive(DriveDirection.FORWARD, 1500);
+
+
+
+
+        resetAngle();
+        rotate(-90, .75 );
+
+        Lift(LiftDirection.DOWN);
+
+
+
+
+
+
+
+
 
 
 
@@ -73,4 +98,3 @@ public class NEW_AUTO_TEST_1 extends BaseAutoOpMode {
 
     }
 }
-

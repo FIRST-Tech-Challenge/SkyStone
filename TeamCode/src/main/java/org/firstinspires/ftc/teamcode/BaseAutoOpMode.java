@@ -110,6 +110,8 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
 
     float LeftSide;
 
+    private ElapsedTime craneSafetyTimer = new ElapsedTime();
+
 
     @Override
     public void GetHardware() {
@@ -167,19 +169,27 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         lift_left.setPower(0);
         lift_right.setPower(0);
 
-        Release_Servo.setPosition(0.5);
-        sleep(1000);
-
-        feeder_motor.setPower(-1);
+        feeder_motor.setPower(1);
         sleep(500);
         feeder_motor.setPower(0);
 
         Feeder_Servo.setPosition(1);
-        sleep(1000);
+        sleep(900);
 
-        feeder_motor.setPower(1);
-        sleep(500);
+        top_motor.setPower(1);
+        craneSafetyTimer.reset();
+        while(Top_Sensor_Rear.getState() && craneSafetyTimer.milliseconds() < 2000)
+        {
+            top_motor.setPower(1);
+        }
+        top_motor.setPower(0);
+
+        Block_Pickup.setPosition(0.4f);
+        feeder_motor.setPower(-1);
+        sleep(3000);
         feeder_motor.setPower(0);
+
+
     }
 
     public void VisionTarget(int milliseconds) {

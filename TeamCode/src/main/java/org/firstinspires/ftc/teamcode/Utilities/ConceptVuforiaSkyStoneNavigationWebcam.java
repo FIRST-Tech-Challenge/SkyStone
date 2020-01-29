@@ -390,6 +390,12 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
                     PBS = positionBlueSkystone.RIGHT;
                     telemetry.addLine("Blue Right");
                 }
+                /* Blue Left x=-18.7 y=-7.7 z=6.7 LEFT
+                * Blue Center x=-20.9 y=2 z=7.4 LEFT
+                * Blue Right x= y= z= Cannot see right*/
+                /*Red Right x=-17.5 y=-2.4 z=6.3 LEFT (lined up edge of robot, not edge of grabber)
+                * Red Center x=-21.4 y=-9.5 z=5.8 LEFT (lined up edge of robot, not edge of grabber)
+                * Red Left x= y= z= */
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);

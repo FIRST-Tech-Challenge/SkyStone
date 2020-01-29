@@ -85,13 +85,12 @@ public class AutonomousGenericTest extends LinearOpMode {
             driverOptions.setDeliverRoute(prefs.getString(DELIVER_ROUTE_PREF,""));
             driverOptions.setMoveFoundation(prefs.getString(FOUNDATION_PREF,""));
             driverOptions.setIsParkOnly(prefs.getString(PARKING_ONLY_PREF,""));
-            driverOptions.setIsTwoSkystones(prefs.getString(STONE_PREF,""));
             Logger.logFile("parking: "+ driverOptions.getParking());
             Logger.logFile("startingPositionModes: "+ driverOptions.getStartingPositionModes());
             Logger.logFile("deliverRoute: " + driverOptions.getDeliverRoute());
             Logger.logFile("moveFoundation: " + driverOptions.getMoveFoundation());
             Logger.logFile("isParkOnly: " + driverOptions.getIsParkOnly());
-            Logger.logFile("isTwoSkystone: " + driverOptions.getIsTwoSkystones());
+            Logger.logFile("StoneOptions: " + driverOptions.getStoneOptions());
         } catch (Exception e) {
             this.delay = 0;
         }

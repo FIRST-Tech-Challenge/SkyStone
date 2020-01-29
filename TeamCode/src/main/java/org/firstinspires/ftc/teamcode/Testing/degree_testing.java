@@ -32,7 +32,7 @@ public class degree_testing extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive()) {
-            tool.simeoncopytry(this, 0, -100, -0.2, this.wheel, this.tool.getDegree360(this.gyro.imu), this.gyro.imu, 100);
+            tool.driveSidewardEncoder(this, 0, -100, -0.2, this.wheel, this.tool.getDegree360(this.gyro.imu), this.gyro.imu, 100);
         }
 
     }

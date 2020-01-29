@@ -141,7 +141,7 @@ public class OrientationTools {
     }
 
 
-    public void simeoncopytry(OpMode op,double distanceForward, double distanceSideways, double speed,OmniWheel wheel, double startPos, BNO055IMU imu, double smoothness) {
+    public void driveSidewardEncoder(OpMode op,double distanceForward, double distanceSideways, double speed,OmniWheel wheel, double startPos, BNO055IMU imu, double smoothness) {
         double maxDistance = Math.max(Math.abs(distanceForward), Math.abs(distanceSideways));
 
         double[] wheelSpeeds = OmniWheel.calculate(WHEEL_DIAMETER_CMS / 2, 38, 24, distanceForward / maxDistance, distanceSideways / maxDistance, 0);

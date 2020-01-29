@@ -14,6 +14,8 @@
             <DigitalDevice name="hub1_digitalport1" port="1" />
             <DigitalDevice name="hub1_digitalport2" port="2" />
             <DigitalDevice name="hub1_digitalport3" port="3" />
+            <DigitalDevice name="hub1_digitalport4" port="4" />
+            <DigitalDevice name="hub1_digitalport5" port="5" />
             <LynxEmbeddedIMU name="hub1_imu" port="0" bus="0" />
             <LynxColorSensor name="hub1_colorport1" port="0" bus="1" />
         </LynxModule>

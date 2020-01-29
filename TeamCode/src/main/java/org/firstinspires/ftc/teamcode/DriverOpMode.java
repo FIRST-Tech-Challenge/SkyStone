@@ -32,6 +32,7 @@ public class DriverOpMode extends OpMode {
     boolean yAlreadyPressed = false;
     boolean sliderPosReseted = false;
     boolean clampServoOut = false;
+    boolean tapeMoving = false;
 
     RobotControl currentTask = null;
     SequentialComboTask homePositionTask;
@@ -71,7 +72,6 @@ public class DriverOpMode extends OpMode {
 //
 //        }
         setupCombos();
-        robotHardware.engageBlockHolderWheel();
 
         prevLiftEncoderCnt = 0;
         sliderPosReseted = false;
@@ -124,6 +124,7 @@ public class DriverOpMode extends OpMode {
                 robotHardware.rotateGrabberOriginPos();
                 clampServoOut = false;
             } else {
+                if (sliderEncoderCnt>1000)
                 robotHardware.rotateGrabberOutPos();
                 clampServoOut = true;
             }
@@ -218,10 +219,20 @@ public class DriverOpMode extends OpMode {
             robotHardware.setCapStoneServo(RobotHardware.CapPosition.CAP_OTHER);
         }
 
-//        if(gamepad2.right
-//        _bumper){
-//            robotHardware.setClampAnglePosition(RobotHardware.ClampAnglePosition.NORMAL);
-//        }
+        if (gamepad1.a) {
+            robotHardware.retractTake();
+            tapeMoving = true;
+        }
+        else if (gamepad1.b) {
+            robotHardware.extendTape();
+            tapeMoving = true;
+        }
+        else {
+            if (tapeMoving) {       // only stop if it's already moving
+                robotHardware.stopTape();
+                tapeMoving = false;
+            }
+        }
 
         handleLiftAndSlide();
 
@@ -279,7 +290,6 @@ public class DriverOpMode extends OpMode {
        SequentialComboTask delayLiftDown = new SequentialComboTask();
 
        delayLiftDown.addTask(new RobotSleep(300));
-       delayLiftDown.addTask(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.INITIAL));
        delayLiftDown.addTask(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftOrigPos, 100));
 
        slideInLiftDown.addTask(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOrigPos, 100));
@@ -289,7 +299,6 @@ public class DriverOpMode extends OpMode {
        /**homePositionTask.addTask(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOrigPos, 100));
        homePositionTask.addTask(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftHomeGrabPos, 100)); **/
 
-       //robotHardware.startIntakeWheels();
    }
 
    void setupCombos() {
@@ -385,15 +394,15 @@ public class DriverOpMode extends OpMode {
         // lift go up
         else if (gamepad2.left_stick_y < -0.9) { //lift go up
             Logger.logFile("Fast up Curr:" + currLiftPos + " stick_y:" + gamepad2.left_stick_y);
-            robotHardware.setLiftPosition(2000, -gamepad2.left_stick_y);  // max height 11 stone
+            robotHardware.setLiftPosition(2500, -gamepad2.left_stick_y);  // max height 11 stone
             liftDir = LiftDirection.LIFT_UP;
         } else if (gamepad2.left_stick_y < -0.2) {
             // slow up
             Logger.logFile("Slow up Curr:" + currLiftPos + " stick_y:" + gamepad2.left_stick_y);
-            robotHardware.setLiftPosition(Math.min(currLiftPos-(int)(70 * gamepad2.left_stick_y), 2000), -gamepad2.left_stick_y);
+            robotHardware.setLiftPosition(Math.min(currLiftPos-(int)(70 * gamepad2.left_stick_y), 3000), -gamepad2.left_stick_y);
         } else if (liftDir!=LiftDirection.LIFT_STOP) {
             // based on the previous lift position, project the next and stop
-            int newPos = Math.max(Math.min(2*currLiftPos-prevLiftEncoderCnt, 2000), 0);
+            int newPos = Math.max(Math.min(2*currLiftPos-prevLiftEncoderCnt, 3000), 0);
             Logger.logFile("Curr:" + currLiftPos + " target:" + newPos + " stick_y:" + gamepad2.left_stick_y);
             robotHardware.setLiftPosition(newPos, 0.5);
             liftDir=LiftDirection.LIFT_STOP;

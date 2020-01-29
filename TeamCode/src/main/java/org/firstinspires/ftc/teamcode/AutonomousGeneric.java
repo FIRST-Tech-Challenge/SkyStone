@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Core;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import static org.firstinspires.ftc.teamcode.AutonomousOptions.DELAY_PREF;
-import static org.firstinspires.ftc.teamcode.AutonomousOptions.FIRST_BLOCK_BY_WALL_PREF;
 import static org.firstinspires.ftc.teamcode.AutonomousOptions.START_POS_MODES_PREF;
 //import static org.firstinspires.ftc.teamcode.AutonomousOptions.getSharedPrefs;
 import static org.firstinspires.ftc.teamcode.AutonomousOptions.PARKING_PREF;
@@ -100,15 +98,14 @@ public class AutonomousGeneric extends LinearOpMode {
             driverOptions.setDeliverRoute(prefs.getString(DELIVER_ROUTE_PREF,""));
             driverOptions.setMoveFoundation(prefs.getString(FOUNDATION_PREF,""));
             driverOptions.setIsParkOnly(prefs.getString(PARKING_ONLY_PREF,""));
-            driverOptions.setIsTwoSkystones(prefs.getString(STONE_PREF,""));
-            driverOptions.setIsFirstBlockByWall(prefs.getString(FIRST_BLOCK_BY_WALL_PREF, ""));
+            driverOptions.setStoneOptions(prefs.getString(STONE_PREF,""));
 
             Logger.logFile("parking: "+ driverOptions.getParking());
             Logger.logFile("startingPositionModes: "+ driverOptions.getStartingPositionModes());
             Logger.logFile("deliverRoute: " + driverOptions.getDeliverRoute());
             Logger.logFile("moveFoundation: " + driverOptions.getMoveFoundation());
             Logger.logFile("isParkOnly: " + driverOptions.getIsParkOnly());
-            Logger.logFile("isTwoSkystone: " + driverOptions.getIsTwoSkystones());
+            Logger.logFile("StoneOptions: " + driverOptions.getStoneOptions());
         } catch (Exception e) {
             this.delay = 0;
         }
@@ -151,6 +148,8 @@ public class AutonomousGeneric extends LinearOpMode {
     @Override
     public void runOpMode() {
         initRobot();
+        robotHardware.setMotorStopBrake(false); // so we can adjust the robot
+
         OpenCvCamera phoneCam = null;
         if (needStoneRecognition) {
             int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -165,6 +164,7 @@ public class AutonomousGeneric extends LinearOpMode {
         if (needStoneRecognition) {
             phoneCam.closeCameraDevice();
         }
+        robotHardware.setMotorStopBrake(true);  // so no sliding when we move
         // initial navigator, reset position since the encoder might have moved during adjustment
         robotHardware.getBulkData1();
         robotHardware.getBulkData2();
@@ -181,18 +181,20 @@ public class AutonomousGeneric extends LinearOpMode {
         AutonomousTaskBuilder builder = new AutonomousTaskBuilder(driverOptions, skystonePosition, robotHardware, navigator, robotProfile);
         if (driverOptions.getIsParkOnly().contains("yes")) {                         //5 points - do nothing but parking
             taskList = builder.buildParkingOnlyTask(driverOptions.getParking());
-        } else if (driverOptions.getIsTwoSkystones().contains("yes")) {               //25 points - pick up and drop off two stones across bridge line plus parking
-            taskList = builder.buildDropTwoStoneTask();
-        } else if (driverOptions.getIsFirstBlockByWall()) {                           //15 points - pick up closest block by the wall and then park
-            taskList = builder.buildPickUpFirstBlockAndPark();
-        } else if (driverOptions.getMoveFoundation().equals("move only")) {           //15 points - only do the platform movement and parking
-            taskList = builder.buildMovePlatformAndParkTask();
-        }else if(driverOptions.getMoveFoundation().equals("no move")){               //15 points - no platform movement, pick up only one stone, drop after bridge line and parking only
-            taskList = builder.buildDeliverOneStoneOnlyTask();
-        } else {
-            taskList = builder.buildDeliverOneStoneCompleteTask();                   //29 points, pick up sky stone, deliver and relocate platform, parking
         }
-
+        else if (driverOptions.getIsFirstBlockByWall()) {                           //15 points - pick up closest block by the wall and then park
+            taskList = builder.buildPickUpFirstBlockAndPark();
+        }
+        else if (driverOptions.getMoveFoundation().equals("move only")) {           //15 points - only do the platform movement and parking
+            taskList = builder.buildMovePlatformAndParkTask();
+        }
+        else if(driverOptions.getMoveFoundation().equals("no move")){               //15 points - no platform movement, pick up only one stone, drop after bridge line and parking only
+            taskList = builder.buildDeliverOneStoneOnlyTask();
+        }
+        else {
+            taskList = builder.buildDeliverOneTwoStoneTask();                   //29 points, pick up sky stone, deliver and relocate platform, parking
+        }
+        TaskReporter.report(taskList);
         Logger.logFile("Task list items: " + taskList.size());
 
         if (taskList.size() > 0) {
@@ -240,48 +242,8 @@ public class AutonomousGeneric extends LinearOpMode {
 
         robotHardware.setClampPosition(RobotHardware.ClampPosition.INITIAL);
         robotHardware.rotateGrabberOriginPos();
+        robotHardware.setMotorStopBrake(false);
     }
-
-    void setUpTaskList() {
-        taskList = new ArrayList<RobotControl>();
-        taskList.add(new RobotSleep(3000));
-//        ArrayList<RobotControl> comboList = new ArrayList<RobotControl>();
-//
-//        comboList.add(new RobotSleep(1000));
-//        comboList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase + robotProfile.hardwareSpec.liftGrabExtra, 2000));
-//        comboList.add(new RobotSleep(1000));
-//        comboList.add(new ClampStraightAngleTask(robotHardware, robotProfile));
-//        comboList.add(new RobotSleep(1000));
-//        comboList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutPosAutonomous, 2000));
-//        comboList.add(new RobotSleep(1000));
-//        comboList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
-//        comboList.add(new RobotSleep(1000));
-//        comboList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase, 2000));
-//        comboList.add(new RobotSleep(1000));
-//        comboList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.CLOSE));
-//        comboList.add(new RobotSleep(1000));
-//        comboList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase + robotProfile.hardwareSpec.liftPerStone, 2000));
-//        comboList.add(new RobotSleep(1000));
-//
-//        SequentialComboTask comboTask = new SequentialComboTask();
-//
-//        comboTask.setTaskList(comboList);
-//        taskList.add(comboTask);
-    }
-
-//    void setupCombos() {
-//        ArrayList<RobotControl> comboList = new ArrayList<RobotControl>();
-//        comboList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase +
-//                robotProfile.hardwareSpec.liftPerStone + robotProfile.hardwareSpec.liftGrabExtra, 1000));
-//        comboList.add(new ClampStraightAngleTask(robotHardware, robotProfile));
-//        comboList.add(new SetSliderPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.sliderOutPosAutonomous, 1000));
-//        comboList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.OPEN));
-//        comboList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftStoneBase +
-//                robotProfile.hardwareSpec.liftGrabExtra, 1000));
-//        comboList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.CLOSE));
-//        comboList.add(new SetLiftPositionTask(robotHardware, robotProfile, robotProfile.hardwareSpec.liftGrabExtra, 1000));
-//        pickUpTask = new SequentialComboTask();
-//    }
 
         class Pipeline extends OpenCvPipeline {
 

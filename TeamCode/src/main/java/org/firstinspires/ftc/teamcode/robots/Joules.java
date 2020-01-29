@@ -181,10 +181,10 @@ public class Joules  {
 
     //Capstone
     public void CapDown(){
-        Capstone.setPosition(0.05);
+        Capstone.setPosition(1);
     }
     public void CapUp(){
-        Capstone.setPosition(1);
+        Capstone.setPosition(0.05);
     }
 
 

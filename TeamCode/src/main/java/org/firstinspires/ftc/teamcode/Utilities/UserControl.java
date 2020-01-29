@@ -77,7 +77,7 @@ public class UserControl {
             egamepad1.updateEdge();
         } while (!egamepad1.x.pressed && !egamepad1.b.pressed && !opmode.isStopRequested());
         if (egamepad1.b.pressed)
-            bridge = false;
+            bridge = true;
         egamepad1.updateEdge();
         return bridge;
     }

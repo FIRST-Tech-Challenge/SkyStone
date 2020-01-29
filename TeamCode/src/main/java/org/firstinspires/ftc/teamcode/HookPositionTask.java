@@ -13,6 +13,11 @@ public class HookPositionTask implements RobotControl {
         this.position = position;
     }
 
+    public String toString() {
+        return "Hook Position " + position;
+    }
+
+
     public void prepare(){
         timeStart = System.currentTimeMillis();
     }

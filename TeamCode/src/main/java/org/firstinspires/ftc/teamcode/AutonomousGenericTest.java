@@ -160,6 +160,8 @@ public class AutonomousGenericTest extends LinearOpMode {
             if (taskList.size() > 0) {
                 taskList.get(0).execute();
                 if (taskList.get(0).isDone()) {
+                    double newImu = robotHardware.getGyroAngle();
+                    Logger.logFile("IME Rotate:" + (newImu - origImu));
                     Logger.logFile("TaskComplete: " + taskList.get(0) + " Position:" + navigator.getWorldX() + "," + navigator.getWorldY() + " :" + navigator.getHeading());
                     Logger.flushToFile();
                     taskList.get(0).cleanUp();
@@ -172,8 +174,6 @@ public class AutonomousGenericTest extends LinearOpMode {
                 }
             }
         }
-
-        // Regardless, open the clamp to save the servo
         try {
             Logger.flushToFile();
         }
@@ -186,29 +186,35 @@ public class AutonomousGenericTest extends LinearOpMode {
 
     void setUpTaskList() {
         navigator.reset();
-        //navigator.setInitPosition(0, 0, -Math.PI/2);
-        RobotPosition lastPos ;
-
         taskList = new ArrayList<RobotControl>();
-        HookPositionTask hookOn = new HookPositionTask(robotHardware, robotProfile, RobotHardware.HookPosition.HOOK_ON);
-        taskList.add(hookOn);
-        PIDMecanumMoveTask secondMove = new PIDMecanumMoveTask(robotHardware, robotProfile, navigator);
-        secondMove.setPath(new RobotPosition(0,0,0), new RobotPosition(30, 0, 0));
-        taskList.add(secondMove);
-        taskList.add(new RobotSleep(100));
-        PIDMecanumMoveTask lastMove = new PIDMecanumMoveTask(robotHardware, robotProfile, navigator);
-        lastMove.setPath(new RobotPosition(30,0,0), new RobotPosition(30, 45, 0));
-        taskList.add(lastMove);
-        MecanumRotateTask mecanumRotate = new MecanumRotateTask(robotHardware, robotProfile,navigator);
-        mecanumRotate.setPower(0.8);
-        mecanumRotate.setMinPower(0.8);
-        mecanumRotate.setRotateHeading(new RobotPosition(30,45,0), new RobotPosition(45,65,0.5*Math.PI));
-        taskList.add(mecanumRotate);
 
+        MecanumRotateTask rot1 = new MecanumRotateTask(robotHardware, robotProfile,navigator);
+        rot1.setPower(0.5);
+        rot1.setMinPower(0.3);
+        rot1.setRotateHeading(new RobotPosition(0,0,0), new RobotPosition(0,0,-Math.PI));
+        taskList.add(rot1);
+        taskList.add(new RobotSleep(1000));
 
-        taskList.add(new RobotSleep(5000));
-        HookPositionTask hookOff = new HookPositionTask(robotHardware, robotProfile, RobotHardware.HookPosition.HOOK_OFF);
-        taskList.add(hookOff);
+        MecanumRotateTask rot2 = new MecanumRotateTask(robotHardware, robotProfile,navigator);
+        rot2.setPower(0.5);
+        rot2.setMinPower(0.3);
+        rot2.setRotateHeading(new RobotPosition(0,0,-Math.PI), new RobotPosition(0,0,0));
+        taskList.add(rot2);
+        taskList.add(new RobotSleep(1000));
+
+        MecanumRotateTask rot3 = new MecanumRotateTask(robotHardware, robotProfile,navigator);
+        rot3.setPower(0.5);
+        rot3.setMinPower(0.3);
+        rot3.setRotateHeading(new RobotPosition(0,0,0), new RobotPosition(0,0,Math.PI));
+        taskList.add(rot3);
+        taskList.add(new RobotSleep(1000));
+
+        MecanumRotateTask rot4 = new MecanumRotateTask(robotHardware, robotProfile,navigator);
+        rot4.setPower(0.5);
+        rot4.setMinPower(0.3);
+        rot4.setRotateHeading(new RobotPosition(0,0, Math.PI), new RobotPosition(0,0,2*Math.PI));
+        taskList.add(rot4);
+        taskList.add(new RobotSleep(1000));
 
         //BuildingPlateMoveTask plateTask = new BuildingPlateMoveTask(robotHardware, robotProfile, navigator, BuildingPlateMoveTask.ApproachFrom.RIGHT);
         //taskList.add(plateTask);

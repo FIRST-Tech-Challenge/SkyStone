@@ -88,7 +88,7 @@ public class IMUBufferReader implements Runnable{
     synchronized public float getLatestIMUData()
     {
         float v;
-        if (imu.getSystemError() != BNO055IMU.SystemError.NO_ERROR)
+        if (false)//imu.getSystemError() != BNO055IMU.SystemError.NO_ERROR)
         {
             RobotLogger.dd(TAG, "IMU error");
             v = lastGyroValue;
@@ -100,6 +100,7 @@ public class IMUBufferReader implements Runnable{
             if (delta > 20) {
                 v = imu.getAngularOrientation().firstAngle;
                 lastGyroTime = SystemClock.elapsedRealtime();
+                lastGyroValue = v;
             }
             else
                 v = lastGyroValue;

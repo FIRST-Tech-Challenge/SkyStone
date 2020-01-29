@@ -34,7 +34,7 @@ public class ManualParamTest extends LinearOpMode {
     private final int polling_interval = 500;
     private String TAG = "ManualParamTest";
     Localizer localizer = null;
-    IMUBufferReader imu = IMUBufferReader.getSingle_instance(hardwareMap);
+    //IMUBufferReader imu = IMUBufferReader.getSingle_instance(hardwareMap);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -88,7 +88,6 @@ public class ManualParamTest extends LinearOpMode {
             RobotLogger.dd(TAG, "headingError "  + error.getHeading());
             Thread.sleep(polling_interval);
         };
-        imu = IMUBufferReader.getSingle_instance(hardwareMap);
-        imu.cleanUP();
+
     }
 }

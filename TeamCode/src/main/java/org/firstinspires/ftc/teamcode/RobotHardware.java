@@ -334,11 +334,21 @@ public class RobotHardware {
         conveyor2.setPosition(0.5);
     }
 
-    public void reverseIntakeWheels(){
+    public void reverseIntakeWheels() {
+        reverseIntakeWheels(true);
+    }
+
+    public void reverseIntakeWheels(boolean withConveyor){
         intakeMotorLeft.setPower(-0.5);
         intakeMotorRight.setPower(0.5);
-        conveyor1.setPosition(0.8);
-        conveyor2.setPosition(0.8);
+        if (withConveyor) {
+            conveyor1.setPosition(0.8);
+            conveyor2.setPosition(0.8);
+        }
+        else {
+            conveyor1.setPosition(0.5);
+            conveyor1.setPosition(0.5);
+        }
     }
 
     public void setIntakeDirection(IntakeDirection direction){
@@ -346,7 +356,10 @@ public class RobotHardware {
             startIntakeWheels();
         } else if(direction == IntakeDirection.STOP){
             stopIntakeWheels();
-        } else{
+        } else if (direction==IntakeDirection.EJECT_EXTRA) {
+            reverseIntakeWheels(false);
+        }
+        else {
             reverseIntakeWheels();
         }
     }
@@ -407,6 +420,6 @@ public class RobotHardware {
     public enum ClampPosition {OPEN, CLOSE, INITIAL, RELEASE_1, RELEASE_2, OPEN_SIDEWAYS}
     public enum HookPosition {HOOK_ON, HOOK_OFF}
     public enum CapPosition {CAP_UP, CAP_DOWN, CAP_OTHER}
-    public enum IntakeDirection {TAKE_IN, RELEASE, STOP}
+    public enum IntakeDirection {TAKE_IN, STOP, EJECT_EXTRA}
 
 }

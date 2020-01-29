@@ -12,6 +12,10 @@ public class WaitForNavigationTask implements RobotControl {
         this.pos2 = pos2;
     }
 
+    public String toString() {
+        return "Position Trigger: " + pos1 + " to " + pos2;
+    }
+
     @Override
     public void prepare() {
     }

@@ -43,7 +43,7 @@ public class SetSliderPositionTask implements RobotControl {
     }
 
     public boolean isDone() {
-        return Math.abs(robot.getEncoderCounts(RobotHardware.EncoderType.SLIDER) - sliderPosition) < 5;
+        return Math.abs(robot.getEncoderCounts(RobotHardware.EncoderType.SLIDER) - sliderPosition) < 10;
     }
 
 }

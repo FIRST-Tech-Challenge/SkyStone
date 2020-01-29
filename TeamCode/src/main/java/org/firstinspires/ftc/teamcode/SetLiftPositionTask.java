@@ -46,7 +46,7 @@ public class SetLiftPositionTask implements RobotControl {
 
     public boolean isDone() {
         //Logger.logFile("Lift Position isDone:" + robot.getEncoderCounts(RobotHardware.EncoderType.LIFT));
-        return (Math.abs(robot.getEncoderCounts(RobotHardware.EncoderType.LIFT) - liftPosition) < 5) ||
+        return (Math.abs(robot.getEncoderCounts(RobotHardware.EncoderType.LIFT) - liftPosition) < 25) ||
                 (System.currentTimeMillis()-timeStart>timeOut);
 
     }

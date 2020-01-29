@@ -20,6 +20,8 @@ public class MecanumRotateTask implements RobotControl {
     transient double currentAngle;
     transient double targetAngle;
     transient double minPower = 0.2;
+    transient long timeOut = 60000;
+    transient long startTime;
 
     public MecanumRotateTask(RobotHardware robot, RobotProfile profile, RobotNavigator navigator) {
         this.robot = robot;
@@ -48,6 +50,10 @@ public class MecanumRotateTask implements RobotControl {
                     endAngle.getX() + "," + endAngle.getY() + ") @" + Math.toDegrees(endAngle.getHeading()) + " curr:" + navigator.getLocationString();
     }
 
+    public void setTimeOut(long timeOut) {
+        this.timeOut = timeOut;
+    }
+
     public boolean isDone() {
         double dist = Math.hypot(endAngle.getY() - navigator.getWorldY(), endAngle.getX() - navigator.getWorldX());
 //        if ((dist<1.5) && (Math.abs(navigator.getHeading() - endAngle.getHeading()) < 1.0/180*Math.PI)){
@@ -58,6 +64,9 @@ public class MecanumRotateTask implements RobotControl {
 //        }
 //    }
         //12/12 try to loose the condition so hook off easier
+        if ((System.currentTimeMillis() - startTime) > timeOut) {
+            return true;
+        }
         if ((dist < 1.5) && (Math.abs(navigator.getHeading() - endAngle.getHeading()) < 1.0/180*Math.PI)){
             Logger.logFile("Done Rotation - Current Heading: " + Math.toDegrees(currentAngle) + ", Target Heading: " + Math.toDegrees(targetAngle));
             return true;
@@ -71,6 +80,7 @@ public class MecanumRotateTask implements RobotControl {
         currentAngle = startAngle.getHeading();
         targetAngle = endAngle.getHeading();
         rightTurnSign = (endAngle.getHeading()>startAngle.getHeading())? 1 : -1;
+        startTime = System.currentTimeMillis();
         Logger.logFile("Prepare Rotation - Current Heading: " + Math.toDegrees(currentAngle) + ", Target Heading: " + Math.toDegrees(targetAngle));
     }
 

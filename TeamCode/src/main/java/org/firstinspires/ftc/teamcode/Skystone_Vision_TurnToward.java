@@ -66,11 +66,14 @@ public class Skystone_Vision_TurnToward extends BaseAutoOpMode {
 
 
         // Wait for the game to start (driver presses PLAY)
-        waitForStart();
+        while (!isStarted()) {
+            VisionTargetTfod(); //continue to update vision
+        }
         runtime.reset();
         resetAngle();
 
-        //EncoderDrive(DriveDirection.BACKWARD, 2000);
+        //EncoderDrive(DriveDirection.BACKWARD, 100);
+        int movements = 0;
 
 
         while (!isStopRequested()) {
@@ -86,6 +89,8 @@ public class Skystone_Vision_TurnToward extends BaseAutoOpMode {
                 //first stone in the list should be the closest
                 Recognition stone = Skystones.get(0);
                 double angleToStone = stone.estimateAngleToObject(AngleUnit.DEGREES);
+                telemetry.addData("Angle", angleToStone);
+
                 if( Math.abs(angleToStone) < 5)
                 {
                     Drive(DriveDirection.BACKWARD);
@@ -107,8 +112,16 @@ public class Skystone_Vision_TurnToward extends BaseAutoOpMode {
                 telemetry.update();
 
             } else {
-                StopAllDrive();
                 telemetry.addData("Status", "Not detected");
+                telemetry.addData("Movements", movements);
+                if(movements <= 30)
+                {
+                    movements++;
+                    EncoderDrive(DriveDirection.BACKWARD, 100);
+                }
+
+
+
                 telemetry.update();
             }
         }

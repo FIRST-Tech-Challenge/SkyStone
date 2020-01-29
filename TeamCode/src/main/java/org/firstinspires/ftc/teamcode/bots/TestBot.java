@@ -49,6 +49,7 @@ public class TestBot extends Bot {
     public Intake intake = null;
     public Ramp ramp = null;
     public Grapple2 grapple2 = null;
+    public ColorFinder colorFinder = null;
 
     /* Constructor */
     public TestBot() {
@@ -77,6 +78,7 @@ public class TestBot extends Bot {
         skystoneFinder = new SkystoneFinder(logger, aOpMode);
         intake = new Intake(logger, aOpMode, "Right_Intake", "Left_Intake");
         ramp = new Ramp(logger, aOpMode, "rampServo", "rampServo2");
+        colorFinder = new ColorFinder(logger, aOpMode, "leftColor", "rightColor");
 
     }
 
@@ -86,6 +88,7 @@ public class TestBot extends Bot {
         webCamera.init(WebCamera.InitType.INIT_FOR_FIND_GOLD);
         // webCamNavigator.init();
         skystoneFinder.init();
+        colorFinder.init();
     }
 
 }

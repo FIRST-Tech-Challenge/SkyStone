@@ -25,6 +25,7 @@ public class PIDMecanumMoveTask implements RobotControl {
     //transient double pathAngle = 0;
     transient double pathDistance = 0;
     transient double targetAngle;
+    transient double lastToTargetDist;
     transient double minPower = 0.2;
 
     public PIDMecanumMoveTask(RobotHardware robot, RobotProfile profile,RobotNavigator  navigator){
@@ -94,20 +95,39 @@ public class PIDMecanumMoveTask implements RobotControl {
         return navigator.getHeading() - endPos.getHeading();
     }
 
+    /**
+     * Multiple criteria to determine completion
+     * 1. 0.5cm from target
+     * 2. Overshoot (target dist go further from previous measure)
+     * 3. Travel distance greater than planned distance
+     * 4. No movement for last 40 measures
+     * @return
+     */
     public boolean isDone(){
-        double targetDistance = Math.hypot(endPos.getY() - startPos.getY(), endPos.getX() - startPos.getX());
-        double currentDistance = Math.hypot(navigator.getWorldY() - startPos.getY(), navigator.getWorldX() - startPos.getX());
+        double toTargetDist = Math.hypot(endPos.getY()-navigator.getWorldY(), endPos.getX()-navigator.getWorldX());
+        if (toTargetDist < 0.5) {
+            return true;
+        }
+        if ((toTargetDist>lastToTargetDist+0.5) && (lastToTargetDist<5)) {
+            Logger.logFile("Overshoot - toTarget:" + toTargetDist + " prev:" + lastToTargetDist);
+            return true;
+        }
+        else {
+            lastToTargetDist = toTargetDist;
+        }
+        double targetTravelDistance = Math.hypot(endPos.getY() - startPos.getY(), endPos.getX() - startPos.getX());
+        double currentTravelDistance = Math.hypot(navigator.getWorldY() - startPos.getY(), navigator.getWorldX() - startPos.getX());
 //        Logger.logFile("currentDistance: " + currentDistance + ", targetDistance: " + targetDistance);
         boolean noMovement = false;
-        if (Math.abs(currentDistance-prevDist[prevNdx])<1) {
-            Logger.logFile("MoveBlocked - " + currentDistance + " : " + prevDist[prevNdx]);
+        if (Math.abs(currentTravelDistance-prevDist[prevNdx])<1) {
+            Logger.logFile("MoveBlocked - " + currentTravelDistance + " : " + prevDist[prevNdx]);
             noMovement = true;
         }
-        prevDist[prevNdx] = currentDistance;
+        prevDist[prevNdx] = currentTravelDistance;
         prevNdx = (prevNdx + 1) % prevDist.length;
 //        Logger.logFile("navigator.getWorldY()=" + navigator.getWorldY() + " navigator.getWorldX() " + navigator.getWorldX());
 //        Logger.logFile("noMovement = " + noMovement);
-        return (currentDistance > targetDistance) || noMovement;
+        return (currentTravelDistance > targetTravelDistance) || noMovement;
     }
 
     public void prepare(){
@@ -115,6 +135,7 @@ public class PIDMecanumMoveTask implements RobotControl {
             startPos = new RobotPosition(navigator.getWorldX(),navigator.getWorldY(),navigator.getHeading());
             endPos = new RobotPosition(offsetX + navigator.getWorldX(), offsetY + navigator.getWorldY(), navigator.getHeading());
         }
+        lastToTargetDist = 10000;
         targetAngle = Math.PI/2-Math.atan2(endPos.getY() - startPos.getY(), endPos.getX() - startPos.getX());
         setupPID();
     }

@@ -34,8 +34,12 @@ public class Intake {
     public  double GRIP_OPEN_LEFT = 0.5;
     public  double GRIP_OPEN_RIGHT = 0.5;
 
-    public double GRIP_CLOSE_LEFT = 0.20;
-    public double GRIP_CLOSE_RIGHT= 0.80;
+    //public double GRIP_CLOSE_LEFT = 0.20;
+    //public double GRIP_CLOSE_RIGHT= 0.80;
+
+    //values for the new grip 01/28/2020
+    public double GRIP_CLOSE_LEFT = 0;
+    public double GRIP_CLOSE_RIGHT= 1;
 
     public int grip_state=0; // 0-INIT, 1-OPEN, 2-CLOSE
 

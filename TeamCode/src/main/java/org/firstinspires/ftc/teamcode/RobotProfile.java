@@ -152,7 +152,7 @@ public class RobotProfile {
         hardwareSpec = new HardwareSpec();
         hardwareSpec.trackWheelDiameter = 3.8;   //cm diameter
         hardwareSpec.trackWheelCPR = 4000;
-        hardwareSpec.leftRightWheelDist = 39.75;//cm left right dist
+        hardwareSpec.leftRightWheelDist = 41;//cm left right dist, from tuning
         hardwareSpec.sliderOrigPos = 0;
         hardwareSpec.sliderOutPosAutonomous = 1475;       //1385... 1500;
         hardwareSpec.sliderOutPosDriver = 1355;
@@ -162,23 +162,23 @@ public class RobotProfile {
         hardwareSpec.sliderCountPerCM = 47;
         hardwareSpec.liftOrigPos = 0;
         hardwareSpec.liftStoneBase = 0;
-        hardwareSpec.liftHomeReadyPos = 150;
+        hardwareSpec.liftHomeReadyPos = 250;
         hardwareSpec.liftHomeGrabPos = 60;
         hardwareSpec.liftGrabExtra = 127;    // addition high above base before open and lower for grab
         hardwareSpec.liftPerStone = 341;     // addition high per stone
-        hardwareSpec.clampAngleNormal = 0.825;
-        hardwareSpec.clampAngleSide = 0.51;
+        hardwareSpec.clampAngleNormal = 0.795; // It should be 0.825 after fix
+        hardwareSpec.clampAngleSide = 0.48; /// It should be 0.51 after fix
         hardwareSpec.clampAngleBack = 0.2475; //0.25
         /**********************
          * S1 is the S2 on the robot
          * S2 is S1 on the robot
          */
-        hardwareSpec.clampS1Init = 0.48;
+        hardwareSpec.clampS1Init = 0.45;
         hardwareSpec.clampS1Open = 0.39; //was open, 0.5
         hardwareSpec.clampS1Close = 0.45; //was close
         hardwareSpec.clampS1WheelHold = 0.48;
         hardwareSpec.clampS1WheelRelease = 0.48;
-        hardwareSpec.clampS2Init = 0.53;
+        hardwareSpec.clampS2Init = 0.585;
         hardwareSpec.clampS2Open= 0.66; //was open, 0.5
         hardwareSpec.clampS2OpenLarge = 0.89; //horizontal position
         hardwareSpec.clampS2Close = 0.585; //was close

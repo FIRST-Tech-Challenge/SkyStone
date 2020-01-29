@@ -7,10 +7,8 @@ public class DriverOptions {
     private String deliverRoute;
     private String moveFoundation;
     private String isParkOnly;
-    private String isTwoSkystones;
+    private String stoneOptions;
     private boolean isFirstBlockByWall;
-    private String stoneDestination;
-    private boolean getSecondSkystoneGroup;
 
     public String getStartingPositionModes() {
         return startingPositionModes;
@@ -52,24 +50,18 @@ public class DriverOptions {
         this.isParkOnly = isParkOnly;
     }
 
-    public String getIsTwoSkystones() {
-        return isTwoSkystones;
-    }
-
-    public void setIsTwoSkystones(String isTwoSkystones) {
-        this.isTwoSkystones = isTwoSkystones;
+    public String getStoneOptions() {
+        return stoneOptions;
     }
 
     public boolean getIsFirstBlockByWall(){return isFirstBlockByWall;}
 
-    public boolean getSecondSkystoneGroupPosition() {return getSecondSkystoneGroup;}
+    public void setStoneOptions(String stoneOptions) { this.stoneOptions = stoneOptions; }
 
     public void setIsFirstBlockByWall(String isFirstBlockByWall) {
         this.isFirstBlockByWall = isFirstBlockByWall.equals("yes");
 
     }
-
-    public String getStoneDestination(){return stoneDestination;}
 
     public int getDelay() {
         return delay;

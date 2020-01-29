@@ -34,12 +34,14 @@ public class DriverOpMode extends OpMode {
     boolean clampServoOut = false;
     boolean tapeMoving = false;
 
+    // DriveThru combos
     RobotControl currentTask = null;
     SequentialComboTask homePositionTask;
     SequentialComboTask homeGrabTask;
     SequentialComboTask capstonePositionTask;
     SequentialComboTask deliveryPositionTask;
     SequentialComboTask homeGrabReadyTask;
+    SequentialComboTask capstoneOtherTask;
 
     @Override
     public void init() {
@@ -215,10 +217,13 @@ public class DriverOpMode extends OpMode {
         }
 
         //12/13
-        if (gamepad2.right_bumper) {
-            robotHardware.setCapStoneServo(RobotHardware.CapPosition.CAP_OTHER);
+        if (gamepad2.right_bumper && currentTask != capstoneOtherTask) {
+            currentTask = capstoneOtherTask;
+            currentTask.prepare();
+            Logger.logFile(currentTask.toString());
         }
 
+        // Tape control
         if (gamepad1.a) {
             robotHardware.retractTake();
             tapeMoving = true;
@@ -350,6 +355,12 @@ public class DriverOpMode extends OpMode {
        capstonePositionList.add(new ClampOpenCloseTask(robotHardware, robotProfile, RobotHardware.ClampPosition.CLOSE));
        capstonePositionTask = new SequentialComboTask();
        capstonePositionTask.setTaskList(capstonePositionList);
+
+       // Capston Other Task
+       capstoneOtherTask = new SequentialComboTask();
+       capstoneOtherTask.addTask(new CapstonePositionTask(robotHardware, robotProfile, RobotHardware.CapPosition.CAP_OTHER));
+       capstoneOtherTask.addTask(new RobotSleep(500));
+       capstoneOtherTask.addTask(new CapstonePositionTask(robotHardware, robotProfile, RobotHardware.CapPosition.CAP_UP));
    }
 
     private void handleLiftAndSlide() {

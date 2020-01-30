@@ -5,6 +5,8 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.teamcode.All.DriveConstant;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.RobotLogger;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
@@ -48,14 +50,16 @@ public class FollowerPIDTunerStrafe extends LinearOpMode {
             drive.setPoseEstimate(new Pose2d(0, 0, 0));
 
             if (DriveConstantsPID.USING_STRAFE_DIAGNAL == true) {
-                drive.resetFollowerWithParameters(true, false);
+                if (DriveConstantsPID.RESET_FOLLOWER)
+                    drive.resetFollowerWithParameters(true, false);
                 drive.followTrajectorySync(
                         drive.trajectoryBuilder()
                                 .strafeTo(new Vector2d(DriveConstantsPID.TEST_DISTANCE, DriveConstantsPID.TEST_DISTANCE_0))
                                 .build());
             }
             else {
-                drive.resetFollowerWithParameters(false, false);
+                if (DriveConstantsPID.RESET_FOLLOWER)
+                    drive.resetFollowerWithParameters(false, false);
                 drive.followTrajectorySync(
                         drive.trajectoryBuilder()
                                 .lineTo(new Vector2d(DriveConstantsPID.TEST_DISTANCE, DriveConstantsPID.TEST_DISTANCE_0))

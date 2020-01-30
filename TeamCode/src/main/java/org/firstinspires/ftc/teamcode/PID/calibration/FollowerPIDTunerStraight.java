@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.teamcode.All.DriveConstant;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
@@ -48,7 +49,8 @@ public class FollowerPIDTunerStraight extends LinearOpMode {
             drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
             drive.setPoseEstimate(new Pose2d(0, 0, 0));
 
-            drive.resetFollowerWithParameters(false, false);
+            if (DriveConstantsPID.RESET_FOLLOWER)
+                drive.resetFollowerWithParameters(false, false);
             drive.followTrajectorySync(
                     drive.trajectoryBuilder()
                             .forward(DISTANCE)
@@ -61,7 +63,8 @@ public class FollowerPIDTunerStraight extends LinearOpMode {
             try{
                 Thread.sleep(2000);
             } catch(Exception e){}
-            drive.resetFollowerWithParameters(false, false);
+            if (DriveConstantsPID.RESET_FOLLOWER)
+                drive.resetFollowerWithParameters(false, false);
             drive.followTrajectorySync(
                     drive.trajectoryBuilder()
                             .back(DISTANCE)

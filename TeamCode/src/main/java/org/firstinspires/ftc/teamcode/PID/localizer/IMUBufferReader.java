@@ -22,11 +22,13 @@ public class IMUBufferReader implements Runnable{
     private String TAG = "IMUBufferReader";
     private float lastGyroValue = 0;
     private long lastGyroTime = 0;
-
+    private static final int IMU_FRESH_THRESHOLD = 20; // milli seconds
     private static boolean keepRunning = true;
     private boolean IMUReaderRunning = false;
     private float[] pingPongBuffer = new float[2];
     private int latestIndex = 0;
+    private float gyro_range = 2 * (float) Math.PI;
+
     Thread thread;
 
     private IMUBufferReader(HardwareMap hardwareMap) {
@@ -97,8 +99,11 @@ public class IMUBufferReader implements Runnable{
         {
             long delta = SystemClock.elapsedRealtime() - lastGyroTime;
             RobotLogger.dd(TAG, "IMU gyro time delta: " + delta);
-            if (delta > 20) {
+            if (delta > IMU_FRESH_THRESHOLD) {
                 v = imu.getAngularOrientation().firstAngle;
+
+                v = ((v % gyro_range) + gyro_range) % gyro_range;
+
                 lastGyroTime = SystemClock.elapsedRealtime();
                 lastGyroValue = v;
             }

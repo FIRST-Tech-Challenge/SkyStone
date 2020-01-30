@@ -94,8 +94,10 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
             RobotLogger.dd(TAG, "to setLocalizer to StandardTrackingWheelLocalizer");
             setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         }
-        else
+        else {
+            setLocalizer(new MecanumLocalizer(this, DriveConstantsPID.RUN_USING_IMU_LOCALIZER));
             RobotLogger.dd(TAG, "use default 4 wheel localizer");
+        }
     }
     @Override
     public void setBrakeonZeroPower(boolean flag) {

@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocaliz
 import org.firstinspires.ftc.teamcode.PID.localizer.VuforiaCamLocalizer;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
+import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREVOptimized;
 import org.firstinspires.ftc.teamcode.TeleOp.Teleop;
 import org.firstinspires.ftc.teamcode.TeleOp.TeleopConstants;
 
@@ -72,7 +73,7 @@ public class Path {
     input: last pose from previous move;
     return: drive instance;
      */
-    public SampleMecanumDriveBase DriveBuilderReset(boolean isStrafe, boolean init_imu, String label, boolean rotating) {
+    private SampleMecanumDriveBase DriveBuilderReset(boolean isStrafe, boolean init_imu, String label, boolean rotating) {
         currentPos = _drive.getPoseEstimate();
         Pose2d newPos = currentPos;
         Pose2d error_pose = _drive.follower.getLastError();
@@ -124,8 +125,12 @@ public class Path {
         }
         //RobotLogger.dd(TAG, "vuforia localization info: %s", vu.getPoseEstimate().toString());
 
-        if (DriveConstantsPID.RECREATE_DRIVE_AND_BUILDER)
-            _drive = new SampleMecanumDriveREV(hardwareMap, isStrafe);
+        if (DriveConstantsPID.RECREATE_DRIVE_AND_BUILDER) {
+            if (DriveConstantsPID.USING_BULK_READ)
+                _drive = new SampleMecanumDriveREVOptimized(hardwareMap, isStrafe);
+            else
+                _drive = new SampleMecanumDriveREV(hardwareMap, isStrafe);
+        }
         else
             _drive.resetFollowerWithParameters(isStrafe, rotating);
 

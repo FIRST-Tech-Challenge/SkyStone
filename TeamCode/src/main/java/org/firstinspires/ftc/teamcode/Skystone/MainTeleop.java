@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.MotionAction;
-import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 
 import java.util.LinkedList;
@@ -18,26 +17,47 @@ import java.util.Queue;
 public class MainTeleop extends LinearOpMode {
     Robot robot;
 
-    double fLPower;
-    double fRPower;
-    double bLPower;
-    double bRPower;
+    private Queue<MotionAction> outtakeActions = new LinkedList<>();
 
-    long currentTime;
+    private long currentTime;
 
-    boolean onSlowDrive, changedSlowDrive = false;
+    private boolean isTogglingG2A = false;
+    private boolean isTogglingG2B = false;
+    private boolean isTogglingG2X = false;
 
-    boolean isRetract = false;
-    boolean isExtend = false;
-    boolean isClamp = false;
-    boolean is90 = false;
-    boolean foundationToggle = false;
-    boolean resetfoundation = false;
+    private double fLPower;
+    private double fRPower;
+    private double bLPower;
+    private double bRPower;
 
-    public static double powerScaleFactor = 0.9;
+    private double intakeLeftPower;
+    private double intakeRightPower;
 
-    boolean isIntakeMode = false;
+    private double spoolPosition;
 
+    private double lastDropPosition = 0;
+    private double spoolTargetPosition = 0;
+
+    private boolean isMovingSpoolToPosition;
+    private boolean isG2DPDPushed = false;
+
+    private boolean onSlowDrive, changedSlowDrive = false;
+    private boolean toggleMode = true;
+
+    private boolean isRetract = false;
+    private boolean isExtend = false;
+    private boolean isClamp = false;
+    private boolean is90 = false;
+    private boolean foundationToggle = false;
+    private boolean resetfoundation = false;
+
+    private boolean motionExecuted;
+
+    private static double powerScaleFactor = 0.9;
+
+    private boolean isIntakeMode = false;
+
+    private Position2D position2D;
 
     @Override
     public void runOpMode() {
@@ -45,7 +65,7 @@ public class MainTeleop extends LinearOpMode {
         robot.initServos();
         waitForStart();
 
-        Position2D position2D = new Position2D(robot);
+        position2D = new Position2D(robot);
         position2D.startOdometry();
 
         while (opModeIsActive()) {
@@ -63,15 +83,7 @@ public class MainTeleop extends LinearOpMode {
             spoolLogic();
             intakeLogic();
 
-            if(gamepad1.a){
-
-                robot.setDrivetrainMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                robot.setDrivetrainMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-                position2D.o.resetOdometry();
-
-                robot.moveToPoint(24.5,0,0.5,1,0);
-            }
+            foundationMoveLogic();
 
             if (robot.isDebug()) {
                 telemetry.addLine("xPos: " + robot.getRobotPos().x);
@@ -90,12 +102,6 @@ public class MainTeleop extends LinearOpMode {
         }
     }
 
-    private double lastDropPosition = 0;
-    private double spoolTargetPosition = 0;
-    private boolean isMovingSpoolToPosition;
-
-    private boolean isG2DPDPushed = false;
-
     private void spoolLogic() {
         double spoolPower = -gamepad2.left_stick_y;
 
@@ -107,7 +113,7 @@ public class MainTeleop extends LinearOpMode {
             spoolPower = .15;
         }
 
-        double spoolPosition = robot.getOuttakeSpool().getCurrentPosition();
+        spoolPosition = robot.getOuttakeSpool().getCurrentPosition();
 
         if (!gamepad2.dpad_down && isG2DPDPushed) {
             isMovingSpoolToPosition = true;
@@ -269,7 +275,6 @@ public class MainTeleop extends LinearOpMode {
             }
 
             robot.getFrontClamp().setPosition(robot.FRONTCLAMP_CLAMPED);
-
         }
     }
 
@@ -282,19 +287,10 @@ public class MainTeleop extends LinearOpMode {
         } else if (!gamepad1.left_bumper) {
             changedSlowDrive = false;
         }
-
-//        if (powerScaleFactor == 0.4) {
-////            telemetry.addData("Driving Mode","Slow");
-//        } else {
-////            telemetry.addData("Driving Mode","Normal");
-//        }
     }
 
     private void intakeLogic() {
         if (Math.abs(gamepad2.left_stick_y) <= 0.25) {
-            double intakeLeftPower = 0;
-            double intakeRightPower = 0;
-
             intakeLeftPower = gamepad2.right_stick_y;
             intakeRightPower = gamepad2.right_stick_y;
 
@@ -311,12 +307,6 @@ public class MainTeleop extends LinearOpMode {
         }
     }
 
-    Queue<MotionAction> outtakeActions = new LinkedList<>();
-
-    private boolean isTogglingG2A = false;
-    private boolean isTogglingG2B = false;
-    private boolean isTogglingG2X = false;
-
     private void outtakeLogic() {
         currentTime = SystemClock.elapsedRealtime();
         // Logic to control outtake; with a delay on the pivot so that the slides can extend before pivot rotation
@@ -329,6 +319,7 @@ public class MainTeleop extends LinearOpMode {
         } else if (!gamepad2.a) {
             isTogglingG2A = false;
         }
+
         if (gamepad2.b && !isTogglingG2B) { // Deposit and Reset
             lastDropPosition = robot.getOuttakeSpool().getCurrentPosition() + 250;
             isMovingSpoolToPosition = false;
@@ -344,6 +335,7 @@ public class MainTeleop extends LinearOpMode {
         } else if (!gamepad2.b) {
             isTogglingG2B = false;
         }
+
         if (gamepad2.x && !isTogglingG2X) {
             isTogglingG2X = true;
 
@@ -357,7 +349,7 @@ public class MainTeleop extends LinearOpMode {
             isTogglingG2X = false;
         }
 
-        boolean motionExecuted = true;
+        motionExecuted = true;
         while (motionExecuted) {
             currentTime = SystemClock.elapsedRealtime();
             MotionAction currentMotion = outtakeActions.peek();
@@ -390,15 +382,20 @@ public class MainTeleop extends LinearOpMode {
         robot.foundationMovers(foundationToggle);
     }
 
-    private boolean toggleMode = true;
+    private void foundationMoveLogic(){
+        if(gamepad1.a){
+            robot.setDrivetrainMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.setDrivetrainMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            position2D.o.resetOdometry();
+
+            robot.moveToPoint(24.5,0,0.75,1,0);
+        }
+    }
 
     private void robotModeLogic() {
         if (gamepad1.a && gamepad1.x && toggleMode) {
-            if (isIntakeMode) {
-                isIntakeMode = false;
-            } else {
-                isIntakeMode = true;
-            }
+            isIntakeMode = !isIntakeMode;
             toggleMode = false;
         } else if (!toggleMode && !(gamepad1.a && gamepad1.x)) {
             toggleMode = true;

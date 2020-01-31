@@ -209,13 +209,13 @@ public class Vision {
             parameters.vuforiaLicenseKey = VUFORIA_KEY;
             parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
+            //  Instantiate the Vuforia engine
             this.vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
             vuforia.enableConvertFrameToBitmap();
         }catch (Exception e){
 
         }
-        //  Instantiate the Vuforia engine
     }
 }
 

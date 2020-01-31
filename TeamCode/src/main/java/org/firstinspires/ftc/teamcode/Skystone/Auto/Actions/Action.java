@@ -16,9 +16,10 @@ public class Action {
     int liftHeight;
     private long actionsStartTime;
 
-    ArrayList<MotionAction> motionActions = new ArrayList();
+    ArrayList<MotionAction> motionActions;
 
     public Action(ActionType type, Point executePoint, Robot robot) {
+        motionActions = new ArrayList<>();
         this.robot = robot;
 
         this.actionType = type;
@@ -30,6 +31,8 @@ public class Action {
     }
 
     public Action(ActionType type, Point executePoint, Robot robot, int liftHeight) {
+        motionActions = new ArrayList<>();
+
         this.robot = robot;
         this.liftHeight = liftHeight;
         this.actionType = type;
@@ -41,6 +44,8 @@ public class Action {
     }
 
     public Action(ActionType type, Robot robot, boolean isExecuteOnEndOfPath, int liftHeight) {
+        motionActions = new ArrayList<>();
+
         this.robot = robot;
         this.liftHeight = liftHeight;
 
@@ -52,6 +57,8 @@ public class Action {
     }
 
     public Action(ActionType type, Robot robot, boolean isExecuteOnEndOfPath) {
+        motionActions = new ArrayList<>();
+
         this.robot = robot;
 
         this.actionType = type;
@@ -120,7 +127,7 @@ public class Action {
     }
 
     private void generateDropStoneAndRetractOuttakeActions() {
-        motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, 0, 0, robot));
+        motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, liftHeight-100, 0, robot));
 
         motionActions.add(new MotionAction(robot.getBackClamp(), robot.BACKCLAMP_RELEASED, 0, robot));
         motionActions.add(new MotionAction(robot.getFrontClamp(), robot.FRONTCLAMP_RELEASED, 0, robot));
@@ -128,6 +135,8 @@ public class Action {
         motionActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_RETRACTED, 750, robot));
 
         motionActions.add(new MotionAction(robot.getIntakePusher(), robot.PUSHER_RETRACTED, 750, robot));
+
+        motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, 0, 1000, robot));
 
     }
 

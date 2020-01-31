@@ -1,34 +1,37 @@
+package org.firstinspires.ftc.teamcode.Autonomous;
 
-        package org.firstinspires.ftc.teamcode.Autonomous;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.BaseTrajectoryBuilder;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.RobotLog;
 
-        import com.acmerobotics.roadrunner.geometry.Pose2d;
-        import com.acmerobotics.roadrunner.geometry.Vector2d;
-        import com.acmerobotics.roadrunner.trajectory.BaseTrajectoryBuilder;
-        import com.acmerobotics.roadrunner.trajectory.Trajectory;
-        import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
-        import com.qualcomm.hardware.bosch.BNO055IMU;
-        import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-        import com.qualcomm.robotcore.hardware.DcMotor;
-        import com.qualcomm.robotcore.util.RobotLog;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.All.HardwareMap;
+import org.firstinspires.ftc.teamcode.Autonomous.Vision.Align;
+import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
+import org.firstinspires.ftc.teamcode.PID.RobotLogger;
+import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.PID.localizer.VuforiaCamLocalizer;
+import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
+import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
+import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREVOptimized;
+import org.firstinspires.ftc.teamcode.TeleOp.Teleop;
+import org.firstinspires.ftc.teamcode.TeleOp.TeleopConstants;
 
-        import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-        import org.firstinspires.ftc.teamcode.All.HardwareMap;
-        import org.firstinspires.ftc.teamcode.Autonomous.Vision.Align;
-        import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
-        import org.firstinspires.ftc.teamcode.PID.localizer.StandardTrackingWheelLocalizer;
-        import org.firstinspires.ftc.teamcode.PID.localizer.VuforiaCamLocalizer;
-        import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
-        import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
-        import org.firstinspires.ftc.teamcode.TeleOp.TeleopConstants;
+import java.lang.reflect.Field;
+import java.util.List;
 
-        import java.lang.reflect.Field;
-        import java.util.List;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
-        import kotlin.Unit;
-        import kotlin.jvm.functions.Function0;
-
-        import static java.lang.Math.PI;
-        import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.rear_ratio;
+import static java.lang.Math.PI;
+import static java.lang.Math.abs;
+import static org.firstinspires.ftc.teamcode.PID.DriveConstantsPID.rear_ratio;
 
 public class Path {
     private Pose2d startingPos;
@@ -49,10 +52,9 @@ public class Path {
     //VuforiaCamLocalizer vu;
 
     public Path(HardwareMap hwMap, LinearOpMode opMode, SampleMecanumDriveBase straightDrive,
-                SampleMecanumDriveBase strafeDrive, Pose2d startingPos,
+                Pose2d startingPos,
                 com.qualcomm.robotcore.hardware.HardwareMap hardwareMap, BNO055IMU imu) {
         this.straightDrive = straightDrive;
-        this.strafeDrive = strafeDrive;
         this.startingPos = startingPos;
         this.hwMap = hwMap;
         this.opMode = opMode;
@@ -71,12 +73,65 @@ public class Path {
     input: last pose from previous move;
     return: drive instance;
      */
-    public SampleMecanumDriveBase DriveBuilderReset(boolean isStrafe, boolean init_imu, String label) {
+    private SampleMecanumDriveBase DriveBuilderReset(boolean isStrafe, boolean init_imu, String label, boolean rotating) {
         currentPos = _drive.getPoseEstimate();
         Pose2d error_pose = _drive.follower.getLastError();
         RobotLog.dd(TAG, "start new step: %s, count[%d], currentPos %s, errorPos %s",
                 label, step_count++, currentPos.toString(), error_pose.toString());
-        //RobotLog.dd(TAG, "vuforia localization info: %s", vu.getPoseEstimate().toString());
+        if (DriveConstantsPID.drvCorrection)
+        {
+            boolean done = false;
+            if ((abs(error_pose.getX())>1.5))// && (abs(error_pose.getX())>abs(error_pose.getY())))
+            {
+                RobotLogger.dd(TAG, "pose correction by straight move");
+                _drive.resetFollowerWithParameters(false, false);
+                _drive.followTrajectorySync(
+                        _drive.trajectoryBuilder()
+                                .setReversed((error_pose.getX()>0)?false:true)
+                                .lineTo(new Vector2d(newPos.getX() + error_pose.getX(), newPos.getY()))
+                                .build());
+                done = true;
+                newPos = _drive.getPoseEstimate();
+                RobotLogger.dd(TAG, "after pose correction: currentPos %s, errorPos %s",
+                        newPos.toString(), _drive.follower.getLastError().toString());
+            }
+            if ((abs(error_pose.getY())>1.5))// && (abs(error_pose.getX())<abs(error_pose.getY())))
+            {
+                RobotLogger.dd(TAG, "pose correction by strafing");
+                _drive.resetFollowerWithParameters(true, false);
+                _drive.followTrajectorySync(
+                        _drive.trajectoryBuilder()
+                                .setReversed(false)
+                                .strafeTo(new Vector2d(newPos.getX(), newPos.getY() + error_pose.getY()))
+                                .build());
+                done = true;
+                newPos = _drive.getPoseEstimate();
+                RobotLogger.dd(TAG, "after pose correction: currentPos %s, errorPos %s",
+                        newPos.toString(), _drive.follower.getLastError().toString());
+            }
+            /*
+            if (Math.toDegrees(error_pose.getHeading())>10)
+            {
+                RobotLog.dd(TAG, "correct heading by turning");
+                _drive.resetFollowerWithParameters(false, false);
+                _drive.turnSync(error_pose.getHeading());
+                done = true;
+                newPos = _drive.getPoseEstimate();
+            }*/
+            if (done) {
+                currentPos = newPos;
+            }
+        }
+        //RobotLogger.dd(TAG, "vuforia localization info: %s", vu.getPoseEstimate().toString());
+
+        if (DriveConstantsPID.RECREATE_DRIVE_AND_BUILDER) {
+            if (DriveConstantsPID.USING_BULK_READ)
+                _drive = new SampleMecanumDriveREVOptimized(hardwareMap, isStrafe);
+            else
+                _drive = new SampleMecanumDriveREV(hardwareMap, isStrafe);
+        }
+        else
+            _drive.resetFollowerWithParameters(isStrafe, rotating);
 
         _drive = new SampleMecanumDriveREV(hardwareMap, isStrafe, init_imu);
         _drive.getLocalizer().setPoseEstimate(currentPos);

@@ -62,7 +62,7 @@ public class TestOdometry extends LinearOpMode {
         counter = 0;
 
         //collectData();
-        drive = new SampleMecanumDriveREV(hardwareMap, false, true);
+        drive = new SampleMecanumDriveREV(hardwareMap, false);
         drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(0,0),0));
         drive.getLocalizer().update();
 

@@ -33,7 +33,6 @@ public class PhoneIMUTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         DriveConstantsPID.updateConstantsFromProperties();
 
-
         List<Sensor> sensorList = sensors.getSensorList(Sensor.TYPE_ALL);
 
         String sensorInfo = "";

@@ -123,6 +123,7 @@ public class Teleop extends LinearOpMode {
         toggleLoop();
         parkingLoop();
         armDelayHandler();
+        initIntakeClawArm();
 
         while (opModeIsActive()) {
 
@@ -553,6 +554,71 @@ public class Teleop extends LinearOpMode {
             }
         };
         parkingServ.start();
+    }
+
+    private void initIntakeClawArm() {
+        Thread intake = new Thread() {
+            public void run() {
+                hwMap.clawInit.setPosition(TeleopConstants.clawInitPosCapstone);
+                hwMap.clawServo2.setPosition(TeleopConstants.clawServo2Block + 0.08);
+                //resetLift(TeleopConstants.liftPower);
+                try {
+                    Thread.sleep(300);
+                } catch (Exception e) {}
+
+                hwMap.innerTransfer.setPosition(TeleopConstants.intakeInitPosRight);
+                try {
+                    Thread.sleep(700);
+                } catch (Exception e) {}
+
+                hwMap.innerTransfer.setPosition(TeleopConstants.intakeInitPosLeft);
+
+                try {
+                    Thread.sleep(700);
+                } catch (Exception e) {}
+
+                hwMap.innerTransfer.setPosition(TeleopConstants.intakeInitPosReset);
+            }
+        };
+
+        Thread claw = new Thread(){
+            public void run(){
+                //hwMap.clawInit.setPosition(TeleopConstants.clawInitPosReset);
+                hwMap.clawInit.setPosition(TeleopConstants.clawInitPosReset);
+
+                try {
+                    Thread.sleep(800);
+                } catch (Exception e) {}
+
+                hwMap.clawInit.setPosition(TeleopConstants.clawInitPosCapstone);
+            }
+        };
+
+        Thread autoClaw = new Thread(){
+            public void run(){
+                hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Init);
+
+                try{
+                    Thread.sleep(150);
+                } catch(Exception e){}
+
+                hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Init);
+            }
+        };
+
+        Thread loop = new Thread() {
+            public void run() {
+                while (opModeIsActive()){
+                    if(gamepad2.dpad_right){
+                        intake.run();
+                        claw.run();
+                        autoClaw.run();
+                    }
+                }
+            }
+        };
+
+        loop.start();
     }
 
     private void saveDataLoop(HardwareMap hw) {

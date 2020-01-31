@@ -20,12 +20,12 @@ public class TeleopConstants {
     public static double clawServo2PosClose = 0.58319;
     public static double clawServo2PosOpen = 0.8786;
 
-    public static double transferLockPosPlatform = 0.46017;
+    public static double transferLockPosPlatform = 0.52;
     public static double transferLockPosUp = 0.4939;
     public static double transferLockPosOut = 0.2716;
 
     public static double foundationLockUnlock = 0.44;
-    public static double foundationLockLock = 0.14;
+    public static double foundationLockLock = 0.188;
 
     public static double transferHornPosReady = 0.5862;
     public static double transferHornPosPush = 0;
@@ -38,19 +38,19 @@ public class TeleopConstants {
     public static double innerTransferPosTucked = 0.3516; //0.1201 closed,
     public static double innerTransferPosClosed = 0.01632;     //@TODO Get servo position innerTransfer "block" position
 
-    public static double intakeInitPosLeft = 0.65953;     //@TODO Get intakeInit servo positions
-    public static double intakeInitPosRight = 0;
-    public static double intakeInitPosReset = 0.30124;
+    public static double intakeInitPosLeft = 0.4187;     //@TODO Get intakeInit servo positions
+    public static double intakeInitPosRight = 0.18306;
+    public static double intakeInitPosReset = 0.3108;
 
     public static double autoClaw1Init = 0.33622089656588355;
-    public static double autoClaw1Strafe = 0.0815;
+    public static double autoClaw1Strafe = 0.115;
     public static double autoClaw1Down = 0;
     public static double autoClaw1Up = 0.29;
     public static double autoClaw1TeleOp = 0.3032;
 
     public static double autoClaw2Init = 0;
-    public static double autoClaw2Open = 0.556;
-    public static double autoClaw2Close = 0.386;
+    public static double autoClaw2Open = 0.57;
+    public static double autoClaw2Close = 0.4;
 
     public static double parkingServoPosUnlock = 0.4959;
     public static double parkingServoPosLock = 0.3815;

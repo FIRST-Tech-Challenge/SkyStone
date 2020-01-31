@@ -117,8 +117,8 @@ public class DriveConstantsPID {
     public static double kStatic = 0;
 	public static double TEST_DISTANCE = 48;
     public static double TEST_DISTANCE_0 = 24;
-	public static double maxVel = 70.0; //90.0
-	public static double maxAccel = 35.0;   //35.0
+	public static double maxVel = 75.0; //90.0
+	public static double maxAccel = 40.0;   //35.0
     public static double strafeMaxVel = 70.0; //40.0
     public static double strafeMaxAccel = 35.0;   //20.0
     public static double maxAngVel = 135.0;
@@ -247,6 +247,7 @@ public class DriveConstantsPID {
         RobotLog.dd(TAG, "strafeTimeDistanceRat: " + Double.toString(strafeTimeDistanceRatio));
         RobotLog.dd(TAG, "strafeMotorPower:  " + Double.toString(strafeMotorPower));
         RobotLog.dd(TAG, "rear_ratio:  " + Double.toString(rear_ratio));
+        RobotLog.dd(TAG, "enabling Logging? : " + Integer.toString(ENABLE_LOGGING?1:0));
     }
     public static void updateConstantsFromProperties()
     {
@@ -291,6 +292,11 @@ public class DriveConstantsPID {
         if (v_double != Double.MAX_VALUE) {
             v_int = (int) v_double;
             RUN_USING_ODOMETRY_WHEEL = (v_int==0)?false:true;
+        }
+        v_double = (int) getTeamCodePropertyValue("debug.ftc.logging");
+        if (v_double != Double.MAX_VALUE) {
+            v_int = (int) v_double;
+            ENABLE_LOGGING = (v_int==0)?false:true;
         }
         v_double = (int) getTeamCodePropertyValue("debug.ftc.strafeDiag");
         if (v_double != Double.MAX_VALUE) {

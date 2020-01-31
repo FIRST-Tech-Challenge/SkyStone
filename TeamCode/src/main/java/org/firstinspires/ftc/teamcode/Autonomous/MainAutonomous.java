@@ -22,6 +22,7 @@ import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
 import org.firstinspires.ftc.teamcode.PID.RobotLogger;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
+import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREVOptimized;
 
 import java.util.Arrays;
 import java.util.List;
@@ -117,7 +118,10 @@ public class MainAutonomous extends LinearOpMode {
             if (initialize) {
                 telemetry.addData("STATUS", "Calibrating IMU...");
                 telemetry.update();
-                straightDrive = new SampleMecanumDriveREV(hardwareMap, false);
+                if (DriveConstantsPID.USING_BULK_READ == false)
+                    straightDrive = new SampleMecanumDriveREV(hardwareMap, false);
+                else
+                    straightDrive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
                 /*
                 strafeDrive = new SampleMecanumDriveREV(hardwareMap, true);
                 imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -176,7 +180,7 @@ public class MainAutonomous extends LinearOpMode {
 
             telemetry.addData("SKYSTONE POSITIONS", Arrays.toString(skystonePositions));
             telemetry.addData("External Heading",
-                    Math.round(Math.toDegrees(imu.getAngularOrientation().firstAngle) * 1000.0) / 1000.0);
+                    Math.round(Math.toDegrees(straightDrive.getExternalHeading()) * 1000.0) / 1000.0);
             telemetry.addData("Current (starting) Location", path.getPoseEstimate());
             telemetry.update();
         }
@@ -191,27 +195,33 @@ public class MainAutonomous extends LinearOpMode {
             RobotLogger.dd("", "tensor flow is shutdown");
         }
         if (opModeIsActive() && fieldPosition != null) {
-
-            sendData();
-            //resetLiftEncoder();
-            switch (fieldPosition) {
-                case RED_QUARY:
-                    path.RedQuary(skystonePositions);
-                    break;
-                case RED_FOUNDATION_PARK:
-                    path.RedFoundationPark();
-                    break;
-                case BLUE_QUARY:
-                    path.BlueQuary(skystonePositions);
-                    break;
-                case BLUE_FOUNDATION_PARK:
-                    path.BlueFoundationPark();
-                    break;
-                case BLUE_FOUNDATION_DRAG:
-                    path.BlueFoundationDrag();
-                    break;
-                case RED_FOUNDATION_DRAG:
-                    break;
+            if(skystonePositions != null) {
+                sendData();
+                //resetLiftEncoder();
+                switch (fieldPosition) {
+                    case RED_QUARY:
+                        path.RedQuary(skystonePositions);
+                        break;
+                    case RED_FOUNDATION_PARK:
+                        path.RedFoundationPark();
+                        break;
+                    case BLUE_QUARY:
+                        path.BlueQuary(skystonePositions);
+                        break;
+                    case BLUE_FOUNDATION_PARK:
+                        path.BlueFoundationPark();
+                        break;
+                    case BLUE_FOUNDATION_DRAG:
+                        path.BlueFoundationDrag();
+                        break;
+                    case RED_FOUNDATION_DRAG:
+                        break;
+                }
+            } else {
+                while (opModeIsActive()) {
+                    telemetry.addData("ERROR", "No SKYSTONE position data received!");
+                    telemetry.update();
+                }
             }
         } else {
             while (opModeIsActive()) {

@@ -45,7 +45,7 @@ public class FollowerPIDTunerStraight extends LinearOpMode {
 
         while (!isStopRequested()) {
 
-            drive.setPoseEstimate(drive.getPoseEstimate());
+            //drive.setPoseEstimate(drive.getPoseEstimate());
 
             if (DriveConstantsPID.RESET_FOLLOWER)
                 drive.resetFollowerWithParameters(false, false);

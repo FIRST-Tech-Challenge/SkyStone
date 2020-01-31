@@ -82,7 +82,14 @@ public class DiagonalTest extends LinearOpMode {
             _drive.setPoseEstimate(new Pose2d(0, 0, _drive.getExternalHeading()));
         }
 
-        StrafeDiagonalHelper(_drive, new Vector2d(DriveConstantsPID.TEST_DISTANCE, DriveConstantsPID.TEST_DISTANCE_0));
+        //StrafeDiagonalHelper(_drive, new Vector2d(DriveConstantsPID.TEST_DISTANCE, DriveConstantsPID.TEST_DISTANCE_0));
+        Trajectory trajectory = _drive.trajectoryBuilder()
+                .strafeTo(new Vector2d(DriveConstantsPID.TEST_DISTANCE, DriveConstantsPID.TEST_DISTANCE_0))
+                .build();
+
+
+        _drive.followTrajectorySync(trajectory);
+
         Localizer localizer = _drive.getLocalizer();
         if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL && (localizer!=null)) {
             StandardTrackingWheelLocalizer t = (StandardTrackingWheelLocalizer)localizer; // @TODO

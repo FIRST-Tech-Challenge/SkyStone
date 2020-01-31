@@ -32,9 +32,9 @@ import java.util.List;
 @Config
 public class DriveConstantsPID {
 
-    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = true;
+    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = false;
 
-    public static boolean RUN_USING_ODOMETRY_WHEEL = true;
+    public static boolean RUN_USING_ODOMETRY_WHEEL = false;
     public static boolean RUN_USING_IMU_LOCALIZER = true;
     public static boolean BRAKE_ON_ZERO = true;
     public static boolean USING_BULK_READ = true;
@@ -46,15 +46,15 @@ public class DriveConstantsPID {
     public static boolean ENABLE_LOGGING = false;
     private static String TAG = "DriveConstants";
 
-    public static double txP = 6.0; //translational x/y co-efficients
-    public static double txI = 0.6;
-    public static double txD = 0.75;
+    public static double txP = 5.0; //translational x/y co-efficients
+    public static double txI = 0.5;
+    public static double txD = 0.0;
     public static double tyP = 5.0;
-    public static double tyI = 0.001;
+    public static double tyI = 10.0;
     public static double tyD = 0.00001;
-    public static double hP = 6;    // heading co-efficients;
-    public static double hI = 2;
-    public static double hD = 0.4;
+    public static double hP = 10;    // heading co-efficients;
+    public static double hI = 0.5;
+    public static double hD = 0.00001;
 
     public static double stxP = 20; //translational x/y co-efficients
     public static double stxI = 1;
@@ -89,9 +89,9 @@ public class DriveConstantsPID {
      * MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
      */
     public static boolean RUN_USING_ENCODER = true;
-    public static double kP = 0.1;
-    public static double kI = 1.52;
-    public static double kD = 3.0;
+    public static double kP = 1.72;
+    public static double kI = 0.172;
+    public static double kD = 0.0;
     public static PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(kP, kI, kD);   //35, 0.5, 2.5
 
     /*
@@ -115,7 +115,7 @@ public class DriveConstantsPID {
     public static double kV = 0.0111;   //0.0115
     public static double kA = 0;
     public static double kStatic = 0;
-	public static double TEST_DISTANCE = 60;
+	public static double TEST_DISTANCE = 48;
     public static double TEST_DISTANCE_0 = 24;
 	public static double maxVel = 90.0; //90.0
 	public static double maxAccel = 35.0;   //35.0

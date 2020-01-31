@@ -22,7 +22,7 @@ public class IMUBufferReader implements Runnable{
     private String TAG = "IMUBufferReader";
     private float lastGyroValue = 0;
     private long lastGyroTime = 0;
-    private static final int IMU_FRESH_THRESHOLD = 20; // milli seconds
+    private static final int IMU_FRESH_THRESHOLD = 10; // milli seconds
     private static boolean keepRunning = true;
     private boolean IMUReaderRunning = false;
     private float[] pingPongBuffer = new float[2];

@@ -29,44 +29,42 @@ public class FollowerPIDTunerStrafe extends LinearOpMode {
         DriveConstantsPID.updateConstantsFromProperties();  // Transitional PID is used in base class;;
         DISTANCE = DriveConstantsPID.TEST_DISTANCE;
         SampleMecanumDriveBase drive = null;
-        if (DriveConstantsPID.USING_BULK_READ == false)
-            drive = new SampleMecanumDriveREV(hardwareMap, false);
-        else
-            drive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
-        drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
-        drive.setPoseEstimate(new Pose2d(0, 0, 0));
 
         waitForStart();
 
         if (isStopRequested()) return;
 
         while (!isStopRequested()) {
-            if (DriveConstantsPID.USING_BULK_READ == false)
-                drive = new SampleMecanumDriveREV(hardwareMap, false);
-            else
-                drive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
-            drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
-
-            drive.setPoseEstimate(new Pose2d(0, 0, 0));
+            if (drive == null) {
+                if (DriveConstantsPID.USING_BULK_READ == false)
+                    drive = new SampleMecanumDriveREV(hardwareMap, true);
+                else
+                    drive = new SampleMecanumDriveREVOptimized(hardwareMap, true);
+                drive.setBrakeonZeroPower(DriveConstantsPID.BRAKE_ON_ZERO);
+                drive.setPoseEstimate(new Pose2d(0, 0, drive.getExternalHeading()));
+            }
+            Pose2d currentPos = drive.getPoseEstimate();
 
             if (DriveConstantsPID.USING_STRAFE_DIAGNAL == true) {
                 if (DriveConstantsPID.RESET_FOLLOWER)
                     drive.resetFollowerWithParameters(true, false);
+
                 drive.followTrajectorySync(
                         drive.trajectoryBuilder()
-                                .strafeTo(new Vector2d(DriveConstantsPID.TEST_DISTANCE, DriveConstantsPID.TEST_DISTANCE_0))
+                                .strafeTo((new Vector2d(currentPos.getX() + DriveConstantsPID.TEST_DISTANCE, currentPos.getY() + DriveConstantsPID.TEST_DISTANCE_0)))
                                 .build());
             }
             else {
                 if (DriveConstantsPID.RESET_FOLLOWER)
                     drive.resetFollowerWithParameters(false, false);
+
                 drive.followTrajectorySync(
                         drive.trajectoryBuilder()
-                                .lineTo(new Vector2d(DriveConstantsPID.TEST_DISTANCE, DriveConstantsPID.TEST_DISTANCE_0))
+                                .lineTo(new Vector2d(currentPos.getX() + DriveConstantsPID.TEST_DISTANCE, currentPos.getY() + DriveConstantsPID.TEST_DISTANCE_0))
                                 .build());
             }
 
-            Pose2d currentPos = drive.getPoseEstimate();
+            currentPos = drive.getPoseEstimate();
             Pose2d error_pose = drive.follower.getLastError();
             RobotLogger.dd(TAG, "currentPos %s, errorPos %s",currentPos.toString(), error_pose.toString());
             //drive.turnSync(Math.toRadians(90));
@@ -78,14 +76,14 @@ public class FollowerPIDTunerStrafe extends LinearOpMode {
                 //drive.resetFollowerWithParameters(true);
                 drive.followTrajectorySync(
                         drive.trajectoryBuilder()
-                                .strafeTo(new Vector2d(0, 0))
+                                .strafeTo((new Vector2d(currentPos.getX() - DriveConstantsPID.TEST_DISTANCE, currentPos.getY() - DriveConstantsPID.TEST_DISTANCE_0)))
                                 .build());
             }
             else {
                 //drive.resetFollowerWithParameters(false);
                 drive.followTrajectorySync(
                         drive.trajectoryBuilder()
-                                .lineTo(new Vector2d(0, 0))
+                                .lineTo((new Vector2d(currentPos.getX() - DriveConstantsPID.TEST_DISTANCE, currentPos.getY() - DriveConstantsPID.TEST_DISTANCE_0)))
                                 .build());
             }
             currentPos = drive.getPoseEstimate();

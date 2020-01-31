@@ -234,7 +234,6 @@ public class MainTeleop extends LinearOpMode {
 
                 foundationLogic();
 
-                outtakeLogic();
                 spoolLogic();
                 intakeLogic();
             }
@@ -251,7 +250,6 @@ public class MainTeleop extends LinearOpMode {
 
                 foundationLogic();
 
-                outtakeLogic();
                 spoolLogic();
                 intakeLogic();
             }
@@ -266,7 +264,6 @@ public class MainTeleop extends LinearOpMode {
 
                 foundationLogic();
 
-                outtakeLogic();
                 spoolLogic();
                 intakeLogic();
             }

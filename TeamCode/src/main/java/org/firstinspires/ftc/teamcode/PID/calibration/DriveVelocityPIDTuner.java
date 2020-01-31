@@ -231,12 +231,9 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
             drive.setDrivePower(new Pose2d(targetPower, 0, 0));
 
             List<Double> velocities = drive.getWheelVelocities();
-            List<Double> powers = drive.getMotorPowers(motors);
             List<Double> positions = drive.getWheelPositions();
             RobotLogger.dd(TAG, "getWheelVelocities");
             drive.print_list_double(velocities);
-            RobotLogger.dd(TAG, "getMotorPowers");
-            drive.print_list_double(powers);
             RobotLogger.dd(TAG, "getWheelPositions");
             drive.print_list_double(positions);
 

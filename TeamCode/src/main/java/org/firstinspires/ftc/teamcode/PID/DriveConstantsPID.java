@@ -34,34 +34,27 @@ public class DriveConstantsPID {
 
     public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = false;
 
-    public static boolean ENABLE_LOGGING = false;
-    public static boolean RUN_USING_ODOMETRY_WHEEL = true;
-    public static boolean RUN_USING_IMU_LOCALIZER = false;
-    public static boolean BRAKE_ON_ZERO = false;
-    public static boolean USING_BULK_READ = false;
+    public static boolean RUN_USING_ODOMETRY_WHEEL = false;
+    public static boolean RUN_USING_IMU_LOCALIZER = true;
+    public static boolean BRAKE_ON_ZERO = true;
+    public static boolean USING_BULK_READ = true;
     public static boolean USING_STRAFE_DIAGNAL = true;
+    public static boolean RESET_FOLLOWER = true;
     public static double odoEncoderTicksPerRev = 1565.0;
+    public static double imuPollingInterval = 10;
+
+    public static boolean ENABLE_LOGGING = false;
     private static String TAG = "DriveConstants";
 
-    /*public static double txP = 6.0; //translational x/y co-efficients
-    public static double txI = 0.6;
-    public static double txD = 0.75;
+    public static double txP = 5.0; //translational x/y co-efficients
+    public static double txI = 0.5;
+    public static double txD = 0.0;
     public static double tyP = 5.0;
-    public static double tyI = 0.001;
+    public static double tyI = 10.0;
     public static double tyD = 0.00001;
-    public static double hP = 6;    // heading co-efficients;
-    public static double hI = 2;
-    public static double hD = 0.4;*/
-
-    public static double txP = 8; //translational x/y co-efficients
-    public static double txI = 0.6;
-    public static double txD = 0.75;
-    public static double tyP = 10;
-    public static double tyI = 0.5;
-    public static double tyD = 1.1;
-    public static double hP = 6;    // heading co-efficients;
-    public static double hI = 2;
-    public static double hD = 0.4;
+    public static double hP = 10;    // heading co-efficients;
+    public static double hI = 0.5;
+    public static double hD = 0.00001;
 
     public static double stxP = 20; //translational x/y co-efficients
     public static double stxI = 1;
@@ -96,9 +89,9 @@ public class DriveConstantsPID {
      * MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
      */
     public static boolean RUN_USING_ENCODER = true;
-    public static double kP = 0.1;
-    public static double kI = 1.52;
-    public static double kD = 3.0;
+    public static double kP = 1.72;
+    public static double kI = 0.172;
+    public static double kD = 0.0;
     public static PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(kP, kI, kD);   //35, 0.5, 2.5
 
     /*
@@ -122,12 +115,12 @@ public class DriveConstantsPID {
     public static double kV = 0.0111;   //0.0115
     public static double kA = 0;
     public static double kStatic = 0;
-	public static double TEST_DISTANCE = 24;
+	public static double TEST_DISTANCE = 48;
     public static double TEST_DISTANCE_0 = 24;
-	public static double maxVel = 55.0; //90.0
-	public static double maxAccel = 25.0;   //35.0
-    public static double strafeMaxVel = 20.0; //40.0
-    public static double strafeMaxAccel = 10.0;   //20.0
+	public static double maxVel = 70.0; //90.0
+	public static double maxAccel = 35.0;   //35.0
+    public static double strafeMaxVel = 70.0; //40.0
+    public static double strafeMaxAccel = 35.0;   //20.0
     public static double maxAngVel = 135.0;
     public static double maxAngAccel = 90.0;
 	public static boolean keep_vuforia_running = false;
@@ -160,7 +153,7 @@ public class DriveConstantsPID {
     public static double encoderTicksToInches(double ticks) {
         //double s = WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / MOTOR_CONFIG.getTicksPerRev();
         double s = WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / HARDCODED_TICKS_PER_REV; //MOTOR_CONFIG.getTicksPerRev();
-        RobotLog.dd(TAG, "encoderTicksToInches: " + "ticks: " + Double.toString(ticks) + " inches: " + Double.toString(s));
+        //RobotLog.dd(TAG, "encoderTicksToInches: " + "ticks: " + Double.toString(ticks) + " inches: " + Double.toString(s));
         return s;
     }
 
@@ -235,8 +228,10 @@ public class DriveConstantsPID {
         RobotLog.dd(TAG, "Heading PID   hP: "+Double.toString(hP) + " hI: "+Double.toString(hI) + " hD: " + Double.toString(hD));
         RobotLog.dd(TAG, "test distance: " + Double.toString(TEST_DISTANCE) + "  " + Double.toString(TEST_DISTANCE_0));
         RobotLog.dd(TAG, "using IMU in localizer? : " + Integer.toString(RUN_USING_IMU_LOCALIZER?1:0));
+        RobotLog.dd(TAG, "IMU polling interval? : " + Double.toString(imuPollingInterval));
         RobotLog.dd(TAG, "correcting drv in automonous? : " + Integer.toString(drvCorrection?1:0));
         RobotLog.dd(TAG, "using STRAFE in diagonal move? : " + Integer.toString(USING_STRAFE_DIAGNAL?1:0));
+        RobotLog.dd(TAG, "reset follower? : " + Integer.toString(RESET_FOLLOWER?1:0));
         RobotLog.dd(TAG, "using Vuforia in localizer (override IMU and odom)? : " + Integer.toString(USE_VUFORIA_LOCALIZER?1:0));
         RobotLog.dd(TAG, "Driving wheel width? : " + Double.toString(TRACK_WIDTH));
         RobotLog.dd(TAG, "using Odometry? : " + Integer.toString(RUN_USING_ODOMETRY_WHEEL?1:0));
@@ -302,6 +297,11 @@ public class DriveConstantsPID {
             v_int = (int) v_double;
             USING_STRAFE_DIAGNAL = (v_int==0)?false:true;
         }
+        v_double = (int) getTeamCodePropertyValue("debug.ftc.resetfollow");
+        if (v_double != Double.MAX_VALUE) {
+            v_int = (int) v_double;
+            RESET_FOLLOWER = (v_int==0)?false:true;
+        }
         v_double = (int) getTeamCodePropertyValue("debug.ftc.bulk");
         if (v_double != Double.MAX_VALUE) {
             v_int = (int) v_double;
@@ -318,6 +318,10 @@ public class DriveConstantsPID {
             v_int = (int) v_double;
             BRAKE_ON_ZERO = (v_int==0)?false:true;
         }
+        v_double = getTeamCodePropertyValue("debug.ftc.imuInterval");
+        if (v_double != 0 && v_double != Double.MAX_VALUE)
+            imuPollingInterval = v_double;
+
         v_double = getTeamCodePropertyValue("debug.ftc.maxVel");
         if (v_double != 0 && v_double != Double.MAX_VALUE)
             maxVel = v_double;

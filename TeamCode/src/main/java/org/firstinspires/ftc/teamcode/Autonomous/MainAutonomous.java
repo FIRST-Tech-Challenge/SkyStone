@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.All.FourWheelMecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.Autonomous.Vision.Detect;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
+import org.firstinspires.ftc.teamcode.PID.RobotLogger;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
 
@@ -117,16 +118,16 @@ public class MainAutonomous extends LinearOpMode {
                 telemetry.addData("STATUS", "Calibrating IMU...");
                 telemetry.update();
                 straightDrive = new SampleMecanumDriveREV(hardwareMap, false);
+                /*
                 strafeDrive = new SampleMecanumDriveREV(hardwareMap, true);
                 imu = hardwareMap.get(BNO055IMU.class, "imu");
                 BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
                 parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
                 imu.initialize(parameters);
-
-
+                */
                 telemetry.addData("STATUS", "Done!");
                 telemetry.update();
-                path = new Path(hwMap, this, straightDrive, strafeDrive, startingPos, hardwareMap, imu);
+                path = new Path(hwMap, this, straightDrive, startingPos, hardwareMap, imu);
 
                 if (fieldPosition == FieldPosition.RED_QUARY || fieldPosition == FieldPosition.BLUE_QUARY) {
                     telemetry.addData("STATUS", "Initializing TensorFlow...");
@@ -184,11 +185,13 @@ public class MainAutonomous extends LinearOpMode {
             tfod.shutdown();
 
         waitForStart();
-
-        if (tfod != null)
+        if (tfod != null) {
+            RobotLogger.dd("", "to shutdown tensor flow");
             tfod.shutdown();
-
+            RobotLogger.dd("", "tensor flow is shutdown");
+        }
         if (opModeIsActive() && fieldPosition != null) {
+
             sendData();
             //resetLiftEncoder();
             switch (fieldPosition) {

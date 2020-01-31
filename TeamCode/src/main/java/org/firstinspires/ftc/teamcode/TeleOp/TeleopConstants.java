@@ -12,13 +12,14 @@ public class TeleopConstants {
     public static double liftPower = 1;
 
     public static double clawServo1PosClose = 0.075;    //@TODO Get clawServo1 & clawServo2 positions
-    public static double clawServo1PosOpen = 0.5003;
+    public static double clawServo1PosOpen = 0.3003;
+    public static double clawServo1PosReceive = 0.54;
     public static double clawServo1Prep = 0.2196;
     public static double clawServo1Capstone = 0.4069;
 
     public static double clawServo2Block = 0.74281;
-    public static double clawServo2PosClose = 0.58319;
-    public static double clawServo2PosOpen = 0.8786;
+    public static double clawServo2PosClose = 0.522;
+    public static double clawServo2PosOpen = 0.95;
 
     public static double transferLockPosPlatform = 0.52;
     public static double transferLockPosUp = 0.4939;
@@ -27,19 +28,20 @@ public class TeleopConstants {
     public static double foundationLockUnlock = 0.44;
     public static double foundationLockLock = 0.188;
 
-    public static double transferHornPosReady = 0.5862;
+    public static double transferHornPosReady = 0.62;
     public static double transferHornPosPush = 0;
-    public static double transferHornCapstone = 0.09839;
+    public static double transferHornCapstone = 0.191;
 
-    public static double clawInitPosReset = 0;
-    public static double clawInitPosCapstone = 0.479;
+    public static double clawInitPosReset = 0.21;
+    public static double clawInitPosCapstone = 0.6623;
     public static double clawInitPosCapstoneForReal = 0.547;
 
-    public static double innerTransferPosTucked = 0.3516; //0.1201 closed,
-    public static double innerTransferPosClosed = 0.01632;     //@TODO Get servo position innerTransfer "block" position
+    public static double innerTransferPosTucked = 0.3416; //0.1201 closed,
+    public static double innerTransferPosReleased = 0.055;
+    public static double innerTransferPosClosed = 0;     //@TODO Get servo position innerTransfer "block" position
 
-    public static double intakeInitPosLeft = 0.4187;     //@TODO Get intakeInit servo positions
-    public static double intakeInitPosRight = 0.18306;
+    public static double intakeInitPosLeft = 0.4787;     //@TODO Get intakeInit servo positions
+    public static double intakeInitPosRight = 0.13306;
     public static double intakeInitPosReset = 0.3108;
 
     public static double autoClaw1Init = 0.33622089656588355;

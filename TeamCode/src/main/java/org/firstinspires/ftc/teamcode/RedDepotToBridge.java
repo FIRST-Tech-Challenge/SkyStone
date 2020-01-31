@@ -8,6 +8,12 @@ package org.firstinspires.ftc.teamcode;
 public class RedDepotToBridge extends Autonomous {
     @Override
    public void runPath() {
+        if(targetVisible = true) {
+
+        }
+        else {
+
+        }
         move(28, 1, 0);
         move(33, -1, 1); //was 58
     }

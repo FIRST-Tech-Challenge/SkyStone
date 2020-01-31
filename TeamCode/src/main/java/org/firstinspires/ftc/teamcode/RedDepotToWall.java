@@ -8,6 +8,12 @@ package org.firstinspires.ftc.teamcode;
 public class RedDepotToWall extends Autonomous {
     @Override
     public void runPath() {
+        if(targetVisible = true){
+
+        }
+        else {
+        }
+
         move(33,-1,1); //left //was 46
     }
 }

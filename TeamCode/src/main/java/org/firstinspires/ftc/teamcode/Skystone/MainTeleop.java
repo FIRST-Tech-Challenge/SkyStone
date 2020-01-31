@@ -184,7 +184,6 @@ public class MainTeleop extends LinearOpMode {
 
     //teleop methods
     private void driveLogic() {
-        // TODO: change all of this stuff to x, y, and turn movements
         //tank drive
         fLPower = (-gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x) * powerScaleFactor;
         fRPower = (-gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x) * powerScaleFactor;

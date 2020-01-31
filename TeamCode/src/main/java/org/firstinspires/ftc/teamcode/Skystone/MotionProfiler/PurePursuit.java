@@ -49,7 +49,7 @@ public class PurePursuit {
         }
 
         // get the movements
-        robot.goToPoint(followMe.x, followMe.y, followMe.moveSpeed, followMe.turnSpeed, followAngle, true);
+        robot.updateMovementsToPoint(followMe.x, followMe.y, followMe.moveSpeed, followMe.turnSpeed, followAngle, true);
 
         // angle lock
         if (distanceToEnd < angleLockDistance) {
@@ -105,7 +105,7 @@ public class PurePursuit {
 
         double decelerationScaleFactor = Range.clip(distanceToEnd / 12, -1, 1);
 
-        robot.goToPoint(followMe.x, followMe.y, followMe.moveSpeed * decelerationScaleFactor, followMe.turnSpeed * decelerationScaleFactor, followAngle, true);
+        robot.updateMovementsToPoint(followMe.x, followMe.y, followMe.moveSpeed * decelerationScaleFactor, followMe.turnSpeed * decelerationScaleFactor, followAngle, true);
         if ((distanceToEnd < 0.5)) {
             return false;
         }

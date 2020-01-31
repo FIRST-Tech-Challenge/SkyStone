@@ -280,7 +280,7 @@ public class Robot {
 
         while (isRetract && !linearOpMode.isStopRequested()) {
             currentTime = SystemClock.elapsedRealtime();
-            if (currentTime - outtakeExecutionTime >= 1500 && isRetract) {
+            if (currentTime - outtakeExecutionTime >= 1500) {
                 backClamp.setPosition(BACKCLAMP_CLAMPED);
 
                 isRetract = false;
@@ -496,7 +496,7 @@ public class Robot {
 
 
             if (distanceToEnd < angleLockInches) {
-                goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, true);
+                updateMovementsToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, true);
 
                 if (angleLockRadians - posAngle > Math.toRadians(0) && angleLockRadians - posAngle < Math.toRadians(180)) {
                     turnMovement = 1 * angleLockScale;
@@ -506,9 +506,9 @@ public class Robot {
                     turnMovement = 0;
                 }
             } else if (distanceToEnd < 30) {
-                goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, true);
+                updateMovementsToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, true);
             } else {
-                goToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, false);
+                updateMovementsToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, false);
             }
 
             if (distanceToEnd < 1) {
@@ -557,8 +557,7 @@ public class Robot {
         }
     }
 
-    public void goToPoint(double x, double y, double moveSpeed, double turnSpeed, double optimalAngle, boolean willMecanum) {
-
+    public void updateMovementsToPoint(double x, double y, double moveSpeed, double turnSpeed, double optimalAngle, boolean willMecanum) {
         double distanceToTarget = Math.hypot(x - robotPos.x, y - robotPos.y);
         double absoluteAngleToTarget = Math.atan2(y - robotPos.y, x - robotPos.x);
 
@@ -572,7 +571,6 @@ public class Robot {
         }
 
         double xPower = relativeXToPoint / (Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint));
-
 
         double yPower = 0.4 * relativeYToPoint / (Math.abs(relativeYToPoint) + Math.abs(relativeXToPoint));
 
@@ -639,7 +637,6 @@ public class Robot {
 
         // keep on running this
         while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime() - startTime < totalTimeSeconds * 2000) {
-
             // store your current position in variables
             double xPos = robotPos.x;
             double yPos = robotPos.y;

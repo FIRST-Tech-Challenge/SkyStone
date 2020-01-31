@@ -22,6 +22,7 @@ public class Position2D{
 class NewThread extends AsyncTask<Void, Boolean, Boolean> {
     Robot robot;
     Odometry o;
+    Point newPoint;
     static int count =0;
 
     public NewThread(Robot robot, Odometry o){
@@ -33,12 +34,14 @@ class NewThread extends AsyncTask<Void, Boolean, Boolean> {
     protected Boolean doInBackground(Void... params) {
         while(robot.getLinearOpMode().opModeIsActive()) {
             o.circularOdometry(robot);
-            robot.setRobotPos(new Point(o.worldX, o.worldY));
+            newPoint.x = o.worldX;
+            newPoint.y = o.worldY;
+            robot.setRobotPos(newPoint);
             robot.setAnglePos(o.worldAngle);
-            if ((count%5) == 0){
-                robot.addOdometryPoints(o.worldX, o.worldY);
-            }
-            count++;
+//            if ((count%5) == 0){
+//                robot.addOdometryPoints(o.worldX, o.worldY);
+//            }
+//            count++;
         }
         return true;
     }

@@ -129,6 +129,7 @@ public class FullTest extends OpMode {
         telemetry.addLine();
         telemetry.addData("LiftLpos: ", (robot.motor_lift_left.getCurrentPosition() - liftZeros[0]) / 712.6);
         telemetry.addData("LiftRpos: ", (robot.motor_lift_right.getCurrentPosition() - liftZeros[1]) / 712.6);
+        telemetry.addData("ExtenderPos", robot.motor_extender.getCurrentPosition()/195.4);
         telemetry.update();
 
     }

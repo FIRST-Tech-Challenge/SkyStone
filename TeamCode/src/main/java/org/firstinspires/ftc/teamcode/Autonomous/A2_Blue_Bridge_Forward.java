@@ -81,7 +81,7 @@ public class A2_Blue_Bridge_Forward extends LinearOpMode {
         // you are now touching the wall
 
         if (opModeIsActive()) {
-            controlledDrive.start(generalTools.ap_underBridgeForward, 0, 0.2);
+            controlledDrive.start(50, 0, 0.2);
             while(!controlledExtender.endReached() && opModeIsActive()) {}
             controlledDrive.stop();
         }

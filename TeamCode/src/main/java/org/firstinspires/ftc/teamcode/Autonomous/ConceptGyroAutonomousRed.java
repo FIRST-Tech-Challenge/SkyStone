@@ -63,28 +63,32 @@ public class ConceptGyroAutonomousRed extends LinearOpMode {
         // you lifted the lift up
 
         if (opModeIsActive() ) {
-            controlledExtender.start(extenderEncoderValue, 0.4);
+            controlledExtender.start(extenderEncoderValue, 0.6);
 
-            controlledDrive.start(generalTools.ap_forwardGrabStone, 0, 0.4);
+            controlledDrive.start(generalTools.ap_forwardGrabStone, 0, 0.5);
             while(!controlledDrive.endReached() && opModeIsActive()) {}
             controlledDrive.stop();
 
             while(!controlledExtender.endReached() && opModeIsActive()) {}
             controlledExtender.stop();
 
-            controlledLift.start(-(liftEncoderValue + liftStartOffset), 0.2); //lowers the lift
-            generalTools.stopForMilliSeconds(500);
+            controlledLift.start(-(liftEncoderValue + liftStartOffset), 0.6); //lowers the lift
+            //generalTools.stopForMilliSeconds(500);
 
             while(!controlledDrive.endReached() && opModeIsActive()) {}
             controlledDrive.stop();
 
-            generalTools.stopForMilliSeconds(1000);
+            generalTools.stopForMilliSeconds(500);
             generalTools.closeClamp();
 
             generalTools.stopForMilliSeconds(500);
         }
 
         // hey... you should have grabbed a stone now...
+
+        if (opModeIsActive()) {
+            controlledExtender.start(-extenderEncoderValue*1/4, 0.6);
+        }
 
         if (opModeIsActive()) {
             controlledDrive.start(-20, 0, 0.4);
@@ -95,7 +99,7 @@ public class ConceptGyroAutonomousRed extends LinearOpMode {
         // you have driven back a few cm
 
         if (opModeIsActive()) {
-            orientationTools.driveSidewardEncoder(this, 0, 240, 0.2, omniWheel, startPos, robotGyro.imu, 175);
+            orientationTools.driveSidewardEncoder(this, 0, 230, 0.4, omniWheel, startPos, robotGyro.imu, 175);
         }
 
         if (opModeIsActive()) {
@@ -105,7 +109,7 @@ public class ConceptGyroAutonomousRed extends LinearOpMode {
         // you are now on the other side of the bridge
 
         if (opModeIsActive()) {
-            controlledLift.start(liftFoundationValue, 0.2);
+            controlledLift.start(liftFoundationValue, 0.4);
             while (!controlledLift.endReached()) {}
             controlledLift.stop();
         }
@@ -113,7 +117,7 @@ public class ConceptGyroAutonomousRed extends LinearOpMode {
         // you have now uplifted the arm
 
         if (opModeIsActive()) {
-            controlledExtender.start(extenderFoundationValue, 0.2);
+            controlledExtender.start(extenderFoundationValue + extenderEncoderValue*1/4, 0.6);
             while (!controlledExtender.endReached()) {}
             controlledExtender.stop();
         }
@@ -143,7 +147,7 @@ public class ConceptGyroAutonomousRed extends LinearOpMode {
 
         if (opModeIsActive()) {
             generalTools.grabFoundation();
-            generalTools.stopForMilliSeconds(500);
+            generalTools.stopForMilliSeconds(250);
         }
 
         //you have now grabbed the foundation
@@ -162,19 +166,14 @@ public class ConceptGyroAutonomousRed extends LinearOpMode {
 
         if (opModeIsActive()) {
             if (opModeIsActive()) {
-                orientationTools.driveSidewardEncoder(this, 0, -90, 0.2, omniWheel, startPos, robotGyro.imu, 175);
+                orientationTools.driveSidewardEncoder(this, 0, -90, 0.4, omniWheel, startPos, robotGyro.imu, 175);
             }
         }
 
         // you are now next to the foundation
 
         if (opModeIsActive()) {
-            generalTools.backTillButtons(robot);
-        }
-
-
-        if (opModeIsActive()) {
-            controlledExtender.start(-extenderFoundationValue, 0.2);
+            controlledExtender.start(-extenderFoundationValue, 0.6);
             while(!controlledExtender.endReached() && opModeIsActive()) {}
             controlledExtender.stop();
         }
@@ -182,29 +181,29 @@ public class ConceptGyroAutonomousRed extends LinearOpMode {
         // you have now put the arm back in
 
         if (opModeIsActive()) {
-            controlledLift.start(-liftFoundationValue, 0.2); //distance 0.5
+            controlledLift.start(-liftFoundationValue, 0.6); //distance 0.5
             while(!controlledLift.endReached() && opModeIsActive()) {}
             controlledLift.stop();
 
-        }
-
-        // you have now lifted the lift down
-
-        if (opModeIsActive()) {
-            controlledDrive.start(50, 0, 0.2);
-            while (!controlledDrive.endReached() && opModeIsActive()) {}
-            controlledDrive.stop();
         }
 
         if (opModeIsActive()) {
             generalTools.closeClamp();
         }
 
+        // you have now lifted the lift down
+
+        if (opModeIsActive()) {
+            controlledDrive.start(50, 0, 0.6);
+            while (!controlledDrive.endReached() && opModeIsActive()) {}
+            controlledDrive.stop();
+        }
+
         // you are now on B4
 
         if (opModeIsActive()) {
             if (opModeIsActive()) {
-                orientationTools.driveSidewardEncoder(this, 0, -50, 0.2, omniWheel, startPos, robotGyro.imu, 175);
+                orientationTools.driveSidewardEncoder(this, 0, -50, 0.4, omniWheel, startPos, robotGyro.imu, 175);
             }
         }
 

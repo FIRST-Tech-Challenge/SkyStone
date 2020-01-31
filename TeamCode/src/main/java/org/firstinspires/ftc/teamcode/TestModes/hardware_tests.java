@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 
-@Disabled
 @TeleOp (name = "hardware_tests")
 public class hardware_tests extends OpMode {
     HardwareMap hwChss = hardwareMap;
@@ -44,8 +43,7 @@ public class hardware_tests extends OpMode {
         //use two motors in different directions with stick y value
         //using gamepad1.left_stick_y
         else if (gamepad1.left_stick_y > 0 || gamepad1.left_stick_y < 0) {
-            robot.motor_lift_right.setPower(gamepad1.left_stick_y);
-            robot.motor_lift_left.setPower(-gamepad1.left_stick_y);
+            robot.motor_lift_left.setPower(gamepad1.left_stick_y);
         }
 
         //use one continuous servo

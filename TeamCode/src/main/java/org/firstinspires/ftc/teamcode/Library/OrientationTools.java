@@ -142,6 +142,15 @@ public class OrientationTools {
 
 
     public void driveSidewardEncoder(OpMode op,double distanceForward, double distanceSideways, double speed,OmniWheel wheel, double startPos, BNO055IMU imu, double smoothness) {
+        double offset = this.getDegree360(imu) - startPos;
+
+        while(Math.abs(offset)>2 && opMode.opModeIsActive()){
+            offset  = this.getDegree360(imu) - startPos;
+            wheel.setMotors(0,0,offset/smoothness);
+        }
+        wheel.setMotors(0,0,0);
+
+
         double maxDistance = Math.max(Math.abs(distanceForward), Math.abs(distanceSideways));
 
         double[] wheelSpeeds = OmniWheel.calculate(WHEEL_DIAMETER_CMS / 2, 38, 24, distanceForward / maxDistance, distanceSideways / maxDistance, 0);
@@ -167,7 +176,6 @@ public class OrientationTools {
         wheel.robot.motor_rear_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         wheel.robot.motor_rear_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        double offset = 0;
         while(wheel.robot.motor_front_right.isBusy() && wheel.robot.motor_front_left.isBusy() && wheel.robot.motor_rear_left.isBusy() && wheel.robot.motor_rear_right.isBusy()) {
             offset  = this.getDegree360(imu) - startPos;
             // reset the timeout time and start motion.
@@ -189,10 +197,6 @@ public class OrientationTools {
         while(Math.abs(offset)>2 && opMode.opModeIsActive()){
             offset  = this.getDegree360(imu) - startPos;
             wheel.setMotors(0,0,offset/smoothness);
-            op.telemetry.addData("°",offset);
-            op.telemetry.addData("abs",Math.abs(offset));
-            op.telemetry.addData("condition",Math.abs(offset)<5);
-            op.telemetry.update();
         }
         wheel.setMotors(0,0,0);
 

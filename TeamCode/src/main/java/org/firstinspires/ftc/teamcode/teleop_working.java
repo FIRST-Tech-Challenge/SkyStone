@@ -55,7 +55,7 @@ public class teleop_working extends LinearOpMode {
     double retractArm = 0.75;
 
     double fullGrab = 0.33;
-    double releaseGrab = 0.8;
+    double releaseGrab = 0.7;
 
     double FLdown = 1;
     double FLup = 0.8;

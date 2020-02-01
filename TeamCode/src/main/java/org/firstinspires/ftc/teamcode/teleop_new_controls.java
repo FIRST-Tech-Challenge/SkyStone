@@ -55,7 +55,7 @@ public class teleop_new_controls extends LinearOpMode {
     double retractArm = 0.75;
 
     double fullGrab = 0.33;
-    double releaseGrab = 1;
+    double releaseGrab = 0.7;
 
     double FLdown = 1;
     double FLup = 0.8;

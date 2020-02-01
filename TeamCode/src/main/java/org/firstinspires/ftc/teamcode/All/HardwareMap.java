@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class HardwareMap {
     public DcMotorEx backLeft, backRight, frontLeft, frontRight, leftIntake, rightIntake, liftOne, liftTwo;
     public Servo clawServo1, clawServo2, foundationLock, transferLock, transferHorn,
-            clawInit, innerTransfer, intakeInit, redAutoClawJoint1, redAutoClawJoint2, blueAutoClawJoint1, blueAutoClawJoint2,
+            clawInit, innerTransfer, intakeInit, redAutoClawJoint1, redAutoClawJoint2, redAutoClawJoint3,
             parkingServo, liftOdometry;
     public DigitalChannel liftReset, intakeDetect, foundationDetectLeft, foundationDetectRight;
     public BNO055IMU gyro;
@@ -56,21 +56,20 @@ public class HardwareMap {
         foundationLock = hwMap.get(Servo.class, "foundationLock");
         redAutoClawJoint1 = hwMap.get(Servo.class, "redAutoClawJoint1");
         redAutoClawJoint2 = hwMap.get(Servo.class, "redAutoClawJoint2");
-        //blueAutoClawJoint1 = hwMap.get(Servo.class, "blueAutoClawJoint1");
-        //blueAutoClawJoint2 = hwMap.get(Servo.class, "blueAutoClawJoint2");
+        redAutoClawJoint3 = hwMap.get(Servo.class, "redAutoClawJoint3");
         transferLock = hwMap.get(Servo.class, "transferLock");
         transferHorn = hwMap.get(Servo.class, "transferHorn");
         clawInit = hwMap.get(Servo.class, "clawInit");
         innerTransfer = hwMap.get(Servo.class, "innerTransfer");
         intakeInit = hwMap.get(Servo.class, "intakeInit");
-        parkingServo = hwMap.get(Servo.class, "parkingServo");  //@TODO Configure intakeInit on the robot
+        //parkingServo = hwMap.get(Servo.class, "parkingServo");  //@TODO Configure intakeInit on the robot
         liftOdometry = hwMap.get(Servo.class, "liftOdometry");
 
         //---------------------------------------------------------------------------
         //endregion
 
         liftReset = hwMap.get(DigitalChannel.class, "liftReset");
-        //intakeDetect = hwMap.get(DigitalChannel.class, "intakeDetect");   //@TODO Configue intakeDetect on the robot
+        //intakeDetect = hwMap.get(DigitalChannel.class, "intakeDetect");   //@TODO Configure intakeDetect on the robot
         foundationDetectLeft = hwMap.get(DigitalChannel.class, "foundationDetectLeft");
         foundationDetectRight = hwMap.get(DigitalChannel.class, "foundationDetectRight");
 

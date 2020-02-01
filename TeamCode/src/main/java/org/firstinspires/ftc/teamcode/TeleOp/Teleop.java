@@ -114,8 +114,8 @@ public class Teleop extends LinearOpMode {
 
         telemetry.addData("Status", "Ready");
         hwMap.clawInit.setPosition(TeleopConstants.clawInitPosCapstone);
-        hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1TeleOp);
-        hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Stowed);
+        //hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1TeleOp);
+        //hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Stowed);
         hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
 
         waitForStart();
@@ -546,7 +546,7 @@ public class Teleop extends LinearOpMode {
                     if(gamepad2.right_trigger >= 0.5){
                         if(gamepad2.x && !dummy){
                             if(!parking) {
-                                hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Up - 0.08);
+                                //hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Up - 0.08);
                                 try{
                                     Thread.sleep(300);
                                 } catch (Exception e){}
@@ -557,7 +557,7 @@ public class Teleop extends LinearOpMode {
                                 try{
                                     Thread.sleep(300);
                                 } catch (Exception e){}
-                                hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1TeleOp);
+                                //hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1TeleOp);
                                 parking = false;
                             }
                             dummy = true;
@@ -624,7 +624,7 @@ public class Teleop extends LinearOpMode {
 
         Thread autoClaw = new Thread(){
             public void run(){
-                hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Init);
+               // hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Init);
 
                 try{
                     Thread.sleep(150);

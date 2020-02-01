@@ -150,20 +150,20 @@ public class Path {
         DriveConstantsPID.updateConstantsFromProperties();
         switch (skystonePositions[0]) {
             case 1:
-                double yCoordMvmtPlane = -44.5;
-                double wallSkyStoneX = -44.0;
-                double furtherMostSkyStoneX = -21.0;
                 double firstRegularStoneX = -34.0;
-                double foundationX = 46.0;
-                double strafeDistance = 9.5;
-                double theta = 0;
+                double theta;
 
-                yCoordMvmtPlane = -23.0;
-                wallSkyStoneX = -40.0;
-                furtherMostSkyStoneX = -18.5;
-                firstRegularStoneX = -34.0;
-                foundationX = 45.0;
-                strafeDistance = 7.0;
+                double yCoordMvmtPlane = -23.0; //Y-coordinate value which the robot moves back and forth on
+                double wallSkyStoneX = -40.0;   //X-coordinate of the Skystone closest to the wall
+                double furtherMostSkyStoneX = -18.5;    //X-coordinate of the Skystone furthest away from the wall
+                double foundationX = 45.0;  //X-coordinate of the foundation
+                double strafeDistanceY = 7.0;    //Distance to strafe out before grabbing foundation
+                double strafeDistanceX = 4.0;   //Distance to strafe down before grabbing foundation
+                double reverseToFoundationInches = 13.0;    //Distance to back up to grab foundation
+                double foundationDragXDecrease = 12.0;  //Decrease in X from original position when dragging foundation
+                double foundationDragYDecrease = 32.0;  //Decrease in Y from original posiion when dragging foundation
+                double parkingX = 0.0;    //X-coordinate of parking location
+                double parkingY = -38.0;    //Y-coordinate of parking location
 
                 transferReset();
                 initIntakeClaw();
@@ -245,7 +245,7 @@ public class Path {
 
                 DriveBuilderReset(true, false, "step10, after straight move");
                 builder = builder
-                        .setReversed(false).strafeTo(new Vector2d(foundationX, yCoordMvmtPlane - strafeDistance));
+                        .setReversed(false).strafeTo(new Vector2d(foundationX - strafeDistanceX, yCoordMvmtPlane - strafeDistanceY));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);
 
@@ -268,7 +268,7 @@ public class Path {
 
                 DriveBuilderReset(false, false, "step12, after turn");
                 builder = builder.setReversed(true).lineTo(new Vector2d(_drive.getPoseEstimate().getX(),
-                        _drive.getPoseEstimate().getY() + 13));
+                        _drive.getPoseEstimate().getY() + reverseToFoundationInches));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);
 
@@ -289,8 +289,8 @@ public class Path {
 
                 DriveBuilderReset(false, false, "step13, after straight move, Dragging foundation");
                 builder = builder.setReversed(false)
-                        .splineTo(new Pose2d(new Vector2d(_drive.getPoseEstimate().getX() - 12,
-                                _drive.getPoseEstimate().getY() - 32), PI));
+                        .splineTo(new Pose2d(new Vector2d(_drive.getPoseEstimate().getX() - foundationDragXDecrease,
+                                _drive.getPoseEstimate().getY() - foundationDragYDecrease), PI));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);
 
@@ -305,7 +305,7 @@ public class Path {
                 DriveBuilderReset(false, false, "step14, after spline");
                 //builder = new TrajectoryBuilder(_drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
                 builder = builder
-                        .setReversed(false).splineTo(new Pose2d(new Vector2d(0, -34.0), PI));
+                        .setReversed(false).splineTo(new Pose2d(new Vector2d(parkingX, parkingY), PI));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);
 
@@ -316,7 +316,7 @@ public class Path {
                 furtherMostSkyStoneX = -29.5;
                 firstRegularStoneX = -34.0;
                 foundationX = 46.0;
-                strafeDistance = 9.5;
+                strafeDistanceY = 9.5;
 
                 hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
@@ -343,7 +343,7 @@ public class Path {
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
 
                     builder = builder
-                            .strafeTo(new Vector2d(strafeDrive.getPoseEstimate().getX(), yCoordMvmtPlane + strafeDistance));
+                            .strafeTo(new Vector2d(strafeDrive.getPoseEstimate().getX(), yCoordMvmtPlane + strafeDistanceY));
 
                 } else {
                     builder = builder.strafeTo(new Vector2d(strafeDrive.getPoseEstimate().getX(), -30)).setReversed(true)
@@ -383,7 +383,7 @@ public class Path {
 
                 strafeDrive = DriveBuilderReset(true, false, "step4");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
-                    builder = builder.strafeTo(new Vector2d(foundationX, yCoordMvmtPlane + strafeDistance));
+                    builder = builder.strafeTo(new Vector2d(foundationX, yCoordMvmtPlane + strafeDistanceY));
                 } else {
                     builder = builder.strafeTo(new Vector2d(50, -40)).setReversed(true).lineTo(new Vector2d(-20, -40))
                             .strafeTo(new Vector2d(-20, -28));
@@ -593,7 +593,7 @@ public class Path {
                 furtherMostSkyStoneX = -39.0;
                 firstRegularStoneX = -36.0;
                 foundationX = 46.0;
-                strafeDistance = 9.5;
+                strafeDistanceY = 9.5;
 
                 hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
@@ -620,7 +620,7 @@ public class Path {
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
 
                     builder = builder
-                            .strafeTo(new Vector2d(strafeDrive.getPoseEstimate().getX(), yCoordMvmtPlane + strafeDistance));
+                            .strafeTo(new Vector2d(strafeDrive.getPoseEstimate().getX(), yCoordMvmtPlane + strafeDistanceY));
 
                 } else {
                     builder = builder.strafeTo(new Vector2d(strafeDrive.getPoseEstimate().getX(), -30)).setReversed(true)
@@ -660,7 +660,7 @@ public class Path {
 
                 strafeDrive = DriveBuilderReset(true, false, "step4");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
-                    builder = builder.strafeTo(new Vector2d(foundationX, yCoordMvmtPlane + strafeDistance));
+                    builder = builder.strafeTo(new Vector2d(foundationX, yCoordMvmtPlane + strafeDistanceY));
                 } else {
                     builder = builder.strafeTo(new Vector2d(50, -40)).setReversed(true).lineTo(new Vector2d(-20, -40))
                             .strafeTo(new Vector2d(-20, -28));
@@ -1189,7 +1189,7 @@ public class Path {
                 foundationX = 47.0;
                 strafeDistance = -10.0;
 
-                hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
+               // hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
 
@@ -1465,7 +1465,7 @@ public class Path {
                 foundationX = 47.0;
                 strafeDistance = -10.0;
 
-                hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
+                //hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
 
@@ -1737,7 +1737,7 @@ public class Path {
     }
 
     public void BlueFoundationPark() {
-        hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
+        //hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
         transferReset();
         initIntakeClaw();
         try {
@@ -1853,15 +1853,6 @@ public class Path {
         };
         thread.run();
     }
-
-    private void retractClaw(){
-        Thread thread = new Thread(){
-            public void run(){
-                hwMap.blueAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Init);
-                hwMap.blueAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Init);
-            }
-        };
-    }
     private void initIntakeClaw() {
         Thread thread = new Thread() {
             public void run() {
@@ -1971,12 +1962,17 @@ public class Path {
     }
 
     private void prepGrab(FieldPosition fieldPosition) {
-        hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Open);
+        hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Extended);
         try {
             Thread.sleep(100);
         } catch (Exception e) {
         }
-        hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Strafe);
+        hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Prep);
+        try {
+            Thread.sleep(100);
+        } catch (Exception e) {
+        }
+        hwMap.redAutoClawJoint3.setPosition(TeleopConstants.autoClaw3Open);
         try {
             Thread.sleep(100);
         } catch (Exception e) {
@@ -1984,21 +1980,26 @@ public class Path {
     }
 
     private void grabStone(FieldPosition fieldPosition) {
-        hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Down);
+        hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Grabbing);
         try {
             Thread.sleep(100);
         } catch (Exception e) {
         }
-        hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Close);
+        hwMap.redAutoClawJoint3.setPosition(TeleopConstants.autoClaw3Closed);
         try {
             Thread.sleep(100);
         } catch (Exception e) {
         }
-        hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Up);
+        hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Stone);
+        try {
+            Thread.sleep(100);
+        } catch (Exception e) {
+        }
+        hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Init);
     }
 
     private void dropStone(FieldPosition fieldPosition) {
-        hwMap.redAutoClawJoint1.setPosition(TeleopConstants.autoClaw1Down);
+        /*hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw1Down);
         try {
             Thread.sleep(100);
         } catch (Exception e) {
@@ -2013,7 +2014,7 @@ public class Path {
             Thread.sleep(100);
         } catch (Exception e) {
         }
-        hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Init);
+        hwMap.redAutoClawJoint2.setPosition(TeleopConstants.autoClaw2Init);*/
     }
 
     private void dropStone(double sliderEncoders) {
@@ -2123,7 +2124,7 @@ public class Path {
     private void init() {
         Thread thread = new Thread() {
             public void run() {
-                hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
+                //hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
                 hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
             }

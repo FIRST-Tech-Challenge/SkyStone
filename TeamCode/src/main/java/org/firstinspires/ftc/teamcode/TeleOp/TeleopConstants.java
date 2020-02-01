@@ -44,25 +44,23 @@ public class TeleopConstants {
     public static double intakeInitPosRight = 0.13306;
     public static double intakeInitPosReset = 0.3108;
 
-    public static double autoClaw1Init = 0.33622089656588355;
-    public static double autoClaw1Strafe = 0.115;
-    public static double autoClaw1Down = 0;
-    public static double autoClaw1Up = 0.29;
-    public static double autoClaw1TeleOp = 0.3032;
+    public static double autoClaw1Retracted = 0;
+    public static double autoClaw1Stone = 0;
+    public static double autoClaw1Extended = 0;
 
     public static double autoClaw2Init = 0;
-    public static double autoClaw2Open = 0.57;
-    public static double autoClaw2Close = 0.4;
+    public static double autoClaw2Prep = 0.57;
+    public static double autoClaw2Grabbing = 0.4;
+
+    public static double autoClaw3Init = 0;
+    public static double autoClaw3Closed = 0;
+    public static double autoClaw3Open = 0;
 
     public static double parkingServoPosUnlock = 0.4959;
     public static double parkingServoPosLock = 0.3815;
 
     public static double liftOdometryDown = 0.142;
     public static double liftOdometryUp = 0.425;
-
-    // Positions in teleop
-    public static double autoClaw1Stowed = 0.335;
-    public static double autoClaw2Stowed = 0.14;
 
     public static int[] stoneEncoderValues = new int[] {0, -681, -1120, -1428, -1806};
 }

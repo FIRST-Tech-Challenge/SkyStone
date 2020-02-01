@@ -106,7 +106,7 @@ public class Game_TeleOp extends LinearOpMode {
 
             if (robot.intake.isAvailable) {
                 if (gamepad1.right_trigger > 0) {
-                    robot.intake.setIntakePower(0.8);
+                    robot.intake.setIntakePower(0.9);
                 }
                 if(gamepad1.right_trigger <= 0)
                 {
@@ -119,11 +119,44 @@ public class Game_TeleOp extends LinearOpMode {
                 robot.ramp.ramp2Up();
             }
             if(gamepad1.right_bumper){
+                robot.ramp.rampDown(0.8);
+                robot.ramp.ramp2Down(0.8);
+                sleep(75);
+                robot.ramp.rampDown(0.775);
+                robot.ramp.ramp2Down(0.775);
+                sleep(75);
+                robot.ramp.rampDown(0.75);
+                robot.ramp.ramp2Down(0.75);
+                sleep(75);
+                robot.ramp.rampDown(0.725);
+                robot.ramp.ramp2Down(0.725);
+                sleep(75);
+                robot.ramp.rampDown(0.7);
+                robot.ramp.ramp2Down(0.7);
+                sleep(75);
+                robot.ramp.rampDown(0.675);
+                robot.ramp.ramp2Down(0.675);
+                sleep(75);
+                robot.ramp.rampDown(0.65);
+                robot.ramp.ramp2Down(0.65);
+                sleep(75);
+                robot.ramp.rampDown(0.625);
+                robot.ramp.ramp2Down(0.625);
+                sleep(75);
+                robot.ramp.rampDown(0.6);
+                robot.ramp.ramp2Down(0.6);
+                sleep(75);
+                robot.ramp.rampDown(0.575);
+                robot.ramp.ramp2Down(0.575);
+                sleep(75);
+                robot.ramp.rampDown(0.55);
+                robot.ramp.ramp2Down(0.55);
+                sleep(75);
+                robot.ramp.rampDown(0.525);
+                robot.ramp.ramp2Down(0.525);
+                sleep(75);
                 robot.ramp.rampDown(0.5);
                 robot.ramp.ramp2Down(0.5);
-                sleep(500);
-                robot.ramp.rampDown(1);
-                robot.ramp.ramp2Down(1);
             }
 
             if(gamepad1.x){

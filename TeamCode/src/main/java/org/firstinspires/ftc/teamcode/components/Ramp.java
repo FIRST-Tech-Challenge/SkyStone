@@ -55,8 +55,8 @@ public Ramp(Logger aLogger, OpMode aOpMode, String aRampServoName1, String aRamp
 public void init( ){
 
     logger.logDebug("initservo", "IamWalrus");
-    rampServo1 = initServo(rampServoName1, SERVO_UP_POSITION);
-    rampServo2 = initServo(rampServoName2, SERVO_UP_POSITION);
+    rampServo1 = initServo(rampServoName1, 1);
+    rampServo2 = initServo(rampServoName2, 1);
     if(rampServo1 != null && rampServo2 != null){
         isAvailable = true;
     }
@@ -69,6 +69,30 @@ public void rampDown(double x){
     rampServo1.setPosition(x);
 }
 
+/*
+USE THIS FOR GOING DOWN (COPY PASTE)
+
+robot.ramp.rampDown(0.8);
+                robot.ramp.ramp2Down(0.8);
+                sleep(5000);
+                robot.ramp.rampDown(0.75);
+                robot.ramp.ramp2Down(0.75);
+                sleep(5000);
+                robot.ramp.rampDown(0.7);
+                robot.ramp.ramp2Down(0.7);
+                sleep(5000);
+                robot.ramp.rampDown(0.65);
+                robot.ramp.ramp2Down(0.65);
+                sleep(5000);
+                robot.ramp.rampDown(0.6);
+                robot.ramp.ramp2Down(0.6);
+                sleep(5000);
+                robot.ramp.rampDown(0.55);
+                robot.ramp.ramp2Down(0.55);
+                sleep(5000);
+                robot.ramp.rampDown(0.5);
+                robot.ramp.ramp2Down(0.5);
+ */
 public void ramp2Down(double x){
     rampServo2.setPosition(x);
 }

@@ -70,7 +70,7 @@ public class FourWheelsDriveBot
 //    public void driveByHand(double _lf, double _lr, double _rf, double _rr) {
     public void driveByHand(double left_stick_x, double left_stick_y, double right_stick_x) {
 
-        double drive  = -left_stick_y;
+        double drive  = - left_stick_y;
         double strafe = left_stick_x;
         double twist  = right_stick_x;
 
@@ -204,6 +204,8 @@ public class FourWheelsDriveBot
         // distance (in mm) = revolution * pi * diameter (100 mm)
         int target = (int)(distance / 3.1415 / 100 * DRIVING_MOTOR_TICK_COUNT);
         int startingPosition = leftFront.getCurrentPosition();
+        int realTarget;
+
         switch (direction){
             case DIRECTION_FORWARD:
                 leftFront.setTargetPosition(leftFront.getCurrentPosition() + target);
@@ -256,15 +258,12 @@ public class FourWheelsDriveBot
         rightFront.setPower(power);
         leftRear.setPower(power);
         rightRear.setPower(power);
-        while (this.opMode.opModeIsActive() && leftFront.isBusy()) {
-            // Display it for the driver.
-            print(String.format("Target : %7d @ leftFront: %7d, rightFront:%7d, leftRear:%7d, rightRear:%7d",
-                    target,
-                    leftFront.getCurrentPosition(),
-                    rightFront.getCurrentPosition(),
-                    leftRear.getCurrentPosition(),
-                    rightRear.getCurrentPosition()));
+        RobotLog.d(String.format("Set direction and power!"));
+
+        while (this.opMode.opModeIsActive() && rightFront.isBusy()) {
+            opMode.sleep(50);
         }
+        RobotLog.d(String.format("Stopping all motion!"));
         // Stop all motion;
         leftFront.setPower(0);
         rightFront.setPower(0);
@@ -315,7 +314,7 @@ public class FourWheelsDriveBot
                 rightRear.setTargetPosition(rightRear.getCurrentPosition() + target);
                 break;
             default:
-                realTarget = leftFront.getCurrentPosition() + target;
+                realTarget = leftFront.getCurrentPosition() - target;
                 String msg = String.format("Unaccepted direction value (%d) for driveStraightByDistance()", direction);
                 print(msg);
         }

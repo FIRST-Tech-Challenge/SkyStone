@@ -13,6 +13,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //@Disabled
 public class teleop_new_controls extends LinearOpMode {
 
+
+    /**
+
+
+
+     ~ time to make ben suffer ~
+
+
+
+     */
+
+
     ElapsedTime runtime = new ElapsedTime();
 
     //motors
@@ -241,7 +253,7 @@ public class teleop_new_controls extends LinearOpMode {
             }
 
             //shows elapsed time and limit switch values
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Status: ","Ben's suffering 100");
             telemetry.addData("Top Limit state", "State: " + topLimit.isPressed());
             telemetry.addData("Bottom Limit state", ": " + bottomLimit.isPressed());
             telemetry.update();

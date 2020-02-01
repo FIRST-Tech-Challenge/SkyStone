@@ -131,6 +131,8 @@ public class teleop_two_remotes extends LinearOpMode {
         FLservo.setPosition(FLup);
         FRservo.setPosition(FRup);
 
+        extend.setPosition(extendIn);
+
         //start
         waitForStart();
         runtime.reset();
@@ -246,7 +248,6 @@ public class teleop_two_remotes extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Top Limit state", "State: " + topLimit.isPressed());
             telemetry.addData("Bottom Limit state", ": " + bottomLimit.isPressed());
-            telemetry.addData("Gamepad 2 left stick y", ": " + gamepad2.left_stick_y);
             telemetry.update();
         }
     }

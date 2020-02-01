@@ -199,6 +199,26 @@ public class teleop_working extends LinearOpMode {
                 extend.setPosition(extendIn);
             }
 
+
+            /**
+
+             Second remote for lift movement if desired
+
+             */
+
+            //LIFT
+            //top limit switch
+            if(gamepad2.left_stick_y<0 && topLimit.isPressed()){
+                mtrLift.setPower(liftReversal);
+            }
+            else {
+                //bottom limit switch
+                if(gamepad2.left_stick_y>0 && bottomLimit.isPressed()){
+                    mtrLift.setPower(liftStop);
+                }
+                else {mtrLift.setPower(gamepad2.left_stick_y);}
+            }
+
             //shows elapsed time
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();

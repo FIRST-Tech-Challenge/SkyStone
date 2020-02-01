@@ -150,13 +150,34 @@ public class Path {
         DriveConstantsPID.updateConstantsFromProperties();
         switch (skystonePositions[0]) {
             case 1:
+
+                /*
+           FIELD COORDINATES LAYOUT
+                      X
+                      /\ 72
+              _ _     |      _ _
+             |   |    |     |   |
+Blue F. -->  | B |    |     | R | <-- Red Foundation
+              - -     |      - -
+                      |
+                      |
+        < - - - - - - - - - - - - - > Y
+       72             |            -72
+                      |
+                      |
+                      |
+                      |
+                      |
+                      \/ -72
+                */
+
                 double firstRegularStoneX = -34.0;
                 double theta;
 
-                double yCoordMvmtPlane = -23.0; //Y-coordinate value which the robot moves back and forth on
+                double yCoordMvmtPlane = -20.0; //Y-coordinate value which the robot moves back and forth on
                 double wallSkyStoneX = -40.0;   //X-coordinate of the Skystone closest to the wall
                 double furtherMostSkyStoneX = -18.5;    //X-coordinate of the Skystone furthest away from the wall
-                double foundationX = 45.0;  //X-coordinate of the foundation
+                double foundationX = 43.0;  //X-coordinate of the foundation
                 double strafeDistanceY = 7.0;    //Distance to strafe out before grabbing foundation
                 double strafeDistanceX = 4.0;   //Distance to strafe down before grabbing foundation
                 double reverseToFoundationInches = 13.0;    //Distance to back up to grab foundation
@@ -273,7 +294,7 @@ public class Path {
                 _drive.followTrajectorySync(trajectory);
 
                 hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
+                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
 
                 try {
                     Thread.sleep(100);

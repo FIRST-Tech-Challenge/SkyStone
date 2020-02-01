@@ -52,8 +52,9 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         // TODO: adjust the names of the following hardware devices to match your configuration
         // for simplicity, we assume that the desired IMU and drive motors are on the same hub
         // if your motors are split between hubs, **you will need to add another bulk read**
-        hubMotors = hardwareMap.get(ExpansionHubEx.class, "ExpansionHub2");  //
+        //
         hubMotors0 = hardwareMap.get(ExpansionHubEx.class, "ExpansionHub3");  //
+        hubMotors = hardwareMap.get(ExpansionHubEx.class, "ExpansionHub2");
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:

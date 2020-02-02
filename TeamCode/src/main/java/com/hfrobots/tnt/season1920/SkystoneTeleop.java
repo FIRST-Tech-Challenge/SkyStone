@@ -70,6 +70,8 @@ public class SkystoneTeleop extends OpMode {
 
     private ChaosSimplerHardwareMap simplerHardwareMap;
 
+    private SkystoneGrabber skystoneGrabber;
+
     @Override
     public void init() {
         ticker = createAndroidTicker();
@@ -100,6 +102,8 @@ public class SkystoneTeleop extends OpMode {
 
         chaosNinja = new ChaosNinjaLandingState(driversGamepad, telemetry);
         konamiCode = new KonamiCode(driversGamepad, chaosNinja, ticker, telemetry);
+
+        skystoneGrabber = new SkystoneGrabber(simplerHardwareMap);
     }
 
     @Override
@@ -185,6 +189,8 @@ public class SkystoneTeleop extends OpMode {
         if (chaosController != null) {
             chaosController.periodicTask();
         }
+
+        skystoneGrabber.stow(); // keep the grabber stowed at all times in tele-op
 
         driverControls.periodicTask();
         operatorControls.periodicTask();

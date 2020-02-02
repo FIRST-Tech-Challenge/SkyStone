@@ -67,11 +67,7 @@ public class SkystoneAuto extends OpMode {
 
     private StateMachine stateMachine;
 
-    private Servo skystoneServo;
 
-    private final double SKYSTONE_SERVO_STOWED_POSITION = 1;
-
-    private final double SKYSTONE_SERVO_GRAB_POSITION = 0;
 
     // The routes our robot knows how to do
     private enum Routes {
@@ -113,6 +109,8 @@ public class SkystoneAuto extends OpMode {
 
     private EasyOpenCvPipelineAndCamera pipelineAndCamera;
 
+    private SkystoneGrabber skystoneGrabber;
+
     @Override
     public void init() {
         ticker = createAndroidTicker();
@@ -129,12 +127,11 @@ public class SkystoneAuto extends OpMode {
 
         deliveryMechanism = new DeliveryMechanism(simplerHardwareMap, telemetry, ticker);
 
-        skystoneServo = simplerHardwareMap.get(Servo.class, "skystoneServo");
-        ServoUtil.setupPwmForRevSmartServo(skystoneServo);
+        skystoneGrabber = new SkystoneGrabber(simplerHardwareMap);
 
         setupOpenCvCameraAndPipeline();
 
-        skystoneServo.setPosition(SKYSTONE_SERVO_STOWED_POSITION);
+
     }
 
     @Override
@@ -387,18 +384,13 @@ public class SkystoneAuto extends OpMode {
             }
         };
 
-        //4. Make sure alligned
-
-        //5. Start intake
-        //State startIntakeState = new RunnableState("Start intake", telemetry,
-        //    new Runnable() {
-        //        @Override
-        //        public void run() {
-        //            deliveryMechanism.setIntakeVelocity(1);
-        //        }
-        //    });
-
-        State servoToGrabState = new ServoPositionState("grab the sky", telemetry, skystoneServo, SKYSTONE_SERVO_GRAB_POSITION);
+        State servoToGrabState = new RunnableState("grab the skystone", telemetry,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        skystoneGrabber.grab();
+                    }
+                });
 
         // For red alliance
         Turn turn = new Turn(Rotation.CW, 75);
@@ -463,7 +455,13 @@ public class SkystoneAuto extends OpMode {
             }
         };
 
-        State servoToNotGrabState = new ServoPositionState("Un-grab the sky", telemetry, skystoneServo, SKYSTONE_SERVO_STOWED_POSITION);
+        State servoToNotGrabState =new RunnableState("un-grab the skystone", telemetry,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        skystoneGrabber.stow();
+                    }
+                });
 
 
         //8. Use parking sticks

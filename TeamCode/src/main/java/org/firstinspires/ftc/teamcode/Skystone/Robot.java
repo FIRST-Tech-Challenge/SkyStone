@@ -119,7 +119,7 @@ public class Robot {
     private double yMovement;
     private double turnMovement;
 
-    private boolean isDebug = false;
+    private boolean isDebug = true;
 
     private StringBuilder odometryPoints = new StringBuilder();
     private StringBuilder splinePoints = new StringBuilder();
@@ -554,6 +554,30 @@ public class Robot {
             if (isMoving) {
                 applyMove();
             }
+        }
+    }
+
+    public void splineMoveTest(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, ArrayList<Action> actions, boolean isTimeKill, long endTime) {
+        SplineGenerator s = new SplineGenerator(data, this);
+        double[][] pathPoints = s.getOutputData();
+
+
+        addSplinePoints(pathPoints);
+        addWaypoints(data);
+
+        int pathPointIndex = 0;
+        while(linearOpMode.opModeIsActive()) {
+            double[][] nextPoint = new double[1][2];
+            nextPoint[0][1] = pathPoints[pathPointIndex][0];
+            nextPoint[0][2] = pathPoints[pathPointIndex][1];
+
+            double distanceToNextPoint = Math.hypot(robotPos.x - nextPoint[0][1], robotPos.y - nextPoint[0][2]);
+
+            if (distanceToNextPoint < 1) {
+                pathPointIndex++;
+            }
+
+            updateMovementsToPoint(pathPoints[pathPointIndex][0], pathPoints[pathPointIndex][1], moveSpeed, turnSpeed, optimalAngle, false);
         }
     }
 

@@ -30,7 +30,7 @@ public class Odometry {
     double worldAngle;
 
     double moveScaleFactor = (0.004177098/125) * 123;
-    double turnScaleFactor = 0.000301686*240;
+    double turnScaleFactor = 360.0/4927.0;
     double strafeScaleFactor = 0.004135465;
     double strafePredictionScalingFactor = 0.092;
 
@@ -109,10 +109,9 @@ public class Odometry {
         double dXPrime = dRightPodInches;
 
         // Calculate midAngle, the angle used to convert from x'y' coordinate system to global (x,y) system
-        double midAngle = worldAngle + dTheta * .5;
+        double midAngle = worldAngle;
 
         // Update the global angle of the robot
-//        worldAngle += dTheta;
         worldAngle = (((dLeftPod+oldLeftPod) * moveScaleFactor) - ((dRightPod + oldRightPod) * moveScaleFactor)) * turnScaleFactor;
 
         if (dTheta != 0.0){ // if robot turned
@@ -130,11 +129,11 @@ public class Odometry {
     }
 
     private double circularOdometrySinXOverX(double x) {
-        if (Math.abs(x) < .00005) { // If the ratio is close enough to the limit, make it the limit
-            return 1;
-        } else {
-            return Math.sin(x) / x;
-        }
+//        if (Math.abs(x) < .00000000000005) { // If the ratio is close enough to the limit, make it the limit
+//            return 1;
+//        } else {
+        return Math.sin(x) / x;
+//        }
     };
 
     public void linearOdometry (Robot robot) {

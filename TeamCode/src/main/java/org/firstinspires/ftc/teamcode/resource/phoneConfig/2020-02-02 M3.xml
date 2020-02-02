@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<Robot type="FirstInspires-FTC">
+    <LynxUsbDevice name="Left Motors Hub Portal" serialNumber="DQ3MXJ2F" parentModuleAddress="2">
+        <LynxModule name="Left Motors Hub" port="2">
+            <RevRobotics20HDHexMotor name="backLeftMotor" port="0" />
+            <RevRobotics20HDHexMotor name="frontLeftMotor" port="1" />
+            <NeveRest40Gearmotor name="Left_Intake" port="3" />
+            <Servo name="rampServo2" port="0" />
+            <Servo name="servo2" port="1" />
+            <Servo name="servo1" port="2" />
+            <LynxEmbeddedIMU name="imu" port="0" bus="0" />
+            <RevColorSensorV3 name="leftColor" port="0" bus="1" />
+        </LynxModule>
+    </LynxUsbDevice>
+    <LynxUsbDevice name="Right Motors Hub Portal" serialNumber="DQ1O4HV9" parentModuleAddress="3">
+        <LynxModule name="Right Motors Hub" port="3">
+            <RevRobotics20HDHexMotor name="backRightMotor" port="0" />
+            <RevRobotics20HDHexMotor name="frontRightMotor" port="1" />
+            <NeveRest40Gearmotor name="Right_Intake" port="3" />
+            <Servo name="rampServo" port="0" />
+            <LynxEmbeddedIMU name="imu 2" port="0" bus="0" />
+            <RevColorSensorV3 name="rightColor" port="0" bus="1" />
+        </LynxModule>
+    </LynxUsbDevice>
+</Robot>

@@ -44,17 +44,19 @@ public class TeleopConstants {
     public static double intakeInitPosRight = 0.13306;
     public static double intakeInitPosReset = 0.3108;
 
-    public static double autoClaw1Retracted = 0;
-    public static double autoClaw1Stone = 0;
-    public static double autoClaw1Extended = 0;
+    public static double autoClaw1Retracted = 0.1048;
+    public static double autoClaw1Drop = 0.37829;
+    public static double autoClaw1Stone = 0.7461;
+    public static double autoClaw1Extended = 0.58858;
 
-    public static double autoClaw2Init = 0;
-    public static double autoClaw2Prep = 0.57;
-    public static double autoClaw2Grabbing = 0.4;
+    public static double autoClaw2PickUp = 0.6445;
+    public static double autoClaw2Init = 0.55122;
+    public static double autoClaw2Prep = 0.40908;
+    public static double autoClaw2Grabbing = 0.25561;
 
-    public static double autoClaw3Init = 0;
-    public static double autoClaw3Closed = 0;
-    public static double autoClaw3Open = 0;
+    public static double autoClaw3Init = 0.8554;
+    public static double autoClaw3Closed = 0.5709;
+    public static double autoClaw3Open = 0.3669;
 
     public static double parkingServoPosUnlock = 0.4959;
     public static double parkingServoPosLock = 0.3815;

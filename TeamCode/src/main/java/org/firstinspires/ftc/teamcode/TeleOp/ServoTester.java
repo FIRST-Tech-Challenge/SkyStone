@@ -42,7 +42,7 @@ public class ServoTester extends LinearOpMode {
                 TeleopConstants.transferLockPosUp, TeleopConstants.transferHornPosReady,
                 TeleopConstants.clawInitPosCapstone, TeleopConstants.innerTransferPosTucked,
                 TeleopConstants.foundationLockUnlock, TeleopConstants.intakeInitPosReset, TeleopConstants.autoClaw1Extended,
-                TeleopConstants.autoClaw2Init, TeleopConstants.parkingServoPosLock, TeleopConstants.liftOdometryDown};
+                TeleopConstants.autoClaw2Init, TeleopConstants.autoClaw3Init, TeleopConstants.liftOdometryDown};
 
         for(int i = 0; i < servos.length; i++) {
             servoPositions.add(pos[i]);

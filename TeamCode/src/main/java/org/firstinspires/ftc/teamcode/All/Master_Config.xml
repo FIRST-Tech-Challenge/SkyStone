@@ -1,16 +1,15 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <Robot type="FirstInspires-FTC">
-    <Webcam name="WebcamFront" serialNumber="3F2DF43F" />
     <LynxUsbDevice name="Expansion Hub Portal 1" serialNumber="DQ167WIO" parentModuleAddress="3">
         <LynxModule name="ExpansionHub2" port="2">
             <goBILDA5202SeriesMotor name="frontLeft" port="0" />
             <goBILDA5202SeriesMotor name="backLeft" port="1" />
             <goBILDA5202SeriesMotor name="frontRight" port="2" />
             <Matrix12vMotor name="liftOne" port="3" />
-            <Servo name="redAutoClawJoint1" port="0" />
-            <Servo name="parkingServo" port="1" />
-            <Servo name="redAutoClawJoint2" port="2" />
-            <Servo name="intakeInit" port="3" />
+            <Servo name="redAutoClawJoint3" port="0" />
+            <Servo name="intakeInit" port="1" />
+            <Servo name="redAutoClawJoint1" port="2" />
+            <Servo name="redAutoClawJoint2" port="3" />
             <Servo name="innerTransfer" port="4" />
             <Servo name="transferLock" port="5" />
             <DigitalDevice name="foundationDetectRight" port="3" />
@@ -32,4 +31,5 @@
             <LynxEmbeddedIMU name="imu 1" port="0" bus="0" />
         </LynxModule>
     </LynxUsbDevice>
+    <Webcam name="WebcamFront" serialNumber="3F2DF43F" />
 </Robot>

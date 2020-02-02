@@ -55,10 +55,16 @@ public class DiagonalTest extends LinearOpMode {
             double squre_offset = delta_y;
             builder.setReversed(false).lineTo(new Vector2d(current_x + x_offset, current_y)).strafeTo(new Vector2d(xy.getX(), xy.getY()));
         }
-        else {
+        else if (Math.abs(delta_x) < Math.abs(delta_y)){
             double y_offset = delta_y - delta_x;
             double squre_offset = delta_x;
             builder.setReversed(false).strafeTo(new Vector2d(current_x, current_y + y_offset)).strafeTo(new Vector2d(xy.getX(), xy.getY()));
+        }
+        else
+        {
+            //double y_offset = delta_y - delta_x;
+            double squre_offset = delta_x;
+            builder.setReversed(false).strafeTo(new Vector2d(xy.getX(), xy.getY()));
         }
         trajectory = builder.build();   //x - 2.812, y + 7.984
         _drive.followTrajectorySync(trajectory);

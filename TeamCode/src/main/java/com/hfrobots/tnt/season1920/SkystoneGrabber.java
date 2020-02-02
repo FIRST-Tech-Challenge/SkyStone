@@ -39,10 +39,11 @@ public class SkystoneGrabber {
     }
 
     public void stow() {
+        skystoneServo.setPosition(SKYSTONE_SERVO_STOWED_POSITION);
 
     }
 
     public void grab() {
-
+        skystoneServo.setPosition(SKYSTONE_SERVO_GRAB_POSITION);
     }
 }

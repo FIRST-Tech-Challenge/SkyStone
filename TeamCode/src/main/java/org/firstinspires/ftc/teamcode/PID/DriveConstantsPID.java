@@ -46,6 +46,7 @@ public class DriveConstantsPID {
     public static boolean ENABLE_LOGGING = false;
     public static double TEST_SKY_STONE_POSITION = 1;
     public static boolean ENABLE_ARM_ACTIONS = true;
+    public static double TEST_PAUSE_TIME = 1;  // milli-seconds;
 
     private static String TAG = "DriveConstants";
 
@@ -231,6 +232,7 @@ public class DriveConstantsPID {
         RobotLog.dd(TAG, "Heading PID   hP: "+Double.toString(hP) + " hI: "+Double.toString(hI) + " hD: " + Double.toString(hD));
         RobotLog.dd(TAG, "test distance: " + Double.toString(TEST_DISTANCE) + "  " + Double.toString(TEST_DISTANCE_0));
         RobotLog.dd(TAG, "test skystone position (no detection): " + Double.toString(TEST_SKY_STONE_POSITION));
+        RobotLog.dd(TAG, "pause time between move: " + Double.toString(TEST_PAUSE_TIME));
         RobotLog.dd(TAG, "using IMU in localizer? : " + Integer.toString(RUN_USING_IMU_LOCALIZER?1:0));
         RobotLog.dd(TAG, "enable ARM actions (disable for path test)? : " + Integer.toString(ENABLE_ARM_ACTIONS?1:0));
         RobotLog.dd(TAG, "IMU polling interval? : " + Double.toString(imuPollingInterval));
@@ -340,6 +342,10 @@ public class DriveConstantsPID {
         v_double = getTeamCodePropertyValue("debug.ftc.skystonePos");
         if (v_double != 0 && v_double != Double.MAX_VALUE)
             TEST_SKY_STONE_POSITION = v_double;
+
+        v_double = getTeamCodePropertyValue("debug.ftc.pause");
+        if (v_double != 0 && v_double != Double.MAX_VALUE)
+            TEST_PAUSE_TIME = v_double;
 
         v_double = getTeamCodePropertyValue("debug.ftc.maxVel");
         if (v_double != 0 && v_double != Double.MAX_VALUE)

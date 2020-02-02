@@ -37,9 +37,9 @@ import org.firstinspires.ftc.teamcode.bots.SimpleBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
 
-@Autonomous(name="Rex_Auto_Encoder_Test", group="rex")
+@Autonomous(name="Rex_Auto_Encoder_Test_Old", group="rex")
 //@Disabled
-public class Rex_Auto_Encoder_Test extends LinearOpMode {
+public class Rex_Auto_Encoder_Test_Old extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -57,6 +57,7 @@ public class Rex_Auto_Encoder_Test extends LinearOpMode {
         /* Use either robot.initAll or select only the components that need initializing below */
         //robot.initAll();
         robot.driveTrain.init(DriveTrain.InitType.INIT_4WD);
+        robot.driveTrainSimple.init();
 
         robot.logger.logInfo("runOpMode", "===== [ Initialization Complete ]");
         telemetry.update();
@@ -69,24 +70,15 @@ public class Rex_Auto_Encoder_Test extends LinearOpMode {
 
 
         /********** Put Your Code Here **********/
-
         robot.logger.logInfo("runOpMode", "===== [ Run Forward ]");
-        robot.driveTrain.encoderDrive(0.5, 5);
-
-        robot.driveTrain.pause(1);
-
-        robot.logger.logInfo("runOpMode", "===== [ Run Back ]");
-        robot.driveTrain.encoderDrive(0.5, -5);
+        robot.driveTrain.encoderDrive(0.5, 12);
+        robot.driveTrain.pause(2);
+        robot.logger.logInfo("runOpMode", "===== [ Run Backward ]");
+        robot.driveTrain.encoderDrive(0.5, -12);
 
         // Show the elapsed game time.
         robot.logger.logInfo("runOpMode", "===== [ Autonomous Complete ] Run Time: %s", runtime.toString());
         telemetry.update();
 
-    }
-
-    private void waitForButton() {
-        while (opModeIsActive() && gamepad1.y == false) {
-            robot.driveTrain.stop();
-        }
     }
 }

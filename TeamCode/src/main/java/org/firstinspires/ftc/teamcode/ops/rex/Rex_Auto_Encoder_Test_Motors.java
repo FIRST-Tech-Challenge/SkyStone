@@ -30,19 +30,16 @@
 package org.firstinspires.ftc.teamcode.ops.rex;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.bots.SimpleBot;
-import org.firstinspires.ftc.teamcode.bots.TestBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
-import org.firstinspires.ftc.teamcode.components.WebCamera;
 
 
-@Autonomous(name="Rex_Encoder_Test_Auto", group="rex")
+@Autonomous(name="Rex_Auto_Encoder_Test_Motors", group="rex")
 //@Disabled
-public class Rex_Encoder_Test_Auto extends LinearOpMode {
+public class Rex_Auto_Encoder_Test_Motors extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -73,16 +70,30 @@ public class Rex_Encoder_Test_Auto extends LinearOpMode {
 
 
         /********** Put Your Code Here **********/
-        robot.driveTrain.encoderDrive(0.5, 12);
-        robot.driveTrain.pause(2);
-        robot.driveTrain.encoderDrive(0.5, -12);
+        robot.logger.logInfo("runOpMode", "===== [ Forward: motorFL]");
+        robot.driveTrainSimple.singleMotorDrive(robot.driveTrainSimple.motorFL, 0.5, 12, 0);
 
-        robot.driveTrainSimple.pause(2);
+        robot.logger.logInfo("runOpMode", "===== [ Forward: motorFR]");
+        robot.driveTrainSimple.singleMotorDrive(robot.driveTrainSimple.motorFR, 0.5, 12, 0);
 
-        robot.driveTrainSimple.driveByEncoder(0.5, 12);
-        robot.driveTrainSimple.pause(2);
-        robot.driveTrainSimple.driveByEncoder(0.5, -12);
+        robot.logger.logInfo("runOpMode", "===== [ Forward: motorBL]");
+        robot.driveTrainSimple.singleMotorDrive(robot.driveTrainSimple.motorBL, 0.5, 12, 0);
 
+        robot.logger.logInfo("runOpMode", "===== [ Forward: motorBR]");
+        robot.driveTrainSimple.singleMotorDrive(robot.driveTrainSimple.motorBR, 0.5, 12, 0);
+
+
+        robot.logger.logInfo("runOpMode", "===== [ Back: motorFL]");
+        robot.driveTrainSimple.singleMotorDrive(robot.driveTrainSimple.motorFL, 0.5, -12, 0);
+
+        robot.logger.logInfo("runOpMode", "===== [ Back: motorFR]");
+        robot.driveTrainSimple.singleMotorDrive(robot.driveTrainSimple.motorFR, 0.5, -12, 0);
+
+        robot.logger.logInfo("runOpMode", "===== [ Back: motorBL]");
+        robot.driveTrainSimple.singleMotorDrive(robot.driveTrainSimple.motorBL, 0.5, -12, 0);
+
+        robot.logger.logInfo("runOpMode", "===== [ Back: motorBR]");
+        robot.driveTrainSimple.singleMotorDrive(robot.driveTrainSimple.motorBR, 0.5, -12, 0);
 
         // Show the elapsed game time.
         robot.logger.logInfo("runOpMode", "===== [ Autonomous Complete ] Run Time: %s", runtime.toString());

@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.bots.Bot;
 import org.firstinspires.ftc.teamcode.components.BotComponent;
 import org.firstinspires.ftc.teamcode.components.GyroNavigator;
 import org.firstinspires.ftc.teamcode.components.Logger;
@@ -47,14 +48,12 @@ public class DriveTrainSimple extends BotComponent {
     private String motorBLName = "backLeftMotor";
     private String motorBRName = "backRightMotor";
 
-
     public DcMotor motorFL = null;
     public DcMotor motorFR = null;
     public DcMotor motorBL = null;
     public DcMotor motorBR = null;
 
     List<DcMotor> motorList = new ArrayList<DcMotor>();
-
 
     private double COUNTS_PER_MOTOR_REV    = 560 ;    // eg: TETRIX Motor Encoder
     private double DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
@@ -106,31 +105,6 @@ public class DriveTrainSimple extends BotComponent {
         motorBR.setPower(speedFactor * powerBR);
     }
 
-    private void driveByTime(double power, double seconds) {
-        driveByTime(power, seconds, 0.10, 0.05);
-    }
-
-    private void driveByTime(double power, double seconds, double startSpeed, double increment) {
-
-        double speedFactor = startSpeed;
-
-        setPower(speedFactor, power, power, power, power);
-
-        ElapsedTime runtime = new ElapsedTime();
-        runtime.reset();
-
-        while(opModeIsActive() && runtime.seconds() < seconds) {
-            if  (speedFactor < 1) {
-                speedFactor += increment;
-                setPower(speedFactor, power, power, power, power);
-            }
-            opMode.telemetry.addData("Path", "Time: %2.5f S Elapsed", runtime.seconds());
-            opMode.telemetry.update();
-        }
-        stop();
-
-    }
-
     public void stop() {
         setPower(1, 0, 0, 0, 0);
     }
@@ -153,23 +127,31 @@ public class DriveTrainSimple extends BotComponent {
         logger.logDebug("driveByEncoder", "===== [ Crab Right ] %f power, %f inches", power, inches);
         driveByEncoder(power, inches, DIRECTION_RIGHT);
     }
+
+    private static final double RAMP_UP_INCREMENT = 0.05;
+
     private void driveByEncoder(double power, double inches, int direction) {
+        driveByEncoder(power, inches, direction, 0.05, RAMP_UP_INCREMENT);
+    }
+
+    private void driveByEncoder(double power, double inches, int direction, double startSpeed, double increment) {
+
+        double speedFactor = startSpeed;
 
         resetEncoders(motorFL, motorFR, motorBL, motorBR);
 
-        int targetFL = 0 - (int)Math.round(inches * COUNTS_PER_INCH);
-        int targetFR = 0 - (int)Math.round(inches * COUNTS_PER_INCH);
+        int targetFL = 0 - (int)Math.round(inches * COUNTS_PER_INCH * 0.96);
+        int targetFR = 0 - (int)Math.round(inches * COUNTS_PER_INCH * 0.96);
         int targetBL = 0 - (int)Math.round(inches * COUNTS_PER_INCH);
         int targetBR = 0 - (int)Math.round(inches * COUNTS_PER_INCH);
 
-        /*
+
         if (direction != 0) {
             targetFL = direction * targetFL;
             targetFR = (0 - direction) * targetFR;
             targetBL = (0 - direction) * targetBL;
             targetBR = direction * targetBR;
         }
-        */
 
         setEncoderTargets(targetFL, targetFR, targetBL, targetBR);
 
@@ -179,7 +161,7 @@ public class DriveTrainSimple extends BotComponent {
         runtime.reset();
 
         power = 0 - power * (inches/Math.abs(inches));
-        setPower(1, power, power, power, power);
+        setPower(speedFactor, power, power, power, power);
 
         logger.setDebugFilter("driveByEncoder");
 
@@ -194,6 +176,16 @@ public class DriveTrainSimple extends BotComponent {
         logger.logDebug("driveByEncoder", "Back:   Left:%7d Right:%7d", motorBL.getCurrentPosition(), motorBR.getCurrentPosition());
         logger.logDebug("driveByEncoder", "runtime.seconds: %f timeout: %f", runtime.seconds(), timeoutSeconds);
 
+        int currFL = motorFL.getCurrentPosition();
+        int currFR = motorFR.getCurrentPosition();
+        int currBL = motorBL.getCurrentPosition();
+        int currBR = motorBR.getCurrentPosition();
+
+        int prevFL = currFL;
+        int prevFR = currFR;
+        int prevBL = currBL;
+        int prevBR = currBR;
+
 
         while ( opModeIsActive()
                 && runtime.seconds() < timeoutSeconds
@@ -202,11 +194,39 @@ public class DriveTrainSimple extends BotComponent {
                 )
         {
 
-            logger.logDebug("driveByEncoder", "Target: Left:%7d Right:%7d", motorFL.getTargetPosition(), motorFR.getTargetPosition());
-            logger.logDebug("driveByEncoder", "Front:  Left:%7d Right:%7d", motorFL.getCurrentPosition(), motorFR.getCurrentPosition());
-            logger.logDebug("driveByEncoder", "Target: Left:%7d Right:%7d", motorBL.getTargetPosition(), motorBR.getTargetPosition());
-            logger.logDebug("driveByEncoder", "Back:   Left:%7d Right:%7d", motorBL.getCurrentPosition(), motorBR.getCurrentPosition());
-            logger.logDebug("driveByEncoder", "runtime.seconds: %f timeout: %f", runtime.seconds(), timeoutSeconds);
+            if (speedFactor < 1) {
+                speedFactor += increment;
+                setPower(speedFactor, power, power, power, power);
+            }
+
+            currFL = motorFL.getCurrentPosition();
+            currFR = motorFR.getCurrentPosition();
+            currBL = motorBL.getCurrentPosition();
+            currBR = motorBR.getCurrentPosition();
+
+            int accFL = Math.abs(currFL - prevFL);
+            int accFR = Math.abs(currFR - prevFR);
+            int accBL = Math.abs(currFL - prevBL);
+            int accBR = Math.abs(currFL - prevBR);
+
+            if (speedFactor >= 1 && accFL == 0) { motorFL.setTargetPosition(currFL); }
+            if (speedFactor >= 1 && accFR == 0) { motorFR.setTargetPosition(currFR); }
+            if (speedFactor >= 1 && accBL == 0) { motorBL.setTargetPosition(currBL); }
+            if (speedFactor >= 1 && accBR == 0) { motorBR.setTargetPosition(currBR); }
+
+            logger.logDebug("driveByEncoder","| factor   power     | FL Target  Curr   Busy  Accel  | FR Target  Curr   Busy  Accel  | BL Target  Curr   Busy  Accel  | BR Target  Curr   Busy  Accel  | Seconds   Timeout |");
+            logger.logDebug("xxxxxxxxxxxxxx","[xx] | %f %f | %7d  %7d  %b %7d | %7d  %7d  %b %7d | %7d  %7d  %b %7d | %7d  %7d  %b %7d | %f %f |",
+                    speedFactor, power,
+                    motorFL.getTargetPosition(), motorFL.getCurrentPosition(), motorFL.isBusy(), accFL,
+                    motorFR.getTargetPosition(), motorFR.getCurrentPosition(), motorFR.isBusy(), accFR,
+                    motorBL.getTargetPosition(), motorBL.getCurrentPosition(), motorBL.isBusy(), accBL,
+                    motorBR.getTargetPosition(), motorBR.getCurrentPosition(), motorBR.isBusy(), accBR,
+                    runtime.seconds(), timeoutSeconds);
+
+            prevFL = currFL;
+            prevFR = currFR;
+            prevBL = currBL;
+            prevBR = currBR;
 
             logger.incrementDebugFilterCount();
             opMode.telemetry.update();
@@ -218,12 +238,14 @@ public class DriveTrainSimple extends BotComponent {
         stop();
         logger.logDebug("driveByEncoder", "===== [ Stop ]");
 
-        logger.logDebug("driveByEncoder", "Inches: %f", inches);
-        logger.logDebug("driveByEncoder", "Target: Left:%7d Right:%7d", motorFL.getTargetPosition(), motorFR.getTargetPosition());
-        logger.logDebug("driveByEncoder", "Front:  Left:%7d Right:%7d", motorFL.getCurrentPosition(), motorFR.getCurrentPosition());
-        logger.logDebug("driveByEncoder", "Target: Left:%7d Right:%7d", motorBL.getTargetPosition(), motorBR.getTargetPosition());
-        logger.logDebug("driveByEncoder", "Back:   Left:%7d Right:%7d", motorBL.getCurrentPosition(), motorBR.getCurrentPosition());
-        logger.logDebug("driveByEncoder", "runtime.seconds: %f timeout: %f", runtime.seconds(), timeoutSeconds);
+        logger.logDebug("driveByEncoder","| factor   power     | FL Target  Curr   Busy  Accel  | FR Target  Curr   Busy  Accel  | BL Target  Curr   Busy  Accel  | BR Target  Curr   Busy  Accel  | Seconds   Timeout |");
+        logger.logDebug("xxxxxxxxxxxxxx","[xx] | %f %f | %7d  %7d  %b %7d | %7d  %7d  %b %7d | %7d  %7d  %b %7d | %7d  %7d  %b %7d | %f %f |",
+                speedFactor, power,
+                motorFL.getTargetPosition(), motorFL.getCurrentPosition(), motorFL.isBusy(), 0,
+                motorFR.getTargetPosition(), motorFR.getCurrentPosition(), motorFR.isBusy(), 0,
+                motorBL.getTargetPosition(), motorBL.getCurrentPosition(), motorBL.isBusy(), 0,
+                motorBR.getTargetPosition(), motorBR.getCurrentPosition(), motorBR.isBusy(), 0,
+                runtime.seconds(), timeoutSeconds);
 
         // disable encoders;
         for (DcMotor m : motorList) {
@@ -273,12 +295,11 @@ public class DriveTrainSimple extends BotComponent {
 
     }
 
-
     private void resetEncoders(DcMotor...ms) {
         for(DcMotor m : ms) {
             m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            //m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
     }
 
@@ -294,23 +315,7 @@ public class DriveTrainSimple extends BotComponent {
     private boolean motorsAreBusy(DcMotor...ms) {
         int total = 0;
         for(DcMotor m : ms) {
-            final int c = Math.abs(m.getCurrentPosition());
-            final int t = Math.abs(m.getTargetPosition());
-            logger.logDebug("motorsAreBusy", "motor: %s, Target: %7d, Position: %7d", m.toString(), t, c);
-            total = total + Math.max(0, t-c);
-        }
-
-        //logger.logDebug("motorsAreBusy", "total: %7d ms.length: %7d", total, ms.length);
-
-        total = total / ms.length;
-        return total > MOTORS_BUSY_THRESHOLD;
-
-    }
-
-    private boolean motorsAreBusy2(DcMotor...ms) {
-        int total = 0;
-        for(DcMotor m : ms) {
-            logger.logDebug("motorsAreBusy", "motor: %7d, isBusy: %b", m.toString(), m.isBusy());
+            //logger.logDebug("motorsAreBusy", "motor: %s, isBusy: %b", m.toString(), m.isBusy());
             if (m.isBusy()) {
                 final int c = Math.abs(m.getCurrentPosition());
                 final int t = Math.abs(m.getTargetPosition());
@@ -319,7 +324,6 @@ public class DriveTrainSimple extends BotComponent {
         }
 
         //logger.logDebug("motorsAreBusy", "total: %7d ms.length: %7d", total, ms.length);
-
         total = total / ms.length;
         return total > MOTORS_BUSY_THRESHOLD;
 

@@ -37,9 +37,9 @@ import org.firstinspires.ftc.teamcode.bots.SimpleBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
 
-@Autonomous(name="Rex_Encoder_Test_Auto2", group="rex")
+@Autonomous(name="Rex_Auto_Encoder_Crab_Test", group="rex")
 //@Disabled
-public class Rex_Encoder_Test_Auto2 extends LinearOpMode {
+public class Rex_Auto_Encoder_Crab_Test extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -70,17 +70,20 @@ public class Rex_Encoder_Test_Auto2 extends LinearOpMode {
 
 
         /********** Put Your Code Here **********/
-        robot.logger.logInfo("runOpMode", "===== [ motorFL]");
-        robot.driveTrainSimple.singleMotorDrive(robot.driveTrainSimple.motorFL, 0.5, 12, 0);
 
-        robot.logger.logInfo("runOpMode", "===== [ motorFR]");
-        robot.driveTrainSimple.singleMotorDrive(robot.driveTrainSimple.motorFR, 0.5, 12, 0);
+        robot.logger.logInfo("runOpMode", "===== [ Run Forward ]");
+        robot.driveTrainSimple.driveByEncoder(0.5, 24);
 
-        robot.logger.logInfo("runOpMode", "===== [ motorBL]");
-        robot.driveTrainSimple.singleMotorDrive(robot.driveTrainSimple.motorBL, 0.5, 12, 0);
+        robot.logger.logInfo("runOpMode", "===== [ Crab Left ]");
+        robot.driveTrainSimple.crabByEncoderLeft(0.5, 24);
+        //robot.driveTrainSimple.pause(2);
 
-        robot.logger.logInfo("runOpMode", "===== [ motorBR]");
-        robot.driveTrainSimple.singleMotorDrive(robot.driveTrainSimple.motorBR, 0.5, 12, 0);
+        robot.logger.logInfo("runOpMode", "===== [ Run Backward ]");
+        robot.driveTrainSimple.driveByEncoder(0.5, -24);
+
+        robot.logger.logInfo("runOpMode", "===== [ Crab Right ]");
+        robot.driveTrainSimple.crabByEncoderRight(0.5, 24);
+
 
         // Show the elapsed game time.
         robot.logger.logInfo("runOpMode", "===== [ Autonomous Complete ] Run Time: %s", runtime.toString());

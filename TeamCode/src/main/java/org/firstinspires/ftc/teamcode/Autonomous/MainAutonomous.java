@@ -137,7 +137,7 @@ public class MainAutonomous extends LinearOpMode {
                     telemetry.addData("STATUS", "Initializing TensorFlow...");
                     telemetry.update();
 
-                    drivetrain.resetEncoders();
+                    //drivetrain.resetEncoders();
 
                     //if(fieldPosition == FieldPosition.RED_QUARY)
                         initVuforia(CameraController.WEBCAM);
@@ -162,7 +162,7 @@ public class MainAutonomous extends LinearOpMode {
             telemetry.update();
         }
 
-        drivetrain.resetEncoders();
+        //drivetrain.resetEncoders();
 
         // begin tfod processing before starting -- use it to ascertain the positions of skystones in quarry
         while (!isStarted() && (fieldPosition == FieldPosition.BLUE_QUARY || fieldPosition == FieldPosition.RED_QUARY) &&

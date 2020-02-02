@@ -32,7 +32,7 @@ import java.util.List;
 @Config
 public class DriveConstantsPID {
 
-    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = false;
+    public static final boolean RUN_USING_PARAMTER_FROM_PROPERTIES = true;
 
     public static boolean RUN_USING_ODOMETRY_WHEEL = false;
     public static boolean RUN_USING_IMU_LOCALIZER = true;
@@ -44,6 +44,9 @@ public class DriveConstantsPID {
     public static double imuPollingInterval = 10;
 
     public static boolean ENABLE_LOGGING = false;
+    public static double TEST_SKY_STONE_POSITION = 1;
+    public static boolean ENABLE_ARM_ACTIONS = true;
+
     private static String TAG = "DriveConstants";
 
     public static double txP = 5.0; //translational x/y co-efficients
@@ -227,7 +230,9 @@ public class DriveConstantsPID {
         RobotLog.dd(TAG, "yTransitional PID   tyP: "+Double.toString(tyP) + " tyI: "+Double.toString(tyI) + " tyD: " + Double.toString(tyD));
         RobotLog.dd(TAG, "Heading PID   hP: "+Double.toString(hP) + " hI: "+Double.toString(hI) + " hD: " + Double.toString(hD));
         RobotLog.dd(TAG, "test distance: " + Double.toString(TEST_DISTANCE) + "  " + Double.toString(TEST_DISTANCE_0));
+        RobotLog.dd(TAG, "test skystone position (no detection): " + Double.toString(TEST_SKY_STONE_POSITION));
         RobotLog.dd(TAG, "using IMU in localizer? : " + Integer.toString(RUN_USING_IMU_LOCALIZER?1:0));
+        RobotLog.dd(TAG, "enable ARM actions (disable for path test)? : " + Integer.toString(ENABLE_ARM_ACTIONS?1:0));
         RobotLog.dd(TAG, "IMU polling interval? : " + Double.toString(imuPollingInterval));
         RobotLog.dd(TAG, "correcting drv in automonous? : " + Integer.toString(drvCorrection?1:0));
         RobotLog.dd(TAG, "using STRAFE in diagonal move? : " + Integer.toString(USING_STRAFE_DIAGNAL?1:0));
@@ -281,7 +286,11 @@ public class DriveConstantsPID {
             v_int = (int) v_double;
             RECREATE_DRIVE_AND_BUILDER = (v_int==0)?false:true;
         }
-
+        v_double = (int) getTeamCodePropertyValue("debug.ftc.enable_arm");
+        if (v_double != Double.MAX_VALUE) {
+            v_int = (int) v_double;
+            ENABLE_ARM_ACTIONS = (v_int==0)?false:true;
+        }
         v_double = getTeamCodePropertyValue("debug.ftc.vuforia");
         if (v_double != Double.MAX_VALUE)
         {
@@ -327,6 +336,10 @@ public class DriveConstantsPID {
         v_double = getTeamCodePropertyValue("debug.ftc.imuInterval");
         if (v_double != 0 && v_double != Double.MAX_VALUE)
             imuPollingInterval = v_double;
+
+        v_double = getTeamCodePropertyValue("debug.ftc.skystonePos");
+        if (v_double != 0 && v_double != Double.MAX_VALUE)
+            TEST_SKY_STONE_POSITION = v_double;
 
         v_double = getTeamCodePropertyValue("debug.ftc.maxVel");
         if (v_double != 0 && v_double != Double.MAX_VALUE)

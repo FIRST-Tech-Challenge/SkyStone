@@ -10,10 +10,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.teamcode.All.HardwareMap;
 import org.firstinspires.ftc.teamcode.Autonomous.FieldPosition;
+import org.firstinspires.ftc.teamcode.Autonomous.Path;
 import org.firstinspires.ftc.teamcode.PID.DriveConstantsPID;
+import org.firstinspires.ftc.teamcode.PID.RobotLogger;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREV;
+import org.firstinspires.ftc.teamcode.PID.mecanum.SampleMecanumDriveREVOptimized;
 import org.firstinspires.ftc.teamcode.TeleOp.TeleopConstants;
 
 /*
@@ -26,46 +30,29 @@ public class PathTest extends LinearOpMode {
     private BaseTrajectoryBuilder builder, strafe_builder;
     private Pose2d current_pose;
     private String TAG = "PathTest";
+    private SampleMecanumDriveBase _drive = null;
+    private HardwareMap hwMap;
+    private Path path;
+    private FieldPosition fieldPosition = null;
+
+
     @Override
     public void runOpMode() throws InterruptedException {
         DriveConstantsPID.updateConstantsFromProperties();
-        RobotLog.dd(TAG, "create non-strafe drive");
-        SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap, false);
-        RobotLog.dd("Current Position", drive.getPoseEstimate().toString());
-        current_pose = drive.getPoseEstimate();
+        int[] skystonePositions = new int[2];
+        skystonePositions[0] = (int) DriveConstantsPID.TEST_SKY_STONE_POSITION;
 
-        RobotLog.dd(TAG, "create strafe drive");
-        SampleMecanumDriveBase strafe_drive = new SampleMecanumDriveREV(hardwareMap, true);
-        RobotLog.dd("Current Position", strafe_drive.getPoseEstimate().toString());
+        if (DriveConstantsPID.USING_BULK_READ == false)
+            _drive = new SampleMecanumDriveREV(hardwareMap, false);
+        else
+            _drive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
 
-        waitForStart();
+        RobotLogger.dd(TAG, "unit test for path (RED QUARY)");
+        Pose2d startingPos = new Pose2d(new Vector2d(-34.752, -63.936), Math.toRadians(0));
+        hwMap = new HardwareMap(hardwareMap);
+        fieldPosition = FieldPosition.RED_QUARY;
 
-        if (isStopRequested()) return;
-
-        RobotLog.dd(TAG, "update pose for strafe drive");
-        strafe_drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(drive.getPoseEstimate().getX(),
-                drive.getPoseEstimate().getY()), drive.getExternalHeading()));
-        strafe_drive.getLocalizer().update();
-
-        strafe_drive.setPoseEstimate(current_pose);
-
-        strafe_builder = new TrajectoryBuilder(strafe_drive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);
-
-        strafe_builder = strafe_builder.strafeTo(new Vector2d(drive.getPoseEstimate().getX(),24));
-
-        trajectory = strafe_builder.build();
-        strafe_drive.followTrajectorySync(trajectory);
-
-        RobotLog.dd(TAG, "update pose for drive after strafing: " + strafe_drive.getPoseEstimate().toString());
-        drive.getLocalizer().setPoseEstimate(new Pose2d(new Vector2d(strafe_drive.getPoseEstimate().getX(),
-                strafe_drive.getPoseEstimate().getY()), strafe_drive.getExternalHeading()));
-        drive.getLocalizer().update();
-
-        builder = new TrajectoryBuilder(drive.getPoseEstimate(), DriveConstantsPID.BASE_CONSTRAINTS);
-        builder.forward(72);
-        trajectory = builder.build();
-        drive.followTrajectorySync(trajectory);
-        RobotLog.dd(TAG, "done testing, current pose: " + drive.getPoseEstimate().toString());
-
+        path = new Path(hwMap, this, _drive, startingPos, hardwareMap, null);
+        path.RedQuary(skystonePositions);
     }
 }

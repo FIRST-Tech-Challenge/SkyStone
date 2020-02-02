@@ -102,6 +102,7 @@
         private Servo foundationLeft = null;
         private Servo foundationRight = null;
         private Servo release = null;
+        //  private Servo capstone = null;
         private CRServo extenderTop = null;
         private CRServo extenderBottom = null;
 
@@ -269,21 +270,26 @@
             }
 
         }
-        private void ExtendTape(boolean out, boolean in) {
+        private void ExtendTape(boolean out, boolean in, boolean stop) {
 
             if (out) {
 
                 extenderTop.setPower(1.0);
-                extenderBottom.setPower(1.0);
+                extenderBottom.setPower(-1.0);
 
             }
             else if (in) {
 
                 extenderTop.setPower(-1.0);
-                extenderBottom.setPower(-1.0);
+                extenderBottom.setPower(1.0);
 
             }
+            else if (stop) {
 
+                extenderTop.setPower(0.0);
+                extenderBottom.setPower(0.0);
+
+            }
         }
         @Override
         public void runOpMode() throws InterruptedException{
@@ -327,7 +333,6 @@
 
             //Init Accessory Motors
             collectorLeft = getNewMotor("lla");
-            collectorRight = getNewMotor("rla");
             collectorRight = getNewMotor("rla");
             linearSlide = getNewMotor("elevator");
             guidance = getNewMotor("guidance");
@@ -395,6 +400,7 @@
                 boolean rotateRight = gamepad2.b;
                 boolean tapeOut = gamepad2.y;
                 boolean tapeIn = gamepad2.a;
+                boolean tapeStop = gamepad2.dpad_right;
 
 
 
@@ -426,7 +432,7 @@
                 RotateBlock(rotateLeft, rotateRight);
                 MoveHooks(hookUp, hookDown);
                 ReleaseCollector(released);
-                ExtendTape(tapeOut, tapeIn);
+                ExtendTape(tapeOut, tapeIn, tapeStop);
 
 
 

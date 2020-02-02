@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
@@ -160,9 +161,12 @@ public class RoadRunnerMecanumDriveREVOptimized extends RoadRunnerMecanumDriveBa
             return 0;
         }
 
-        double angle = imu.getAngularOrientation().firstAngle;
-        Log.d("RR", "imu-angle:" + angle);
+        Orientation orientation = imu.getAngularOrientation();
 
+
+        double angle = orientation.firstAngle;
+        Log.d("RR", "imu-angles:" + orientation.firstAngle + ", " + orientation.secondAngle + ", " + orientation.thirdAngle);
+        Log.d( "RR", "imu axes order: " + orientation.axesOrder + " in " + orientation.angleUnit);
         return angle;
     }
 }

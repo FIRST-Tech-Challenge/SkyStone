@@ -172,6 +172,9 @@ public class DeliveryMechanism {
             currentState = currentState.doStuffAndGetNextState();
             telemetry.update();
         }
+
+        //stay inside the 18 inches
+        gripBlock();
     }
 
     private boolean shouldUseLowerLimit() {
@@ -255,7 +258,7 @@ public class DeliveryMechanism {
     }
 
     protected float getAdjustedLiftThrottlePosition() {
-        return  (liftThrottle.getPosition() / 2) * -1.0F;
+        return  (liftThrottle.getPosition() / 1) * -1.0F;
     }
 
     protected void setupStateMachine() {
@@ -452,7 +455,7 @@ public class DeliveryMechanism {
 
     public final static int LIFT_CLEAR_SUPERSTRUCTURE_POS = 0;
 
-    public final static int LIFT_MAX_HEIGHT_POS = 1445;
+    public final static int LIFT_MAX_HEIGHT_POS = 2300;
 
     public final static int LIFT_MIN_HEIGHT_POS = 0;
 

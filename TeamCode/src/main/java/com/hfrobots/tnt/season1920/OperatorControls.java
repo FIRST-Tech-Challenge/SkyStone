@@ -189,7 +189,7 @@ public class OperatorControls {
         // Run the lift/place state machine
         deliveryMechanism.periodicTask();
 
-        float requestedIntakeVelocity = intakeThrottle.getPosition() / 2;
+        float requestedIntakeVelocity = intakeThrottle.getPosition() / 1;
 
         deliveryMechanism.setIntakeVelocity(requestedIntakeVelocity);
     }

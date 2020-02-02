@@ -19,10 +19,12 @@
 
 package com.hfrobots.tnt.season1920;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.common.base.Ticker;
 import com.google.common.collect.ImmutableSet;
+import com.hfrobots.tnt.corelib.chaosninja.ChaosConfigSaver;
 import com.hfrobots.tnt.corelib.chaosninja.ChaosController;
 import com.hfrobots.tnt.corelib.chaosninja.ChaosSimplerHardwareMap;
 import com.hfrobots.tnt.corelib.control.ChaosNinjaLandingState;
@@ -121,10 +123,29 @@ public class SkystoneTeleop extends OpMode {
     public void start() {
         super.start();
 
-        if (chaosNinja != null) {
-            if (chaosNinja.isMetricsActivated()) {
+        deliveryMechanism.ungripblock(); // in init, it's gripped.
+
+        try {
+            handleChaos();
+        } catch (Throwable t) {
+            // FIRST, do no harm
+            Log.e(LOG_TAG, "Chaos config failure", t);
+            chaosController = null;
+        }
+    }
+
+    private void handleChaos() {
+        // TODO/FIXME Get more of this out of the op-mode to make it more reusable
+        Context appContext = hardwareMap.appContext;
+
+        ChaosConfigSaver.Config chaosConfig = new ChaosConfigSaver(appContext)
+                .getSavedOrNewConfiguration(chaosNinja);
+
+        if (chaosConfig.useChaosController) {
+            if (chaosConfig.metricsActivated) {
                 Log.i(LOG_TAG, "Metrics requested, enabling");
-                metricSampler = new StatsDMetricSampler(hardwareMap, driversGamepad, operatorsGamepad);
+                metricSampler = new StatsDMetricSampler(hardwareMap, driversGamepad,
+                        operatorsGamepad);
 
             } else {
                 Log.i(LOG_TAG, "No metrics requested, not enabling");
@@ -132,8 +153,9 @@ public class SkystoneTeleop extends OpMode {
                 metricSampler = null;
             }
 
-            if (chaosNinja.getChallengeLevel() > 0) {
+            if (chaosConfig.challengeLevel > 0) {
                 Set<String> intakeMotors = ImmutableSet.of("leftIntakeMotor", "rightIntakeMotor");
+
                 Set<String> liftMotor = ImmutableSet.of("liftMotor");
 
                 Set<String> servos = ImmutableSet.of("fingerServo");

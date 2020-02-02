@@ -18,6 +18,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <Robot type="FirstInspires-FTC">
+    <Webcam name="webcam" serialNumber="7B2F4FD0" />
+
     <LynxUsbDevice name="Expansion Hub Portal 1" serialNumber="DQ2ATDI3" parentModuleAddress="4">
         <LynxModule name="Main Hub" port="4">
             <LynxEmbeddedIMU name="imu" port="0" bus="0" />
@@ -27,6 +29,7 @@ SOFTWARE.
             <Motor name="rightFrontDriveMotor" port="1" /> <!-- orange -->
             <Motor name="leftRearDriveMotor"  port="2" /> <!-- green -->
             <Motor name="rightRearDriveMotor"  port="3" /> <!-- purple -->
+            <Servo name="skystoneServo" port="5" />
 
             <!-- Limit Switch -->
             <DigitalDevice name="deliveryMechLowLimitSwitch" port="1"/>

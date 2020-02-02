@@ -1,4 +1,4 @@
-/**
+/*
  Copyright (c) 2019 HF Robotics (http://www.hfrobots.com)
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -15,13 +15,12 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
- **/
+ */
 
 package com.hfrobots.tnt.season1920;
 
 import android.util.Log;
 
-import com.acmerobotics.roadrunner.path.heading.ConstantInterpolator;
 import com.acmerobotics.roadrunner.trajectory.BaseTrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
@@ -31,21 +30,31 @@ import com.hfrobots.tnt.corelib.control.DebouncedButton;
 import com.hfrobots.tnt.corelib.control.DebouncedGamepadButtons;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
 import com.hfrobots.tnt.corelib.control.RangeInput;
+import com.hfrobots.tnt.corelib.drive.ServoUtil;
 import com.hfrobots.tnt.corelib.drive.Turn;
 import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREVOptimized;
 import com.hfrobots.tnt.corelib.drive.mecanum.TrajectoryFollowerState;
 import com.hfrobots.tnt.corelib.drive.mecanum.TurnState;
 import com.hfrobots.tnt.corelib.state.RunnableState;
+import com.hfrobots.tnt.corelib.state.ServoPositionState;
 import com.hfrobots.tnt.corelib.state.State;
 import com.hfrobots.tnt.corelib.state.StateMachine;
+import com.hfrobots.tnt.corelib.state.StopwatchTimeoutSafetyState;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
-import com.hfrobots.tnt.season1819.TntPose2d;
+import com.hfrobots.tnt.season1920.opencv.DetectionZone;
+import com.hfrobots.tnt.season1920.opencv.EasyOpenCvPipelineAndCamera;
+import com.hfrobots.tnt.season1920.opencv.TntSkystoneDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Rotation;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
+
+import lombok.NonNull;
 
 import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 
@@ -58,10 +67,16 @@ public class SkystoneAuto extends OpMode {
 
     private StateMachine stateMachine;
 
+    private Servo skystoneServo;
+
+    private final double SKYSTONE_SERVO_STOWED_POSITION = 1;
+
+    private final double SKYSTONE_SERVO_GRAB_POSITION = 0;
+
     // The routes our robot knows how to do
     private enum Routes {
         MOVE_FOUNDATION("Move Foundation"),
-        //SCAN_SKYSTONES("Scan Skystones"),
+        DELIVER_SKYSTONE("Deliver Skystone"),
         PARK_LEFT_NEAR_POS("Park from left to near"),
         PARK_RIGHT_NEAR_POS("Park from right to near"),
         PARK_LEFT_FAR_POS("Park from left to far"),
@@ -91,6 +106,12 @@ public class SkystoneAuto extends OpMode {
 
     private FoundationGripMechanism foundationGripper;
 
+    private DeliveryMechanism deliveryMechanism;
+
+    // Detector object
+    private TntSkystoneDetector detector;
+
+    private EasyOpenCvPipelineAndCamera pipelineAndCamera;
 
     @Override
     public void init() {
@@ -99,17 +120,28 @@ public class SkystoneAuto extends OpMode {
         setupDriverControls();
 
         RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
-        driveBase = new RoadRunnerMecanumDriveREVOptimized(new SkystoneDriveConstants(), simplerHardwareMap, false);
+        driveBase = new RoadRunnerMecanumDriveREVOptimized(new SkystoneDriveConstants(),
+                simplerHardwareMap, true);
 
         foundationGripper = new FoundationGripMechanism(simplerHardwareMap);
 
         stateMachine = new StateMachine(telemetry);
 
+        deliveryMechanism = new DeliveryMechanism(simplerHardwareMap, telemetry, ticker);
+
+        skystoneServo = simplerHardwareMap.get(Servo.class, "skystoneServo");
+        ServoUtil.setupPwmForRevSmartServo(skystoneServo);
+
+        setupOpenCvCameraAndPipeline();
+
+        skystoneServo.setPosition(SKYSTONE_SERVO_STOWED_POSITION);
     }
 
     @Override
     public void start() {
         super.start();
+
+        deliveryMechanism.ungripblock(); // in init, it's gripped.
     }
 
     @Override
@@ -224,9 +256,9 @@ public class SkystoneAuto extends OpMode {
                     case PARK_RIGHT_FAR_POS:
                         setupParkFromRightFar();
                         break;
-//                    case SCAN_SKYSTONES:
-//                        setupScanSkytones();
-//                        break;
+                    case DELIVER_SKYSTONE:
+                        setupDeliverSkytone();
+                        break;
                     case MOVE_FOUNDATION:
                         setupMoveFoundation();
                         break;
@@ -302,29 +334,192 @@ public class SkystoneAuto extends OpMode {
         stateMachine.addSequential(newDoneState("Done!"));
     }
 
-    protected void setupScanSkytones() {
+    protected void setupDeliverSkytone() {
         // Robot starts against wall, depot side of tape line
 
-        State straightTrajectoryState = new TrajectoryFollowerState("Straight",
+        //1. Find the skystone
+
+
+        State detectionState = new SkystoneDetectionState(pipelineAndCamera,
+                detector, telemetry, ticker);
+
+        //2. Drive straight to the quarry (-3 inches)
+
+        State toQuarryState = createForwardTrajectory("To quarry", 27);
+
+        //3. strafe to the skystone (centered)
+
+        State toSkystoneState = new TrajectoryFollowerState("To skystone",
                 telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
             @Override
             protected Trajectory createTrajectory() {
-                return driveBase.trajectoryBuilder().lineTo(TntPose2d.toVector2d(0, 28), new ConstantInterpolator(0))
-                        .lineTo(TntPose2d.toVector2d(-20, 28), new ConstantInterpolator(0))
-                        .build();
+                TrajectoryBuilder trajectoryBuilder = driveBase.trajectoryBuilder();
+                // [ inner ][ middle ][ outer ]
+                // fixMe left vs. right is alliance specific, below is red alliance, blue is flip-flopped
+
+                String whichSkystone = detector.getBestScoringZone().getZoneName();
+
+                switch (whichSkystone) {
+                    case TntSkystoneDetector.INNER_ZONE_NAME:
+                        if(currentAlliance == Constants.Alliance.RED){
+                            trajectoryBuilder.strafeLeft(20);
+                        } else {
+                            trajectoryBuilder.strafeLeft(22);
+                        }
+                        break;
+                    case TntSkystoneDetector.MIDDLE_ZONE_NAME:
+                        if(currentAlliance == Constants.Alliance.RED){
+                            trajectoryBuilder.strafeLeft(10);
+                        } else {
+                            trajectoryBuilder.strafeLeft(12);
+                        }
+                        break;
+                    case TntSkystoneDetector.OUTER_ZONE_NAME:
+                        if(currentAlliance == Constants.Alliance.RED){
+                            trajectoryBuilder.strafeLeft(1);
+                        } else {
+                            trajectoryBuilder.strafeLeft(2);
+                        }
+                        break;
+                }
+
+                return trajectoryBuilder.build();
             }
         };
 
-        stateMachine.addSequential(straightTrajectoryState);
+        //4. Make sure alligned
+
+        //5. Start intake
+        //State startIntakeState = new RunnableState("Start intake", telemetry,
+        //    new Runnable() {
+        //        @Override
+        //        public void run() {
+        //            deliveryMechanism.setIntakeVelocity(1);
+        //        }
+        //    });
+
+        State servoToGrabState = new ServoPositionState("grab the sky", telemetry, skystoneServo, SKYSTONE_SERVO_GRAB_POSITION);
+
+        // For red alliance
+        Turn turn = new Turn(Rotation.CW, 75);
+
+        if (currentAlliance == Constants.Alliance.BLUE) {
+            turn = turn.invert();
+        }
+
+        // Turn 90 degrees clockwise
+        State turnToStone = new TurnState("turnToStone",
+                telemetry, turn, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000));
+
+
+        //6. move forward (how far/)
+        State gobbleGobble = createForwardTrajectory("Yum", 4);
+
+        //7. count for score (entire robot must cross line)
+
+        // 7a. Go backwards 7-10
+
+        State byeBye = createBackwardsTrajectory("bye bye", 10);
+
+
+        // 7b turn 90 degrees, clockwise for red, ccw for blue
+        // 7c. Go straight ????
+
+        State toDeliver = new TrajectoryFollowerState("To Deliver ",
+                telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
+            @Override
+            protected Trajectory createTrajectory() {
+                TrajectoryBuilder trajectoryBuilder = driveBase.trajectoryBuilder();
+                // [ 1 ][ 2 ][ 3 ]
+
+                // fixMe distance need to be shorter for blue alliance
+                // fixMe left vs. right is allince specific, below is red alliance, blue is flip-flopped
+                String whichSkystone = detector.getBestScoringZone().getZoneName();
+
+                switch (whichSkystone) {
+                    case TntSkystoneDetector.INNER_ZONE_NAME:
+                        if(currentAlliance == Constants.Alliance.RED){
+                            trajectoryBuilder.forward(72);
+                        } else {
+                            trajectoryBuilder.forward(56);
+                        }
+                        break;
+
+                    case TntSkystoneDetector.MIDDLE_ZONE_NAME:
+                        // middle is middle (doesn't invert when sides change)
+                        trajectoryBuilder.forward(64);
+                        break;
+
+                    case TntSkystoneDetector.OUTER_ZONE_NAME:
+                        if(currentAlliance == Constants.Alliance.RED){
+                            trajectoryBuilder.forward(56);
+                        } else {
+                            trajectoryBuilder.forward(72);
+                        }
+                        break;
+                }
+
+                return trajectoryBuilder.build();
+            }
+        };
+
+        State servoToNotGrabState = new ServoPositionState("Un-grab the sky", telemetry, skystoneServo, SKYSTONE_SERVO_STOWED_POSITION);
+
+
+        //8. Use parking sticks
+
+        stateMachine.addSequential(detectionState);
+        stateMachine.addSequential(toQuarryState);
+        stateMachine.addSequential(toSkystoneState);
+        stateMachine.addSequential(gobbleGobble);
+        stateMachine.addSequential(servoToGrabState);
+        stateMachine.addSequential(newDelayState("waiting for servo", 1));
+
+        //stateMachine.addSequential(startIntakeState);
+
+        stateMachine.addSequential(byeBye);
+        stateMachine.addSequential(turnToStone);
+        stateMachine.addSequential(toDeliver);
+        stateMachine.addSequential(servoToNotGrabState);
         stateMachine.addSequential(newDoneState("Done!"));
+    }
+
+    @NotNull
+    private TrajectoryFollowerState createForwardTrajectory(final String name,
+                                                            final double inchesForward) {
+        return new TrajectoryFollowerState(name,
+                telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
+            @Override
+            protected Trajectory createTrajectory() {
+                TrajectoryBuilder trajectoryBuilder = driveBase.trajectoryBuilder();
+
+                trajectoryBuilder.forward(inchesForward);
+
+                return trajectoryBuilder.build();
+            }
+        };
+    }
+
+    private TrajectoryFollowerState createBackwardsTrajectory(final String name,
+                                                            final double inchesBackwards) {
+        return new TrajectoryFollowerState(name,
+                telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
+            @Override
+            protected Trajectory createTrajectory() {
+                TrajectoryBuilder trajectoryBuilder = driveBase.trajectoryBuilder();
+
+                trajectoryBuilder.back(inchesBackwards);
+
+                return trajectoryBuilder.build();
+            }
+        };
     }
 
     protected void setupMoveFoundation() {
         // Robot starts against wall, left side on tile seam nearest to tape
         // Gripper hooks are forward, which means robot is facing backwards (!)
 
-        // TODO: Does alliance color change which way we turn in any of these steps?
-
+        // Does alliance color change which way we turn in any of these steps?
         // YASSSS!
 
         State splineTrajectoryState = new TrajectoryFollowerState("Spline",
@@ -562,5 +757,71 @@ public class SkystoneAuto extends OpMode {
 
             }
         };
+    }
+
+    private void setupOpenCvCameraAndPipeline() {
+        detector = new TntSkystoneDetector(); // Create detector
+        detector.setTelemetry(telemetry);
+
+        EasyOpenCvPipelineAndCamera.EasyOpenCvPipelineAndCameraBuilder pipelineBuilder = EasyOpenCvPipelineAndCamera.builder();
+
+        pipelineBuilder.hardwareMap(hardwareMap).telemetry(telemetry).detector(detector);
+
+        pipelineAndCamera = pipelineBuilder.build();
+
+        pipelineAndCamera.createAndRunPipeline();
+    }
+
+    class SkystoneDetectionState extends StopwatchTimeoutSafetyState {
+
+        private final TntSkystoneDetector detector;
+
+        private final EasyOpenCvPipelineAndCamera pipelineAndCamera;
+
+        protected SkystoneDetectionState(@NonNull EasyOpenCvPipelineAndCamera pipelineAndCamera,
+                                         @NonNull TntSkystoneDetector detector,
+                                         @NonNull Telemetry telemetry,
+                                         @NonNull Ticker ticker) {
+            // FIXME: How much time, really?
+            super("Skystone detector", telemetry, ticker, TimeUnit.SECONDS.toMillis(8));
+            this.detector = detector;
+            this.pipelineAndCamera = pipelineAndCamera;
+        }
+
+        @Override
+        public State doStuffAndGetNextState() {
+            detector.startSearching();
+
+            if (isTimedOut()) {
+                cleanupPipelineAndStuff();
+
+                return nextState;
+            }
+
+            // FIXME: Can we early exit, if so, what are the parameters
+            // We know that it's related to best detection zone, so I'll give you *that*
+            // You need to decide "what else"
+
+            DetectionZone stoneZone = detector.getBestScoringZone();
+
+            if (stoneZone.getTotalBlackArea() > 15000) {
+
+                cleanupPipelineAndStuff();
+
+                return nextState;
+            }
+
+            return this;
+        }
+
+        @Override
+        public void liveConfigure(DebouncedGamepadButtons buttons) {
+
+        }
+
+        private void cleanupPipelineAndStuff() {
+            // What kind of things do we want to do here, perhaps to conserve CPU/Battery?
+            detector.stopPipeline();
+        }
     }
 }

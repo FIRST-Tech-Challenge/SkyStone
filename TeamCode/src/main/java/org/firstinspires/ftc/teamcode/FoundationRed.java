@@ -1,10 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="FoundationRed", group="Linear Opmode")
@@ -18,11 +14,14 @@ public class FoundationRed extends Movement {
         waitForStart();
         runtime.reset();
 
+        //wait 22 seconds
+        sleep(22000);
+
         //start with back servos up
         backServosUp();
 
         // strafe right to align with Construction Site
-        goRight( 1, 550);
+        strafeLeft( 1, 550);
 
         //drive backward
         goBackward(0.5, 1800);
@@ -33,7 +32,7 @@ public class FoundationRed extends Movement {
         stopWithSleep("motors stopped",800);
 
         //drive forward
-        goForward(0.5,2050);
+        goForward(0.5,1900);
 
         //back servos move up
         backServosUp();
@@ -44,11 +43,11 @@ public class FoundationRed extends Movement {
         goForward(1, 10);
 
         //strafe to the left (park under the bridge)
-        goLeft(1,1500);
+        strafeRight(1,1250);
 
-        goBackward(0.5, 200);
+        goBackward(0.5, 250);
 
-        goLeft(1,550);
+        strafeRight(1,800);
 
         telemetry.addData("Status", "Stop Program");
         telemetry.update();

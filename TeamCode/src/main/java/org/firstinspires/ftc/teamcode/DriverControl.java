@@ -1,11 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 
 @TeleOp(name="DriverControl", group="Linear Opmode")
 public class DriverControl extends Movement {
@@ -28,10 +25,10 @@ public class DriverControl extends Movement {
                 // Gamepad 1 controls:
 
                 // Left trigger - to move left sideways
-                goLeft(-gamepad1.left_trigger, 0);
+                strafeRight(-gamepad1.left_trigger, 0);
 
                 // Right trigger - to move right sideways
-                goRight(-gamepad1.right_trigger, 0);
+                strafeLeft(-gamepad1.right_trigger, 0);
 
                 // Left stick y - to go forward or backward
                 double drive = -(-gamepad1.left_stick_y);
@@ -40,14 +37,14 @@ public class DriverControl extends Movement {
                 double turn  = (-gamepad1.right_stick_x);
 
                 // to drive and turn left?
-                double leftPower = Range.clip(drive + turn, -1.0, 1.0) ;
-                leftfront.setPower(leftPower);
-                leftback.setPower(leftPower);
+            double leftPower = Range.clip(drive + turn, -1.0, 1.0) ;
+                frontLeft.setPower(leftPower);
+                backLeft.setPower(leftPower);
 
                 // to drive and turn right?
                 double rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
-                rightfront.setPower(rightPower);
-                rightback.setPower(rightPower);
+                frontRight.setPower(rightPower);
+                backRight.setPower(rightPower);
 
                 // Gamepad 2 Controls
 
@@ -82,8 +79,8 @@ public class DriverControl extends Movement {
                 // x - to move back servo down
                 if (gamepad2.x) {
 
-                    leftConstruction.setPosition(0.5);
-                    rightConstruction.setPosition(0.4);
+                    leftConstruction.setPosition(0.35);
+                    rightConstruction.setPosition(0.43);
                     telemetry.addData("back servos down", "servoposition: 0,0" );
                 }
 

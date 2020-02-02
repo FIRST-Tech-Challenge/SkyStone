@@ -1,10 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="FoundationBlue", group="Linear Opmode")
@@ -22,7 +18,7 @@ public class FoundationBlue extends Movement {
         //start with back servos up
         backServosUp();
 
-        goLeft(1, 500);
+        strafeRight(1, 500);
 
         //drive backward
         goBackward(0.5, 1800);
@@ -46,7 +42,7 @@ public class FoundationBlue extends Movement {
 
 
         //strafe to the left (maybe park under the bridge)
-        goRight(1,2250);
+        strafeLeft(1,2250);
 
         telemetry.addData("Status", "Stop Program");
         telemetry.update();

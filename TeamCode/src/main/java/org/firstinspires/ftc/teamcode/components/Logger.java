@@ -34,7 +34,7 @@ public class Logger {
     private TrcDbgTrace tracer;
     private OpMode opMode = null;
 
-    private int DEFAULT_DEBUG_FILTER_THRESHOLD = 50;
+    private int DEFAULT_DEBUG_FILTER_THRESHOLD = 10;
     private String DEFAULT_DEBUG_FILTER_FUNCTION = "N/A";
     private int debugFilterCount = 0;
     private int debugFilterThreshold = 0;

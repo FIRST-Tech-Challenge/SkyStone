@@ -41,10 +41,10 @@ public class PathTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         DriveConstantsPID.updateConstantsFromProperties();
         // do we need this??? all this are HW settings to enable ARM actions;
-        hwMap.liftOne.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        hwMap.liftOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        hwMap.liftTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        hwMap.liftOne.setDirection(DcMotorSimple.Direction.REVERSE);
+        //hwMap.liftOne.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //hwMap.liftOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //hwMap.liftTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //hwMap.liftOne.setDirection(DcMotorSimple.Direction.REVERSE);
         //
         int[] skystonePositions = new int[2];
         skystonePositions[0] = (int) DriveConstantsPID.TEST_SKY_STONE_POSITION;
@@ -54,10 +54,14 @@ public class PathTest extends LinearOpMode {
         else
             _drive = new SampleMecanumDriveREVOptimized(hardwareMap, false);
 
-        RobotLogger.dd(TAG, "unit test for path (RED QUARY), ARM actions? %f", DriveConstantsPID.ENABLE_ARM_ACTIONS);
+        RobotLogger.dd(TAG, "unit test for path (RED QUARY), ARM actions?" + Integer.toString(DriveConstantsPID.ENABLE_ARM_ACTIONS?1:0));
         Pose2d startingPos = new Pose2d(new Vector2d(-34.752, -63.936), Math.toRadians(0));
         hwMap = new HardwareMap(hardwareMap);
         fieldPosition = FieldPosition.RED_QUARY;
+
+        waitForStart();
+
+        if (isStopRequested()) return;
 
         path = new Path(hwMap, this, _drive, startingPos, hardwareMap, null);
         path.RedQuary(skystonePositions);

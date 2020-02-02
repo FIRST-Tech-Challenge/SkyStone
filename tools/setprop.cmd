@@ -1,4 +1,7 @@
 adb shell setprop debug.ftc.logging 1
+adb shell setprop debug.ftc.enable_arm 0
+adb shell setprop debug.ftc.skystonePos 1
+adb shell setprop debug.ftc.pause 5
 adb shell setprop debug.ftc.bulk 1
 adb shell setprop debug.ftc.imu 1
 adb shell setprop debug.ftc.resetfollow 1
@@ -7,7 +10,7 @@ adb shell setprop debug.ftc.odom 0
 adb shell setprop debug.ftc.vuforia 0
 adb shell setprop debug.ftc.brake 0
 adb shell setprop debug.ftc.recreateDrv 0
-adb shell setprop debug.ftc.drvCorrect 1
+adb shell setprop debug.ftc.drvCorrect 0
 rem (-24, 24) for strafe diagonal
 adb shell setprop debug.ftc.distance 72
 adb shell setprop debug.ftc.distance0 48

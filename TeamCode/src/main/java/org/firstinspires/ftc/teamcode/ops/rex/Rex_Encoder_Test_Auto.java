@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.bots.SimpleBot;
 import org.firstinspires.ftc.teamcode.bots.TestBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 import org.firstinspires.ftc.teamcode.components.WebCamera;
@@ -45,7 +46,7 @@ public class Rex_Encoder_Test_Auto extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private TestBot robot = null;
+    private SimpleBot robot = null;
     private boolean logEnableTrace = true;
     private boolean logToTelemetry = true;
 
@@ -53,14 +54,13 @@ public class Rex_Encoder_Test_Auto extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        robot = new TestBot(this, logEnableTrace, logToTelemetry);
+        robot = new SimpleBot(this, logEnableTrace, logToTelemetry);
         robot.logger.logInfo("runOpMode", "===== [ Start Initializing ]");
 
         /* Use either robot.initAll or select only the components that need initializing below */
         //robot.initAll();
-        robot.gyroNavigator.init();
         robot.driveTrain.init(DriveTrain.InitType.INIT_4WD);
-        robot.webCamera.init(WebCamera.InitType.INIT_FOR_FIND_GOLD);
+        robot.driveTrainSimple.init();
 
         robot.logger.logInfo("runOpMode", "===== [ Initialization Complete ]");
         telemetry.update();
@@ -76,6 +76,13 @@ public class Rex_Encoder_Test_Auto extends LinearOpMode {
         robot.driveTrain.encoderDrive(0.5, 12);
         robot.driveTrain.pause(2);
         robot.driveTrain.encoderDrive(0.5, -12);
+
+        robot.driveTrainSimple.pause(2);
+
+        robot.driveTrainSimple.driveByEncoder(0.5, 12);
+        robot.driveTrainSimple.pause(2);
+        robot.driveTrainSimple.driveByEncoder(0.5, -12);
+
 
         // Show the elapsed game time.
         robot.logger.logInfo("runOpMode", "===== [ Autonomous Complete ] Run Time: %s", runtime.toString());

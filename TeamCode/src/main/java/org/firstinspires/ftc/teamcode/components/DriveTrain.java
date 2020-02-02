@@ -487,6 +487,7 @@ public class DriveTrain extends BotComponent {
 
             setLeftMotorsPower(power);
             setRightMotorsPower(power);
+            logger.logDebug("driveByEncoder", "===== [ Start ]");
 
             logger.setDebugFilter("encoderDrive");
 
@@ -510,10 +511,12 @@ public class DriveTrain extends BotComponent {
                 opMode.telemetry.update();
             }
 
+            logger.clearDebugFilter();
+
             // Stop all motion;
             stop();
+            logger.logDebug("encoderDrive", "===== [ Stop ]");
 
-            logger.clearDebugFilter();
             logger.logDebug("encoderDrive", "Inches: Left:%f Right:%f", leftInches, rightInches);
             logger.logDebug("encoderDrive", "Target: Left:%7d Right:%7d", newLeftTarget, newRightTarget);
             logger.logDebug("encoderDrive", "Front:  Left:%7d Right:%7d", getFrontLeftPosition(), getFrontRightPosition());

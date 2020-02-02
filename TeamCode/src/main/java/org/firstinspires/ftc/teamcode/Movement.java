@@ -9,10 +9,10 @@ import com.qualcomm.robotcore.hardware.Servo;
  */
 abstract class Movement extends LinearOpMode
 {
-    protected DcMotor leftfront;
-    protected DcMotor rightfront;
-    protected DcMotor leftback;
-    protected DcMotor rightback;
+    protected DcMotor frontLeft;
+    protected DcMotor frontRight;
+    protected DcMotor backLeft;
+    protected DcMotor backRight;
 
     protected DcMotor arm;
 
@@ -32,17 +32,17 @@ abstract class Movement extends LinearOpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
 
         updateTelemetryMessage("Initializing Motors");
-        leftfront  = hardwareMap.get(DcMotor.class, "leftfront");
-        rightfront = hardwareMap.get(DcMotor.class, "rightfront");
-        rightback = hardwareMap.get(DcMotor.class, "rightback");
-        leftback = hardwareMap.get(DcMotor.class, "leftback");
+        frontLeft = hardwareMap.get(DcMotor.class, "leftfront");
+        frontRight = hardwareMap.get(DcMotor.class, "rightfront");
+        backRight = hardwareMap.get(DcMotor.class, "rightback");
+        backLeft = hardwareMap.get(DcMotor.class, "leftback");
 
         // Most robots need the motor on one side to be reve`rsed to drive goBackward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftfront.setDirection(DcMotor.Direction.FORWARD);
-        rightfront.setDirection(DcMotor.Direction.REVERSE);
-        leftback.setDirection(DcMotor.Direction.FORWARD);
-        rightback.setDirection(DcMotor.Direction.REVERSE);
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
 
         updateTelemetryMessage("Initialized Motors");
 
@@ -55,10 +55,10 @@ abstract class Movement extends LinearOpMode
     }
 
     public void stop(final String message) {
-        leftfront.setPower(0.0);
-        rightfront.setPower(0.0);
-        rightback.setPower(0.0);
-        leftback.setPower(0.0);
+        frontLeft.setPower(0.0);
+        frontRight.setPower(0.0);
+        backRight.setPower(0.0);
+        backLeft.setPower(0.0);
 
         updateTelemetryMessage(message);
     }
@@ -74,10 +74,10 @@ abstract class Movement extends LinearOpMode
     }
 
     public void goBackward(final double power, final int duration) {
-        leftfront.setPower(power);
-        rightfront.setPower(power);
-        rightback.setPower(power);
-        leftback.setPower(power);
+        frontLeft.setPower(power);
+        frontRight.setPower(power);
+        backRight.setPower(power);
+        backLeft.setPower(power);
         sleep(duration);
 
         updateTelemetryMessage("Going Forward");
@@ -88,22 +88,22 @@ abstract class Movement extends LinearOpMode
         goBackward(-power, duration);
     }
 
-    public void goLeft(final double power, final int duration) {
-        //TODO - clarify how these motor powers are distributed for goLeft movement
-        leftfront.setPower(-power);
-        rightfront.setPower(power);
-        rightback.setPower(-power);
-        leftback.setPower(power);
+    public void strafeRight(final double power, final int duration) {
+        //TODO - clarify how these motor powers are distributed for strafeRight movement
+        frontLeft.setPower(-power);
+        frontRight.setPower(power);
+        backRight.setPower(-power);
+        backLeft.setPower(power);
         sleep(duration);
 
         updateTelemetryMessage("Strafing Left");
     }
 
-    public void goRight(final double power, final int duration) {
-        leftfront.setPower(power);
-        rightfront.setPower(-power);
-        rightback.setPower(power);
-        leftback.setPower(-power);
+    public void strafeLeft(final double power, final int duration) {
+        frontLeft.setPower(power);
+        frontRight.setPower(-power);
+        backRight.setPower(power);
+        backLeft.setPower(-power);
         sleep(duration);
 
         updateTelemetryMessage("Strafing Right");
@@ -119,20 +119,20 @@ abstract class Movement extends LinearOpMode
     }
 
     protected void turnRight(final double leftwheelsforwardpower, final double rightwheelsbackwardpower,  final int duration) {
-        leftfront.setPower(leftwheelsforwardpower);
-        rightfront.setPower(-rightwheelsbackwardpower);
-        rightback.setPower(-rightwheelsbackwardpower);
-        leftback.setPower(leftwheelsforwardpower);
+        frontLeft.setPower(leftwheelsforwardpower);
+        frontRight.setPower(-rightwheelsbackwardpower);
+        backRight.setPower(-rightwheelsbackwardpower);
+        backLeft.setPower(leftwheelsforwardpower);
         sleep(duration);
 
         updateTelemetryMessage("Turning Right");
     }
 
-   protected void Turnleft(final double leftwheelsbackwardpower, final double rightwheelsforwardpower,  final int duration) {
-        leftfront.setPower(-leftwheelsbackwardpower);
-        rightfront.setPower(rightwheelsforwardpower);
-        rightback.setPower(rightwheelsforwardpower);
-        leftback.setPower(-leftwheelsbackwardpower);
+   protected void turnLeft(final double leftwheelsbackwardpower, final double rightwheelsforwardpower, final int duration) {
+        frontLeft.setPower(-leftwheelsbackwardpower);
+        frontRight.setPower(rightwheelsforwardpower);
+        backRight.setPower(rightwheelsforwardpower);
+        backLeft.setPower(-leftwheelsbackwardpower);
         sleep(duration);
 
         updateTelemetryMessage("Turning Left");
@@ -150,12 +150,12 @@ abstract class Movement extends LinearOpMode
     }
 
 
-    public void armclamp() {
+    public void armClamp() {
         frontServo.setPosition(0.0);
         sleep(200);
     }
 
-    public void armrelease() {
+    public void armRelease() {
         frontServo.setPosition(0.4);
         sleep(200);
    }

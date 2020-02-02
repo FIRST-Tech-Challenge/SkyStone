@@ -20,20 +20,12 @@
 package com.hfrobots.tnt.season1920.util;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.quickstart.drive.DriveConstants;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.util.Angle;
 import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREVOptimized;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
 import com.hfrobots.tnt.season1920.SkystoneDriveConstants;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.MovingStatistics;
-
-import org.firstinspires.ftc.robotcore.internal.system.Misc;
 
 import java.util.List;
 

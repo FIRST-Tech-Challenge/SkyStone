@@ -4,8 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.quickstart.drive.DriveConstants;
-import com.acmerobotics.roadrunner.quickstart.drive.mecanum.SampleMecanumDriveBase;
-import com.acmerobotics.roadrunner.quickstart.drive.mecanum.SampleMecanumDriveREV;
 import com.acmerobotics.roadrunner.util.Angle;
 import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREVOptimized;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
@@ -28,6 +26,7 @@ import org.firstinspires.ftc.robotcore.internal.system.Misc;
  */
 @Config
 @Autonomous(group = "drive")
+@Disabled
 public class SkystoneTrackWidthTuner extends LinearOpMode {
     public static double ANGLE = Math.toRadians(180);
     public static int NUM_TRIALS = 5;

@@ -42,6 +42,7 @@ import com.hfrobots.tnt.corelib.state.StateMachine;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
 import com.hfrobots.tnt.season1920.SkystoneDriveConstants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -52,6 +53,7 @@ import java.util.concurrent.TimeUnit;
 import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 
 @Autonomous(name="Skystone Spin", group="Utilities")
+@Disabled
 @SuppressWarnings("unused")
 public class SkystoneSpin extends OpMode {
     private Ticker ticker;

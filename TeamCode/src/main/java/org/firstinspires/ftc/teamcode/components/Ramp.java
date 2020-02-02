@@ -42,7 +42,7 @@ public class Ramp extends BotComponent {
     private String rampServoName2;
     public Servo rampServo1 = null;
     public Servo rampServo2 = null;
-    double SERVO_DOWN_POSITION = 0.5;
+    double SERVO_DOWN_POSITION = 0.3;
     double SERVO_UP_POSITION = 1;
 public Ramp(){
 }

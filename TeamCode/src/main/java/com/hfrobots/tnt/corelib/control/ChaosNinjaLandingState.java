@@ -55,13 +55,13 @@ public class ChaosNinjaLandingState extends State {
         }
 
         if (dPadUp.getRise()) {
-            if (challengeLevel <= 3) {
+            if (challengeLevel < 3) {
                 challengeLevel++;
             }
         }
 
         if (dPadDown.getRise()) {
-            if (challengeLevel >= 0) {
+            if (challengeLevel > 0) {
                 challengeLevel--;
             }
         }

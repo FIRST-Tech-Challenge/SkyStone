@@ -20,6 +20,8 @@
 
 package com.hfrobots.tnt.corelib.chaosninja;
 
+import android.util.Log;
+
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Ticker;
 import com.hfrobots.tnt.corelib.util.SimplerHardwareMap;
@@ -28,11 +30,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import lombok.NonNull;
+
+import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 
 public class ChaosController {
     private int challengeLevel;
@@ -79,36 +85,60 @@ public class ChaosController {
 
         switch (challengeLevel) {
             case 0:
-                chanceOfFailure = 0;
+                chanceOfFailure = Double.MIN_VALUE;
                 break;
             case 1:
-                chanceOfFailure = 20;
+                chanceOfFailure = .50;
                 break;
             case 2:
-                chanceOfFailure = 25;
+                chanceOfFailure = .55;
                 break;
             case 3:
-                chanceOfFailure = 30;
+                chanceOfFailure = .60;
                 break;
             default:
                 chanceOfFailure = 0;
         }
 
-        // FIXME: Use random number to do a dice roll, and choose to fail based on chance of failure
+        // Use random number to do a dice roll, and choose to fail based on chance of failure
 
-        shouldFail = true;
+        if (Math.random() < chanceOfFailure) {
+            shouldFail = true;
+        } else {
+            shouldFail = false;
+        }
 
-        // FIXME: This should be a random time based on the challenge (maybe), or at least random
-        // also should be between 0 and 120 seconds
+        // Most of the time, failures happen right away
+        if (Math.random() < .70) {
+            if (shouldFail) {
+                Log.d(LOG_TAG, "Chaos ninja Will cause fail immediately");
+            }
 
-        whenToFailMillis = TimeUnit.SECONDS.toMillis(5);
+            whenToFailMillis = 1;
+        } else {
+            Random timeRandom = new Random();
 
+            int whenToFailSeconds = timeRandom.nextInt(120);
+
+            if (shouldFail) {
+                Log.d(LOG_TAG, "Chaos ninja Will cause fail at " + whenToFailSeconds + " seconds.");
+            }
+
+            whenToFailMillis = TimeUnit.SECONDS.toMillis(5);
+        }
     }
 
     public void periodicTask() {
         if (!stopWatch.isRunning()) {
             stopWatch.start();
         }
+
+        if (beLaggy){
+            lag();
+        }
+
+        telemetry.addData("04", "[CN!] cl: " + challengeLevel + " sf: " + shouldFail);
+
         /*Level 0
             Metrics only
           Level 1
@@ -132,25 +162,19 @@ public class ChaosController {
         if (shouldFail && !failed && stopWatch.elapsed(TimeUnit.MILLISECONDS) > whenToFailMillis) {
             failed = true;
 
-            if (challengeLevel == 1)
-            {
+            if (challengeLevel == 1) {
                 failureSelector = Math.random();
-                if (failureSelector < 0.25)
-                {
+
+                if (failureSelector < 0.25) {
                     eatTheBattery();
-                }
-                if ((failureSelector >= 0.25) &&(failureSelector <= 0.50))
-                {
-                    lag();
-                }
-                if ((failureSelector >= 0.50) &&(failureSelector <= 0.75))
-                {
+                } else if ((failureSelector >= 0.25) && (failureSelector < 0.50)) {
+                    beLaggy = true;
+                    whatHasChaosNinjaDone = "Robot seems to be in a fog";
+                } else if ((failureSelector >= 0.50) && (failureSelector < 0.75)) {
                     slowOneDrivebaseMotor();
-                }
-                if(failureSelector> 0.75){
+                } else {
                     killOneServo();
                 }
-
             }
 
             if (challengeLevel == 2)
@@ -185,9 +209,10 @@ public class ChaosController {
 
         // FIXME: Loop through all the motors, and break them like this:
 
-        // ChaoticMotor breakIt = (ChaoticMotor)motor;
-        // breakIt.setMotorFailureMode(ChaoticMotor.MotorFailureMode.SLOW);
-
+        for (DcMotorEx motor : allMotors) {
+            ChaoticMotor breakIt = (ChaoticMotor)motor;
+            breakIt.setMotorFailureMode(ChaoticMotor.MotorFailureMode.SLOW);
+        }
     }
 
     private void killOneServo() {
@@ -197,7 +222,7 @@ public class ChaosController {
             ChaoticServo servoToFail = (ChaoticServo)hardwareMap.get(Servo.class, servoNameToFail);
 
             if (servoToFail != null) {
-                whatHasChaosNinjaDone = "mmmmfmmtttmmt not a great message"; // FIXME!
+                whatHasChaosNinjaDone = "mmmmmmmmvvv chaos has microwaved your servo"; // FIXME!
                 // FIXME: Log it too!
 
                 servoToFail.setFailureMode(ChaoticServo.ServoFailureMode.DEAD);
@@ -206,13 +231,14 @@ public class ChaosController {
     }
 
     private void killOneDrivebaseMotor() {
-        whatHasChaosNinjaDone = "mmmmfmmtttmmt not a great message"; // FIXME!
+
+        whatHasChaosNinjaDone = "the new who done it mystery : the murdered motor by Chaos"; // FIXME!
         // FIXME: Log it too!
         failOneRandomMotor(driveMotorNames, ChaoticMotor.MotorFailureMode.DEAD);
     }
 
     private void slowOneDrivebaseMotor() {
-        whatHasChaosNinjaDone = "mmmmfmmtttmmt not a great message"; // FIXME!
+        whatHasChaosNinjaDone = "maybe your motor needs sleep... or coffee - Chaos"; // FIXME!
         // FIXME: Log it too!
         failOneRandomMotor(driveMotorNames, ChaoticMotor.MotorFailureMode.SLOW);
     }
@@ -227,9 +253,15 @@ public class ChaosController {
         }
     }
 
+    private boolean beLaggy = false;
+
     private void lag()
     {
-        //FIXME: figure out how to do this
+        try {
+            Thread.sleep(70);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void  multiFailLv2() {}
@@ -239,9 +271,15 @@ public class ChaosController {
     }
 
     private <T> T pickRandom(@NonNull Set<T> things) {
-        int random = 0; // FIXME: Pick a random number between 0 and size of things, or something else? :)
-        int i = 0;
+        int numberOfThings = things.size();
 
-        return things.iterator().next(); // FIXME: This isn't random :)
+        Random random = new Random();
+
+        int index = random.nextInt(numberOfThings);
+
+        List<T> thingsList = new ArrayList<>(things.size());
+        thingsList.addAll(things);
+
+        return thingsList.get(index);
     }
 }

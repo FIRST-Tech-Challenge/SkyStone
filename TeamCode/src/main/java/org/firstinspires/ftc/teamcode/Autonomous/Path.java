@@ -410,12 +410,13 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 foundationDragYDecrease = 30.0;  //Decrease in Y from original posiion when dragging foundation
                 parkingX = 0.0;    //X-coordinate of parking location
                 parkingY = -38.0;    //Y-coordinate of parking location
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    transferReset();
+                    initIntakeClaw();
+                    init();
 
-                transferReset();
-                initIntakeClaw();
-                init();
-
-                prepGrab(FieldPosition.RED_QUARY);    //*******
+                    prepGrab(FieldPosition.RED_QUARY);    //*******
+                }
 
                 DriveBuilderReset(true, false, "step2, after strafe, grab, to strafe back");
 
@@ -425,8 +426,9 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 _drive.followTrajectorySync(trajectory);
 
                 RobotLog.dd(TAG, "step1.5, after strafe, to grab");
-                grabStone(FieldPosition.RED_QUARY);   //*******
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    grabStone(FieldPosition.RED_QUARY);   //*******
+                }
                 DriveBuilderReset(false, false, "step3, after strafe, to go straight");
 
                 builder = builder
@@ -442,8 +444,9 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 _drive.followTrajectorySync(trajectory);*/
 
                 RobotLog.dd(TAG, "step4.5, after strafe");
-                dropStone(FieldPosition.RED_QUARY); //*******
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    dropStone(FieldPosition.RED_QUARY); //*******
+                }
                 /*DriveBuilderReset(true, false, "step5, after strafe and drop stone");
                 builder = builder
                         .setReversed(false).strafeTo(new Vector2d(foundationX, yCoordMvmtPlane));
@@ -457,16 +460,17 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 _drive.followTrajectorySync(trajectory);
 
                 DriveBuilderReset(true, false, "step7, after straight move, to prepGrab");
-                prepGrab(FieldPosition.RED_QUARY); //*******
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    prepGrab(FieldPosition.RED_QUARY); //*******
+                }
                 /*builder = builder
                         .setReversed(false).strafeTo(new Vector2d(furtherMostSkyStoneX, yCoordMvmtPlane + strafeDistance));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);
                 RobotLog.dd(TAG, "step7.5 after strafe, to grab");*/
-
-                grabStone(FieldPosition.RED_QUARY);   //*******
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    grabStone(FieldPosition.RED_QUARY);   //*******
+                }
                 /*DriveBuilderReset(true, false, "step8, after strafe and grab");
                 builder = builder
                         .setReversed(false).strafeTo(new Vector2d(furtherMostSkyStoneX, yCoordMvmtPlane));
@@ -487,7 +491,9 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 _drive.followTrajectorySync(trajectory);*/
 
                 RobotLog.dd(TAG, "step10.5, after strafe, to drop");
-                dropStone(FieldPosition.RED_QUARY);   //*******
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    dropStone(FieldPosition.RED_QUARY);   //*******
+                }
 
                 DriveBuilderReset(true, false, "step10, after straight move");
                 builder = builder
@@ -503,10 +509,10 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                     _drive.turnSync(-(_drive.getExternalHeading() - 3 * PI / 2) + PI / 6);
                 else
                     _drive.turnSync(-(_drive.getExternalHeading() + 2 * PI - 3 * PI / 2) + PI / 6);
-
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
+                }
                 sleep_millisec(100);
 
                 DriveBuilderReset(false, false, "step12, after turn");
@@ -514,20 +520,20 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                         _drive.getPoseEstimate().getY() + reverseToFoundationInches));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);
-
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
+                }
                 DriveBuilderReset(false, false, "step13, after straight move, Dragging foundation");
                 builder = builder.setReversed(false)
                         .splineTo(new Pose2d(new Vector2d(_drive.getPoseEstimate().getX() - foundationDragXDecrease,
                                 _drive.getPoseEstimate().getY() - foundationDragYDecrease), PI));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);
-
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
+                }
                 sleep_millisec(100);
 
                 DriveBuilderReset(false, false, "step14, after spline");
@@ -569,13 +575,13 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 foundationDragYDecrease = 30.0;  //Decrease in Y from original posiion when dragging foundation
                 parkingX = 0.0;    //X-coordinate of parking location
                 parkingY = -38.0;    //Y-coordinate of parking location
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    transferReset();
+                    initIntakeClaw();
+                    init();
 
-                transferReset();
-                initIntakeClaw();
-                init();
-
-                prepGrab(FieldPosition.RED_QUARY);    //*******
-
+                    prepGrab(FieldPosition.RED_QUARY);    //*******
+                }
                 DriveBuilderReset(true, false, "step2, after strafe, grab, to strafe back");
 
                 builder = builder
@@ -584,8 +590,9 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 _drive.followTrajectorySync(trajectory);
 
                 RobotLog.dd(TAG, "step1.5, after strafe, to grab");
-                grabStone(FieldPosition.RED_QUARY);   //*******
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    grabStone(FieldPosition.RED_QUARY);   //*******
+                }
                 DriveBuilderReset(false, false, "step3, after strafe, to go straight");
 
                 builder = builder
@@ -601,7 +608,9 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 _drive.followTrajectorySync(trajectory);*/
 
                 RobotLog.dd(TAG, "step4.5, after strafe");
-                dropStone(FieldPosition.RED_QUARY); //*******
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    dropStone(FieldPosition.RED_QUARY); //*******
+                }
 
                 /*DriveBuilderReset(true, false, "step5, after strafe and drop stone");
                 builder = builder
@@ -616,16 +625,17 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 _drive.followTrajectorySync(trajectory);
 
                 DriveBuilderReset(true, false, "step7, after straight move, to prepGrab");
-                prepGrab(FieldPosition.RED_QUARY); //*******
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    prepGrab(FieldPosition.RED_QUARY); //*******
+                }
                 /*builder = builder
                         .setReversed(false).strafeTo(new Vector2d(furtherMostSkyStoneX, yCoordMvmtPlane + strafeDistance));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);
                 RobotLog.dd(TAG, "step7.5 after strafe, to grab");*/
-
-                grabStone(FieldPosition.RED_QUARY);   //*******
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    grabStone(FieldPosition.RED_QUARY);   //*******
+                }
                 /*DriveBuilderReset(true, false, "step8, after strafe and grab");
                 builder = builder
                         .setReversed(false).strafeTo(new Vector2d(furtherMostSkyStoneX, yCoordMvmtPlane));
@@ -656,14 +666,11 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                     _drive.turnSync(-(_drive.getExternalHeading() - 3 * PI / 2) + PI / 6);
                 else
                     _drive.turnSync(-(_drive.getExternalHeading() + 2 * PI - 3 * PI / 2) + PI / 6);
-
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
-
-                try {
-                    Thread.sleep(100);
-                } catch (Exception e) {
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
                 }
+                sleep_millisec(100);
 
                 DriveBuilderReset(false, false, "step12, after turn");
                 builder = builder.setReversed(true).lineTo(new Vector2d(_drive.getPoseEstimate().getX(),
@@ -671,9 +678,10 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);
 
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
+                }
                 DriveBuilderReset(false, false, "step13, after straight move, Dragging foundation");
                 builder = builder.setReversed(false)
                         .splineTo(new Pose2d(new Vector2d(_drive.getPoseEstimate().getX() - foundationDragXDecrease,
@@ -681,9 +689,10 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);
 
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
+                }
                 sleep_millisec(100);
 
 
@@ -736,14 +745,14 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 double firstRegularStoneX = -34.0;
                 double foundationX = 47.0;
                 double strafeDistance = -10.0;
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    transferReset();
+                    initIntakeClaw();
 
-                transferReset();
-                initIntakeClaw();
-
-                hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
-
+                    hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
+                }
                 straightDrive = DriveBuilderReset(false, false, "step1, after strafe");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
 
@@ -757,9 +766,9 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 straightDrive.followTrajectorySync(trajectory);
                 currentPos = straightDrive.getPoseEstimate();
-
-                prepGrab(FieldPosition.RED_QUARY);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    prepGrab(FieldPosition.RED_QUARY);
+                }
                 strafeDrive = DriveBuilderReset(true, false, "step1, after strafe");
                 builder = new TrajectoryBuilder(strafeDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);   //-34.752, -63.936
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
@@ -773,9 +782,9 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 }
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 strafeDrive.followTrajectorySync(trajectory);
-
-                grabStone(FieldPosition.RED_QUARY);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    grabStone(FieldPosition.RED_QUARY);
+                }
                 strafeDrive = DriveBuilderReset(true, false, "step2, after grab stone ");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder.setReversed(false).strafeTo(new Vector2d(wallSkyStoneX, yCoordMvmtPlane));  //-52, -39
@@ -811,8 +820,9 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 trajectory = builder.build();
                 strafeDrive.followTrajectorySync(trajectory);
                 currentPos = strafeDrive.getPoseEstimate();
-
-                dropStone(FieldPosition.RED_QUARY);
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    dropStone(FieldPosition.RED_QUARY);
+                }
 
                 /*strafeDrive = DriveBuilderReset(true, false, "step5, after drop 1st stone");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
@@ -932,10 +942,10 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 currentPos = strafeDrive.getPoseEstimate();
                 DriveConstantsPID.keep_vuforia_running = false;
                 dropStone(FieldPosition.RED_QUARY);*/
-
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
+                }
                 strafeDrive = DriveBuilderReset(true, false, "step17.5");
 
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
@@ -964,10 +974,10 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 trajectory = builder.build();
                 straightDrive.followTrajectorySync(trajectory);
                 currentPos = straightDrive.getPoseEstimate();
-
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
+                }
                 sleep_millisec(300);
 
 
@@ -986,9 +996,10 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 straightDrive.turnSync(Math.toRadians(70));
                 RobotLog.dd(TAG, "step21, " + straightDrive.getPoseEstimate().toString());
                 currentPos = straightDrive.getPoseEstimate();
-
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
+                }
                 sleep_millisec(300);
 
 
@@ -1009,11 +1020,11 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 firstRegularStoneX = -34.0;
                 foundationX = 47.0;
                 strafeDistance = -10.0;
-
-               // hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    // hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
+                }
                 straightDrive = DriveBuilderReset(false, false, "step1, after strafe");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
 
@@ -1027,9 +1038,9 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 straightDrive.followTrajectorySync(trajectory);
                 currentPos = straightDrive.getPoseEstimate();
-
-                prepGrab(FieldPosition.RED_QUARY);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    prepGrab(FieldPosition.RED_QUARY);
+                }
                 strafeDrive = DriveBuilderReset(true, false, "step1, after strafe");
                 builder = new TrajectoryBuilder(strafeDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);   //-34.752, -63.936
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
@@ -1043,11 +1054,11 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 }
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 strafeDrive.followTrajectorySync(trajectory);
-
-                grabStone(FieldPosition.RED_QUARY);
-                transferReset();
-                initIntakeClaw();
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    grabStone(FieldPosition.RED_QUARY);
+                    transferReset();
+                    initIntakeClaw();
+                }
                 strafeDrive = DriveBuilderReset(true, false, "step2, after grab stone ");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder.setReversed(false).strafeTo(new Vector2d(wallSkyStoneX, yCoordMvmtPlane));  //-52, -39
@@ -1072,7 +1083,6 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 straightDrive.followTrajectorySync(trajectory);
                 currentPos = straightDrive.getPoseEstimate();
 
-
                 strafeDrive = DriveBuilderReset(true, false, "step4");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder.strafeTo(new Vector2d(foundationX, yCoordMvmtPlane + strafeDistance));
@@ -1083,9 +1093,9 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 trajectory = builder.build();
                 strafeDrive.followTrajectorySync(trajectory);
                 currentPos = strafeDrive.getPoseEstimate();
-
-                dropStone(FieldPosition.RED_QUARY);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    dropStone(FieldPosition.RED_QUARY);
+                }
                 /*strafeDrive = DriveBuilderReset(true, false, "step5, after drop 1st stone");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder.strafeTo(new Vector2d(foundationX, yCoordMvmtPlane));
@@ -1204,10 +1214,10 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 currentPos = strafeDrive.getPoseEstimate();
                 DriveConstantsPID.keep_vuforia_running = false;
                 dropStone(FieldPosition.RED_QUARY);*/
-
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
+                }
                 strafeDrive = DriveBuilderReset(true, false, "step17.5");
 
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
@@ -1236,10 +1246,10 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 trajectory = builder.build();
                 straightDrive.followTrajectorySync(trajectory);
                 currentPos = straightDrive.getPoseEstimate();
-
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
+                }
                 sleep_millisec(300);
 
 
@@ -1258,9 +1268,10 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 straightDrive.turnSync(Math.toRadians(70));
                 RobotLog.dd(TAG, "step21, " + straightDrive.getPoseEstimate().toString());
                 currentPos = straightDrive.getPoseEstimate();
-
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
+                }
                 sleep_millisec(300);
 
 
@@ -1281,11 +1292,11 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 firstRegularStoneX = -36.0;
                 foundationX = 47.0;
                 strafeDistance = -10.0;
-
-                //hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    //hwMap.parkingServo.setPosition(TeleopConstants.parkingServoPosLock);
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosPlatform);
+                }
                 straightDrive = DriveBuilderReset(false, false, "step1, after strafe");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
 
@@ -1299,9 +1310,9 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 straightDrive.followTrajectorySync(trajectory);
                 currentPos = straightDrive.getPoseEstimate();
-
-                prepGrab(FieldPosition.RED_QUARY);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    prepGrab(FieldPosition.RED_QUARY);
+                }
                 strafeDrive = DriveBuilderReset(true, false, "step1, after strafe");
                 builder = new TrajectoryBuilder(strafeDrive.getPoseEstimate(), DriveConstantsPID.STRAFE_BASE_CONSTRAINTS);   //-34.752, -63.936
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
@@ -1315,11 +1326,11 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 }
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 strafeDrive.followTrajectorySync(trajectory);
-
-                grabStone(FieldPosition.RED_QUARY);
-                transferReset();
-                initIntakeClaw();
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    grabStone(FieldPosition.RED_QUARY);
+                    transferReset();
+                    initIntakeClaw();
+                }
                 strafeDrive = DriveBuilderReset(true, false, "step2, after grab stone ");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder.setReversed(false).strafeTo(new Vector2d(wallSkyStoneX, yCoordMvmtPlane));  //-52, -39
@@ -1355,9 +1366,9 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 trajectory = builder.build();
                 strafeDrive.followTrajectorySync(trajectory);
                 currentPos = strafeDrive.getPoseEstimate();
-
-                dropStone(FieldPosition.RED_QUARY);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    dropStone(FieldPosition.RED_QUARY);
+                }
                 /*strafeDrive = DriveBuilderReset(true, false, "step5, after drop 1st stone");
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
                     builder = builder.strafeTo(new Vector2d(foundationX, yCoordMvmtPlane));
@@ -1476,10 +1487,10 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 currentPos = strafeDrive.getPoseEstimate();
                 DriveConstantsPID.keep_vuforia_running = false;
                 dropStone(FieldPosition.RED_QUARY);*/
-
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
+                }
                 strafeDrive = DriveBuilderReset(true, false, "step17.5");
 
                 if (DriveConstantsPID.RUN_USING_ODOMETRY_WHEEL) {
@@ -1508,10 +1519,10 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 trajectory = builder.build();
                 straightDrive.followTrajectorySync(trajectory);
                 currentPos = straightDrive.getPoseEstimate();
-
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
-
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockLock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosUp);
+                }
                 sleep_millisec(300);
 
 
@@ -1530,11 +1541,11 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 straightDrive.turnSync(Math.toRadians(70));
                 RobotLog.dd(TAG, "step21, " + straightDrive.getPoseEstimate().toString());
                 currentPos = straightDrive.getPoseEstimate();
-
-                hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
-                hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
+                if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
+                    hwMap.foundationLock.setPosition(TeleopConstants.foundationLockUnlock);
+                    hwMap.transferLock.setPosition(TeleopConstants.transferLockPosOut);
+                }
                 sleep_millisec(300);
-
 
                 straightDrive = DriveBuilderReset(false, false, "step18");
 
@@ -1554,7 +1565,6 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
         transferReset();
         initIntakeClaw();
         sleep_millisec(5000);
-
 
         intake(0);
         sleep_millisec(15000);
@@ -1816,8 +1826,6 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
         hwMap.backRight.setPower(0);
         hwMap.backLeft.setPower(0);
     }
-
-
 
     private void init() {
         Thread thread = new Thread() {

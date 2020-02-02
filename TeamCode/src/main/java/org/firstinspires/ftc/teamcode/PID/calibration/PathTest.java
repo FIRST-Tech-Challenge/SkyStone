@@ -37,7 +37,6 @@ public class PathTest extends LinearOpMode {
     private Path path;
     private FieldPosition fieldPosition = null;
 
-
     @Override
     public void runOpMode() throws InterruptedException {
         DriveConstantsPID.updateConstantsFromProperties();
@@ -47,7 +46,6 @@ public class PathTest extends LinearOpMode {
         hwMap.liftTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         hwMap.liftOne.setDirection(DcMotorSimple.Direction.REVERSE);
         //
-
         int[] skystonePositions = new int[2];
         skystonePositions[0] = (int) DriveConstantsPID.TEST_SKY_STONE_POSITION;
 
@@ -64,6 +62,5 @@ public class PathTest extends LinearOpMode {
         path = new Path(hwMap, this, _drive, startingPos, hardwareMap, null);
         path.RedQuary(skystonePositions);
         RobotLogger.dd(TAG, "----------done --------------------- unit test for path (RED QUARY)");
-
     }
 }

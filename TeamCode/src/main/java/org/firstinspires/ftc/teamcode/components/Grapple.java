@@ -37,37 +37,25 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 //@Disabled
 public class Grapple extends BotComponent {
-
-    private String servoName1;
-    private String servoName2;
-
     public Servo servo = null;
     public Servo servo2 = null;
-
-
     double SERVO_DOWN_POSITION = 0.5;
     double SERVO_UP_POSITION = -0.4;
 
 public Grapple(){
 }
-public Grapple(Logger aLogger, OpMode aOpMode, String aServoName1, String aServoName2) {
+public Grapple(Logger aLogger, OpMode aOpMode, String servoName, String servoName2) {
     super(aLogger, aOpMode);
-    servoName1 = aServoName1;
-    servoName2 = aServoName2;
-
-}
-
-public void init( ){
-
     //define and initialize motors
     logger.logDebug("initservo", "IamWalrus");
-    servo = initServo(servoName1, 1);
-    servo2 = initServo(servoName2, 1);
+    servo = initServo(servoName, -.4);
+    servo2 = initServo(servoName2, -.4);
     if (servo != null && servo2 != null) {
         isAvailable = true;
     }
 
     logger.logInfo("Grapple", "isAvailable: %b", isAvailable);
+
 }
 
 public void servoMoveDown(){

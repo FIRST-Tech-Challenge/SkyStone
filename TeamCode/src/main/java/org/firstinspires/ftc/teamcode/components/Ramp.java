@@ -31,74 +31,39 @@ package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
 //@Disabled
 public class Ramp extends BotComponent {
-    private String rampServoName1;
-    private String rampServoName2;
-    public Servo rampServo1 = null;
+    public Servo rampServo = null;
     public Servo rampServo2 = null;
-    double SERVO_DOWN_POSITION = 0.5;
+    double SERVO_DOWN_POSITION = 0;
     double SERVO_UP_POSITION = 1;
 public Ramp(){
 }
-public Ramp(Logger aLogger, OpMode aOpMode, String aRampServoName1, String aRampServoName2){
+public Ramp(Logger aLogger, OpMode aOpMode, String servoName, String servoName2){
     super(aLogger, aOpMode);
-    rampServoName1 = aRampServoName1;
-    rampServoName2 = aRampServoName2;
-}
-
-public void init( ){
-
+    //define and initialize motors
     logger.logDebug("initservo", "IamWalrus");
-    rampServo1 = initServo(rampServoName1, 1);
-    rampServo2 = initServo(rampServoName2, 1);
-    if(rampServo1 != null && rampServo2 != null){
+    rampServo = initServo(servoName, SERVO_UP_POSITION);
+    rampServo2 = initServo(servoName2, SERVO_UP_POSITION);
+    if(rampServo != null && rampServo2 != null){
         isAvailable = true;
     }
 
     logger .logInfo("Grapple","isAvailable: %b",isAvailable);
 }
 
-public void rampDown(double x){
+public void rampDown(){
     logger.logDebug("servoMoveDown", "walrus");
-    rampServo1.setPosition(x);
+    rampServo.setPosition(SERVO_DOWN_POSITION);
 }
 
-/*
-USE THIS FOR GOING DOWN (COPY PASTE)
-
-robot.ramp.rampDown(0.8);
-                robot.ramp.ramp2Down(0.8);
-                sleep(5000);
-                robot.ramp.rampDown(0.75);
-                robot.ramp.ramp2Down(0.75);
-                sleep(5000);
-                robot.ramp.rampDown(0.7);
-                robot.ramp.ramp2Down(0.7);
-                sleep(5000);
-                robot.ramp.rampDown(0.65);
-                robot.ramp.ramp2Down(0.65);
-                sleep(5000);
-                robot.ramp.rampDown(0.6);
-                robot.ramp.ramp2Down(0.6);
-                sleep(5000);
-                robot.ramp.rampDown(0.55);
-                robot.ramp.ramp2Down(0.55);
-                sleep(5000);
-                robot.ramp.rampDown(0.5);
-                robot.ramp.ramp2Down(0.5);
- */
-public void ramp2Down(double x){
-    rampServo2.setPosition(x);
+public void ramp2Down(){
+    rampServo2.setPosition(SERVO_DOWN_POSITION);
 }
 
 public void rampUp(){
-    rampServo1.setPosition(SERVO_UP_POSITION);
+    rampServo.setPosition(SERVO_UP_POSITION);
 }
 
 public void ramp2Up(){

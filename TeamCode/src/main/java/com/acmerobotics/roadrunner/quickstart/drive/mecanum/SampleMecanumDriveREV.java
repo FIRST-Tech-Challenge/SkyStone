@@ -1,5 +1,7 @@
 package com.acmerobotics.roadrunner.quickstart.drive.mecanum;
 
+import android.util.Log;
+
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,6 +19,7 @@ import java.util.List;
 import lombok.NonNull;
 
 import static com.acmerobotics.roadrunner.quickstart.drive.DriveConstants.encoderTicksToInches;
+import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware. If your hardware configuration
@@ -103,6 +106,10 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
 
     @Override
     public double getRawExternalHeading() {
-        return imu.getAngularOrientation().firstAngle;
+        float rawExternalHeading = imu.getAngularOrientation().firstAngle;
+
+        Log.d(LOG_TAG, "rawExternalHeading: " + rawExternalHeading);
+
+        return rawExternalHeading;
     }
 }

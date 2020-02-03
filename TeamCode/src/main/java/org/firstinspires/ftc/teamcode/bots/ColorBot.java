@@ -33,62 +33,44 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.components.*;
 
-public class TestBot extends Bot {
+public class ColorBot extends Bot {
 
     /* BotComponents */
 
     public Logger logger = null;
-    public WebCamera webCamera = null;
     public DriveTrain driveTrain = null;
-    public GyroNavigator gyroNavigator = null;
-    public WebCamNavigator webCamNavigator = null;
-
-    public Grapple grapple = null;
-    //public ColorSensor colorDetection = null;
-    public SkystoneFinder skystoneFinder = null;
-    public Intake intake = null;
-    public Ramp ramp = null;
-    public Grapple2 grapple2 = null;
+    public DriveTrainSimple driveTrainSimple = null;
     public ColorFinder colorFinder = null;
 
+
     /* Constructor */
-    public TestBot() {
+    public ColorBot() {
 
     }
 
-    public TestBot(OpMode aOpMode) {
+    public ColorBot(OpMode aOpMode) {
         this(aOpMode, false, false);
     }
 
-    public TestBot(OpMode aOpMode, boolean enableTrace, boolean enableTelemetry) {
+    public ColorBot(OpMode aOpMode, boolean enableTrace, boolean enableTelemetry) {
 
-        logger = new Logger("TestBot", aOpMode, enableTrace, enableTelemetry);
-        gyroNavigator = new GyroNavigator(logger, aOpMode);
+        logger = new Logger("SimpleBot", aOpMode, enableTrace, enableTelemetry);
         driveTrain = new DriveTrain(logger, aOpMode, "frontLeftMotor", "frontRightMotor",
-                "backLeftMotor", "backRightMotor",
-                gyroNavigator);
+                "backLeftMotor", "backRightMotor");
 
-        webCamera = new WebCamera(logger, aOpMode, "Webcam 1");
-        webCamNavigator = new WebCamNavigator(logger, aOpMode, webCamera);
+        driveTrainSimple = new DriveTrainSimple(logger, aOpMode, "frontLeftMotor", "frontRightMotor",
+                "backLeftMotor", "backRightMotor");
 
-        grapple = new Grapple(logger, aOpMode, "servo1", "servo2");
-        grapple2 = new Grapple2(logger, aOpMode, "grapple1", "grapple2");
-
-        //colorDetection = new ColorDetection();
-        skystoneFinder = new SkystoneFinder(logger, aOpMode);
-        intake = new Intake(logger, aOpMode, "Right_Intake", "Left_Intake");
-        ramp = new Ramp(logger, aOpMode, "rampServo", "rampServo2");
         colorFinder = new ColorFinder(logger, aOpMode, "leftColor", "rightColor");
+
 
     }
 
     public void initAll() {
-        gyroNavigator.init();
         driveTrain.init(DriveTrain.InitType.INIT_4WD);
-        webCamera.init(WebCamera.InitType.INIT_FOR_FIND_GOLD);
-        // webCamNavigator.init();
-        skystoneFinder.init();
+        driveTrainSimple.init();
         colorFinder.init();
+
     }
 
 }

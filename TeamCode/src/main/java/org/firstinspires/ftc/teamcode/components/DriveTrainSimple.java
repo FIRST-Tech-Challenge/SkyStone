@@ -98,7 +98,7 @@ public class DriveTrainSimple extends BotComponent {
 
     }
 
-    private void setPower(double speedFactor, double powerFL, double powerFR, double powerBL, double powerBR) {
+    public void setPower(double speedFactor, double powerFL, double powerFR, double powerBL, double powerBR) {
         motorFL.setPower(speedFactor * powerFL);
         motorFR.setPower(speedFactor * powerFR);
         motorBL.setPower(speedFactor * powerBL);
@@ -295,7 +295,7 @@ public class DriveTrainSimple extends BotComponent {
 
     }
 
-    private void resetEncoders(DcMotor...ms) {
+    public void resetEncoders(DcMotor...ms) {
         for(DcMotor m : ms) {
             m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             //m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

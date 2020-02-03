@@ -3,9 +3,9 @@
 
    <movestep drive_type = "0, start_position">
 	<!--step 0 is always the starting position, with valid heading -->
-      <x>20.736</x>
+      <x>-34.752</x>
       <y>-63.936</y>
-      <h>90.0</h>
+      <h>0.0</h>
    </movestep>
    
    <movestep drive_type = "1, strafe to grab">

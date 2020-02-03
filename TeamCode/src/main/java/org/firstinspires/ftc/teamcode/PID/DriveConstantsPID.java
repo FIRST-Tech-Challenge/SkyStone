@@ -582,12 +582,12 @@ public class DriveConstantsPID {
         }
     }
     public static Pose2d[] parsePathXY(String filename) {
-        String full_path = AppUtil.CONFIG_FILES_DIR + filename;
+        String full_path = AppUtil.CONFIG_FILES_DIR + "/" + filename;
         RobotLogger.dd(TAG, "path definition file: " + full_path);
         Pose2d[] coordinates = null;
 
         try {
-            File inputFile = new File(AppUtil.CONFIG_FILES_DIR+filename);
+            File inputFile = new File(AppUtil.CONFIG_FILES_DIR+"/"+filename);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(inputFile);
@@ -622,7 +622,7 @@ public class DriveConstantsPID {
                             .item(0)
                             .getTextContent());
                     RobotLogger.dd(TAG,"step %d: x: %f, y: %f, h: %f", temp, x, y , h);
-                    coordinates[temp] = new Pose2d(x, y, h);
+                    coordinates[temp] = new Pose2d(x, y, Math.toRadians(h));
                 }
             }
         } catch (Exception e) {

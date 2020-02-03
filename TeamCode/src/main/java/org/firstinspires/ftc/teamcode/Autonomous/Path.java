@@ -214,7 +214,7 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 String path_file = "path_red1.xml";
                 RobotLogger.dd(TAG, "to read XY coordinates from " + path_file);
 
-                Pose2d coordinates[] = DriveConstantsPID.parsePathXY("path_file");
+                Pose2d coordinates[] = DriveConstantsPID.parsePathXY(path_file);
                 int xy_len = coordinates.length;
                 if (xy_len == 0)
                 {
@@ -230,6 +230,7 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 step_count ++;
 
                 _drive.setPoseEstimate(startingPos);
+                //_drive.getLocalizer().setPoseEstimate(startingPos);
                 _drive.update();
 
                 double theta;
@@ -303,9 +304,6 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);
                 step_count ++;
-
-
-
                 if (DriveConstantsPID.ENABLE_ARM_ACTIONS) {
                     prepGrab(FieldPosition.RED_QUARY); //*******
                 }

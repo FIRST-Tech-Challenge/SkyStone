@@ -29,6 +29,9 @@ SOFTWARE.
             <Motor name="rightFrontDriveMotor" port="1" /> <!-- orange -->
             <Motor name="leftRearDriveMotor"  port="2" /> <!-- green -->
             <Motor name="rightRearDriveMotor"  port="3" /> <!-- purple -->
+
+            <!-- Servos -->
+            <Servo name="parkingStick0" port="0" />
             <Servo name="skystoneServo" port="5" />
 
             <!-- Limit Switch -->
@@ -54,6 +57,7 @@ SOFTWARE.
 
             <Servo name="leftGripServo" port="2" />
             <Servo name="rightGripServo" port="4" />
+            <Servo name="parkingStick1" port="5" />
         </LynxModule>
     </LynxUsbDevice>
 </Robot>

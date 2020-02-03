@@ -373,7 +373,7 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
 
                 sleep_millisec(100);
                 // step 6
-                DriveBuilderReset(true, false, "step" + Integer.toString(step_count) + coordinates[step_count].toString() +
+                DriveBuilderReset(false, false, "step" + Integer.toString(step_count) + coordinates[step_count].toString() +
                     ", after foundation lock, to straight move");
 
                 builder = builder.setReversed(true).lineTo(new Vector2d(_drive.getPoseEstimate().getX() + coordinates[step_count].getX(),

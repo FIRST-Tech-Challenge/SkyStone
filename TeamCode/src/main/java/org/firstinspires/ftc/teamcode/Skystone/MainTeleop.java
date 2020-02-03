@@ -145,7 +145,7 @@ public class MainTeleop extends LinearOpMode {
             }
         }
 
-        if(robot.getOuttakeSpool().getCurrentPosition() >= 2825){
+        if(robot.getOuttakeSpool().getCurrentPosition() >= 4200){
             if(spoolPower == 0){
                 spoolPower += 0.15;
             }

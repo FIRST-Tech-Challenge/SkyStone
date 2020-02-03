@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<Robot type="FirstInspires-FTC">
+    <LynxUsbDevice name="Motor Hub Portal" serialNumber="DQ2ATBLQ" parentModuleAddress="2">
+        <LynxModule name="Motor Hub" port="2">
+            <RevRobotics20HDHexMotor name="backRightMotor" port="0" />
+            <RevRobotics20HDHexMotor name="frontRightMotor" port="1" />
+            <RevRobotics20HDHexMotor name="frontLeftMotor" port="2" />
+            <RevRobotics20HDHexMotor name="backLeftMotor" port="3" />
+            <LynxEmbeddedIMU name="imu" port="0" bus="0" />
+        </LynxModule>
+    </LynxUsbDevice>
+</Robot>

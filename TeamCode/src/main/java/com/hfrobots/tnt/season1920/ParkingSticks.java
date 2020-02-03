@@ -63,7 +63,7 @@ public class ParkingSticks {
 
     }
 
-    public void grab() {
+    public void deploy() {
         stickServo0.setPosition(STICK_SERVO_0_DEPLOYED_POSITION);
         stickServo1.setPosition(STICK_SERVO_1_DEPLOYED_POSITION);
     }

@@ -325,7 +325,7 @@ public class DriverControls {
     private void handleParkingSticks() {
         if (parkingSticks != null) {
             if (parkingStickToggledButton.isToggledTrue()) {
-                 parkingSticks.grab();
+                 parkingSticks.deploy();
             } else {
                 parkingSticks.stow();
             }

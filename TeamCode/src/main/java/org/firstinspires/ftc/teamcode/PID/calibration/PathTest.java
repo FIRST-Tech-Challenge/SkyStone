@@ -49,6 +49,10 @@ public class PathTest extends LinearOpMode {
         int[] skystonePositions = new int[2];
         skystonePositions[0] = (int) DriveConstantsPID.TEST_SKY_STONE_POSITION;
 
+        Pose2d t[] = DriveConstantsPID.parsePathXY("/path_red1.xml");
+        RobotLogger.dd(TAG, "XY array len: " + Integer.toString(t.length));
+
+
         if (DriveConstantsPID.USING_BULK_READ == false)
             _drive = new SampleMecanumDriveREV(hardwareMap, false);
         else
@@ -63,7 +67,7 @@ public class PathTest extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        path = new Path(hwMap, this, _drive, startingPos, hardwareMap, null);
+        path = new Path(hwMap, this, _drive, hardwareMap, null, telemetry);
         path.RedQuary(skystonePositions);
         RobotLogger.dd(TAG, "----------done --------------------- unit test for path (RED QUARY)");
     }

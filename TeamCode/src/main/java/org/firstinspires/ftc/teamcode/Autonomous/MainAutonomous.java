@@ -131,7 +131,7 @@ public class MainAutonomous extends LinearOpMode {
                 */
                 telemetry.addData("STATUS", "Done!");
                 telemetry.update();
-                path = new Path(hwMap, this, straightDrive, startingPos, hardwareMap, imu);
+                path = new Path(hwMap, this, straightDrive, hardwareMap, imu, telemetry);
 
                 if (fieldPosition == FieldPosition.RED_QUARY || fieldPosition == FieldPosition.BLUE_QUARY) {
                     telemetry.addData("STATUS", "Initializing TensorFlow...");

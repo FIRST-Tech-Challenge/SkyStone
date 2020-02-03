@@ -21,6 +21,7 @@ package com.hfrobots.tnt.season1920;
 
 import android.util.Log;
 
+import com.hfrobots.tnt.corelib.control.AnyButton;
 import com.hfrobots.tnt.corelib.control.DebouncedButton;
 import com.hfrobots.tnt.corelib.control.LowPassFilteredRangeInput;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
@@ -28,6 +29,7 @@ import com.hfrobots.tnt.corelib.control.OnOffButton;
 import com.hfrobots.tnt.corelib.control.ParametricScaledRangeInput;
 import com.hfrobots.tnt.corelib.control.RangeInput;
 import com.hfrobots.tnt.corelib.control.RangeInputButton;
+import com.hfrobots.tnt.corelib.control.ToggledButton;
 
 import lombok.Builder;
 
@@ -87,6 +89,14 @@ public class DriverControls {
 
     protected OnOffButton driveBumpStrafeLeftButton;
 
+    protected OnOffButton dpadUpRaw;
+
+    protected OnOffButton dpadDownRaw;
+
+    protected OnOffButton dpadLeftRaw;
+
+    protected OnOffButton dpadRightRaw;
+
     private NinjaGamePad driversGamepad;
 
     private OpenLoopMecanumKinematics kinematics;
@@ -94,6 +104,10 @@ public class DriverControls {
     private FoundationGripMechanism foundationGripMechanism;
 
     private StationKeeping stationKeeping;
+
+    private ToggledButton parkingStickToggledButton;
+
+    private ParkingSticks parkingSticks;
 
     protected DebouncedButton foundationGripButton;
 
@@ -116,6 +130,10 @@ public class DriverControls {
                            DebouncedButton dpadDown,
                            DebouncedButton dpadLeft,
                            DebouncedButton dpadRight,
+                           OnOffButton dpadUpRaw,
+                           OnOffButton dpadDownRaw,
+                           OnOffButton dpadLeftRaw,
+                           OnOffButton dpadRightRaw,
                            OnOffButton xBlueButton,
                            DebouncedButton bRedButton,
                            DebouncedButton yYellowButton,
@@ -127,7 +145,8 @@ public class DriverControls {
                            NinjaGamePad driversGamepad,
                            OpenLoopMecanumKinematics kinematics,
                            FoundationGripMechanism foundationGripMechanism,
-                           StationKeeping stationKeeping) {
+                           StationKeeping stationKeeping,
+                           ParkingSticks parkingSticks) {
         if (driversGamepad != null) {
             this.driversGamepad = driversGamepad;
             setupFromGamepad();
@@ -148,6 +167,10 @@ public class DriverControls {
             this.leftBumper = leftBumper;
             this.leftTrigger = leftTrigger;
             this.rightTrigger = rightTrigger;
+            this.dpadUpRaw = dpadUpRaw;
+            this.dpadDownRaw = dpadDownRaw;
+            this.dpadLeftRaw = dpadLeftRaw;
+            this.dpadRightRaw = dpadRightRaw;
         }
 
         setupDerivedControls();
@@ -156,6 +179,7 @@ public class DriverControls {
         this.kinematics = kinematics;
         this.foundationGripMechanism = foundationGripMechanism;
         this.stationKeeping = stationKeeping;
+        this.parkingSticks = parkingSticks;
     }
 
     private void setupCurvesAndFilters() {
@@ -180,6 +204,12 @@ public class DriverControls {
         dpadUp = new DebouncedButton(driversGamepad.getDpadUp());
         dpadLeft = new DebouncedButton(driversGamepad.getDpadLeft());
         dpadRight = new DebouncedButton(driversGamepad.getDpadRight());
+
+        dpadUpRaw = driversGamepad.getDpadUp();
+        dpadDownRaw = driversGamepad.getDpadDown();
+        dpadLeftRaw = driversGamepad.getDpadLeft();
+        dpadRightRaw = driversGamepad.getDpadRight();
+
         aGreenButton = new DebouncedButton(driversGamepad.getAButton());
         bRedButton = new DebouncedButton(driversGamepad.getBButton());
         xBlueButton = driversGamepad.getXButton();
@@ -202,6 +232,9 @@ public class DriverControls {
         foundationGripButton = aGreenButton;
         foundationUngripButton = bRedButton;
         useStationKeeping = xBlueButton;
+
+        AnyButton anyDpadButton = new AnyButton(dpadUpRaw,dpadDownRaw,dpadLeftRaw,dpadRightRaw);
+        parkingStickToggledButton = new ToggledButton(anyDpadButton);
     }
 
     private boolean gripUpFirstTime = false;
@@ -264,6 +297,8 @@ public class DriverControls {
         kinematics.driveCartesian(xScaled, yScaled, rotateScaled, driveInverted, 0.0, useEncoders);
 
         handleFoundationGripper();
+
+        handleParkingSticks();
     }
 
     private void handleFoundationGripper() {
@@ -284,6 +319,16 @@ public class DriverControls {
             foundationGripMechanism.down();
         } else if (foundationUngripButton != null && foundationUngripButton.getRise()) {
             foundationGripMechanism.up();
+        }
+    }
+
+    private void handleParkingSticks() {
+        if (parkingSticks != null) {
+            if (parkingStickToggledButton.isToggledTrue()) {
+                 parkingSticks.grab();
+            } else {
+                parkingSticks.stow();
+            }
         }
     }
 }

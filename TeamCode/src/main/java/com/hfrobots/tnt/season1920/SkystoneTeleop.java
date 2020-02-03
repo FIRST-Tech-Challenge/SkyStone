@@ -72,6 +72,8 @@ public class SkystoneTeleop extends OpMode {
 
     private SkystoneGrabber skystoneGrabber;
 
+    private ParkingSticks parkingSticks;
+
     @Override
     public void init() {
         ticker = createAndroidTicker();
@@ -104,6 +106,8 @@ public class SkystoneTeleop extends OpMode {
         konamiCode = new KonamiCode(driversGamepad, chaosNinja, ticker, telemetry);
 
         skystoneGrabber = new SkystoneGrabber(simplerHardwareMap);
+
+        parkingSticks = new ParkingSticks(simplerHardwareMap);
     }
 
     @Override

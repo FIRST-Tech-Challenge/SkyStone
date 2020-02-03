@@ -111,6 +111,8 @@ public class SkystoneAuto extends OpMode {
 
     private SkystoneGrabber skystoneGrabber;
 
+    private ParkingSticks parkingSticks;
+
     @Override
     public void init() {
         ticker = createAndroidTicker();
@@ -128,6 +130,8 @@ public class SkystoneAuto extends OpMode {
         deliveryMechanism = new DeliveryMechanism(simplerHardwareMap, telemetry, ticker);
 
         skystoneGrabber = new SkystoneGrabber(simplerHardwareMap);
+
+        parkingSticks = new ParkingSticks(simplerHardwareMap);
 
         setupOpenCvCameraAndPipeline();
 

@@ -376,7 +376,7 @@ Blue F. -->  | B |    |     | R | <-- Red Foundation
                 DriveBuilderReset(true, false, "step" + Integer.toString(step_count) + coordinates[step_count].toString() +
                     ", after foundation lock, to straight move");
 
-                builder = builder.setReversed(true).strafeTo(new Vector2d(_drive.getPoseEstimate().getX() + coordinates[step_count].getX(),
+                builder = builder.setReversed(true).lineTo(new Vector2d(_drive.getPoseEstimate().getX() + coordinates[step_count].getX(),
                         _drive.getPoseEstimate().getY() + coordinates[step_count].getY()));
                 trajectory = builder.build();   //x - 2.812, y + 7.984
                 _drive.followTrajectorySync(trajectory);

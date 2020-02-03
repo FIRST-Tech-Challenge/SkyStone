@@ -1,5 +1,5 @@
-/**
- Copyright (c) 2019 HF Robotics (http://www.hfrobots.com)
+/*
+ Copyright (c) 2020 HF Robotics (http://www.hfrobots.com)
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
@@ -15,7 +15,7 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
- **/
+ */
 
 package com.hfrobots.tnt.season1920;
 
@@ -143,44 +143,50 @@ public class SkystoneTeleop extends OpMode {
     }
 
     private void handleChaos() {
-        // TODO/FIXME Get more of this out of the op-mode to make it more reusable
-        Context appContext = hardwareMap.appContext;
+        if (false) { // DISABLED FOR LEAGUE QUALIFIER
+            // TODO/FIXME Get more of this out of the op-mode to make it more reusable
+            Context appContext = hardwareMap.appContext;
 
-        ChaosConfigSaver.Config chaosConfig = new ChaosConfigSaver(appContext)
-                .getSavedOrNewConfiguration(chaosNinja);
+            ChaosConfigSaver.Config chaosConfig = new ChaosConfigSaver(appContext)
+                    .getSavedOrNewConfiguration(chaosNinja);
 
-        if (chaosConfig.useChaosController) {
-            if (chaosConfig.metricsActivated) {
-                Log.i(LOG_TAG, "Metrics requested, enabling");
-                metricSampler = new StatsDMetricSampler(hardwareMap, driversGamepad,
-                        operatorsGamepad);
+            if (chaosConfig.useChaosController) {
+                if (chaosConfig.metricsActivated) {
+                    setupMetricsSampler();
 
-            } else {
-                Log.i(LOG_TAG, "No metrics requested, not enabling");
+                } else {
+                    Log.i(LOG_TAG, "No metrics requested, not enabling");
 
-                metricSampler = null;
-            }
+                    metricSampler = null;
+                }
 
-            if (chaosConfig.challengeLevel > 0) {
-                Set<String> intakeMotors = ImmutableSet.of("leftIntakeMotor", "rightIntakeMotor");
+                if (chaosConfig.challengeLevel > 0) {
+                    Set<String> intakeMotors = ImmutableSet.of("leftIntakeMotor", "rightIntakeMotor");
 
-                Set<String> liftMotor = ImmutableSet.of("liftMotor");
+                    Set<String> liftMotor = ImmutableSet.of("liftMotor");
 
-                Set<String> servos = ImmutableSet.of("fingerServo");
+                    Set<String> servos = ImmutableSet.of("fingerServo");
 
-                chaosController = new ChaosController(
-                        chaosNinja.getChallengeLevel(),
-                        ImmutableSet.of(
-                                "leftFrontDriveMotor",
-                                "rightFrontDriveMotor",
-                                "leftRearDriveMotor",
-                                "rightRearDriveMotor"),
-                        ImmutableSet.of(intakeMotors, liftMotor),
-                        servos,
-                        ticker,
-                        simplerHardwareMap, telemetry);
+                    chaosController = new ChaosController(
+                            chaosNinja.getChallengeLevel(),
+                            ImmutableSet.of(
+                                    "leftFrontDriveMotor",
+                                    "rightFrontDriveMotor",
+                                    "leftRearDriveMotor",
+                                    "rightRearDriveMotor"),
+                            ImmutableSet.of(intakeMotors, liftMotor),
+                            servos,
+                            ticker,
+                            simplerHardwareMap, telemetry);
+                }
             }
         }
+    }
+
+    protected void setupMetricsSampler() {
+        Log.i(LOG_TAG, "Metrics requested, enabling");
+        metricSampler = new StatsDMetricSampler(hardwareMap, driversGamepad,
+                operatorsGamepad);
     }
 
     @Override

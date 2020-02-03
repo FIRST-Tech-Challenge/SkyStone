@@ -20,21 +20,18 @@
 package com.hfrobots.tnt.season1920.util;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.google.common.base.Ticker;
 import com.hfrobots.tnt.corelib.control.DebouncedButton;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
 import com.hfrobots.tnt.corelib.control.OnOffButton;
 import com.hfrobots.tnt.corelib.control.RangeInput;
-import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREVOptimized;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
 import com.hfrobots.tnt.season1920.DeliveryMechanism;
 import com.hfrobots.tnt.season1920.FoundationGripMechanism;
-import com.hfrobots.tnt.season1920.SkystoneDriveConstants;
+import com.hfrobots.tnt.season1920.ParkingSticks;
+import com.hfrobots.tnt.season1920.SkystoneGrabber;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import java.util.List;
 
 /*
  * An op-mode that runs the robot mechanisms (open and closed loops) to
@@ -48,6 +45,10 @@ public class SkystoneMechanismsSelfTest extends LinearOpMode {
     private DeliveryMechanism deliveryMechanism;
 
     private FoundationGripMechanism foundationGripMechanism;
+
+    private SkystoneGrabber skystoneGrabber;
+
+    private ParkingSticks parkingSticks;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -72,6 +73,9 @@ public class SkystoneMechanismsSelfTest extends LinearOpMode {
         this.deliveryMechanism.setLiftThrottle(liftThrottle);
         this.deliveryMechanism.setStow(new DebouncedButton(stow));
 
+        this.skystoneGrabber = new SkystoneGrabber(simplerHardwareMap);
+        this.parkingSticks = new ParkingSticks(simplerHardwareMap);
+
         telemetry.log().add("Press play to begin the mechanism selftest");
         telemetry.log().add("Make sure the area around the mechanisms is clear");
         telemetry.update();
@@ -83,6 +87,22 @@ public class SkystoneMechanismsSelfTest extends LinearOpMode {
         telemetry.log().clear();
         telemetry.log().add("Running...");
         telemetry.update();
+
+        telemetry.log().clear();
+        telemetry.log().add("Press (a) button to grab skystone");
+        telemetry.update();
+
+        while (!isStopRequested() && !nextStepButton.getRise());
+
+        skystoneGrabber.grab();
+
+        telemetry.log().clear();
+        telemetry.log().add("Press (a) button to stow skystone grabber");
+        telemetry.update();
+
+        while (!isStopRequested() && !nextStepButton.getRise());
+
+        skystoneGrabber.stow();
 
         telemetry.log().clear();
         telemetry.log().add("Press (a) button to grip");
@@ -113,6 +133,22 @@ public class SkystoneMechanismsSelfTest extends LinearOpMode {
         telemetry.update();
 
         doStow(stow);
+
+        telemetry.log().clear();
+        telemetry.log().add("Press (a) button to deploy parking");
+        telemetry.update();
+
+        while (!isStopRequested() && !nextStepButton.getRise());
+
+        parkingSticks.deploy();
+
+        telemetry.log().clear();
+        telemetry.log().add("Press (a) button to stow parking");
+        telemetry.update();
+
+        while (!isStopRequested() && !nextStepButton.getRise());
+
+        parkingSticks.stow();
 
         telemetry.log().clear();
         telemetry.log().add("Tests complete");

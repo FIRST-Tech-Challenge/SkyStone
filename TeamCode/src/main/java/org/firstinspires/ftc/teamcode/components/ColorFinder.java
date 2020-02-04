@@ -44,6 +44,7 @@ public class ColorFinder extends BotComponent {
     public DistanceSensor leftDistance;
     public ColorSensor rightColor;
     public DistanceSensor rightDistance;
+    public boolean stoneColor;
 
     public ColorFinder() {
     }
@@ -62,6 +63,8 @@ public class ColorFinder extends BotComponent {
         leftDistance = opMode.hardwareMap.get(DistanceSensor.class, leftSensorName);
         rightColor = opMode.hardwareMap.get(ColorSensor.class, rightSensorName);
         rightDistance = opMode.hardwareMap.get(DistanceSensor.class, rightSensorName);
+
+        if (rightColor.red() == )
 
         if (leftColor != null  &&  rightColor != null) {
             isAvailable = true;

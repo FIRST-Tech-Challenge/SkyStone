@@ -83,10 +83,12 @@ public class Jonathan_Auto_Color_Test extends LinearOpMode {
 
                 if (speedFactor < 1) {
                     speedFactor += increment;
-                    robot.driveTrainSimple.setPower(speedFactor, 0.25, -0.30, -0.20, .25);
+                    robot.driveTrainSimple.setPower(speedFactor, -0.25, 0.30, 0.20, -.25);
                 }
 
                 distance = robot.colorFinder.rightDistance.getDistance(DistanceUnit.CM);
+
+                if (robot.colorFinder.rightColor.)
 
 
                 robot.logger.logInfo("runOpMode", "distance: %f", distance);
@@ -102,6 +104,7 @@ public class Jonathan_Auto_Color_Test extends LinearOpMode {
                 telemetry.addData("Blue ", robot.colorFinder.rightColor.blue());
 
                 telemetry.update();
+
 
             }
 

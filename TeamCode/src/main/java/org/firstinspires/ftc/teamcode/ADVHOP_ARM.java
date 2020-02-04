@@ -61,6 +61,7 @@ public class ADVHOP_ARM extends OpMode {
     private boolean speedSwitch = false;
     private boolean turning = false, lastTurning = false;
 
+    private double frontLeftPower, frontRightPower, backLeftPower, backRightPower, max;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -151,11 +152,6 @@ public class ADVHOP_ARM extends OpMode {
      */
     @Override
     public void loop() {
-        // Setup a variable for each motor
-        double frontLeftPower;
-        double frontRightPower;
-        double backLeftPower;
-        double backRightPower;
 
         float x = -gamepad1.left_stick_x;
         float y = -gamepad1.left_stick_y;
@@ -240,7 +236,6 @@ public class ADVHOP_ARM extends OpMode {
         leftBackMotor.setPower(backLeftPower - correction);
         rightBackMotor.setPower(backRightPower + correction);
 
-        update_telemetry(frontLeftPower, frontRightPower, backLeftPower, backRightPower, max);
 
         lastTurning = turning;
     }
@@ -253,7 +248,7 @@ public class ADVHOP_ARM extends OpMode {
     public void stop() {
     }
 
-    private void update_telemetry(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower,  double max) {
+    private void update_telemetry() {
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Front Motor", " left:(%.2f) right:(%.2f)", frontLeftPower, frontRightPower);

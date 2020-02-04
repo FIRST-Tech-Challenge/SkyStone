@@ -29,10 +29,15 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -45,14 +50,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class ADVHOP_ARM extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFrontMotor = null;
+    private DcMotorSimple leftFrontMotor = null;
     private DcMotor rightFrontMotor = null;
     DcMotor leftBackMotor = null;
     private DcMotor rightBackMotor = null;
-    private Servo grabberCloseServo = null;
-    private Servo grabberRotateServo = null;
-    private Servo armTiltServo = null;
-    private DcMotor armExtendMotor = null;
+    private CRServo grabberCloseServo = null;
+    private CRServo grabberRotateServo = null;
+    private DcMotor slideTiltMotor = null;
+    private DcMotor slideTiltMotor2 = null;
+    private CRServo slideExtendServo = null;
+    private DcMotorSimple intakeLeftMotor = null;
+    private DcMotorSimple intakeRightMotor = null;
     private BNO055IMU imu;
     private float turnSpeed = 0.5f;
     private PIDController pidDrive;
@@ -60,7 +68,7 @@ public class ADVHOP_ARM extends OpMode {
     private Orientation lastAngles = new Orientation();
     private boolean speedSwitch = false;
     private boolean turning = false, lastTurning = false;
-
+    private boolean pidActive = false;
     private double frontLeftPower, frontRightPower, backLeftPower, backRightPower, max;
 
     /*
@@ -74,7 +82,7 @@ public class ADVHOP_ARM extends OpMode {
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
 
-        leftFrontMotor = hardwareMap.get(DcMotor.class, "leftFrontMotor");
+        leftFrontMotor = hardwareMap.get(DcMotorSimple.class, "leftFrontMotor");
         rightFrontMotor = hardwareMap.get(DcMotor.class, "rightFrontMotor");
         leftBackMotor = hardwareMap.get(DcMotor.class, "leftBackMotor");
         rightBackMotor = hardwareMap.get(DcMotor.class, "rightBackMotor");
@@ -85,18 +93,19 @@ public class ADVHOP_ARM extends OpMode {
         leftBackMotor.setDirection(DcMotor.Direction.FORWARD);
         rightBackMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        // Brake if no power is applied, allows for higher precision controls.
-        leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //Grabber servo
+        grabberCloseServo = hardwareMap.get(CRServo.class, "grabberCloseServo");
+        grabberRotateServo = hardwareMap.get(CRServo.class, "grabberRotateServo");
 
+        slideExtendServo = hardwareMap.get(CRServo.class, "slideExtendServo");
+        slideTiltMotor = hardwareMap.get(DcMotor.class, "slideTiltMotor");
+        slideTiltMotor2 = hardwareMap.get(DcMotor.class, "slideTiltMotor2");
+        slideTiltMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideTiltMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        grabberCloseServo = hardwareMap.get(Servo.class, "grabberCloseServo");
-        grabberRotateServo = hardwareMap.get(Servo.class, "grabberRotateServo");
-        armExtendMotor = hardwareMap.get(DcMotor.class, "armExtendMotor");
-        armTiltServo = hardwareMap.get(Servo.class, "armTiltServo");
-
+        intakeLeftMotor = hardwareMap.get(DcMotorSimple.class,"intakeLeftMotor");
+        intakeRightMotor = hardwareMap.get(DcMotorSimple.class, "intakeRightMotor");
+        intakeLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
         parameters.mode = BNO055IMU.SensorMode.IMU;
@@ -153,6 +162,56 @@ public class ADVHOP_ARM extends OpMode {
     @Override
     public void loop() {
 
+        double slideExtendPower = gamepad2.left_bumper ? 1 : - gamepad2.left_trigger;
+        slideExtendServo.setPower(slideExtendPower);
+
+        double slideTiltPower = gamepad2.left_stick_y / 4;
+
+        if (slideTiltPower == 0) {
+            slideTiltPower = 0.05;
+        }
+        slideTiltMotor.setPower(slideTiltPower);
+        slideTiltMotor2.setPower(slideTiltPower);
+
+
+        double grabberRotatePower = (gamepad2.dpad_up ? 1 : 0) + (gamepad2.dpad_down ? -1 : 0);
+        grabberRotateServo.setPower(grabberRotatePower);
+
+        double intakePower = gamepad2.x ? 1 : 0;
+        intakeLeftMotor.setPower(intakePower);
+        intakeRightMotor.setPower(intakePower);
+
+        if (gamepad1.x) {
+            pidActive = true;
+        }
+        if (gamepad1.y) {
+            pidActive = false;
+        }
+        // Close grabber
+        if (gamepad2.a) {
+            grabberCloseServo.setPower(1);
+        }
+        // Open grabber
+        else if (gamepad2.b) {
+            Timer timer = new Timer();
+            /*timer.schedule(() -> grabberCloseServo.setPower(-1), 1000);*/
+
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    grabberCloseServo.setPower(-1);
+                }
+            }, 1000);
+        }
+
+        driveControl();
+        update_telemetry();
+
+
+    }
+
+    private void driveControl() {
+
         float x = -gamepad1.left_stick_x;
         float y = -gamepad1.left_stick_y;
 
@@ -160,26 +219,6 @@ public class ADVHOP_ARM extends OpMode {
         frontRightPower = y + x;
         backLeftPower = y + x;
         backRightPower = y + -x;
-        
-        /*
-        double sin = Math.sin(angle);
-        double cos = Math.cos(angle);
-        */
-
-        /*if (gamepad1.dpad_up || gamepad1.dpad_down) {
-            int magnitude = (gamepad1.dpad_up ? 1 : 0) + (gamepad1.dpad_down ? -1 : 0);
-            frontLeftPower = magnitude * sin;
-            frontRightPower = magnitude* cos;
-            backLeftPower = magnitude* cos;
-            backRightPower = magnitude* sin;
-        }
-        if (gamepad1.dpad_left || gamepad1.dpad_right) {
-            int magnitude = (gamepad1.dpad_left ? 1 : 0) + (gamepad1.dpad_right ? -1 : 0);
-            frontLeftPower = -magnitude * cos;
-            frontRightPower = magnitude* sin;
-            backLeftPower = magnitude* sin;
-            backRightPower = -magnitude* cos;
-        }*/
 
         if (gamepad1.left_bumper) {
             turning = true;
@@ -201,6 +240,7 @@ public class ADVHOP_ARM extends OpMode {
             resetAngle();
         }
 
+
         if (!turning) {
             // Use PID with imu input to drive in a straight line.
             correction = pidDrive.performPID(getAngle());
@@ -209,7 +249,7 @@ public class ADVHOP_ARM extends OpMode {
             correction = 0;
         }
 
-        double max = Math.abs(findMax(frontLeftPower, frontRightPower, backLeftPower, backRightPower));
+        // Speed controls
 
         if (gamepad1.a) {
             speedSwitch = true;
@@ -224,6 +264,8 @@ public class ADVHOP_ARM extends OpMode {
             basePower = .6;
         }
 
+        double max = Math.abs(findMax(frontLeftPower, frontRightPower, backLeftPower, backRightPower));
+
         if (max != 0) {
             frontLeftPower = (frontLeftPower / max) * basePower;
             frontRightPower = (frontRightPower / max) * basePower;
@@ -231,11 +273,15 @@ public class ADVHOP_ARM extends OpMode {
             backRightPower = (backRightPower / max) * basePower;
         }
 
-        leftFrontMotor.setPower(frontLeftPower - correction);
-        rightFrontMotor.setPower(frontRightPower + correction);
-        leftBackMotor.setPower(backLeftPower - correction);
-        rightBackMotor.setPower(backRightPower + correction);
+        if (!pidActive) {
+            correction = 0;
+        }
 
+
+        leftFrontMotor.setPower(frontLeftPower + correction);
+        rightFrontMotor.setPower(frontRightPower - correction);
+        leftBackMotor.setPower(backLeftPower + correction);
+        rightBackMotor.setPower(backRightPower - correction);
 
         lastTurning = turning;
     }

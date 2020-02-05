@@ -367,29 +367,30 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
                 VectorF translation = lastLocation.getTranslation();
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-                double yPositionRed = translation.get(0);
-                double yPositionBlue = translation.get(0);
+                double yPosition = translation.get(1);
                 //String positionSkystone = "";
-                if (yPositionRed<0){
-                    PRS = positionRedSkystone.LEFT;
-                    telemetry.addLine("Red Left");
-                }else if (0<yPositionRed){
+                if (yPosition>4.5){
+                    PRS = positionRedSkystone.RIGHT;
+                    telemetry.addLine("Red Right");
+                }else if (yPosition<4.5){
                     PRS = positionRedSkystone.CENTER;
                     telemetry.addLine("Red Center");
                 }else {
-                    PRS = positionRedSkystone.RIGHT;
-                    telemetry.addLine("Red Right");
+                    PRS = positionRedSkystone.LEFT;
+                    telemetry.addLine("Red Left");
                 }
-                if (yPositionBlue<0){
+                //Red not working, switching between right and center at y=0 not 4.5 as directed
+                if (yPosition<-3){
                     PBS = positionBlueSkystone.LEFT;
                     telemetry.addLine("Blue Left");
-                } else if (0<yPositionBlue){
+                } else if (yPosition>-3){
                     PBS = positionBlueSkystone.CENTER;
                     telemetry.addLine("Blue Center");
                 } else {
                     PBS = positionBlueSkystone.RIGHT;
                     telemetry.addLine("Blue Right");
                 }
+                //Blue working great
                 /* Blue Left x=-18.7 y=-7.7 z=6.7 LEFT
                 * Blue Center x=-20.9 y=2 z=7.4 LEFT
                 * Blue Right x= y= z= Cannot see right*/

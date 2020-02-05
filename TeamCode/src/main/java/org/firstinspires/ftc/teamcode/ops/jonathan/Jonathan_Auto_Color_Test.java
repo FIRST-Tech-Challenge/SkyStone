@@ -88,8 +88,6 @@ public class Jonathan_Auto_Color_Test extends LinearOpMode {
 
                 distance = robot.colorFinder.rightDistance.getDistance(DistanceUnit.CM);
 
-                if (robot.colorFinder.rightColor.)
-
 
                 robot.logger.logInfo("runOpMode", "distance: %f", distance);
 

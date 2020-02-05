@@ -33,47 +33,53 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.components.*;
 
-public class ColorBot extends Bot {
+public class GameAutoBot extends Bot {
 
     /* BotComponents */
 
     public Logger logger = null;
+    public GyroNavigator gyroNavigator = null;
     public DriveTrain driveTrain = null;
     public DriveTrainSimple driveTrainSimple = null;
-    public ColorFinder colorFinder = null;
     public Intake intake = null;
-
+    public Ramp ramp = null;
+    public Grapple grapple = null;
 
     /* Constructor */
-    public ColorBot() {
+    public GameAutoBot() {
 
     }
 
-    public ColorBot(OpMode aOpMode) {
+    public GameAutoBot(OpMode aOpMode) {
         this(aOpMode, false, false);
     }
 
-    public ColorBot(OpMode aOpMode, boolean enableTrace, boolean enableTelemetry) {
+    public GameAutoBot(OpMode aOpMode, boolean enableTrace, boolean enableTelemetry) {
 
         logger = new Logger("SimpleBot", aOpMode, enableTrace, enableTelemetry);
+        gyroNavigator = new GyroNavigator(logger, aOpMode);
         driveTrain = new DriveTrain(logger, aOpMode, "frontLeftMotor", "frontRightMotor",
-                "backLeftMotor", "backRightMotor");
+                "backLeftMotor", "backRightMotor",
+                gyroNavigator);
 
         driveTrainSimple = new DriveTrainSimple(logger, aOpMode, "frontLeftMotor", "frontRightMotor",
                 "backLeftMotor", "backRightMotor");
 
-        colorFinder = new ColorFinder(logger, aOpMode, "leftColor", "rightColor");
-
         intake = new Intake(logger, aOpMode, "Right_Intake", "Left_Intake");
 
+        ramp = new Ramp(logger, aOpMode, "rampServo", "rampServo2");
+
+        grapple = new Grapple(logger, aOpMode, "servo1", "servo2");
 
     }
 
     public void initAll() {
+        gyroNavigator.init();
         driveTrain.init(DriveTrain.InitType.INIT_4WD);
         driveTrainSimple.init();
-        colorFinder.init();
-
+        intake.init();
+        ramp.init();
+        grapple.init();
     }
 
 }

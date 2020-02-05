@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.bots.GameAutoBot;
 import org.firstinspires.ftc.teamcode.bots.SimpleBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
@@ -43,7 +44,7 @@ public class Jonathan_Autonomous_Test extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private SimpleBot robot = null;
+    private GameAutoBot robot = null;
     private boolean logEnableTrace = true;
     private boolean logToTelemetry = true;
 
@@ -51,13 +52,14 @@ public class Jonathan_Autonomous_Test extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        robot = new SimpleBot(this, logEnableTrace, logToTelemetry);
+        robot = new GameAutoBot(this, logEnableTrace, logToTelemetry);
         robot.logger.logInfo("runOpMode", "===== [ Start Initializing ]");
 
         /* Use either robot.initAll or select only the components that need initializing below */
-        //robot.initAll();
-        robot.driveTrain.init(DriveTrain.InitType.INIT_4WD);
-        robot.driveTrainSimple.init();
+        robot.initAll();
+     /*   robot.driveTrain.init(DriveTrain.InitType.INIT_4WD);
+        robot.driveTrainSimple.init();*/
+
 
         robot.logger.logInfo("runOpMode", "===== [ Initialization Complete ]");
         telemetry.update();
@@ -84,7 +86,24 @@ public class Jonathan_Autonomous_Test extends LinearOpMode {
         robot.logger.logInfo("runOpMode", "===== [ Crab Right ]");
         robot.driveTrainSimple.crabByEncoderRight(0.5, 24);  */
 
-      
+        robot.driveTrainSimple.crabByEncoderRight(0.5, 48);
+        robot.intake.setIntakePower(0.8);
+        robot.driveTrainSimple.driveByEncoder(0.5, 8);
+        robot.driveTrainSimple.pause(1);
+        robot.intake.setIntakePower(0);
+        robot.driveTrainSimple.driveByEncoder(0.5, -8);
+        robot.driveTrainSimple.crabByEncoderLeft(0.5, 24);
+        robot.driveTrainSimple.driveByEncoder(0.8, -82);
+        robot.driveTrain.gyroRotate(-88, .75, true, false);
+        robot.driveTrainSimple.driveByEncoder(0.3, -6);
+        robot.grapple.grappleMoveDown();
+        robot.driveTrainSimple.pause(1);
+        robot.driveTrainSimple.driveByEncoder(0.8, 24);
+        robot.driveTrain.move(1.1, -1, 1);
+        robot.grapple.grappleMoveUp();
+        robot.driveTrainSimple.driveByEncoder(0.8, -48);
+        robot.driveTrainSimple.driveByEncoder(0.5, 56);
+        robot.driveTrainSimple.crabByEncoderRight(0.5, 12);
 
 
         // Show the elapsed game time.

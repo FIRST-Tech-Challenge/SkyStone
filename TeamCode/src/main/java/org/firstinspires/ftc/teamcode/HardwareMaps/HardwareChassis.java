@@ -45,7 +45,7 @@ public class HardwareChassis {
         this.motor_front_right = hwMap.get(DcMotor.class, "hub1_motorport0");
         this.motor_rear_left =   hwMap.get(DcMotor.class, "hub1_motorport3");
 
-        this.motor_lift_left =   hwMap.get(DcMotor.class, "hub2_motorport0");
+        this.motor_lift_left =   hwMap.get(DcMotor.class, "hub2_motorport2");
         this.motor_lift_right =  hwMap.get(DcMotor.class, "hub2_motorport1");
 
         this.motor_extender =       hwMap.get(DcMotor.class, "hub2_motorport3");

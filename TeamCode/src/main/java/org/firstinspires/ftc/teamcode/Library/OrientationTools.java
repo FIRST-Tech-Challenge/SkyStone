@@ -203,5 +203,16 @@ public class OrientationTools {
     }
 
 
+    public void turnToDegrees(double degrees, double smoothness, OmniWheel wheel, BNO055IMU imu){
+        double initPos = this.getDegree360(imu);
+        double endPos = (360 + initPos + degrees)%360;
+        double offset = this.getDegree360(imu) - endPos;
+        while(Math.abs(offset)>3){
+            offset = this.getDegree360(imu) - endPos;
+            wheel.setMotors(0,0,offset/smoothness);
+        }
+        wheel.setMotors(0,0,0);
+    }
+
 
 }

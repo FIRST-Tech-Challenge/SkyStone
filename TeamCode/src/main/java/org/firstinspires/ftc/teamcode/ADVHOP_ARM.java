@@ -50,9 +50,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class ADVHOP_ARM extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotorSimple leftFrontMotor = null;
+    private DcMotor leftFrontMotor = null;
     private DcMotor rightFrontMotor = null;
-    DcMotor leftBackMotor = null;
+    private DcMotor leftBackMotor = null;
     private DcMotor rightBackMotor = null;
     private CRServo grabberCloseServo = null;
     private CRServo grabberRotateServo = null;
@@ -70,6 +70,7 @@ public class ADVHOP_ARM extends OpMode {
     private boolean turning = false, lastTurning = false;
     private boolean pidActive = false;
     private double frontLeftPower, frontRightPower, backLeftPower, backRightPower, max;
+    private int numOfRotations;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -181,12 +182,7 @@ public class ADVHOP_ARM extends OpMode {
         intakeLeftMotor.setPower(intakePower);
         intakeRightMotor.setPower(intakePower);
 
-        if (gamepad1.x) {
-            pidActive = true;
-        }
-        if (gamepad1.y) {
-            pidActive = false;
-        }
+
         // Close grabber
         if (gamepad2.a) {
             grabberCloseServo.setPower(1);
@@ -251,6 +247,26 @@ public class ADVHOP_ARM extends OpMode {
 
         // Speed controls
 
+        if (gamepad1.x) {
+            leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            leftFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            leftBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            rightBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            rightFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+
+        numOfRotations = leftBackMotor.getCurrentPosition();
+
         if (gamepad1.a) {
             speedSwitch = true;
         }
@@ -303,7 +319,7 @@ public class ADVHOP_ARM extends OpMode {
         telemetry.addData("2 global heading", globalAngle);
         telemetry.addData("3 correction", correction);
         telemetry.addData("maxPower", "(%.2f)", max);
-        telemetry.addData("Turning: ", turning);
+        telemetry.addData("Rotations: ", numOfRotations);
         telemetry.update();
     }
 

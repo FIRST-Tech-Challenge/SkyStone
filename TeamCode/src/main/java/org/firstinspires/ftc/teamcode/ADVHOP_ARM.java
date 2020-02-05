@@ -195,7 +195,16 @@ public class ADVHOP_ARM extends OpMode {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    grabberCloseServo.setPower(-1);
+
+                    try {
+                        grabberCloseServo.setPower(-1);
+                        Thread.sleep(800);
+                        grabberCloseServo.setPower(0);
+                    } catch (InterruptedException e) {
+
+                    }
+
+
                 }
             }, 1000);
         }

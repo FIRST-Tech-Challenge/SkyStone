@@ -38,6 +38,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "Basic: Holonomic drive OpMode", group = "Iterative Opmode")
+@Disabled
 public class Basic_Holonomic_OP extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();

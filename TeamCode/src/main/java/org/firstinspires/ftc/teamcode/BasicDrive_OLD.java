@@ -51,6 +51,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name="Basic Drive", group="Linear Opmode")
+@Disabled
 public class BasicDrive_OLD extends LinearOpMode {
 
     // Declare OpMode members.

@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
-/*import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;*/
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous(name = "Autonomous Path 1 (TL/BR)", group = "AutoPaths")
+@Autonomous(name = "Autonomous Path 1 (TL/BR)", group = "Autonomous Path")
 public class Autonomous_Path1 extends LinearOpMode {
 
 

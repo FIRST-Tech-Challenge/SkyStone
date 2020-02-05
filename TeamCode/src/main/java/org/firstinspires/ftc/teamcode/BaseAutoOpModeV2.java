@@ -63,7 +63,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * forwards/backwards and turning left and right, and the right stick controls strafing. (working on diff. control setup currently)
  */
 @Disabled
-public abstract class BaseAutoOpMode extends BaseOpMode {
+public abstract class BaseAutoOpModeV2 extends BaseOpModeV2 {
 
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false;
@@ -94,7 +94,7 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
     private boolean targetVisible = false;
     private float phoneXRotate = 0;
     private float phoneYRotate = 0;
-    private float phoneZRotatPe = 0;
+    private float phoneZRotate = 0;
 
     String positionSkystone = "";
     boolean Skystone_Is_Left = false;
@@ -116,6 +116,11 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
     @Override
     public void GetHardware() {
         super.GetHardware();
+        front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        front_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rear_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rear_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
     }
 
@@ -150,49 +155,38 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
     }
     public void UnfoldRobot() {
 
-        front_left.setPower(.8);
-        front_right.setPower(.8);
-        rear_left.setPower(.8);
-        rear_right.setPower(.8);
-
-        sleep(100);
-
-        front_left.setPower(0);
-        front_right.setPower(0);
-        rear_left.setPower(0);
-        rear_right.setPower(0);
-
-        lift_left.setPower(-1);
-        lift_right.setPower(-1);
+        encoderDrive(DRIVE * .75, -6, 1);
+        Lift(LiftDirection.UP);
         sleep(400);
 
-        lift_left.setPower(0);
-        lift_right.setPower(0);
+        Lift(LiftDirection.STOP);
 
         feeder_motor.setPower(1);
-        sleep(500);
+        sleep(100);
         feeder_motor.setPower(0);
 
-        Feeder_Servo.setPosition(1);
-        sleep(900);
+        Clamp_Left.setPosition(0.4);
+        Clamp_Right.setPosition(.5);
+        Release_Servo.setPosition(1);
+        sleep(1000);
 
-        top_motor.setPower(1);
-        craneSafetyTimer.reset();
-        while(Top_Sensor_Rear.getState() && craneSafetyTimer.milliseconds() < 2000)
-        {
-            top_motor.setPower(1);
-        }
-        top_motor.setPower(0);
+//        top_motor.setPower(1);
+//        craneSafetyTimer.reset();
+//        while(Top_Sensor_Rear.getState() && craneSafetyTimer.milliseconds() < 2000)
+//        {
+//            top_motor.setPower(1);
+//        }
+//        top_motor.setPower(0);
 
-        Block_Pickup.setPosition(0.4f);
+//        Block_Pickup.setPosition(0.4f);
+
         feeder_motor.setPower(-1);
-        sleep(3000);
-        feeder_motor.setPower(0);
-
+        // sleep(1000);
+        // feeder_motor.setPower(0);
 
     }
 
-    public void VisionTarget(int milliseconds) {
+    public void VisionTargetVuforia(int milliseconds) {
 
 
         /*
@@ -358,8 +352,8 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         final float CAMERA_LEFT_DISPLACEMENT = 0;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
-                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT);
-                //.multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
         /**  Let all the trackable listeners know where the phone is.  */
         for (VuforiaTrackable trackable : allTrackables) {
@@ -542,6 +536,7 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
 
 
 }
+
 
 
 

@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -37,6 +38,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.zip.ZipEntry;
 
 
 /**
@@ -45,7 +47,7 @@ import java.util.List;
  */
 
 @Autonomous(name = "Skystone_Vision_TurnToward", group = "Linear Opmode")
-//@Disabled
+@Disabled
 public class Skystone_Vision_TurnToward extends BaseAutoOpMode {
     Comparator<Recognition> compareByAngle = new Comparator<Recognition>() {
         @Override
@@ -93,44 +95,43 @@ public class Skystone_Vision_TurnToward extends BaseAutoOpMode {
                 telemetry.addData("Object 0", stone.getLabel());
 
                 double angleToStone = stone.estimateAngleToObject(AngleUnit.DEGREES);
-<<<<<<< HEAD
+//<<<<<<< HEAD
                 if (Math.abs(angleToStone) < 5) {
-=======
-                telemetry.addData("Angle", angleToStone);
+//=======
+                    telemetry.addData("Angle", angleToStone);
 
-                if( Math.abs(angleToStone) < 5)
-                {
->>>>>>> a28f47ba9c4df9967b120511102568830b082e3b
-                    Drive(DriveDirection.BACKWARD);
-                    sleep(1000);
-                    StopAllDrive();
-                } else {
-                    if (angleToStone < 0) //turn left, but we're backwards
-                    {
-                        Drive(DriveDirection.RIGHT);
-                    } else //turn right
-                    {
-                        Drive(DriveDirection.LEFT);
+                    if (Math.abs(angleToStone) < 5) {
+//>>>>>>> a28f47ba9c4df9967b120511102568830b082e3b
+                        Drive(DriveDirection.BACKWARD);
+                        sleep(1000);
+                        StopAllDrive();
+                    } else {
+                        if (angleToStone < 0) //turn left, but we're backwards
+                        {
+                            Drive(DriveDirection.RIGHT);
+                        } else //turn right
+                        {
+                            Drive(DriveDirection.LEFT);
+                        }
                     }
+
+                    telemetry.update();
+
+                } else {
+                    telemetry.addData("Status", "Not detected");
+                    telemetry.addData("Movements", movements);
+                    if (movements <= 30) {
+                        movements++;
+                        EncoderDrive(DriveDirection.BACKWARD, 100);
+                    }
+
+
+                    telemetry.update();
                 }
-
-                telemetry.update();
-
-            } else {
-                telemetry.addData("Status", "Not detected");
-                telemetry.addData("Movements", movements);
-                if(movements <= 30)
-                {
-                    movements++;
-                    EncoderDrive(DriveDirection.BACKWARD, 100);
-                }
-
-
-
-                telemetry.update();
             }
-        }
 
+
+        }
 
     }
 }

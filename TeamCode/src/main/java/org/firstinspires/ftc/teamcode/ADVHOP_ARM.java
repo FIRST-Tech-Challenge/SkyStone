@@ -220,18 +220,18 @@ public class ADVHOP_ARM extends OpMode {
         backLeftPower = y + x;
         backRightPower = y + -x;
 
-        if (gamepad1.left_bumper) {
+        if (gamepad1.right_stick_x < 0) {
             turning = true;
-            frontLeftPower += -turnSpeed;
-            frontRightPower += turnSpeed;
-            backLeftPower += -turnSpeed;
-            backRightPower += turnSpeed;
-        } else if (gamepad1.right_bumper) {
+            frontLeftPower += gamepad1.right_stick_x;
+            frontRightPower += -gamepad1.right_stick_x;
+            backLeftPower += gamepad1.right_stick_x;
+            backRightPower += -gamepad1.right_stick_x;
+        } else if (gamepad1.right_stick_y > 0) {
             turning = true;
-            frontLeftPower += turnSpeed;
-            frontRightPower += -turnSpeed;
-            backLeftPower += turnSpeed;
-            backRightPower += -turnSpeed;
+            frontLeftPower += -gamepad1.right_stick_x;
+            frontRightPower += gamepad1.right_stick_x;
+            backLeftPower += -gamepad1.right_stick_x;
+            backRightPower += gamepad1.right_stick_x;
         } else {
             turning = false;
         }

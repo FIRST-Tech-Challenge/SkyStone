@@ -28,17 +28,20 @@ public class Intake {
     final static double GRIP_MIN_RANGE = 0;
     final static double GRIP_MAX_RANGE = 1;
 
-    public double GRIP_INIT_LEFT = 0.7;
-    public double GRIP_INIT_RIGHT = 0.3;
+    public double GRIP_INIT_LEFT = 0.93;
+    public double GRIP_INIT_RIGHT = 0.1;
 
-    public  double GRIP_OPEN_LEFT = 0.5;
-    public  double GRIP_OPEN_RIGHT = 0.5;
+    //public  double GRIP_OPEN_LEFT = 0.5;
+    //public  double GRIP_OPEN_RIGHT = 0.5;
+
+    public  double GRIP_OPEN_LEFT = 0.83;
+    public  double GRIP_OPEN_RIGHT = 0.2;
 
     //public double GRIP_CLOSE_LEFT = 0.20;
     //public double GRIP_CLOSE_RIGHT= 0.80;
 
     //values for the new grip 01/28/2020
-    public double GRIP_CLOSE_LEFT = 0;
+    public double GRIP_CLOSE_LEFT = 0.03;
     public double GRIP_CLOSE_RIGHT= 1;
 
     public int grip_state=0; // 0-INIT, 1-OPEN, 2-CLOSE
@@ -46,11 +49,11 @@ public class Intake {
     //Wrist position values on servo motor from close to Vertocal to midPositon1 to midPsition2 to Horizontal
     public int wristCurrentPosition;
     public double[] wristPosition = {
-            0.60,  //closePosition
-            0.70, //VerticalPosition
-            0.80, //MidPosition1
-            0.90, //MidPosition2
-            0.97  //HorizontalPosition
+            0.55,  //closePosition
+            0.65, //VerticalPosition
+            0.76, //MidPosition1
+            0.87, //MidPosition2
+            0.98, //HorizontalPosition
     };
 
     //Constructor

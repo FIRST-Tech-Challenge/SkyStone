@@ -80,11 +80,11 @@ public class Chassis {
     //public double HOOK_RELEASED = 0.22;
 
     
-    public double LEFT_HOOK_HOLD = 0.78;
-    public double LEFT_HOOK_RELEASED = 0.31;
+    public double LEFT_HOOK_HOLD = 0.75;
+    public double LEFT_HOOK_RELEASED = 0.0;
 
-    public double RIGHT_HOOK_HOLD = 0.46;
-    public double RIGHT_HOOK_RELEASED = 0.93;
+    public double RIGHT_HOOK_HOLD = 0.25;
+    public double RIGHT_HOOK_RELEASED = 1.0;
 
     /**
      * Constructor of Chassis. <BR>
@@ -650,7 +650,7 @@ public class Chassis {
             hookLevel = HOOK_HOLD;
         }
     */
-        //Limit hook level to max values : LEFT_HOOK_HOLD = 1, LEFT_HOOK_RELEASED = 0.54
+        //Limit hook level to max values : LEFT_HOOK_HOLD = 0.73, LEFT_HOOK_RELEASED = 0.0
         if (lefthookLevel <= LEFT_HOOK_RELEASED) {
             lefthookLevel = LEFT_HOOK_RELEASED;
         }
@@ -659,7 +659,7 @@ public class Chassis {
             lefthookLevel = LEFT_HOOK_HOLD;
         }
 
-        //Limit hook level to max values : RIGHT_HOOK_HOLD = 0.46, RIGHT_HOOK_RELEASED = 0.93
+        //Limit hook level to max values : RIGHT_HOOK_HOLD = 0.27, RIGHT_HOOK_RELEASED = 1.0
         if (righthookLevel >= RIGHT_HOOK_RELEASED) {
             righthookLevel = RIGHT_HOOK_RELEASED;
         }

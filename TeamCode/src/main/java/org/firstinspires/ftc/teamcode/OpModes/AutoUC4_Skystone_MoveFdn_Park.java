@@ -198,7 +198,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
 
 
        //Move forward till Chassis bumber limit switch is pressed.
-        double expectedMaxDistanceToFoundation = 84 + (5 - skystonePosition) * stoneTostone; // was 40 --> 70
+        double expectedMaxDistanceToFoundation = 81 + (5 - skystonePosition) * stoneTostone; // was 40 --> 70
         autoUCChassis.runFwdBackLeftRight(expectedMaxDistanceToFoundation, 0, 0.6, callingOpMode) ;
 
         //Lift Arm
@@ -231,7 +231,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         autoUCArm.moveArm_onFoundationLevel();
 
         // Move Back
-        autoUCChassis.runFwdBackLeftRight(-40,0,0.2, callingOpMode);
+        autoUCChassis.runFwdBackLeftRight(-37,0,0.2, callingOpMode);
 
         //Lift Arm to Above foundation level and release hook
         autoUCArm.moveArm_aboveFoundationLevel();

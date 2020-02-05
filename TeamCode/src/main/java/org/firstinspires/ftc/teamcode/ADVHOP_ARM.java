@@ -83,7 +83,7 @@ public class ADVHOP_ARM extends OpMode {
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
 
-        leftFrontMotor = hardwareMap.get(DcMotorSimple.class, "leftFrontMotor");
+        leftFrontMotor = hardwareMap.get(DcMotor.class, "leftFrontMotor");
         rightFrontMotor = hardwareMap.get(DcMotor.class, "rightFrontMotor");
         leftBackMotor = hardwareMap.get(DcMotor.class, "leftBackMotor");
         rightBackMotor = hardwareMap.get(DcMotor.class, "rightBackMotor");
@@ -294,10 +294,10 @@ public class ADVHOP_ARM extends OpMode {
         }
 
 
-        leftFrontMotor.setPower(frontLeftPower + correction);
-        rightFrontMotor.setPower(frontRightPower - correction);
-        leftBackMotor.setPower(backLeftPower + correction);
-        rightBackMotor.setPower(backRightPower - correction);
+        leftFrontMotor.setPower(-(frontLeftPower + correction));
+        rightFrontMotor.setPower(-(frontRightPower - correction));
+        leftBackMotor.setPower(-(backLeftPower + correction));
+        rightBackMotor.setPower(-(backRightPower - correction));
 
         lastTurning = turning;
     }

@@ -87,8 +87,6 @@ public class basicAutonomous extends LinearOpMode{
 
         while (opModeIsActive() && mCurrentState != State.Stop) {
 
-            //now = runtime.seconds() - lastReset;
-
             //state switch
             switch (mCurrentState) {
                 /*Initializes auto and waits for the time delay*/
@@ -100,6 +98,7 @@ public class basicAutonomous extends LinearOpMode{
                         telemetry.update();
                         Drive.TimeDelay(5.0);
                     }
+                    //checks to see if running full auto or just parking
                     if (willPark == true){
                         newState(State.ParkFromQuarry);
                     }
@@ -160,36 +159,30 @@ public class basicAutonomous extends LinearOpMode{
                     Drive.moveBackwardDistance(0.8, 25);
                     Lift.MoveDownTime(0.4);
                     Grabber.close();
+                    //checks to see where to park
                     if (bridgeanswer == true) {
-                        if (AllianceColor == false) {
-                            Drive.moveBackwardDistance(0.8, 35);//insert actual distance
                             if (AllianceColor == true) {
                                 Drive.turnLeftDistance(0.5, 50);
+                                Drive.moveForwardDistance(0.8,50);
+                                Drive.strafeRightDistance(0.8,15);
                             }
                             else {
                                 Drive.turnRightDistance(0.5,50);
+                                Drive.strafeLeftDistance(0.8,15);
+                                Drive.moveForwardDistance(0.8,50);
                             }
-                            Drive.moveForwardDistance(0.8, 100/*insert actual distance*/);
-                        } else {
-                            Drive.moveBackwardDistance(0.8, 35);//insert actual distance
-                            if (AllianceColor == true) {
-                                Drive.turnLeftDistance(0.5, 50);
-                            }
-                            else {
-                                Drive.turnRightDistance(0.5,50);
-                            }
-                            Drive.moveForwardDistance(0.8, 100/*insert actual distance*/);
+                            Drive.moveForwardDistance(0.8, 50);
                         }
-                    }
                     else {
-                        if (AllianceColor == true){
-                            Drive.turnLeftDistance(0.5, 50);
+                            Drive.moveBackwardDistance(0.8, 60);
+                            if (AllianceColor == true) {
+                                Drive.turnLeftDistance(0.5, 50);
+                            }
+                            else {
+                                Drive.turnRightDistance(0.5,50);
+                            }
+                            Drive.moveForwardDistance(0.8, 100);
                         }
-                        else {
-                            Drive.turnRightDistance(0.5,50);
-                        }
-                        Drive.moveForwardDistance(0.8, 100);//insert actual distance
-                    }
                     newState(State.Stop);
                     break;
 

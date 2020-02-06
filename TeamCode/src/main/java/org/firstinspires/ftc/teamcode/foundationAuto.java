@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
 import org.firstinspires.ftc.teamcode.Utilities.UserControl;
 
 
-@Autonomous(name = "New Autonomous", group = "Auto")
+@Autonomous(name = "Foundation Autonomous", group = "Auto")
 public class foundationAuto extends LinearOpMode{
     //This gives the control programs shortened names to refer to them in this program
     DriveControl Drive = new DriveControl();
@@ -54,10 +54,13 @@ public class foundationAuto extends LinearOpMode{
         // get user input
         boolean bAnswer;
         boolean AllianceColor;
+        boolean bridgeanswer;
 
         //This asks whether you want to delay start or not and whether you are red or blue
         bAnswer = User.getYesNo("Wait?");
         AllianceColor = User.getRedBlue("Alliance Color");
+        bridgeanswer = User.getPos("Bridge or Wall?");
+
 
         // wait for PLAY button to be pressed on driver station
         telemetry.addLine(">> Press PLAY to start");
@@ -104,10 +107,23 @@ public class foundationAuto extends LinearOpMode{
 
                 case Park:
                     if (AllianceColor == true) {
-                        Drive.strafeRightDistance(0.8,130);
+                        if (bridgeanswer == true) {
+                            Drive.strafeRightDistance(0.8, 75);
+                            Drive.moveBackwardDistance(0.8, 115);
+                            Drive.strafeRightDistance(0.8, 75);
+                        } else {
+                            Drive.strafeRightDistance(0.8, 125);
+                        }
                     }
                     else {
-                        Drive.strafeLeftDistance(0.8,130);
+                        if (bridgeanswer == true){
+                            Drive.strafeLeftDistance(0.8, 75);
+                            Drive.moveBackwardDistance(0.8,115);
+                            Drive.strafeLeftDistance(0.8,75);
+                        }
+                        else {
+                            Drive.strafeLeftDistance(0.8, 125);
+                        }
                     }
                     newState(State.Stop);
                     break;

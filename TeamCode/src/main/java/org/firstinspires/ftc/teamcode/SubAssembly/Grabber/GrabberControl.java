@@ -59,8 +59,8 @@ public class GrabberControl {
 
         // create servo mappings
         MapGrabber = new EnumMap<GrabberSetpt, Double>(GrabberSetpt.class);
-        MapGrabber.put(GrabberSetpt.Close, 0.00001);
-        MapGrabber.put(GrabberSetpt.Open, 0.68);
+        MapGrabber.put(GrabberSetpt.Open, 0.00001);
+        MapGrabber.put(GrabberSetpt.Close, 0.79);
 
         MapWrist = new EnumMap<WristSetpt, Double>(WristSetpt.class);
         MapWrist.put(WristSetpt.Horizontal, 0.44);

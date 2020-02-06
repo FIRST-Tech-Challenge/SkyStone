@@ -10,14 +10,14 @@
             <Servo name="hub1_servoport1" port="1" />
             <Servo name="hub1_servoport2" port="2" />
             <Servo name="hub1_servoport3" port="3" />
+            <Servo name="hub1_servoport4" port="4" />
+            <Servo name="hub1_servoport5" port="5" />
             <DigitalDevice name="hub1_digitalport0" port="0" />
             <DigitalDevice name="hub1_digitalport1" port="1" />
             <DigitalDevice name="hub1_digitalport2" port="2" />
             <DigitalDevice name="hub1_digitalport3" port="3" />
-            <DigitalDevice name="hub1_digitalport4" port="4" />
-            <DigitalDevice name="hub1_digitalport5" port="5" />
-            <LynxEmbeddedIMU name="hub1_imu" port="0" bus="0" />
             <LynxColorSensor name="hub1_colorport1" port="0" bus="1" />
+            <LynxEmbeddedIMU name="imu" port="0" bus="0" />
         </LynxModule>
         <LynxModule name="Expansion Hub 2" port="2">
             <Matrix12vMotor name="hub2_motorport0" port="0" />

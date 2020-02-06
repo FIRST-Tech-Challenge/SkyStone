@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.DutchFTCCore;
 
-import android.util.Log;
-
 public class Robotconfig {
 
     //drivetrain motors
@@ -27,5 +25,12 @@ public class Robotconfig {
 
     //logging
     public static String teamName = "FTCunits";
-    public static boolean isUsed;
+    public static boolean isLoggingUsed;
+
+    //guidance subsystem
+    public static boolean posControl;
+    public static boolean angleControl = true;
+    public static double angleKp = 1/20;
+    public static double angleKi = 1/100;
+    public static double angleKd = 1/25;
 }

@@ -44,6 +44,7 @@ public class ColorFinder extends BotComponent {
     public DistanceSensor leftDistance;
     public ColorSensor rightColor;
     public DistanceSensor rightDistance;
+    public boolean stoneColor;
 
     public ColorFinder() {
     }

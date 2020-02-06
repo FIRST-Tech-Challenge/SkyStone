@@ -187,6 +187,9 @@ public class Game_TeleOp extends LinearOpMode {
                 robot.grapple.grappleMoveDown();
             }
             if (gamepad1.y){
+
+
+
                 robot.grapple.grappleMoveUp();
             }
 

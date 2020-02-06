@@ -95,7 +95,7 @@ public class Game_TeleOp extends LinearOpMode {
 
             if (robot.intake.isAvailable) {
                 if (gamepad1.left_trigger > 0) {
-                    robot.intake.setIntakePower(-0.5);
+                    robot.intake.setIntakePower(-1);
                 }
                 if(gamepad1.left_trigger <= 0)
                 {

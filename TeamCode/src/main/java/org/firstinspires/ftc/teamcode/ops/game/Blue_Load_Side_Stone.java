@@ -27,20 +27,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.ops.jonathan;
+package org.firstinspires.ftc.teamcode.ops.game;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.bots.GameAutoBot;
-import org.firstinspires.ftc.teamcode.bots.SimpleBot;
-import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
 
-@Autonomous(name="Jonathan_Autonomous_Test", group="jonathan")
+@Autonomous(name="Blue_Load_Side_Stone", group="game")
 //@Disabled
-public class Jonathan_Autonomous_Test extends LinearOpMode {
+public class Blue_Load_Side_Stone extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -86,19 +84,19 @@ public class Jonathan_Autonomous_Test extends LinearOpMode {
         robot.logger.logInfo("runOpMode", "===== [ Crab Right ]");
         robot.driveTrainSimple.crabByEncoderRight(0.5, 24);  */
 
-        robot.driveTrainSimple.crabByEncoderRight(0.5, 48);
+        robot.driveTrainSimple.crabByEncoderLeft(0.5, 48);
         robot.intake.setIntakePower(0.8);
         robot.driveTrainSimple.driveByEncoder(0.5, 8);
         robot.driveTrainSimple.pause(1);
         robot.intake.setIntakePower(0);
-        robot.driveTrainSimple.crabByEncoderLeft(0.8, 24);
+        robot.driveTrainSimple.crabByEncoderRight(0.8, 24);
         robot.driveTrainSimple.driveByEncoder(1, -90);
-        robot.driveTrain.gyroRotate(-88, .75, true, false);
+        robot.driveTrain.gyroRotate(88, .75, true, false);
         robot.driveTrainSimple.driveByEncoder(0.8, -8);
         robot.grapple.grappleMoveDown();
         robot.driveTrain.pause(0.8);
         robot.driveTrainSimple.driveByEncoder(0.8, 24);
-        robot.driveTrain.move(1.1, -1, 1);
+        robot.driveTrain.move(1.1, 1, -1);
         robot.grapple.grappleMoveUp();
         robot.driveTrain.moveForward(0.5, .8);
         //slower ramp dumping
@@ -169,7 +167,7 @@ public class Jonathan_Autonomous_Test extends LinearOpMode {
         robot.ramp.ramp2Up();
         robot.ramp.rampUp();
         robot.driveTrainSimple.driveByEncoder(0.8, 36);
-        robot.driveTrainSimple.crabByEncoderRight(0.5, 12);
+        robot.driveTrainSimple.crabByEncoderLeft(0.5, 12);
 
 
         // Show the elapsed game time.

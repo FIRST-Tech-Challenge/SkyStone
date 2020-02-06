@@ -27,20 +27,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.ops.jonathan;
+package org.firstinspires.ftc.teamcode.ops.game;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.bots.GameAutoBot;
-import org.firstinspires.ftc.teamcode.bots.SimpleBot;
-import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
 
-@Autonomous(name="Jonathan_Autonomous_Test", group="jonathan")
+@Autonomous(name="Red_Load_Side_Stone", group="game")
 //@Disabled
-public class Jonathan_Autonomous_Test extends LinearOpMode {
+public class Red_Load_Side_Stone extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();

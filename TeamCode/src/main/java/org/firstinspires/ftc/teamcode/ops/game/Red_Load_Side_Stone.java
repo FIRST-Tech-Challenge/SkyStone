@@ -166,7 +166,7 @@ public class Red_Load_Side_Stone extends LinearOpMode {
         robot.driveTrainSimple.driveByEncoder(0.5, 12);
         robot.ramp.ramp2Up();
         robot.ramp.rampUp();
-        robot.driveTrainSimple.driveByEncoder(0.8, 36);
+        robot.driveTrainSimple.driveByEncoder(0.8, 30);
         robot.driveTrainSimple.crabByEncoderRight(0.5, 12);
 
 

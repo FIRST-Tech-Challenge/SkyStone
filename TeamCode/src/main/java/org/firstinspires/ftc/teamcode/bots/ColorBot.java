@@ -41,6 +41,7 @@ public class ColorBot extends Bot {
     public DriveTrain driveTrain = null;
     public DriveTrainSimple driveTrainSimple = null;
     public ColorFinder colorFinder = null;
+    public Intake intake = null;
 
 
     /* Constructor */
@@ -62,6 +63,8 @@ public class ColorBot extends Bot {
                 "backLeftMotor", "backRightMotor");
 
         colorFinder = new ColorFinder(logger, aOpMode, "leftColor", "rightColor");
+
+        intake = new Intake(logger, aOpMode, "Right_Intake", "Left_Intake");
 
 
     }

@@ -61,8 +61,8 @@ public void init( ){
 
     //define and initialize motors
     logger.logDebug("initservo", "IamWalrus");
-    servo = initServo(servoName1, 1);
-    servo2 = initServo(servoName2, 1);
+    servo = initServo(servoName1, 0.4);
+    servo2 = initServo(servoName2, 0.4);
     if (servo != null && servo2 != null) {
         isAvailable = true;
     }

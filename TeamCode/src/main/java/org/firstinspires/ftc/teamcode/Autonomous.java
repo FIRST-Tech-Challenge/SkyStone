@@ -578,12 +578,12 @@ protected void move(double distance, double power, int direction) {
     // Class Members
     private OpenGLMatrix lastLocation = null;
     //private VuforiaLocalizer vuforia = null;
-    public boolean targetVisible = false;
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
 
     public boolean getPosition(){
+         boolean targetVisible = false;
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          * We can pass Vuforia the handle to a camera preview resource (on the RC phone);
@@ -773,13 +773,15 @@ protected void move(double distance, double power, int direction) {
                     telemetry.addData("Visible Target", trackable.getName());
                     targetVisible = true;
 
+
                     // getUpdatedRobotLocation() will return null if no new information is available since
                     // the last time that call was made, or if the trackable is not currently visible.
                     OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
                     if (robotLocationTransform != null) {
                         lastLocation = robotLocationTransform;
                     }
-                    break;
+
+                    return true;
                 }
             }
 

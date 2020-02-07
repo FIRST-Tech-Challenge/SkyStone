@@ -10,7 +10,7 @@ public class RedCrater extends Autonomous {
     @Override
     public void runPath() {
 
-        int orientation = getOrientation();
+       /* int orientation = getOrientation();
 
        if (orientation == 1){
             //pivot(40, 0.7);
@@ -59,6 +59,6 @@ public class RedCrater extends Autonomous {
 
 
 
-    }
+    }*/
 
-}
+}}

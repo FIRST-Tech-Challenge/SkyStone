@@ -16,7 +16,7 @@ public class Scan extends Autonomous {
 
         while (flag == false) {
 
-            if (getOrientation() == 1) {
+           /* if (getOrientation() == 1) {
                 //pivot(45, 0.7);
                 flag = true;
             } else if (getOrientation() == 2) {
@@ -49,4 +49,5 @@ public class Scan extends Autonomous {
         //sleep(100000);
 
     }
-}
+}*/
+        }}}

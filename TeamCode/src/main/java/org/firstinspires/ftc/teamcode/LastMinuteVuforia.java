@@ -9,7 +9,7 @@ public class LastMinuteVuforia extends Autonomous {
     @Override
     public void runPath() {
 
-        int orientation = getOrientation();
+       /* int orientation = getOrientation();
 
         if (orientation == 1){
             move (10, -0.7, 0);
@@ -29,5 +29,5 @@ public class LastMinuteVuforia extends Autonomous {
         else {
            // pivot (360, 0.7);
         }
-    }
-}
+    }*/
+}}

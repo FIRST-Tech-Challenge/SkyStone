@@ -13,7 +13,7 @@ public class VuforiaDetection extends Autonomous {
         int angle = 0;
         int orientation = -1;
 
-        while ((flag==false) && (angle <= MAX_ANGLE) && opModeIsActive()){
+       /* while ((flag==false) && (angle <= MAX_ANGLE) && opModeIsActive()){
 
             orientation = getOrientation();
             sleep (1000);
@@ -94,7 +94,7 @@ public class VuforiaDetection extends Autonomous {
             }*/
 
 
-    //sleep(100000);
+    //sleep(100000);*/
 }}
 
 

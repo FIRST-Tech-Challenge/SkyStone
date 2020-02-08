@@ -108,11 +108,11 @@ public class teleop extends LinearOpMode {
                 Grabber.Pos0();
             }
 
-            if (egamepad2.left_bumper.released){
+            if (egamepad1.left_bumper.released){
                 FoundationGrabber.close();
             }
 
-            if (egamepad2.left_trigger.released){
+            if (egamepad1.left_trigger.released){
                 FoundationGrabber.open();
             }
 

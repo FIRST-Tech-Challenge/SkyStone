@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.SubAssembly.FoundationGrabber.FoundationGrabberControl;
 import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
 import org.firstinspires.ftc.teamcode.Utilities.UserControl;
+import org.firstinspires.ftc.teamcode.SubAssembly.Grabber.GrabberControl;
 
 
 @Autonomous(name = "Foundation Autonomous", group = "Auto")
@@ -13,6 +14,7 @@ public class foundationAuto extends LinearOpMode{
     //This gives the control programs shortened names to refer to them in this program
     DriveControl Drive = new DriveControl();
     FoundationGrabberControl FoundationGrabber = new FoundationGrabberControl();
+    GrabberControl Grabber = new GrabberControl();
 
     //State setup
     private void newState(State newState) {
@@ -27,6 +29,11 @@ public class foundationAuto extends LinearOpMode{
         Initial,
         MoveToFoundation,
         GrabFoundation,
+        MoveToQuarry,
+        MoveToStone,
+        GrabStone,
+        MoveToBuildZone,
+        ParkFromBuildZone,
         Park,
         Stop
     }
@@ -50,16 +57,19 @@ public class foundationAuto extends LinearOpMode{
         User.init(this);
         Drive.init(this);
         FoundationGrabber.init(this);
+        Grabber.init(this);
 
         // get user input
         boolean bAnswer;
         boolean AllianceColor;
         boolean bridgeanswer;
+        boolean stoneanswer;
 
         //This asks whether you want to delay start or not and whether you are red or blue
         bAnswer = User.getYesNo("Wait?");
         AllianceColor = User.getRedBlue("Alliance Color");
         bridgeanswer = User.getPos("Bridge or Wall?");
+        stoneanswer = User.getYesNo("Deliver a Stone?");
 
 
         // wait for PLAY button to be pressed on driver station
@@ -91,7 +101,7 @@ public class foundationAuto extends LinearOpMode{
 
 
                 case MoveToFoundation:
-                    Drive.moveBackwardDistance(0.8,70);
+                    Drive.moveBackwardDistance(0.8,80);
                     newState(State.GrabFoundation);
                     break;
 
@@ -99,30 +109,95 @@ public class foundationAuto extends LinearOpMode{
                 case GrabFoundation:
                     FoundationGrabber.close();
                     Drive.TimeDelay(1.0);
-                    Drive.moveForwardDistance(0.4,50);
+                    Drive.moveForwardDistance(0.8,85);
                     FoundationGrabber.open();
-                    newState(State.Park);
+                    if (stoneanswer == true){
+                        newState(State.MoveToQuarry);
+                    }
+                    else {
+                        newState(State.Park);
+                    }
                     break;
 
+                case MoveToQuarry:
+                    FoundationGrabber.open();
+                    if (AllianceColor == true){
+                        Drive.strafeRightDistance(0.9,90);
+                    }
+                    else {
+                        Drive.strafeLeftDistance(0.9 ,90);
+                    }
+                    newState(State.MoveToStone);
+                    break;
+
+                case MoveToStone:
+                    Drive.moveBackwardDistance(0.8,30);
+                    Drive.turnRightDistance(0.8,100);
+                    Grabber.open();
+                    newState(State.GrabStone);
+                    break;
+
+                case GrabStone:
+                    Drive.moveForwardDistance(0.8,50);
+                    Grabber.close();
+                    Drive.moveBackwardDistance(0.8,50);
+                    newState(State.MoveToBuildZone);
+                    break;
+
+                case MoveToBuildZone:
+                    if (AllianceColor){
+                        Drive.turnRightDistance(0.8,50);
+                    }
+                    else {
+                        Drive.turnLeftDistance(0.8,50);
+                    }
+                    Drive.moveForwardDistance(0.8,50);
+                    Grabber.open();
+                    newState(State.ParkFromBuildZone);
+                    break;
+
+                case ParkFromBuildZone:
+                    if (bridgeanswer){
+                        if (AllianceColor) {
+                            Drive.strafeLeftDistance(0.8,20);
+                            Drive.moveBackwardDistance(0.8,60);
+                        }
+                        else {
+                            Drive.strafeRightDistance(0.8,20);
+                            Drive.moveBackwardDistance(0.8,60);
+                        }
+                    }
+                    else {
+                        if (AllianceColor){
+                            Drive.strafeRightDistance(0.8,20);
+                            Drive.moveBackwardDistance(0.8,60);
+                        }
+                        else {
+                            Drive.strafeLeftDistance(0.8,20);
+                            Drive.moveBackwardDistance(0.8,60);
+                        }
+                    }
+                    newState(State.Stop);
+                    break;
 
                 case Park:
                     if (AllianceColor == true) {
                         if (bridgeanswer == true) {
                             Drive.strafeRightDistance(0.8, 75);
-                            Drive.moveBackwardDistance(0.8, 115);
+                            Drive.moveBackwardDistance(0.8, 50);
                             Drive.strafeRightDistance(0.8, 75);
                         } else {
-                            Drive.strafeRightDistance(0.8, 125);
+                            Drive.strafeRightDistance(0.8, 145);
                         }
                     }
                     else {
                         if (bridgeanswer == true){
                             Drive.strafeLeftDistance(0.8, 75);
-                            Drive.moveBackwardDistance(0.8,115);
+                            Drive.moveBackwardDistance(0.8,50 );
                             Drive.strafeLeftDistance(0.8,75);
                         }
                         else {
-                            Drive.strafeLeftDistance(0.8, 125);
+                            Drive.strafeLeftDistance(0.8, 145);
                         }
                     }
                     newState(State.Stop);

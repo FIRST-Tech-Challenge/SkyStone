@@ -43,7 +43,7 @@ public class HardwareK9bot
     //public DcMotor fingerMotor = null;
     //public DcMotor armMotor    = null;
     //public DcMotor armSlide    = null;
-    //public DcMotor slideMotor = null;
+    public DcMotor slideMotor = null;
 
    // public DcMotor linSlideLeft = null;
    // public DcMotor linSlideRight = null;

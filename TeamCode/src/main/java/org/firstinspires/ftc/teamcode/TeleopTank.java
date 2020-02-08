@@ -272,11 +272,11 @@ public class TeleopTank extends LinearOpMode {
             }*/
 
             if ((gamepad1.dpad_up) || (gamepad2.dpad_up))  {
-                //robot.slideMotor.setPower(0.5);
+                robot.slideMotor.setPower(0.5);
             } else if ((gamepad1.dpad_down) || (gamepad2.dpad_down))  {
-                //robot.slideMotor.setPower(-0.5);
+                robot.slideMotor.setPower(-0.5);
             } else {
-                //robot.slideMotor.setPower(0);
+                robot.slideMotor.setPower(0);
             }
             /*if ((gamepad1.b) || (gamepad2.b)) {
                     //robot.clawLeft.setPosition(OPEN_LEFT);

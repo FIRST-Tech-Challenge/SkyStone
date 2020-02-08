@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+//import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.ArrayList;
@@ -42,9 +42,9 @@ public abstract class Autonomous extends LinearOpMode {
     private static double WHEEL_BASE = 15.3; //used to be 8.0
     private static double TICKS_PER_INCH = TICKS_PER_REVOLUTION * GEAR_RATIO / (Math.PI * 4);
 
-    private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
-    private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
-    private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
+  //  private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
+    //private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
+ //   private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
     private static final String VUFORIA_KEY = "ATz1+9P/////AAABmeqS5/62ZUGpp5bTjFOlpkUQ/xkdYMvOFM8cjbv7n7uq3sYzUf93tbck4Wwz4tLtprq66GBhDQn1s06gkPiK4MJqUHZsdytuNcFacZO/2S66hK08CjwewQE8Wqs1T8I3wIEQENcMkWha0xwyR/2JfDGwQEGPnO56etL1eXzhScwqGARW1kOAS/zSzg4aWBUITk5FvDZG3lMxpZWIFEOmCIO92DR70BAc8QJz+51mzXvdFSb1kcwkvwcNWQ78ZRfnS41hq84A6Ps84PJRij48wy1oonI2tEXx/RHwoWOBcBFev7VNBDLWCo5VFQ3TtBJeHne5STFubET+3Eg1YWcuFhcAIc2zmVrh/W36NY6a4wkl";
     private VuforiaLocalizer vuforia;
     private TFObjectDetector tfod;
@@ -238,28 +238,28 @@ protected void move(double distance, double power, int direction) {
     }
 
     void detach(){
+/*
+        robot.linSlideLeft.setPower(0.5);
+        robot.linSlideRight.setPower(0.5);
 
-       // robot.linSlideLeft.setPower(0.5);
-       // robot.linSlideRight.setPower(0.5);
+        robot.linSlideLeft.setTargetPosition(5);
+        robot.linSlideRight.setTargetPosition(5);
 
-//        robot.linSlideLeft.setTargetPosition(5);
-//        robot.linSlideRight.setTargetPosition(5);
-
-       /* while (robot.linSlideLeft.getCurrentPosition() < 5340 && opModeIsActive()){
+        while (robot.linSlideLeft.getCurrentPosition() < 5340 && opModeIsActive()){
         }
 
         robot.linSlideLeft.setPower(0);
         robot.linSlideRight.setPower(0);
-*/
+
         sleep(1000);
 
-        //robot.linSlideLeft.setPower(-0.5);
-       // robot.linSlideRight.setPower(-0.5);
+        robot.linSlideLeft.setPower(-0.5);
+        robot.linSlideRight.setPower(-0.5);
 
-//        robot.linSlideLeft.setTargetPosition(5);
-//        robot.linSlideRight.setTargetPosition(5);
+        robot.linSlideLeft.setTargetPosition(5);
+        robot.linSlideRight.setTargetPosition(5);
 
-       /* while (robot.linSlideLeft.getCurrentPosition() > 45 && opModeIsActive()){
+        while (robot.linSlideLeft.getCurrentPosition() > 45 && opModeIsActive()){
         }
 
         robot.linSlideLeft.setPower(0);
@@ -425,7 +425,7 @@ protected void move(double distance, double power, int direction) {
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
+     //   tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
 
 
@@ -556,34 +556,36 @@ protected void move(double distance, double power, int direction) {
      */
 
 
-    // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
+    // Since ImageTarget trackables use mm to specify their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
-    private static final float mmPerInch        = 25.4f;
-    private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    public static final float mmPerInch        = 25.4f;
+    public static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
 
     // Constant for Stone Target
     public static final float stoneZ = 2.00f * mmPerInch;
 
     // Constants for the center support targets
-    private static final float bridgeZ = 6.42f * mmPerInch;
-    private static final float bridgeY = 23 * mmPerInch;
-    private static final float bridgeX = 5.18f * mmPerInch;
-    private static final float bridgeRotY = 59;                                 // Units are degrees
-    private static final float bridgeRotZ = 180;
+    public static final float bridgeZ = 6.42f * mmPerInch;
+    public static final float bridgeY = 23 * mmPerInch;
+    public static final float bridgeX = 5.18f * mmPerInch;
+    public static final float bridgeRotY = 59;                                 // Units are degrees
+    public static final float bridgeRotZ = 180;
 
     // Constants for perimeter targets
-    private static final float halfField = 72 * mmPerInch;
-    private static final float quadField  = 36 * mmPerInch;
+    public static final float halfField = 72 * mmPerInch;
+    public static final float quadField  = 36 * mmPerInch;
 
     // Class Members
-    private OpenGLMatrix lastLocation = null;
+    public OpenGLMatrix lastLocation = null;
     //private VuforiaLocalizer vuforia = null;
-    private float phoneXRotate    = 0;
-    private float phoneYRotate    = 0;
-    private float phoneZRotate    = 0;
+    public float phoneXRotate    = 0;
+    public float phoneYRotate    = 0;
+    public float phoneZRotate    = 0;
 
-    public boolean getPosition(){
-         boolean targetVisible = false;
+    public boolean targetVisible = false;
+
+    public boolean getPosition() {
+        // boolean targetVisible = false;
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          * We can pass Vuforia the handle to a camera preview resource (on the RC phone);
@@ -781,7 +783,7 @@ protected void move(double distance, double power, int direction) {
                         lastLocation = robotLocationTransform;
                     }
 
-                    return true;
+                    //return true;
                 }
             }
 
@@ -805,7 +807,23 @@ protected void move(double distance, double power, int direction) {
         // Disable Tracking when we are done;
         targetsSkyStone.deactivate();
         return false;
-    }}
+
+
+
+    }
+    public DcMotor slideMotor = null;
+
+
+    protected void slideMove(double power) {
+        robot.slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+
+
+
+
+
+}
 
 //             }
 

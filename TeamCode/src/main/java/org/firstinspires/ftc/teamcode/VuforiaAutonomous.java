@@ -55,9 +55,9 @@ import java.util.List;
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Vuforia Autonomous", group = "Autonomous")
 public class VuforiaAutonomous extends Autonomous {
 
-    private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
-    private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
-    private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
+//    private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
+  //  private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
+  //  private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
         /*
          * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
          * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
@@ -88,7 +88,7 @@ public class VuforiaAutonomous extends Autonomous {
         protected void runPath() {
             // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
             // first.
-            initVuforia();
+            //initVuforia();
 
             if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
                 initTfod();
@@ -101,8 +101,8 @@ public class VuforiaAutonomous extends Autonomous {
             telemetry.update();
             waitForStart();
 
-            if (opModeIsActive()) {
-                /** Activate Tensor Flow Object Detection. */
+ /*           if (opModeIsActive()) {
+                /** Activate Tensor Flow Object Detection.
                 if (tfod != null) {
                     tfod.activate();
                 }
@@ -149,9 +149,9 @@ public class VuforiaAutonomous extends Autonomous {
         }
 
         /**
-         * Initialize the Vuforia localization engine.
-         */
-        private void initVuforia() {
+     / Initialize the Vuforia localization engine.
+       */
+     //   private void initVuforia(); {
             /*
              * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
              */
@@ -174,6 +174,6 @@ public class VuforiaAutonomous extends Autonomous {
                     "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
             TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
             tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-            tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
+     //       tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
         }
 }

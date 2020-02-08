@@ -1,26 +1,83 @@
 package org.firstinspires.ftc.teamcode.Utilities;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
 import org.firstinspires.ftc.teamcode.Utilities.ConceptVuforiaSkyStoneNavigationWebcam;
 import org.firstinspires.ftc.teamcode.Utilities.GamepadWrapper;
+import org.firstinspires.ftc.teamcode.autonomous;
 
-/* Sub Assembly Test OpMode
- * This TeleOp OpMode is used to test the functionality of the specific sub assembly
- */
 
 // Assign OpMode type (TeleOp or Autonomous), name, and grouping
-@TeleOp(name = "Vuforia Test", group = "Test")
+@Autonomous(name = "Vuforia Test", group = "Test")
 public class VuforiaTest extends LinearOpMode {
+
+    DriveControl Drive = new DriveControl();
+    ConceptVuforiaSkyStoneNavigationWebcam Webcam = new ConceptVuforiaSkyStoneNavigationWebcam();
+    UserControl User = new UserControl();
+
+
+    /*int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+    VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);*/
+
+    private void newState(State newState) {
+        mCurrentState = newState;
+        Drive.stop();
+        Drive.TimeDelay(0.1);
+        //resetClock();
+    }
+
+    //This is a list of all of the states
+    private enum State {
+        Initial,
+        VuforiaTest,
+        LetMeSeeTelemetry,
+        Stop
+    }
+
+    private enum SkystonePosition {
+        R1,
+        R2,
+        R3,
+        B1,
+        B2,
+        B3,
+    }
+
+    private SkystonePosition Skystone = SkystonePosition.B1;
+
+    private State mCurrentState = State.Initial;
 
     @Override
     public void runOpMode() throws InterruptedException {
         // create and initialize sub-assemblies
-        DriveControl Drive = new DriveControl();
-        ConceptVuforiaSkyStoneNavigationWebcam Webcam = new ConceptVuforiaSkyStoneNavigationWebcam();
         Drive.init(this);
+        Webcam.init();
+        User.init(this);
+
+        boolean AllianceColor;
+
+        AllianceColor = User.getRedBlue("Alliance Color");
+        if (AllianceColor == true) {
+            if (Webcam.PRS == Webcam.PRS.RIGHT) {
+                Skystone = SkystonePosition.R1;
+            } else if (Webcam.PRS == Webcam.PRS.CENTER) {
+                Skystone = SkystonePosition.R2;
+            } else {
+                Skystone = SkystonePosition.R3;
+            }
+        } else if (AllianceColor == false) {
+            if (Webcam.PBS == Webcam.PBS.LEFT) {
+                Skystone = SkystonePosition.B1;
+            } else if (Webcam.PBS == Webcam.PBS.CENTER) {
+                Skystone = SkystonePosition.B2;
+            } else {
+                Skystone = SkystonePosition.B3;
+            }
+        }
 
         // wait for PLAY button to be pressed on driver station
         telemetry.addLine(">> Press PLAY to start");
@@ -28,7 +85,37 @@ public class VuforiaTest extends LinearOpMode {
         telemetry.setAutoClear(true);
         waitForStart();
 
-        // let the robot have a little rest, sleep is healthy
-        sleep(40);
+        newState(State.Initial);
+
+        while (opModeIsActive() && mCurrentState != State.Stop) {
+            switch (mCurrentState) {
+                case Initial:
+                    telemetry.addLine("Initial");
+                    telemetry.update();
+                    newState(State.VuforiaTest);
+                    break;
+                case VuforiaTest:
+                    telemetry.addLine("It got this far");
+                    if (Skystone == SkystonePosition.B1)
+                        telemetry.addLine("Blue Skystone Left");
+                    else if (Skystone == SkystonePosition.B2)
+                        telemetry.addLine("Blue Skystone Center");
+                    else if (Skystone == SkystonePosition.B3)
+                        telemetry.addLine("Blue Skystone Right");
+                    else if (Skystone == SkystonePosition.R1)
+                        telemetry.addLine("Red Skystone Right");
+                    else if (Skystone == SkystonePosition.R2)
+                        telemetry.addLine("Red Skystone Center");
+                    else if (Skystone == SkystonePosition.R3)
+                        telemetry.addLine("Red Skystone Left");
+                    newState(State.LetMeSeeTelemetry);
+                case LetMeSeeTelemetry:
+                    Drive.TimeDelay(10);
+                case Stop:
+                    telemetry.addLine("Stop");
+                    telemetry.update();
+                    break;
+            }
+        }
     }
 }

@@ -64,6 +64,8 @@ public class SkystoneMechanismsSelfTest extends LinearOpMode {
         AutoOnOffButton stow = new AutoOnOffButton();
         AutoLiftThrottle liftThrottle = new AutoLiftThrottle();
 
+        AutoOnOffButton dummyButton = new AutoOnOffButton();
+
         RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
         deliveryMechanism = new DeliveryMechanism(simplerHardwareMap, telemetry, ticker);
         this.deliveryMechanism.setArmInPostion(new DebouncedButton(armInPostion));
@@ -72,7 +74,10 @@ public class SkystoneMechanismsSelfTest extends LinearOpMode {
         this.deliveryMechanism.setUngrip(new DebouncedButton(ungrip));
         this.deliveryMechanism.setLiftThrottle(liftThrottle);
         this.deliveryMechanism.setStow(new DebouncedButton(stow));
+        this.deliveryMechanism.setRotateWrist(new DebouncedButton(dummyButton));
+        this.deliveryMechanism.setUnsafe(dummyButton);
 
+        this.foundationGripMechanism = new FoundationGripMechanism(simplerHardwareMap);
         this.skystoneGrabber = new SkystoneGrabber(simplerHardwareMap);
         this.parkingSticks = new ParkingSticks(simplerHardwareMap);
 
@@ -132,7 +137,41 @@ public class SkystoneMechanismsSelfTest extends LinearOpMode {
         telemetry.log().add("Press (a) button to stow");
         telemetry.update();
 
+        while (!isStopRequested() && !nextStepButton.getRise());
+
         doStow(stow);
+
+        telemetry.log().clear();
+        telemetry.log().add("Press (a) button to deploy foundation gripper");
+        telemetry.update();
+
+        while (!isStopRequested() && !nextStepButton.getRise());
+
+        foundationGripMechanism.down();
+
+        telemetry.log().clear();
+        telemetry.log().add("Press (a) button to stow foundation gripper");
+        telemetry.update();
+
+        while (!isStopRequested() && !nextStepButton.getRise());
+
+        foundationGripMechanism.up();
+
+        telemetry.log().clear();
+        telemetry.log().add("Press (a) button to init foundation gripper");
+        telemetry.update();
+
+        while (!isStopRequested() && !nextStepButton.getRise());
+
+        foundationGripMechanism.initPos();
+
+        telemetry.log().clear();
+        telemetry.log().add("Press (a) button to stow parking");
+        telemetry.update();
+
+        while (!isStopRequested() && !nextStepButton.getRise());
+
+        parkingSticks.stow();
 
         telemetry.log().clear();
         telemetry.log().add("Press (a) button to deploy parking");
@@ -193,7 +232,7 @@ public class SkystoneMechanismsSelfTest extends LinearOpMode {
             deliveryMechanism.periodicTask();
             String stateName = deliveryMechanism.getCurrentStateName();
 
-            if ("AtMaxState".equals(stateName)) {
+            if ("LoadingState".equals(stateName)) {
                 break;
             }
 

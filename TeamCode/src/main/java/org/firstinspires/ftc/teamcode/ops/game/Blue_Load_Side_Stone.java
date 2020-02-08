@@ -93,7 +93,7 @@ public class Blue_Load_Side_Stone extends LinearOpMode {
         robot.driveTrainSimple.crabByEncoderRight(0.8, 20);
         robot.driveTrainSimple.driveByEncoder(1, -96);
         robot.driveTrain.gyroRotate(88, .75, true, false);
-        robot.driveTrainSimple.driveByEncoder(0.8, -9);
+        robot.driveTrainSimple.driveByEncoder(0.8, -12);
         robot.grapple.grappleMoveDown();
         robot.driveTrain.pause(1);
         robot.driveTrainSimple.driveByEncoder(0.8, 24);

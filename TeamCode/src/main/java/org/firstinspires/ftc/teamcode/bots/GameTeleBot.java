@@ -33,14 +33,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 import org.firstinspires.ftc.teamcode.components.Grapple;
-import org.firstinspires.ftc.teamcode.components.Grapple2;
-import org.firstinspires.ftc.teamcode.components.GyroNavigator;
 import org.firstinspires.ftc.teamcode.components.Intake;
 import org.firstinspires.ftc.teamcode.components.Logger;
 import org.firstinspires.ftc.teamcode.components.Ramp;
-import org.firstinspires.ftc.teamcode.components.SkystoneFinder;
-import org.firstinspires.ftc.teamcode.components.WebCamNavigator;
-import org.firstinspires.ftc.teamcode.components.WebCamera;
 
 public class GameTeleBot extends Bot {
 

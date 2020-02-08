@@ -30,9 +30,9 @@ public class Odometry {
     double worldAngle;
 
     double moveScaleFactor = (0.004177098/125) * 123;
-    double turnScaleFactor = 360.0/4927.0;
-    double strafeScaleFactor = 0.004135465;
-    double strafePredictionScalingFactor = 0.092;
+    double turnScaleFactor = (360.0/4927.0) * moveScaleFactor;
+//    double strafeScaleFactor = 0.004135465;
+//    double strafePredictionScalingFactor = 0.092;
 
 //    double encoderToInches = ;
 
@@ -102,17 +102,19 @@ public class Odometry {
         double dRightPodInches = dRightPod * moveScaleFactor;
         double dMecanumPodInches = dMecanumPod * moveScaleFactor;
 
-        double dTheta = (dLeftPodInches - dRightPodInches) * turnScaleFactor;
+        double dTheta = (dLeftPod - dRightPod) * turnScaleFactor;
 
         // Default changes in x' and y' directions assume no change in robot's angle
         double dYPrime = dMecanumPodInches;
         double dXPrime = dRightPodInches;
 
-        // Calculate midAngle, the angle used to convert from x'y' coordinate system to global (x,y) system
-        double midAngle = worldAngle;
-
         // Update the global angle of the robot
-        worldAngle = (((dLeftPod+oldLeftPod) * moveScaleFactor) - ((dRightPod + oldRightPod) * moveScaleFactor)) * turnScaleFactor;
+        double newAngle = ((dLeftPod+oldLeftPod) - (dRightPod + oldRightPod)) * turnScaleFactor;
+
+        // Calculate midAngle, the angle used to convert from x'y' coordinate system to global (x,y) system
+        double midAngle = (worldAngle + newAngle) / 2;
+
+        worldAngle = newAngle;
 
         if (dTheta != 0.0){ // if robot turned
             // Calculate the trigonometry portion of the positions
@@ -124,8 +126,12 @@ public class Odometry {
 
         // Update world x and y positions of the robot by converting from robot's x'y' coordinate
         // system to the global xy coordinate system
-        worldX += dXPrime * Math.cos(midAngle) - dYPrime * Math.sin(midAngle);
-        worldY += dXPrime * Math.sin(midAngle) + dYPrime * Math.cos(midAngle);
+
+        double cosMidAngle = Math.cos(midAngle);
+        double sinMidAngle = Math.sin(midAngle);
+
+        worldX += (dXPrime * cosMidAngle) - (dYPrime * sinMidAngle);
+        worldY += (dXPrime * sinMidAngle) + (dYPrime * cosMidAngle);
     }
 
     private double circularOdometrySinXOverX(double x) {

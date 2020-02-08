@@ -141,8 +141,6 @@ public class SkystoneAuto extends OpMode {
     @Override
     public void start() {
         super.start();
-
-        deliveryMechanism.ungripblock(); // in init, it's gripped.
     }
 
     @Override
@@ -409,13 +407,13 @@ public class SkystoneAuto extends OpMode {
 
 
         //6. move forward (how far/)
-        State gobbleGobble = createForwardTrajectory("Yum", 4);
+        State gobbleGobble = createForwardTrajectory("Yum", 4 + 1);
 
         //7. count for score (entire robot must cross line)
 
         // 7a. Go backwards 7-10
 
-        State byeBye = createBackwardsTrajectory("bye bye", 10);
+        State byeBye = createBackwardsTrajectory("bye bye", 10 + 1);
 
 
         // 7b turn 90 degrees, clockwise for red, ccw for blue
@@ -435,22 +433,26 @@ public class SkystoneAuto extends OpMode {
                 switch (whichSkystone) {
                     case TntSkystoneDetector.INNER_ZONE_NAME:
                         if(currentAlliance == Constants.Alliance.RED){
-                            trajectoryBuilder.forward(72);
+                            trajectoryBuilder.forward(72 - 5);
                         } else {
-                            trajectoryBuilder.forward(56);
+                            trajectoryBuilder.forward(56 - 17);
                         }
                         break;
 
                     case TntSkystoneDetector.MIDDLE_ZONE_NAME:
-                        // middle is middle (doesn't invert when sides change)
-                        trajectoryBuilder.forward(64);
+                        if(currentAlliance == Constants.Alliance.RED) {
+                            trajectoryBuilder.forward(64 - 5);
+                        } else {
+                            trajectoryBuilder.forward(64 - 17);
+                        }
+
                         break;
 
                     case TntSkystoneDetector.OUTER_ZONE_NAME:
                         if(currentAlliance == Constants.Alliance.RED){
-                            trajectoryBuilder.forward(56);
+                            trajectoryBuilder.forward(56 - 5);
                         } else {
-                            trajectoryBuilder.forward(72);
+                            trajectoryBuilder.forward(72 - 17);
                         }
                         break;
                 }
@@ -458,6 +460,7 @@ public class SkystoneAuto extends OpMode {
                 return trajectoryBuilder.build();
             }
         };
+
 
         State servoToNotGrabState =new RunnableState("un-grab the skystone", telemetry,
                 new Runnable() {
@@ -468,7 +471,39 @@ public class SkystoneAuto extends OpMode {
                 });
 
 
-        //8. Use parking sticks
+        State getCentered = new TrajectoryFollowerState("get centered to park ",
+                telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
+            @Override
+            protected Trajectory createTrajectory() {
+                TrajectoryBuilder trajectoryBuilder = driveBase.trajectoryBuilder();
+
+                if(currentAlliance == Constants.Alliance.RED){
+                    trajectoryBuilder.strafeLeft(3);
+                } else {
+                    trajectoryBuilder.strafeRight(3);
+                }
+
+                return trajectoryBuilder.build();
+            }
+        };
+
+        State backupToParkState = createBackwardsTrajectory("parking", 20);
+
+        State strafeToPark = new TrajectoryFollowerState("strafe parking ",
+                telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
+            @Override
+            protected Trajectory createTrajectory() {
+                TrajectoryBuilder trajectoryBuilder = driveBase.trajectoryBuilder();
+
+                if(currentAlliance == Constants.Alliance.RED){
+                    trajectoryBuilder.strafeLeft(6);
+                } else {
+                    trajectoryBuilder.strafeRight(6);
+                }
+
+                return trajectoryBuilder.build();
+            }
+        };
 
         stateMachine.addSequential(detectionState);
         stateMachine.addSequential(toQuarryState);
@@ -483,6 +518,16 @@ public class SkystoneAuto extends OpMode {
         stateMachine.addSequential(turnToStone);
         stateMachine.addSequential(toDeliver);
         stateMachine.addSequential(servoToNotGrabState);
+
+        stateMachine.addSequential(newDelayState("waiting for servo again", 1));
+
+        if(currentAlliance == Constants.Alliance.BLUE) {
+            stateMachine.addSequential(getCentered);
+        }
+
+        stateMachine.addSequential(backupToParkState);
+        stateMachine.addSequential(strafeToPark);
+
         stateMachine.addSequential(newDoneState("Done!"));
     }
 
@@ -568,7 +613,7 @@ public class SkystoneAuto extends OpMode {
         };
 
         // For red alliance
-        Turn turn = new Turn(Rotation.CW, 70);
+        Turn turn = new Turn(Rotation.CW, 90);
 
         if (currentAlliance == Constants.Alliance.BLUE) {
             turn = turn.invert();
@@ -618,6 +663,7 @@ public class SkystoneAuto extends OpMode {
         stateMachine.addSequential(ungripState);
         stateMachine.addSequential(newDelayState("wait for un-grip", 1));
         stateMachine.addSequential(getCleatState);
+
         // FIXME: Back up to make it obvious we are clear of the foundation
         // TODO: Later - for qualifier, offer parking options
 
@@ -805,6 +851,8 @@ public class SkystoneAuto extends OpMode {
             // You need to decide "what else"
 
             DetectionZone stoneZone = detector.getBestScoringZone();
+
+            Log.d(LOG_TAG, "amount of black:" + stoneZone.getTotalBlackArea());
 
             if (stoneZone.getTotalBlackArea() > 15000) {
 

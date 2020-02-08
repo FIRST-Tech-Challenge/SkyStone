@@ -19,6 +19,8 @@
 
 package com.hfrobots.tnt.season1920.opencv;
 
+import android.util.Log;
+
 import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.detectors.DogeCVDetector;
 import com.disnodeteam.dogecv.filters.DogeCVColorFilter;
@@ -40,6 +42,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 
 public class TntSkystoneDetector extends DogeCVDetector {
     public static final String INNER_ZONE_NAME = "Inner";
@@ -184,6 +188,7 @@ public class TntSkystoneDetector extends DogeCVDetector {
         DetectionZone skystoneZone = detectionZones.get(detectionZones.size() - 1);
         bestScoringZone.set(skystoneZone);
         telemetry.addData("DZ", "skystone in %s?", skystoneZone.getZoneName());
+        Log.d(LOG_TAG, "skystone in " + skystoneZone.getZoneName() + ", " + skystoneZone.getTotalBlackArea());
 
 
         // Show where the pipeline is looking for skystone contours

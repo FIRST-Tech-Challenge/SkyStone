@@ -48,7 +48,7 @@ public class SkystoneTeleop extends OpMode {
 
     private DriverControls driverControls;
 
-    private OperatorControls operatorControls;
+    protected OperatorControls operatorControls;
 
     private DeliveryMechanism deliveryMechanism;
 
@@ -56,7 +56,7 @@ public class SkystoneTeleop extends OpMode {
 
     private StationKeeping stationKeeping;
 
-    private StatsDMetricSampler metricSampler;
+    protected StatsDMetricSampler metricSampler;
 
     private Ticker ticker;
 
@@ -70,7 +70,7 @@ public class SkystoneTeleop extends OpMode {
 
     private ChaosSimplerHardwareMap simplerHardwareMap;
 
-    private SkystoneGrabber skystoneGrabber;
+    protected SkystoneGrabber skystoneGrabber;
 
     private ParkingSticks parkingSticks;
 
@@ -88,10 +88,13 @@ public class SkystoneTeleop extends OpMode {
 
         driversGamepad = new NinjaGamePad(gamepad1);
 
+        parkingSticks = new ParkingSticks(simplerHardwareMap);
+
         driverControls = DriverControls.builder().driversGamepad(driversGamepad)
                 .kinematics(kinematics)
                 .foundationGripMechanism(foundationGripMechanism)
                 .stationKeeping(stationKeeping)
+                .parkingSticks(parkingSticks)
                 .build();
 
         deliveryMechanism = new DeliveryMechanism(simplerHardwareMap, telemetry, ticker);
@@ -106,8 +109,6 @@ public class SkystoneTeleop extends OpMode {
         konamiCode = new KonamiCode(driversGamepad, chaosNinja, ticker, telemetry);
 
         skystoneGrabber = new SkystoneGrabber(simplerHardwareMap);
-
-        parkingSticks = new ParkingSticks(simplerHardwareMap);
     }
 
     @Override

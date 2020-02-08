@@ -106,7 +106,7 @@ public class DeliveryMechanism {
     public final static double WRIST_STOW = 1.0;
     boolean wristRotated = false;
 
-    public final static double FINGER_GRIP = 0.0;
+    public final static double FINGER_GRIP = 0.57; // 0.0;
     public final static double FINGER_UNGRIP = 1.0;
 
 
@@ -141,7 +141,6 @@ public class DeliveryMechanism {
 
         if (true) {
             autoStow();
-            ungripblock();
         }
 
         setupStateMachine();
@@ -173,8 +172,7 @@ public class DeliveryMechanism {
             telemetry.update();
         }
 
-        //stay inside the 18 inches
-        gripBlock();
+        fingerServo.setPosition(0.67); // stay within 18"
     }
 
     private boolean shouldUseLowerLimit() {
@@ -455,7 +453,7 @@ public class DeliveryMechanism {
 
     public final static int LIFT_CLEAR_SUPERSTRUCTURE_POS = 0;
 
-    public final static int LIFT_MAX_HEIGHT_POS = 2300;
+    public final static int LIFT_MAX_HEIGHT_POS = 2750;
 
     public final static int LIFT_MIN_HEIGHT_POS = 0;
 

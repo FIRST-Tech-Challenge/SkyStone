@@ -19,9 +19,13 @@
 
 package com.hfrobots.tnt.season1920.opencv;
 
+import android.util.Log;
+
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
+
+import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 
 public class DetectionZone implements Comparable<DetectionZone> {
     private double totalBlackArea = 0.0D;
@@ -45,10 +49,18 @@ public class DetectionZone implements Comparable<DetectionZone> {
         this.zoneName = zoneName;
     }
 
+    double maxContourSize = Double.MIN_VALUE;
+
     public void accumulateBlackContourArea(MatOfPoint contour, Rect boundingRectangle) {
         double contourArea = Imgproc.contourArea(contour);
 
-        if (contourArea <= 1000) {
+        if (contourArea > maxContourSize) {
+            maxContourSize = contourArea;
+
+            Log.d(LOG_TAG, "Max contour area now:" + maxContourSize);
+        }
+
+        if (contourArea <= 2000) {
             return;
         }
 

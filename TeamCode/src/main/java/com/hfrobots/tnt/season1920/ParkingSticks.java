@@ -29,23 +29,15 @@ public class ParkingSticks {
 
     private Servo stickServo1;
 
-    private final double STICK_SERVO_0_STOWED_POSITION = 1;
+    private final double STICK_SERVO_0_STOWED_POSITION = 0;
 
-    private final double STICK_SERVO_0_DEPLOYED_POSITION = 0;
+    private final double STICK_SERVO_0_DEPLOYED_POSITION = .72;
 
-    private final double STICK_SERVO_1_STOWED_POSITION = 1;
+    private final double STICK_SERVO_1_STOWED_POSITION = 0;
 
-    private final double STICK_SERVO_1_DEPLOYED_POSITION = 0;
+    private final double STICK_SERVO_1_DEPLOYED_POSITION = .74;
 
     public ParkingSticks(SimplerHardwareMap hardwareMap) {
-
-        //  <Servo name="parkingStick0" port="..." />
-        //  <Servo name="parkingStick1" port="..." />
-
-        //skystoneServo = hardwareMap.get(Servo.class, "skystoneServo");
-        //ServoUtil.setupPwmForRevSmartServo(skystoneServo);
-        //skystoneServo.setPosition(SKYSTONE_SERVO_STOWED_POSITION);
-
         stickServo0 = hardwareMap.get(Servo.class, "parkingStick0");
         ServoUtil.setupPwmForRevSmartServo(stickServo0);
         stickServo0.setPosition(STICK_SERVO_0_STOWED_POSITION);
@@ -53,8 +45,6 @@ public class ParkingSticks {
         stickServo1 = hardwareMap.get(Servo.class, "parkingStick1");
         ServoUtil.setupPwmForRevSmartServo(stickServo1);
         stickServo1.setPosition(STICK_SERVO_1_STOWED_POSITION);
-
-
     }
 
     public void stow() {

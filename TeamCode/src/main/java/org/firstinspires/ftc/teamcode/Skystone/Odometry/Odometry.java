@@ -30,7 +30,7 @@ public class Odometry {
     double worldAngle;
 
     double moveScaleFactor = (0.004177098/125) * 123;
-    double turnScaleFactor = (360.0/4927.0) * moveScaleFactor;
+    double turnScaleFactor = (360.0/4927.0);
 //    double strafeScaleFactor = 0.004135465;
 //    double strafePredictionScalingFactor = 0.092;
 
@@ -90,57 +90,48 @@ public class Odometry {
         oldRightPod = rightPodNew;
         oldMecanumPod = mecanumPodNew;
 
-        circularOdometry(dLeftPod, dRightPod, dMecanumPod);
+        circularOdometry(dLeftPod, dRightPod, dMecanumPod, leftPodNew, rightPodNew);
     }
 
+    double podWidth = 13.5; // Distance between x odometry pods in inches
     /* Circular Odometry assumes that the movement that occurred between each update was in the form
-       of an arc (except when the robot moves directly forward. Each time the math is run, the
+       of an arc (except when the robot moves directly forward). Each time the math is run, the
        algorithm uses coordinate system (x',y') where x' is the direct forward direction between the
        last point and the new point. */
-    public void circularOdometry (double dLeftPod, double dRightPod, double dMecanumPod) {
-        double dLeftPodInches = dLeftPod * moveScaleFactor;
-        double dRightPodInches = dRightPod * moveScaleFactor;
-        double dMecanumPodInches = dMecanumPod * moveScaleFactor;
+    public void circularOdometry (double dLeftPod, double dRightPod, double dMecanumPod, double leftPod, double rightPod) {
+        // See documentation in engineering notebook for details regarding math.
 
-        double dTheta = (dLeftPod - dRightPod) * turnScaleFactor;
+        double dMecanumInches = dMecanumPod * moveScaleFactor;
+        double dLeftInches = dLeftPod * moveScaleFactor;
+        double dRightInches = dRightPod * moveScaleFactor;
 
-        // Default changes in x' and y' directions assume no change in robot's angle
-        double dYPrime = dMecanumPodInches;
-        double dXPrime = dRightPodInches;
+        // Change in angle of robot
+        double dTheta = (dLeftInches - dRightInches) * turnScaleFactor;
 
-        // Update the global angle of the robot
-        double newAngle = ((dLeftPod+oldLeftPod) - (dRightPod + oldRightPod)) * turnScaleFactor;
+        double leftInches = leftPod * moveScaleFactor;
+        double rightInches = rightPod * moveScaleFactor;
+        // New angle of robot
+        double newWorldAngle = (leftInches - rightInches) * turnScaleFactor;
 
-        // Calculate midAngle, the angle used to convert from x'y' coordinate system to global (x,y) system
-        double midAngle = (worldAngle + newAngle) / 2;
+        // Angle to convert coordinate systems by (from robot system to global)
+        double conversionAngle = (newWorldAngle + worldAngle) / 2.0;
 
-        worldAngle = newAngle;
+        // New angle of robot
+        worldAngle = newWorldAngle;
 
-        if (dTheta != 0.0){ // if robot turned
-            // Calculate the trigonometry portion of the positions
-            double curveFactor = circularOdometrySinXOverX(dTheta / 2);
+        double dXPrime = dLeftInches;
+        double dYPrime = dMecanumInches;
 
-            dXPrime = (dLeftPodInches + dRightPodInches) * .5 * curveFactor;
-            dYPrime = dMecanumPodInches * curveFactor + .25 * 2 * Math.sin(dTheta / 2);
+        if (dTheta != 0) {
+            double centerArcLength = (leftInches + rightInches) / 2.0;
+
+            dXPrime = 2 * (Math.sin(dTheta / 2.0) * (dMecanumInches / dTheta));
+            dYPrime = 2 * (Math.sin(dTheta / 2.0) * (centerArcLength / dTheta));
         }
 
-        // Update world x and y positions of the robot by converting from robot's x'y' coordinate
-        // system to the global xy coordinate system
-
-        double cosMidAngle = Math.cos(midAngle);
-        double sinMidAngle = Math.sin(midAngle);
-
-        worldX += (dXPrime * cosMidAngle) - (dYPrime * sinMidAngle);
-        worldY += (dXPrime * sinMidAngle) + (dYPrime * cosMidAngle);
+        worldX += (dXPrime * Math.cos(conversionAngle)) - (dYPrime * Math.sin(conversionAngle));
+        worldY += (dXPrime * Math.sin(conversionAngle)) + (dYPrime * Math.cos(conversionAngle));
     }
-
-    private double circularOdometrySinXOverX(double x) {
-//        if (Math.abs(x) < .00000000000005) { // If the ratio is close enough to the limit, make it the limit
-//            return 1;
-//        } else {
-        return Math.sin(x) / x;
-//        }
-    };
 
     public void linearOdometry (Robot robot) {
         double leftPodNew = -1 * robot.getfLeft().getCurrentPosition(); // fix this for new odo config

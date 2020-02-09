@@ -101,14 +101,14 @@ public class MainTeleop extends LinearOpMode {
             foundationMoveLogic();
 
             if (robot.isDebug()) {
-                telemetry.addLine("xPos: " + robot.getRobotPos().x);
-                telemetry.addLine("yPos: " + robot.getRobotPos().y);
-                telemetry.addLine("angle: " + Math.toDegrees(robot.getAnglePos()));
-                telemetry.addLine("XPODLeft " + robot.getfLeft().getCurrentPosition());
-                telemetry.addLine("XPODRight " + robot.getfRight().getCurrentPosition());
-                telemetry.addLine("YPOD " + robot.getbLeft().getCurrentPosition());
-            }
 
+            }
+            telemetry.addLine("xPos: " + robot.getRobotPos().x);
+            telemetry.addLine("yPos: " + robot.getRobotPos().y);
+            telemetry.addLine("angle: " + Math.toDegrees(robot.getAnglePos()));
+            telemetry.addLine("XPODLeft " + robot.getfLeft().getCurrentPosition());
+            telemetry.addLine("XPODRight " + robot.getfRight().getCurrentPosition());
+            telemetry.addLine("YPOD " + robot.getbLeft().getCurrentPosition());
             if (isIntakeMode) {
                 telemetry.addLine("CURRENT ROBOT MODE: INTAKE BOT");
             } else {

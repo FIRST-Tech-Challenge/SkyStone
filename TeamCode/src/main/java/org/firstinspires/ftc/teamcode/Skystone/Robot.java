@@ -120,7 +120,7 @@ public class Robot {
     private double yMovement;
     private double turnMovement;
 
-    private boolean isDebug = true;
+    private boolean isDebug = false;
 
     private StringBuilder odometryPoints = new StringBuilder();
     private StringBuilder splinePoints = new StringBuilder();
@@ -450,14 +450,13 @@ public class Robot {
     public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, ArrayList<Action> actions, boolean isTimeKill, long endTime) {
         double posAngle;
 
-
         Point[] data2 = new Point[data.length];
 
         for(int i = 0;i<data.length;i++){
             data2[i] = new Point(data[i][0], data[i][1]);
         }
 
-        Point[] pathPoints = CatmullRomSplineUtils.generateSpline(data2,15, this);
+        Point[] pathPoints = CatmullRomSplineUtils.generateSpline(data2,100, this);
 
 
         boolean isMoving = true;
@@ -474,30 +473,18 @@ public class Robot {
         while (linearOpMode.opModeIsActive()) {
             currentTime = SystemClock.elapsedRealtime();
 
-            if (isTimeKill && currentTime - startTime >= endTime) {
-                brakeRobot();
-                isMoving = false;
-            }
-
             posAngle = MathFunctions.angleWrap(anglePos + 2 * Math.PI);
 
-            if (followIndex == pathPoints.length) {
-                followIndex--;
-            }
-
             for(int p = pathPoints.length-1;p>=0;p--){
-                if(followIndex == pathPoints.length-1){
-                    break;
-                }
-                if (Math.hypot(robotPos.x - pathPoints[p].x, robotPos.y - pathPoints[p].y) < 7) {
+                if (Math.hypot(robotPos.x - pathPoints[p].x, robotPos.y - pathPoints[p].y) < 10) {
                     followIndex = p;
                     break;
                 }
             }
 
-            distanceToEnd = Math.hypot(robotPos.x - data[data.length - 1][0], robotPos.y - data[data.length - 1][1]);
+            distanceToEnd = Math.hypot(robotPos.x - data2[data2.length - 1].x, robotPos.y - data2[data2.length - 1].y);
             distanceToNext = Math.hypot(robotPos.x - pathPoints[followIndex].x, robotPos.y - pathPoints[followIndex].y);
-            desiredHeading = angleWrap(Math.atan2(pathPoints[followIndex].x - pathPoints[followIndex - 1].y, pathPoints[followIndex].x - pathPoints[followIndex - 1].x) + 2 * Math.PI);
+            desiredHeading = angleWrap(Math.atan2(pathPoints[followIndex].y - pathPoints[followIndex - 1].y, pathPoints[followIndex].x - pathPoints[followIndex - 1].x) + 2 * Math.PI);
 
             if (desiredHeading == 0) {
                 desiredHeading = Math.toRadians(360);
@@ -519,14 +506,11 @@ public class Robot {
                 } else {
                     turnMovement = 0;
                 }
-            } else if (distanceToEnd < 30) {
-                updateMovementsToPoint(pathPoints[followIndex].x, pathPoints[followIndex].y, moveSpeed, turnSpeed, optimalAngle, true);
-            } else {
+            }else {
                 updateMovementsToPoint(pathPoints[followIndex].x, pathPoints[followIndex].y, moveSpeed, turnSpeed, optimalAngle, false);
             }
 
             if (distanceToEnd < 1) {
-                brakeRobot();
                 isMoving = false;
             }
 
@@ -543,12 +527,18 @@ public class Robot {
             }
 
             // go through all actionpoints and see if the robot is near one
+            boolean isFinishedAllActions = true;
             if (actions.size() != 0) {
                 currentTime = SystemClock.elapsedRealtime();
                 for (int i = 0; i < actions.size(); i++) {
                     Action action = actions.get(i);
 
                     Point actionPoint = action.getActionPoint();
+
+                    if(action.getActionState() == ActionState.PROCESSING || action.getActionState() == ActionState.PENDING){
+                        isFinishedAllActions = false;
+                    }
+
                     if (action.isExecuteOnEndOfPath()) {
                         if (!isMoving) {
                             action.executeAction(currentTime);
@@ -559,13 +549,16 @@ public class Robot {
                 }
             }
 
+            if (distanceToEnd < 1 && Math.abs(Math.toDegrees(posAngle) - Math.toDegrees(angleLockRadians)) < 5 && isFinishedAllActions) {
+                brakeRobot();
+                break;
+            }
+
             if (isTimeKill && currentTime - startTime >= endTime) {
                 break;
             }
 
-            if (isMoving) {
-                applyMove();
-            }
+            applyMove();
         }
     }
 
@@ -681,7 +674,7 @@ public class Robot {
         }
     }
 
-    public void splineMoveCatMullRom(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, ArrayList<Action> actions, boolean isTimeKill, long endTime) {
+    public void splineMoveCatMullRomPID(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, ArrayList<Action> actions, boolean isTimeKill, long endTime) {
         double P = 2;
 //        double P = 1.65;
         double I = 0.1;

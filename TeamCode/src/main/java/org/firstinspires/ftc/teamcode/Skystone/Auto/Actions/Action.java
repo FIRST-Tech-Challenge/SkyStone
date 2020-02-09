@@ -118,10 +118,10 @@ public class Action {
 
         motionActions.add(new MotionAction(robot.getIntakePusher(), robot.PUSHER_PUSHED, 0, robot));
         motionActions.add(new MotionAction(robot.getBackClamp(), robot.BACKCLAMP_CLAMPED, 0, robot));
-        motionActions.add(new MotionAction(robot.getIntakePusher(), robot.PUSHER_RETRACTED, 350, robot));
+        motionActions.add(new MotionAction(robot.getIntakePusher(), robot.PUSHER_RETRACTED, 550, robot));
 
-        motionActions.add(new MotionAction(robot.getFrontClamp(), robot.FRONTCLAMP_CLAMPED, 650, robot));
-        motionActions.add(new MotionAction(robot.getOuttakeSpool(), 1, liftHeight, 1200, robot));
+        motionActions.add(new MotionAction(robot.getFrontClamp(), robot.FRONTCLAMP_CLAMPED, 800, robot));
+        motionActions.add(new MotionAction(robot.getOuttakeSpool(), 1, liftHeight, 1400, robot));
 
         motionActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_EXTENDED, 1500, robot));
     }
@@ -129,8 +129,8 @@ public class Action {
     private void generateDropStoneAndRetractOuttakeActions() {
         motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, liftHeight, 0, robot));
 
-        motionActions.add(new MotionAction(robot.getBackClamp(), robot.BACKCLAMP_RELEASED, 0, robot));
-        motionActions.add(new MotionAction(robot.getFrontClamp(), robot.FRONTCLAMP_RELEASED, 0, robot));
+        motionActions.add(new MotionAction(robot.getBackClamp(), robot.BACKCLAMP_RELEASED, 200, robot));
+        motionActions.add(new MotionAction(robot.getFrontClamp(), robot.FRONTCLAMP_RELEASED, 200, robot));
 
         motionActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_RETRACTED, 750, robot));
 
@@ -151,12 +151,18 @@ public class Action {
     }
 
     private void generateStartIntakeActions() {
+        motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, liftHeight, 0, robot));
+
         motionActions.add(new MotionAction(robot.getBackClamp(), robot.BACKCLAMP_CLAMPED, 0, robot));
+        motionActions.add(new MotionAction(robot.getFrontClamp(), robot.FRONTCLAMP_RELEASED, 0, robot));
+
         motionActions.add(new MotionAction(robot.getIntakeLeft(), 1, 0, robot));
         motionActions.add(new MotionAction(robot.getIntakeRight(), 1, 0, robot));
     }
 
     private void generateStopIntakeActions() {
+        motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, liftHeight, 0, robot));
+
         motionActions.add(new MotionAction(robot.getIntakeLeft(), -1, 0, robot));
         motionActions.add(new MotionAction(robot.getIntakeRight(), -1, 0, robot));
         motionActions.add(new MotionAction(robot.getIntakeLeft(), 1, 500, robot));

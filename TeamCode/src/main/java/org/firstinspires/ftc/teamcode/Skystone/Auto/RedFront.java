@@ -71,9 +71,9 @@ public class RedFront extends AutoBase {
         double[][] toFoundation = {
                 toFirstStone[toFirstStone.length - 1],
                 {34, firstSkystoneY + 5, 0, 10},
-                {24, 17, -10, 20},
-                {23, 20, -10, 20},
-                {23, 30, -10, 20},
+                {26, 17, -10, 20},
+                {24, 20, -10, 20},
+                {24, 30, -10, 20},
                 {23, 43, -10, 20},
                 {23, 55, 0, 20},
                 {22, 67, 0, 20},
@@ -97,7 +97,7 @@ public class RedFront extends AutoBase {
 
         double[][] toSecondStone = {
                 {toReleaseFoundation[toReleaseFoundation.length - 1][0], toReleaseFoundation[toReleaseFoundation.length - 1][1], -10, 0},
-                {17, 40, -10, 0},
+                {20, 60, -10, 0},
                 {17, 29, 0, -10},
                 {17, secondSkyStoneY + 5, 0, 10},
                 {secondSkyStoneX, secondSkyStoneY, 30, 0},
@@ -129,10 +129,17 @@ public class RedFront extends AutoBase {
         toThirdStoneActions.add(new Action(ActionType.START_INTAKE, new Point(28,30), robot));
 
         double[][] toDepositThirdStone = {
+                {14, -12, 0, -10},
                 {18, -5, 0, -10},
+                {18, 5, 0, 20},
+                {18, 15, 0, 20},
+                {18, 20, 0, 20},
                 {18, 29, 0, 20},
+                {18, 35, 0, 20},
                 {18, 45, 0, 10},
-                {18, 74, 0, 10}};
+                {18, 55, 0, 20},
+                {18, 65, 0, 20},
+                {18, 71, 0, 10}};
         ArrayList<Action> toParkAfterThirdStoneActions = new ArrayList<Action>();
         toParkAfterThirdStoneActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(23,7), robot, 150));
         toParkAfterThirdStoneActions.add(new Action(ActionType.STOP_INTAKE, new Point(toThirdStone[toThirdStone.length - 1][0] - 15, toThirdStone[toThirdStone.length - 1][1] + 20), robot, 150));
@@ -140,15 +147,15 @@ public class RedFront extends AutoBase {
 
         double[][] toPark = {
                 {toDepositThirdStone[toDepositThirdStone.length - 1][0], toDepositThirdStone[toDepositThirdStone.length - 1][1], 0, -10},
-                {20, 55, 0, -10},
-                {19, 34, 0, -10}};
+                {16, 55, 0, -10},
+                {17, 34, 0, -10}};
         ArrayList<Action> toParkActions = new ArrayList<Action>();
         toParkActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE, new Point(25,65), robot, 0));
 
         double[][] toParkDitch = {
                 {toThirdStone[toThirdStone.length - 1][0], toThirdStone[toThirdStone.length - 1][1], -10, 10},
-                {20, toThirdStone[toThirdStone.length - 1][1] + 20, -10, 10},
-                {20, 30, -10, 10}};
+                {18, toThirdStone[toThirdStone.length - 1][1] + 20, -10, 10},
+                {18, 30, -10, 10}};
         ArrayList<Action> toParkDitchActions = new ArrayList<Action>();
         toParkDitchActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE, new Point(25,65), robot, 0));
 

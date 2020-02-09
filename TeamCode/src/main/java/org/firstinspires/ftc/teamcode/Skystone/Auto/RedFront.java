@@ -47,8 +47,8 @@ public class RedFront extends AutoBase {
         // Change Skystone positions if detected left or right
         if (skystoneLocation == Vision.Location.LEFT) {
             firstSkystoneY = -12;
-            secondSkyStoneY = -23;
-            secondSkyStoneX = 41.5;
+            secondSkyStoneY = -21.5;
+            secondSkyStoneX = 42;
             anglelock = 30;
             thirdStoneX = 67;
             thirdStoneY = -35;

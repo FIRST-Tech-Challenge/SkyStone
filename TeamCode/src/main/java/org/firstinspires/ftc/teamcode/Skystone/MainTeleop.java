@@ -5,6 +5,7 @@ import android.os.SystemClock;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.MotionAction;
@@ -64,11 +65,25 @@ public class MainTeleop extends LinearOpMode {
         resetRobot();
         robot.initServos();
         waitForStart();
-
+        DcMotorEx motor = hardwareMap.get(DcMotorEx.class, "fLeft");
+        double currentVelocity;
+        double maxVelocity =0;
         position2D = new Position2D(robot);
         position2D.startOdometry();
 
         while (opModeIsActive()) {
+            waitForStart();
+
+            currentVelocity = motor.getVelocity();
+
+            if (currentVelocity > maxVelocity) {
+                maxVelocity = currentVelocity;
+            }
+
+            telemetry.addData("current velocity", currentVelocity);
+            telemetry.addData("maximum velocity", maxVelocity);
+            telemetry.update();
+
             telemetry.update();
 
             robotModeLogic();
@@ -388,7 +403,7 @@ public class MainTeleop extends LinearOpMode {
 
             position2D.o.resetOdometry();
 
-            robot.moveToPoint(24.5,0,0.75,1,0);
+            robot.moveToPoint(24.5,0,0.8,1,0);
         }
     }
 

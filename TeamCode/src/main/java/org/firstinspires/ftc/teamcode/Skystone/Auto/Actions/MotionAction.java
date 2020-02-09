@@ -52,13 +52,13 @@ public class MotionAction {
                 int spoolPosition = robot.getOuttakeSpool().getCurrentPosition();
                 double spoolPower;
                 if (Math.abs(spoolPosition - Integer.parseInt(motorPosition)) < 25) {
-                    spoolPower = 0.15;
+                    spoolPower = 0.125;
                     status = ActionState.COMPLETE;
 
                 } else if (spoolPosition < Integer.parseInt(motorPosition)) {
-                    spoolPower = 0.45;
+                    spoolPower = 0.6;
                 } else {
-                    spoolPower = -0.45;
+                    spoolPower = -0.6;
                 }
                 robot.getOuttakeSpool().setPower(spoolPower);
                 robot.getOuttakeSpool2().setPower(spoolPower);

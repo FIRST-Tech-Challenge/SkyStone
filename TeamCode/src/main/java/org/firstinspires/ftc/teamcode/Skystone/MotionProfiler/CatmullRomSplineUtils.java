@@ -1,10 +1,15 @@
 package org.firstinspires.ftc.teamcode.Skystone.MotionProfiler;
 
+import org.firstinspires.ftc.teamcode.Skystone.Robot;
+
 public class CatmullRomSplineUtils {
-    public static Point[] subdividePoints(Point[] points, int subdivisions) {
+    public static Point[] subdividePoints(Point[] points, int subdivisions, Robot robot) {
         assert points != null;
         assert points.length >= 3;
         //TODO add robot position as first point
+
+        points[0] = new Point(robot.getRobotPos().x,robot.getRobotPos().y);
+
         Point[] subdividedPoints = new Point[((points.length-1) * subdivisions) + 1];
 
         double increments = 1.0 / (double)subdivisions;
@@ -25,7 +30,7 @@ public class CatmullRomSplineUtils {
         return subdividedPoints;
     }
 
-    public static Point[] generateSpline(Point[] points, int subDivisions){
-        return subdividePoints(points, subDivisions);
+    public static Point[] generateSpline(Point[] points, int subDivisions, Robot robot){
+        return subdividePoints(points, subDivisions, robot);
     }
 }

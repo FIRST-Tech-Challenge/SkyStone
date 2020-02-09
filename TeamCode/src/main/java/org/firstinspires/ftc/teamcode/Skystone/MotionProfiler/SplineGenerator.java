@@ -46,7 +46,7 @@ class Profiler {
         // increases by 0.01 each index
         // and ends at 0.
         // the increments are based off of uIncrement
-        double uIncrement = 0.2;
+        double uIncrement = 0.01;
         for(double i = 0;i<=(1-uIncrement);i+=uIncrement){
             u.add(i);
         }

@@ -24,6 +24,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Action;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Enums.ActionState;
+import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CatmullRomSplineUtils;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.SplineGenerator;
 
@@ -557,27 +558,152 @@ public class Robot {
         }
     }
 
-    public void splineMoveTest(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, ArrayList<Action> actions, boolean isTimeKill, long endTime) {
-        SplineGenerator s = new SplineGenerator(data, this);
-        double[][] pathPoints = s.getOutputData();
+    public void splineMoveCatMullRom(Point[] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, ArrayList<Action> actions, boolean isTimeKill, long endTime) {
+        double P = 2.35;
+//        double P = 1.65;
+        double I = 0.35;
+        double D = 1.5;
+
+        double integral = 0;
+        double previous_error = 0;
+
+        double posAngle;
+
+        Point[] pathPoints = CatmullRomSplineUtils.generateSpline(data,10);
+
+//
+//        addSplinePoints(pathPoints);
+//        addWaypoints(data);
+
+        boolean isMoving = true;
+
+        long previousTime = SystemClock.elapsedRealtime();
+        int followIndex = 1;
+        double angleLockScale;
+        double distanceToEnd;
+        double distanceToNext;
+        double desiredHeading;
+
+        long currentTime = SystemClock.elapsedRealtime();
+        long startTime = SystemClock.elapsedRealtime();
+        while (linearOpMode.opModeIsActive()) {
+
+            if (isTimeKill && currentTime - startTime >= endTime) {
+                brakeRobot();
+                isMoving = false;
+            }
+
+            posAngle = MathFunctions.angleWrap(anglePos + 2 * Math.PI);
+
+            if (followIndex == pathPoints.length) {
+                followIndex--;
+            }
+
+            distanceToEnd = Math.hypot(robotPos.x - data[data.length - 1].x, robotPos.y - data[data.length - 1].y);
+            distanceToNext = Math.hypot(robotPos.x - pathPoints[followIndex].x, robotPos.y - pathPoints[followIndex].y);
+            desiredHeading = angleWrap(Math.atan2(pathPoints[followIndex].y - pathPoints[followIndex - 1].y, pathPoints[followIndex].x - pathPoints[followIndex - 1].x) + 2 * Math.PI);
+
+            currentTime = SystemClock.elapsedRealtime();
+
+            double error = distanceToEnd; // Error = Target - Actual
+            integral += (error) * 0.02; // Integral is increased by the error*time (which is .02 seconds using normal IterativeRobot)
+            double derivative = (error - previous_error) * 0.02;
+            double rcw = (P * error + I * integral + D * derivative)/100;
 
 
-        addSplinePoints(pathPoints);
-        addWaypoints(data);
+
+            if(isMoving) {
+                telemetry.addLine(" value " + rcw);
+                telemetry.addLine(" Delta P " + Math.abs(error - previous_error));
+
+                telemetry.addLine(" P " + (P * error));
+                telemetry.addLine(" I " + (integral * I));
+                telemetry.addLine(" D " + (D * derivative));
+            }
+
+            previous_error = error;
+
+
+            if (desiredHeading == 0) {
+                desiredHeading = Math.toRadians(360);
+            }
+            if (angleLockRadians == 0) {
+                angleLockRadians = Math.toRadians(360);
+            }
+
+            angleLockScale = Math.abs(angleLockRadians - posAngle) * Math.abs(desiredHeading - angleLockRadians) * 1.8;
+
+
+            if (distanceToEnd < angleLockInches) {
+                updateMovementsToPoint(pathPoints[followIndex].x, pathPoints[followIndex].y, moveSpeed, turnSpeed, optimalAngle, true);
+
+                if (angleLockRadians - posAngle > Math.toRadians(0) && angleLockRadians - posAngle < Math.toRadians(180)) {
+                    turnMovement = 1 * angleLockScale;
+                } else if (angleLockRadians - posAngle < Math.toRadians(0) || angleLockRadians - posAngle > Math.toRadians(180)) {
+                    turnMovement = -1 * angleLockScale;
+                } else {
+                    turnMovement = 0;
+                }
+            }else {
+                updateMovementsToPoint(pathPoints[followIndex].x, pathPoints[followIndex].y, moveSpeed, turnSpeed, optimalAngle, false);
+            }
+
+            if (distanceToEnd < 1.5) {
+                telemetry.addLine("x " + robotPos.x);
+                telemetry.addLine("y " + robotPos.y);
+                brakeRobot();
+                linearOpMode.stop();
+            } else if (distanceToNext < 5) {
+                followIndex++;
+            }
+
+            // go through all actionpoints and see if the robot is near one
+            if (actions.size() != 0) {
+                currentTime = SystemClock.elapsedRealtime();
+                for (int i = 0; i < actions.size(); i++) {
+                    Action action = actions.get(i);
+
+                    Point actionPoint = action.getActionPoint();
+                    if (action.isExecuteOnEndOfPath()) {
+                        if (!isMoving) {
+                            action.executeAction(currentTime);
+                        }
+                    } else if ((Math.hypot(actionPoint.x - robotPos.x, actionPoint.y - robotPos.y) < 10) || (action.getActionState() == ActionState.PROCESSING)) {
+                        action.executeAction(currentTime);
+                    }
+                }
+            }
+
+            if (isTimeKill && currentTime - startTime >= endTime) {
+                break;
+            }
+
+            previousTime = SystemClock.elapsedRealtime();
+            if (isMoving) {
+                applyMove(rcw);
+            }
+            telemetry.update();
+
+        }
+    }
+
+    public void splineMoveTest(Point[] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, ArrayList<Action> actions, boolean isTimeKill, long endTime) {
+        Point[] pathPoints = CatmullRomSplineUtils.generateSpline(data,10);
 
         int pathPointIndex = 0;
         while(linearOpMode.opModeIsActive()) {
             double[][] nextPoint = new double[1][2];
-            nextPoint[0][1] = pathPoints[pathPointIndex][0];
-            nextPoint[0][2] = pathPoints[pathPointIndex][1];
+            nextPoint[0][0] = pathPoints[pathPointIndex].x;
+            nextPoint[0][1] = pathPoints[pathPointIndex].y;
 
-            double distanceToNextPoint = Math.hypot(robotPos.x - nextPoint[0][1], robotPos.y - nextPoint[0][2]);
+            double distanceToNextPoint = Math.hypot(robotPos.x - nextPoint[0][0], robotPos.y - nextPoint[0][1]);
 
             if (distanceToNextPoint < 1) {
                 pathPointIndex++;
             }
 
-            updateMovementsToPoint(pathPoints[pathPointIndex][0], pathPoints[pathPointIndex][1], moveSpeed, turnSpeed, optimalAngle, false);
+            updateMovementsToPoint(pathPoints[pathPointIndex].x, pathPoints[pathPointIndex].y, moveSpeed, turnSpeed, optimalAngle, false);
+            applyMove();
         }
     }
 
@@ -609,6 +735,41 @@ public class Robot {
         if (willMecanum) {
             turnMovement = Range.clip(relativeTurnAngle / Math.toRadians(360), -1, 1) * turnSpeed;
         }
+    }
+
+    public void applyMove(double scale) {
+
+        // convert movements to motor powers
+        double fLeftPower = (yMovement * 1.414 + turnMovement + xMovement);
+        double fRightPower = (-yMovement * 1.414 - turnMovement + xMovement);
+        double bLeftPower = (-yMovement * 1.414 + turnMovement + xMovement);
+        double bRightPower = (yMovement * 1.414 - turnMovement + xMovement);
+
+        //scale all powers to below 1
+        double maxPower = Math.abs(fLeftPower);
+        if (Math.abs(bLeftPower) > maxPower) {
+            maxPower = Math.abs(bLeftPower);
+        }
+        if (Math.abs(bRightPower) > maxPower) {
+            maxPower = Math.abs(bRightPower);
+        }
+        if (Math.abs(fRightPower) > maxPower) {
+            maxPower = Math.abs(fRightPower);
+        }
+        double scaleDownAmount = 1.0;
+        if (maxPower > 1.0) {
+            scaleDownAmount = 1.0 / maxPower;
+        }
+        fLeftPower *= scaleDownAmount;
+        fRightPower *= scaleDownAmount;
+        bLeftPower *= scaleDownAmount;
+        bRightPower *= scaleDownAmount;
+
+        // apply movement with decelerationScaleFactor
+        fLeft.setPower(fLeftPower*scale);
+        fRight.setPower(fRightPower*scale);
+        bLeft.setPower(bLeftPower*scale);
+        bRight.setPower(bRightPower*scale);
     }
 
     public void applyMove() {

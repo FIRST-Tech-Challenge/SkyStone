@@ -30,17 +30,18 @@ public class BackSideAuto extends AutoBase{
 
         position2D.startOdometry();
 
-        sleep(250);
-        sleep((int)waitTime);
-
-        double[][] toPark = {
-                {0,0,10,0},
-                {10,0,10,0}};
-        ArrayList<Action> toParkActions = new ArrayList<Action>();
-        toParkActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(0,0), robot));
-
-
-        robot.splineMove(toPark,1,1,0.5,15,0,Math.toRadians(0),10,toParkActions);
+//        sleep(250);
+//        sleep((int)waitTime);
+//
+//        double[][] toPark = {
+//                {0,0,10,0},
+//                {10,0,10,0}};
+//        ArrayList<Action> toParkActions = new ArrayList<Action>();
+//        toParkActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(0,0), robot));
+        ArrayList<Action> toFirstStoneActions = new ArrayList<>();
+        toFirstStoneActions.add(new Action(ActionType.START_INTAKE, new Point(65,-10), robot));
+        Point[] toMove = {new Point(15,10), new Point(65,-10)};
+        robot.splineMoveCatMullRom(toMove,1,1,0.3,20,0,Math.toRadians(90),45,toFirstStoneActions,false,100000);
 
     }
 

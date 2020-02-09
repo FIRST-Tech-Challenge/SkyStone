@@ -84,17 +84,18 @@ public class Red_Load_Side_Stone extends LinearOpMode {
         robot.logger.logInfo("runOpMode", "===== [ Crab Right ]");
         robot.driveTrainSimple.crabByEncoderRight(0.5, 24);  */
 
+
         robot.driveTrainSimple.crabByEncoderRight(0.5, 48);
         robot.intake.setIntakePower(0.8);
         robot.driveTrainSimple.driveByEncoder(0.5, 8);
-        robot.driveTrainSimple.pause(1);
+        robot.driveTrainSimple.pause(2);
         robot.intake.setIntakePower(0);
-        robot.driveTrainSimple.crabByEncoderLeft(0.8, 24);
+        robot.driveTrainSimple.crabByEncoderLeft(0.8, 28);
         robot.driveTrainSimple.driveByEncoder(1, -90);
         robot.driveTrain.gyroRotate(-88, .75, true, false);
         robot.driveTrainSimple.driveByEncoder(0.8, -8);
         robot.grapple.grappleMoveDown();
-        robot.driveTrain.pause(0.8);
+        robot.driveTrain.pause(1.2);
         robot.driveTrainSimple.driveByEncoder(0.8, 24);
         robot.driveTrain.move(1.1, -1, 1);
         robot.grapple.grappleMoveUp();

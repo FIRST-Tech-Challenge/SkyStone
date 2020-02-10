@@ -4,11 +4,17 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
 import org.firstinspires.ftc.teamcode.Utilities.ConceptVuforiaSkyStoneNavigationWebcam;
 import org.firstinspires.ftc.teamcode.Utilities.GamepadWrapper;
 import org.firstinspires.ftc.teamcode.autonomous;
+
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
 
 // Assign OpMode type (TeleOp or Autonomous), name, and grouping
@@ -16,7 +22,7 @@ import org.firstinspires.ftc.teamcode.autonomous;
 public class VuforiaTest extends LinearOpMode {
 
     DriveControl Drive = new DriveControl();
-    ConceptVuforiaSkyStoneNavigationWebcam Webcam = new ConceptVuforiaSkyStoneNavigationWebcam();
+    private ConceptVuforiaSkyStoneNavigationWebcam Webcam = new ConceptVuforiaSkyStoneNavigationWebcam();
     UserControl User = new UserControl();
 
 
@@ -60,7 +66,7 @@ public class VuforiaTest extends LinearOpMode {
 
         boolean AllianceColor;
 
-        AllianceColor = User.getRedBlue("Alliance Color");
+        /*AllianceColor = User.getRedBlue("Alliance Color");
         if (AllianceColor == true) {
             if (Webcam.PRS == Webcam.PRS.RIGHT) {
                 Skystone = SkystonePosition.R1;
@@ -77,7 +83,7 @@ public class VuforiaTest extends LinearOpMode {
             } else {
                 Skystone = SkystonePosition.B3;
             }
-        }
+        }*/
 
         // wait for PLAY button to be pressed on driver station
         telemetry.addLine(">> Press PLAY to start");
@@ -95,19 +101,21 @@ public class VuforiaTest extends LinearOpMode {
                     newState(State.VuforiaTest);
                     break;
                 case VuforiaTest:
-                    telemetry.addLine("It got this far");
-                    if (Skystone == SkystonePosition.B1)
+                    telemetry.addData("Red Skystone Position", Webcam.PRS);
+                    if (Webcam.PBS == Webcam.PBS.LEFT)
                         telemetry.addLine("Blue Skystone Left");
-                    else if (Skystone == SkystonePosition.B2)
+                    else if (Webcam.PBS == Webcam.PBS.CENTER)
                         telemetry.addLine("Blue Skystone Center");
-                    else if (Skystone == SkystonePosition.B3)
+                    else
                         telemetry.addLine("Blue Skystone Right");
-                    else if (Skystone == SkystonePosition.R1)
+
+                    if (Webcam.PRS == Webcam.PRS.RIGHT)
                         telemetry.addLine("Red Skystone Right");
-                    else if (Skystone == SkystonePosition.R2)
+                    else if (Webcam.PRS == Webcam.PRS.CENTER)
                         telemetry.addLine("Red Skystone Center");
-                    else if (Skystone == SkystonePosition.R3)
+                    else
                         telemetry.addLine("Red Skystone Left");
+                        // express the rotation of the robot in degrees.
                     newState(State.LetMeSeeTelemetry);
                 case LetMeSeeTelemetry:
                     Drive.TimeDelay(10);

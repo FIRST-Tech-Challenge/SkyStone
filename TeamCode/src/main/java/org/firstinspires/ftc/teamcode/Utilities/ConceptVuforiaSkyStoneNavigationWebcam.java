@@ -158,8 +158,8 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
         RIGHT,
     }
 
-    public positionRedSkystone PRS = positionRedSkystone.CENTER;
-    public positionBlueSkystone PBS = positionBlueSkystone.CENTER;
+    public positionRedSkystone PRS;
+    public positionBlueSkystone PBS;
 
     @Override public void runOpMode() {
         /*
@@ -413,41 +413,13 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
             else {
                 telemetry.addData("Visible Target", "none");
             }
-            telemetry.addData(" Red Skystone Position", PRS);
+            telemetry.addData("Red Skystone Position", PRS);
             telemetry.addData("Blue Skystone Position", PBS);
             telemetry.update();
-
-                if (PRS == PRS.RIGHT) {
-                    Skystone = SkystonePosition.R1;
-                } else if (PRS == PRS.CENTER) {
-                    Skystone = SkystonePosition.R2;
-                } else {
-                    Skystone = SkystonePosition.R3;
-
-                if (PBS == PBS.LEFT) {
-                    Skystone = SkystonePosition.B1;
-                } else if (PBS == PBS.CENTER) {
-                    Skystone = SkystonePosition.B2;
-                } else {
-                    Skystone = SkystonePosition.B3;
-                }
-
-            if (Skystone == SkystonePosition.B1)
-                telemetry.addLine("Blue Skystone Left");
-            else if (Skystone == SkystonePosition.B2)
-                telemetry.addLine("Blue Skystone Center");
-            else if (Skystone == SkystonePosition.B3)
-                telemetry.addLine("Blue Skystone Right");
-            else if (Skystone == SkystonePosition.R1)
-                telemetry.addLine("Red Skystone Right");
-            else if (Skystone == SkystonePosition.R2)
-                telemetry.addLine("Red Skystone Center");
-            else if (Skystone == SkystonePosition.R3)
-                telemetry.addLine("Red Skystone Left");
         }
 
         // Disable Tracking when we are done;
         targetsSkyStone.deactivate();
     }
 }
-}
+

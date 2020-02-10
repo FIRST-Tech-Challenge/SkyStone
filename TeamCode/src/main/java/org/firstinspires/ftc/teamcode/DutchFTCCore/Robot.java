@@ -58,6 +58,10 @@ public class Robot {
         subSystems.add(a);
     }
 
+    public void getCurrentHeading(){
+
+    }
+
     public void StartGuidanceSubSystem () {
         GuidanceSubSystem a = new GuidanceSubSystem();
         a.Start();

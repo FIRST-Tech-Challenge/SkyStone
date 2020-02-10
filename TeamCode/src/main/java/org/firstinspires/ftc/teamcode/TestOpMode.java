@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.DutchFTCCore.SubSystems.GuidanceSubSystem;
 
 public class TestOpMode extends OpMode {
     Robot bot;
+
     @Override
     public void init() {
             bot = new Robot(this);
@@ -18,5 +19,8 @@ public class TestOpMode extends OpMode {
     public void loop() {
         bot.Update();
         GuidanceSubSystem.targetAngle = 90;
+
     }
+
+
 }

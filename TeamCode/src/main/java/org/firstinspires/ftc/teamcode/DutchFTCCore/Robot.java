@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.DutchFTCCore.SubSystems.GuidanceSubSystem;
 import org.firstinspires.ftc.teamcode.DutchFTCCore.SubSystems.IMUSubSystem;
 import org.firstinspires.ftc.teamcode.DutchFTCCore.SubSystems.SubSystem;
 
@@ -36,7 +37,7 @@ public class Robot {
         MotorFrontRight = opMode.hardwareMap.dcMotor.get(Robotconfig.MotorFrontRight);
         MotorBackRight = opMode.hardwareMap.dcMotor.get(Robotconfig.MotorBackRight);
         imu = opMode.hardwareMap.get(BNO055IMU.class,"imu");
-        subSystems = new ArrayList<SubSystem>();
+        subSystems = new ArrayList<>();
     }
 
     public void Update (){
@@ -53,6 +54,12 @@ public class Robot {
 
     public void StartIMUSubSystem () {
         IMUSubSystem a = new IMUSubSystem();
+        a.Start();
+        subSystems.add(a);
+    }
+
+    public void StartGuidanceSubSystem () {
+        GuidanceSubSystem a = new GuidanceSubSystem();
         a.Start();
         subSystems.add(a);
     }

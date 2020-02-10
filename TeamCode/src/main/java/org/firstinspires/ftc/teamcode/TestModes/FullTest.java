@@ -73,7 +73,7 @@ public class FullTest extends OpMode {
         }
         */
 
-        //clamp
+        //extender
         if (gamepad2.right_trigger > 0 || gamepad2.left_trigger > 0) {
             robot.motor_extender.setPower(-gamepad2.right_trigger + gamepad2.left_trigger);
         } else {

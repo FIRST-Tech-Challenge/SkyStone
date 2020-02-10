@@ -141,12 +141,12 @@ public class OrientationTools {
     }
 
 
-    public void driveSidewardEncoder(OpMode op,double distanceForward, double distanceSideways, double speed,OmniWheel wheel, double startPos, BNO055IMU imu, double smoothness) {
+    public void driveSidewardEncoder(OpMode op,double distanceForward, double distanceSideways, double speed,OmniWheel wheel, double startPos, BNO055IMU imu, double smoothness, double smoothnessAdjust) {
         double offset = this.getDegree360(imu) - startPos;
 
         while(Math.abs(offset)>2 && opMode.opModeIsActive()){
             offset  = this.getDegree360(imu) - startPos;
-            wheel.setMotors(0,0,offset/smoothness);
+            wheel.setMotors(0,0,offset/smoothnessAdjust);
         }
         wheel.setMotors(0,0,0);
 
@@ -196,7 +196,7 @@ public class OrientationTools {
 
         while(Math.abs(offset)>2 && opMode.opModeIsActive()){
             offset  = this.getDegree360(imu) - startPos;
-            wheel.setMotors(0,0,offset/smoothness);
+            wheel.setMotors(0,0,offset/smoothnessAdjust);
         }
         wheel.setMotors(0,0,0);
 

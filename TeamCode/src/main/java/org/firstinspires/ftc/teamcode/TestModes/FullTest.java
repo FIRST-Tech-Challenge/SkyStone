@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.TestModes;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 
 //by Lena and Simeon
 
+@Disabled
 @TeleOp(name = "FullTest")
 
 public class FullTest extends OpMode {
@@ -74,8 +76,8 @@ public class FullTest extends OpMode {
         */
 
         //extender
-        if (gamepad2.right_trigger > 0 || gamepad2.left_trigger > 0) {
-            robot.motor_extender.setPower(-gamepad2.right_trigger + gamepad2.left_trigger);
+        if (gamepad2.right_stick_y > 0 || gamepad2.right_stick_y < 0) {
+            robot.motor_extender.setPower(-gamepad2.right_stick_y);
         } else {
             robot.motor_extender.setPower(0);
         }

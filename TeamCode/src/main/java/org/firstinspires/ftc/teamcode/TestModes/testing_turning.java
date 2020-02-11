@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.TestModes;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 import org.firstinspires.ftc.teamcode.Library.OrientationTools;
 
 
+@Disabled
 @TeleOp(name = "turn test")
 public class testing_turning extends LinearOpMode {
     HardwareGyro gyro;

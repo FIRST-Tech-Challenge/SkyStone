@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 
-@TeleOp (name = "hardware_tests")
+@TeleOp (name = "Hardware_Tests")
 public class hardware_tests extends OpMode {
     HardwareMap hwChss = hardwareMap;
     HardwareChassis robot;

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.TestModes;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.teamcode.Library.OrientationTools;
 
 //by Lena and Simeon
 
+@Disabled
 @TeleOp(name = "GyroPlayerTest")
 
 public class GyroPlayerTest extends OpMode {

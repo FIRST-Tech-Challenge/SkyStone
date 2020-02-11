@@ -21,6 +21,8 @@ public class JoulesTeleOp extends TeleOpMode {
         telemetry.addData("Status", "Initialized");
     }
 
+    public int HoldOntoStone = 0;
+
     public void loopOpMode() {
         if (joy1.leftTrigger()) {
             float pivot = gamepad1.right_stick_y / 2;
@@ -81,9 +83,21 @@ public class JoulesTeleOp extends TeleOpMode {
 
         if (joy2.leftTrigger()) {
             joules.DaffyGrab();
+            telemetry.addData("grabbed", "grabbed");
 
         } else if (joy2.leftBumper()) {
             joules.DaffyUp();
+            telemetry.addData("up", "up");
+        }
+//        else if (joy2.buttonLeft()){
+////            switch(HoldOntoStone){
+////                case 0: while(){joules.DaffyGrab()};
+////                case 1: joules.DaffyStop();
+////
+////            }
+//        }
+        else {
+            joules.DaffyStop();
         }
 
         if (joy2.rightTrigger()) {

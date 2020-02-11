@@ -35,6 +35,7 @@ import java.util.Locale;
 
 
 public class Joules  {
+    public Motor LinearSlides;
     public Motor FrontRight;
     public Motor FrontLeft;
     public Motor BackRight;
@@ -60,8 +61,7 @@ public class Joules  {
 
     //Capstone
     private FXTServo Capstone;
-    private FXTServo Daffy;
-    private FXTCRServo ChainArm;
+    private FXTCRServo Daffy;
 
 
     public static int STONESTATE;
@@ -88,16 +88,15 @@ public class Joules  {
         FrontLeft = new Motor("frontL");
         BackRight = new Motor("backR");
         BackLeft = new Motor("backL");
+        LinearSlides = new Motor("Linear Slides");
 
         Foundation = new FXTServo("Foundation mover");
 
-        Daffy = new FXTServo("Box grabber");
+        Daffy = new FXTCRServo("Daffy");
 
         TapeMeasure = new FXTServo("Tape Measure");
 
         StoneMover = new FXTServo("Stone mover");
-
-        ChainArm =  new FXTCRServo("Scoring arm");
 
         ScissorLift = new FXTServo("ScissorLift");
 
@@ -107,6 +106,20 @@ public class Joules  {
         FrontLeft.setMinimumSpeed(0.1);
         BackRight.setMinimumSpeed(0.1);
         BackLeft.setMinimumSpeed(0.1);
+
+    }
+
+    public void SlidesUp() {
+        LinearSlides.setPower(1);
+    }
+
+    public void SlidesDown() {
+        LinearSlides.setPower(-1);
+    }
+
+
+    public void SlidesStop() {
+        LinearSlides.setPower(0);
     }
 
 
@@ -227,21 +240,14 @@ public class Joules  {
   //  }
 
     public void DaffyUp(){
-        Daffy.setPosition(0.4);
+        Daffy.setPower(0.6);
     }
     public void DaffyGrab(){
-        Daffy.setPosition(1);
+        Daffy.setPower(-0.6);
     }
+    public void DaffyStop() {Daffy.setPower(0);}
 
-    public void SlidesUp(){
-        ChainArm.setPower(-0.7);
-    }
-    public void SlidesDown(){
-        ChainArm.setPower(0.7);
-    }
-    public void SlidesStop(){
-        ChainArm.setPower(0);
-    }
+
 
     public void DriveBackwardEnc(double speed){
         TaskHandler.pauseTask(VEER_CHECK_TASK_KEY);

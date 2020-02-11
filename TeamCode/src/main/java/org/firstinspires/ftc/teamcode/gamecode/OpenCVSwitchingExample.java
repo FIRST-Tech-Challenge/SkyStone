@@ -93,7 +93,7 @@ public class OpenCVSwitchingExample extends LinearOpMode
 
         enum Stage
         {   THRESHOLD,
-            CONTOURS_OVERLAYED_ON_FRAME,
+            //CONTOURS_OVERLAYED_ON_FRAME,
             RAW_IMAGE,
         }
 
@@ -141,11 +141,14 @@ public class OpenCVSwitchingExample extends LinearOpMode
 //            Imgproc.cvtColor(input, yCbCrChan2Mat, Imgproc.COLOR_RGB2YCrCb);  //
 //            Core.extractChannel(yCbCrChan2Mat, yCbCrChan2Mat, 2); // extracts a channel of a thing
 //            Imgproc.threshold(yCbCrChan2Mat, thresholdMat, 200, 255, Imgproc.THRESH_BINARY_INV); // seperates out regions of an image between intensity of pixels
+//
 
-            Imgproc.findContours(thresholdMat, contoursList, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-            numContoursFound = contoursList.size();
-            input.copyTo(contoursOnFrameMat);
-            Imgproc.drawContours(contoursOnFrameMat, contoursList, -1, new Scalar(0, 0, 255), 3, 8);
+            Imgproc.threshold(thresholdMat,thresholdMat, 200, 255, Imgproc.THRESH_BINARY_INV); // seperates out regions of an image between intensity of pixels
+
+//            Imgproc.findContours(thresholdMat, contoursList, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+//            numContoursFound = contoursList.size();
+//            input.copyTo(contoursOnFrameMat);
+//            Imgproc.drawContours(contoursOnFrameMat, contoursList, -1, new Scalar(0, 0, 255), 3, 8);
 
             switch (stageToRenderToViewport)
            {
@@ -165,10 +168,10 @@ public class OpenCVSwitchingExample extends LinearOpMode
                     return thresholdMat; // red and purple
                 }
 
-                case CONTOURS_OVERLAYED_ON_FRAME:
-                {
-                    return contoursOnFrameMat;
-                }
+//                case CONTOURS_OVERLAYED_ON_FRAME:
+//                {
+//                    return contoursOnFrameMat;
+//                }
 
                 case RAW_IMAGE:
                 {

@@ -29,11 +29,6 @@ public class foundationAuto extends LinearOpMode{
         Initial,
         MoveToFoundation,
         GrabFoundation,
-        MoveToQuarry,
-        MoveToStone,
-        GrabStone,
-        MoveToBuildZone,
-        ParkFromBuildZone,
         Park,
         Stop
     }
@@ -69,8 +64,6 @@ public class foundationAuto extends LinearOpMode{
         bAnswer = User.getYesNo("Wait?");
         AllianceColor = User.getRedBlue("Alliance Color");
         bridgeanswer = User.getPos("Bridge or Wall?");
-        stoneanswer = User.getYesNo("Deliver a Stone?");
-
 
         // wait for PLAY button to be pressed on driver station
         telemetry.addLine(">> Press PLAY to start");
@@ -103,7 +96,7 @@ public class foundationAuto extends LinearOpMode{
                 case MoveToFoundation:
                     telemetry.addLine("Move to Foundation");
                     telemetry.update();
-                    Drive.moveBackwardDistance(0.7,75);
+                    Drive.moveBackwardDistance(0.7,72);
                     newState(State.GrabFoundation);
                     break;
 
@@ -113,105 +106,44 @@ public class foundationAuto extends LinearOpMode{
                     Drive.TimeDelay(1.0);
                     telemetry.addLine("Reposition Foundation");
                     telemetry.update();
-                    Drive.moveForwardDistance(0.8,75 );
+                    Drive.moveForwardDistance(0.8,77);
+                    if (AllianceColor == false) {
+                        Drive.turnLeftDistance(0.8, 45 * 5. / 9.);
+                    }
+                    else{
+                        Drive.turnRightDistance(0.8, 45 * 5. / 9.);
+                    }
                     FoundationGrabber.open();
-                    if (stoneanswer == true){
-                        newState(State.MoveToQuarry);
+                    if (AllianceColor == false) {
+                        Drive.turnLeftDistance(0.8, 80 * 5. / 9.);
                     }
                     else {
-                        newState(State.Park);
+                        Drive.turnRightDistance(0.8, 80 * 5. / 9.);
                     }
+                    newState(State.Park);
                     break;
 
-                case MoveToQuarry:
-                    telemetry.addLine("Move to Quarry");
-                    telemetry.update();
-                    FoundationGrabber.open();
-                    if (AllianceColor == true){
-                        Drive.turnRightDistance(0.5,50);
-                    }
-                    else {
-                        Drive.turnLeftDistance(0.5,50);
-                    }
-                    Drive.TimeDelay(0.5);
-                    Drive.moveForwardDistance(0.8, 122);
-                    newState(State.MoveToStone);
-                    break;
-
-                case MoveToStone:
-                    Drive.moveForwardDistance(0.8,60);
-                    Drive.turnRightDistance(0.8,50);
-                    Grabber.open();
-                    newState(State.GrabStone);
-                    break;
-
-                case GrabStone:
-                    telemetry.addLine("Grab Stone");
-                    telemetry.update();
-                    Drive.moveForwardDistance(0.8,50);
-                    Grabber.close();
-                    Drive.moveBackwardDistance(0.8,60);
-                    newState(State.MoveToBuildZone);
-                    break;
-
-                case MoveToBuildZone:
-                    if (AllianceColor){
-                        Drive.turnRightDistance(0.8,50);
-                    }
-                    else {
-                        Drive.turnLeftDistance(0.8,50);
-                    }
-                    Drive.moveForwardDistance(0.8,120);
-                    Grabber.open();
-                    newState(State.ParkFromBuildZone);
-                    break;
-
-                case ParkFromBuildZone:
-                    if (bridgeanswer){
-                        if (AllianceColor == true) {
-                            Drive.strafeLeftDistance(0.8,20);
-                            Drive.moveBackwardDistance(0.8,60);
-                        }
-                        else {
-                            Drive.strafeRightDistance(0.8,20);
-                            Drive.moveBackwardDistance(0.8,60);
-                        }
-                    }
-                    else {
-                        if (AllianceColor){
-                            Drive.strafeRightDistance(0.8,20);
-                            Drive.moveBackwardDistance(0.8,60);
-                        }
-                        else {
-                            Drive.strafeLeftDistance(0.8,20);
-                            Drive.moveBackwardDistance(0.8,60);
-                        }
-                    }
-                    newState(State.Stop);
-                    break;
 
                 case Park:
                     telemetry.addLine("Park");
                     if (AllianceColor == true) {
                         if (bridgeanswer == true) {
-                            Drive.turnRightDistance(0.8, 50);
-                            Drive.moveForwardDistance(0.8, 50);
-                            Drive.strafeRightDistance(0.8, 50);
-                            Drive.moveForwardDistance(0.8,75);
+                            Drive.moveForwardDistance(0.8, 45);
+                            Drive.strafeRightDistance(0.8, 90);
+                            Drive.moveForwardDistance(0.8,45);
                         } else {
-                            Drive.turnRightDistance(0.8, 50);
                             Drive.moveForwardDistance(0.8,90);
                         }
                     }
                     else {
                         if (bridgeanswer == true){
-                            Drive.turnLeftDistance(0.8, 50);
-                            Drive.moveForwardDistance(0.8,50);
-                            Drive.strafeLeftDistance(0.8,75);
-                            Drive.moveForwardDistance(0.8, 50);
+                            Drive.moveForwardDistance(0.8,45);
+                            Drive.turnLeftDistance(0.8,50);
+                            Drive.moveForwardDistance(0.8, 55);
+                            Drive.turnRightDistance(0.8,50);
+                            Drive.moveForwardDistance(0.8,45);
                         }
                         else {
-                            Drive.turnLeftDistance(0.8, 50);
                             Drive.moveForwardDistance(0.8,90);
                         }
                     }

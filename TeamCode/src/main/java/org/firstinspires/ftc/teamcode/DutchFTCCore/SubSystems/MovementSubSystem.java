@@ -4,21 +4,32 @@ import org.firstinspires.ftc.teamcode.DutchFTCCore.Robot;
 import org.firstinspires.ftc.teamcode.DutchFTCCore.Robotconfig;
 
 public class MovementSubSystem extends SubSystem {
-
+    public static MovementSubSystem instance;
     Robot bot;
+    /**
+     * Movement of the robot on the x axis in a value between -1 and 1;
+     */
     public static double xMov;
+    /**
+     * Movement of the robot on the y axis in a value between -1 and 1;
+     */
     public static double yMov;
+    /**
+     * Rotational input of the robot in a value between -1 and 1;
+     */
     public static double rotation;
 
     @Override
     public void Start() {
         super.Start();
         bot = Robot.instance;
+        instance = this;
     }
 
     @Override
     public void Update() {
         super.Update();
+        DriveChecks();
     }
 
     public void DriveChecks(){

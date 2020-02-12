@@ -28,6 +28,9 @@ public class GuidanceSubSystem extends SubSystem {
         super.Update();
         if (Robotconfig.angleControl){
             angleControlPID();
+            if(MovementSubSystem.instance != null){
+                MovementSubSystem.rotation = angleMovement;
+            }
         }
     }
 

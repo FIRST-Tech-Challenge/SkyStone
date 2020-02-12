@@ -44,16 +44,16 @@ public class Intake {
     public double GRIP_CLOSE_LEFT = 0.03;
     public double GRIP_CLOSE_RIGHT= 1;
 
-    public int grip_state=0; // 0-INIT, 1-OPEN, 2-CLOSE
+    public int grip_state = 0; // 0-INIT, 1-OPEN, 2-CLOSE
 
     //Wrist position values on servo motor from close to Vertocal to midPositon1 to midPsition2 to Horizontal
     public int wristCurrentPosition;
     public double[] wristPosition = {
-            0.55,  //closePosition
-            0.65, //VerticalPosition
-            0.76, //MidPosition1
-            0.87, //MidPosition2
-            0.98, //HorizontalPosition
+            0.43,  //closePosition
+            0.52, //VerticalPosition
+            0.62, //MidPosition1
+            0.72, //MidPosition2
+            0.82, //HorizontalPosition
     };
 
     //Constructor

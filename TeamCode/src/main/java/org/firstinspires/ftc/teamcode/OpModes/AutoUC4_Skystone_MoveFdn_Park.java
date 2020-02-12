@@ -92,7 +92,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
 
     private double x_translate = 0;
     private double y_translate = 0;
-    double stoneTostone = 9;
+    double stoneTostone = 8;
 
     VuforiaTrackables targetsSkyStone;
     VuforiaTrackable stoneTarget;
@@ -123,7 +123,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         //initArm() and initIntake() should do this on class initialization
 
         //Lift Arm to AboveFoundation level
-        autoUCArm.moveArm_aboveFoundationLevel();
+        autoUCArm.moveArm_detectSkystoneLevel();;
         callingOpMode.telemetry.update();
 
         // Move by distance X forward near SB5 : 6 inches to skystone

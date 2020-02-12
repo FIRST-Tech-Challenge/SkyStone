@@ -57,8 +57,8 @@ public class Arm {
     };
 
     public int groundLevel = +20;
-    int detectSkystoneLevel = -310;//-70;
-    public int aboveFoundationLevel = -130;
+    int detectSkystoneLevel = -200;//-70;
+    public int aboveFoundationLevel = -150;
     public int onFoundationLevel = +30;
     int autoBlockPlacement = -150;
     int initLevel = -220;

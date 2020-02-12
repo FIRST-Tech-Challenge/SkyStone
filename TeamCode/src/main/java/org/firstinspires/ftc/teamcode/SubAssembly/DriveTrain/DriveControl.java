@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.SubAssembly.Sensors.ColorControl;
+
 public class DriveControl {
     private LinearOpMode opmode = null;
     private DcMotor FrontRightM = null;
@@ -19,6 +21,7 @@ public class DriveControl {
     private double CONVERT_CM_TO_ENCODER = GEARING * ENCODER_LINES / WHEEL_CIRCUMFERENCE_CM;
     private double RUN_TO_TOLERANCE_CM = 1.0;
     private ElapsedTime runtime = new ElapsedTime();
+    private ColorControl Color = new ColorControl();
 
     public void init(LinearOpMode opMode) {
         HardwareMap hwMap;
@@ -63,6 +66,8 @@ public class DriveControl {
         ((DcMotorEx) FrontRightM).setTargetPositionTolerance(tolerance);
         ((DcMotorEx) BackLeftM).setTargetPositionTolerance(tolerance);
         ((DcMotorEx) BackRightM).setTargetPositionTolerance(tolerance);
+
+        Color.init(opMode);
     }
 
     // delays for a fixed number of seconds
@@ -295,5 +300,19 @@ public class DriveControl {
     public void turnRightDistance(double speed, double distCM) {
         moveMotorsDistance(speed, -speed,
                 speed, -speed, distCM);
+    }
+
+    public void DriveUntilColor(double speed) {
+
+        while (((Color.blueV < Color.COLOR_THRESHOLD) && (Color.redV < Color.COLOR_THRESHOLD))) {
+            Color.getBlue();
+            Color.getRed();
+            opmode.telemetry.addLine("redV: " + Color.redV);
+            opmode.telemetry.addLine("blueV: " + Color.blueV);
+            opmode.telemetry.update();
+            moveForward(speed);
+        }
+        stop();
+
     }
 }

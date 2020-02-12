@@ -111,7 +111,7 @@ public class Gyro_AutonomousRed_Forward extends LinearOpMode {
             }
             controlledExtender.stop();
         }
-        
+
         if (opModeIsActive()) {
             controlledLift.start(generalTools.liftFoundationValue, 0.4);
             while (!controlledLift.endReached()) {}

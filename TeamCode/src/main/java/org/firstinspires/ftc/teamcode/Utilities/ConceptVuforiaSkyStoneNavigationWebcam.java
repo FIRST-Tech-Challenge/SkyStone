@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode.Utilities;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -84,6 +85,10 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 @TeleOp(name="SKYSTONE Vuforia Nav Webcam", group ="Concept")
 public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
+
+    DriveControl Drive = new DriveControl();
+
+    double numberBeingHelpful = 0;
 
     // IMPORTANT: If you are using a USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
@@ -344,14 +349,20 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
         // CONSEQUENTLY do not put any driving commands in this loop.
         // To restore the normal opmode structure, just un-comment the following line:
 
-        // waitForStart();
+        Drive.init(this);
+
+        waitForStart();
 
         // Note: To use the remote camera preview:
         // AFTER you hit Init on the Driver Station, use the "options menu" to select "Camera Stream"
         // Tap the preview window to receive a fresh image.
 
         targetsSkyStone.activate();
-        while (!isStopRequested()) {
+        while (!isStopRequested() && numberBeingHelpful < 1) {
+
+            numberBeingHelpful++;
+
+            /*Drive.moveForwardDistance(0.5, 40);*/
 
             // check all the trackable targets to see which one (if any) is visible.
             targetVisible = false;
@@ -415,6 +426,14 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
             }
             telemetry.addData("Red Skystone Position", PRS);
             telemetry.addData("Blue Skystone Position", PBS);
+            telemetry.update();
+            Drive.TimeDelay(5);
+            /*if (PRS == PRS.RIGHT)
+                Drive.turnRightDistance(0.5, 50);
+            else if (PRS == PRS.CENTER)
+                Drive.moveForwardDistance(0.5, 25);
+            else
+                Drive.turnLeftDistance(0.5, 50);*/
             telemetry.update();
         }
 

@@ -24,6 +24,9 @@ public class IMUSubSystem extends SubSystem {
         Robot.instance.imu.initialize(parameters);
     }
 
+    /**
+     * Call this to calibrate the robot; copied from calibration opmode
+     */
     public void Calibrate () {
         BNO055IMU.CalibrationData calibrationData = Robot.instance.imu.readCalibrationData();
 

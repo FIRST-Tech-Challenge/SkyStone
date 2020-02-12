@@ -6,6 +6,9 @@ import org.firstinspires.ftc.teamcode.DutchFTCCore.Robotconfig;
 public class MovementSubSystem extends SubSystem {
 
     Robot bot;
+    public static double xMov;
+    public static double yMov;
+    public static double rotation;
 
     @Override
     public void Start() {
@@ -18,20 +21,20 @@ public class MovementSubSystem extends SubSystem {
         super.Update();
     }
 
-    public void DriveChecks(double speed, double xmov, double ymov, double rotation){
+    public void DriveChecks(){
 
         double stickangle;
-
+        double speed;
         double frontLeftPower;
         double frontRightPower;
         double backLeftPower;
         double backRightPower;
 
         //radius of circle the stick is in
-        speed = (Math.hypot(xmov, ymov));
+        speed = (Math.hypot(xMov, yMov));
 
         //inverse tangent calculate angle of stick
-        stickangle = Math.atan2(xmov, ymov);
+        stickangle = Math.atan2(xMov, yMov);
 
         //twisting the circle of units 45 degrees
         stickangle -= Math.PI / 4;

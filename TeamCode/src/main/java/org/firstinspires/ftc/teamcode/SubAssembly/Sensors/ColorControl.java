@@ -8,12 +8,10 @@ public class ColorControl {/* Declare private class object */
     private LinearOpMode opmode = null; /* local copy of HardwareMap object from opmode class */
 
     //initializing motors
-    private ColorSensor sensorColor;
-    int blueV;
-    int redV;
-    public int COLOR_THRESHOLD = 125;
-    boolean blue;
-    boolean red;
+    public ColorSensor sensorColor;
+    public int blueV;
+    public int redV;
+    public int COLOR_THRESHOLD = 8000 ;
 
     /* Subassembly constructor */
     public ColorControl() {
@@ -29,7 +27,7 @@ public class ColorControl {/* Declare private class object */
         hwMap = opMode.hardwareMap;
 
         /* Map hardware devices */
-        sensorColor = hwMap.get(ColorSensor.class, "Color");
+        sensorColor = hwMap.get(ColorSensor.class, "colorSensor");
     }
 
     public void Telemetry() {
@@ -37,11 +35,12 @@ public class ColorControl {/* Declare private class object */
         opmode.telemetry.addData("Red value: ", sensorColor.red());
     }
 
-    public int getRed() {
-        return sensorColor.red();
+    public void getRed() {
+        redV = sensorColor.red();
     }
 
-    public int getBlue() {
-        return sensorColor.blue();
+    public void getBlue() {
+        blueV = sensorColor.blue();
     }
+
 }

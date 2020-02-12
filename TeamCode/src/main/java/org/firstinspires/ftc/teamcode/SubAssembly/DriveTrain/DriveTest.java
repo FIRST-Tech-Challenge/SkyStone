@@ -57,6 +57,8 @@ public class DriveTest extends LinearOpMode {
                 Drive.moveForward(speed);
             } else if (egamepad1.dpad_down.state) {
                 Drive.moveBackward(speed);
+            } else if (egamepad1.a.state) {
+                Drive.DriveUntilColor(0.2);
             } else if (egamepad1.dpad_left.state) {
                 Drive.strafeLeft(speed);
             } else if (egamepad1.dpad_right.state) {

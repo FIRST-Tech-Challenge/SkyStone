@@ -130,9 +130,9 @@ public class foundationAuto extends LinearOpMode{
                         if (bridgeanswer == true) {
                             Drive.moveForwardDistance(0.8, 45);
                             Drive.strafeRightDistance(0.8, 90);
-                            Drive.moveForwardDistance(0.8,45);
+                            Drive.DriveUntilColor(0.5);
                         } else {
-                            Drive.moveForwardDistance(0.8,90);
+                            Drive.DriveUntilColor(0.5);
                         }
                     }
                     else {
@@ -141,10 +141,10 @@ public class foundationAuto extends LinearOpMode{
                             Drive.turnLeftDistance(0.8,50);
                             Drive.moveForwardDistance(0.8, 55);
                             Drive.turnRightDistance(0.8,50);
-                            Drive.moveForwardDistance(0.8,45);
+                            Drive.DriveUntilColor(0.5);
                         }
                         else {
-                            Drive.moveForwardDistance(0.8,90);
+                            Drive.DriveUntilColor(0.5);
                         }
                     }
                     newState(State.Stop);

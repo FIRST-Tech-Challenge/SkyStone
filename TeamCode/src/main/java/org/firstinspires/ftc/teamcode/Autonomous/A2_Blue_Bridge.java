@@ -28,7 +28,6 @@ public class A2_Blue_Bridge extends LinearOpMode {
     double extenderEncoderValue = 3.5;
     double liftEncoderValue = 1.5;
     double liftStartOffset = 0.75;
-    double liftFoundationValue = 1;
     double extenderFoundationValue = 4;
 
 
@@ -49,7 +48,7 @@ public class A2_Blue_Bridge extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive()) {
-            controlledLift.start(liftFoundationValue,0.2);
+            controlledLift.start(generalTools.liftFoundationValue,0.2);
             while (!controlledLift.endReached()) {}
             controlledLift.stop();
         }

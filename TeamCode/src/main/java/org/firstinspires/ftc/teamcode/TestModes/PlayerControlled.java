@@ -101,6 +101,10 @@ public class PlayerControlled extends OpMode {
             setZeros();
         }
 
+        if (gamepad2.dpad_up) {
+            robot.servo_capstone.setPosition(0.4);
+        }
+
         //servo clamp
         if(gamepad2.y) {
             GeneralTools.closeClamp(robot);

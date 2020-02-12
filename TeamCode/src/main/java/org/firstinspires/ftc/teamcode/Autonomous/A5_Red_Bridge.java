@@ -29,7 +29,7 @@ public class A5_Red_Bridge extends LinearOpMode {
     double liftEncoderValue = 1.5;
     double liftStartOffset = 0.75;
 
-    double liftFoundationValue = 1;
+    double liftFoundationValue = generalTools.liftFoundationValue;
     double extenderFoundationValue = 4;
 
 

@@ -9,7 +9,8 @@ public class GeneralTools {
     OmniWheel omniWheel;
 
     public double ap_underBridgeForward = 50;
-    public double ap_forwardGrabStone = 65;
+    public double ap_forwardGrabStone = 55; //65
+    public double liftFoundationValue = 1.6;
 
     private LinearOpMode opMode;
 

@@ -29,7 +29,7 @@ public class A2_Red_Stone3_Bridge extends LinearOpMode {
     double extenderFoundationValue = 4;
     double liftEncoderValue = 1.5;
     double liftStartOffset = 0.75;
-    double liftFoundationValue = 1.4;
+    double liftFoundationValue = generalTools.liftFoundationValue;
     double ap_forwardGrabStone = 70;
 
     @Override

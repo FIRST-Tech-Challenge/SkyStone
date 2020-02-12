@@ -33,7 +33,6 @@ public class Gyro_AutonomousBlue_Back extends LinearOpMode {
     double extenderFoundationValue = 4;
     double liftEncoderValue = 1.5;
     double liftStartOffset = 0.75;
-    double liftFoundationValue = 1.4;
     double startPos;
     double ap_forwardGrabStone = 72; //70
     double smoothnessAdjust = 125;
@@ -57,7 +56,7 @@ public class Gyro_AutonomousBlue_Back extends LinearOpMode {
         if (opModeIsActive()) {
             generalTools.openClamp();
             generalTools.releaseFoundation();
-            controlledLift.start(liftFoundationValue,0.6);
+            controlledLift.start(generalTools.liftFoundationValue,0.6);
             while (!controlledLift.endReached()) {}
             controlledLift.stop();
         }
@@ -107,18 +106,18 @@ public class Gyro_AutonomousBlue_Back extends LinearOpMode {
         // you are now on the other side of the bridge
 
         if (opModeIsActive()) {
-            controlledLift.start(liftFoundationValue, 0.4);
+            controlledExtender.start(extenderFoundationValue, 0.6);
+            while (!controlledExtender.endReached()) {}
+            controlledExtender.stop();
+        }
+
+        if (opModeIsActive()) {
+            controlledLift.start(generalTools.liftFoundationValue, 0.4);
             while (!controlledLift.endReached()) {}
             controlledLift.stop();
         }
 
         // you have now uplifted the arm
-
-        if (opModeIsActive()) {
-            controlledExtender.start(extenderFoundationValue, 0.6);
-            while (!controlledExtender.endReached()) {}
-            controlledExtender.stop();
-        }
 
         if (opModeIsActive()) {
             controlledDrive.start(27, 0, 0.4); // forward: 23
@@ -166,15 +165,7 @@ public class Gyro_AutonomousBlue_Back extends LinearOpMode {
         }
 
         if (opModeIsActive()) {
-            controlledExtender.start(-extenderFoundationValue, 0.6);
-            while(!controlledExtender.endReached() && opModeIsActive()) {}
-            controlledExtender.stop();
-        }
-
-        // you have now put the arm back in
-
-        if (opModeIsActive()) {
-            controlledLift.start(-liftFoundationValue, 0.6); //distance 0.5
+            controlledLift.start(-generalTools.liftFoundationValue, 0.6); //distance 0.5
             generalTools.closeClamp();
             while(!controlledLift.endReached() && opModeIsActive()) {}
             controlledLift.stop();
@@ -182,6 +173,14 @@ public class Gyro_AutonomousBlue_Back extends LinearOpMode {
         }
 
         // you have now lifted the lift down
+
+        if (opModeIsActive()) {
+            controlledExtender.start(-extenderFoundationValue, 0.6);
+            while(!controlledExtender.endReached() && opModeIsActive()) {}
+            controlledExtender.stop();
+        }
+
+        // you have now put the arm back in
 
         if (opModeIsActive()) {
             if (opModeIsActive()) {

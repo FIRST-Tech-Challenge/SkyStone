@@ -20,6 +20,8 @@ public class degree_testing extends LinearOpMode {
     OmniWheel wheel;
     OrientationTools tool;
 
+    double startPos;
+
 
     @Override
     public void runOpMode() {
@@ -28,11 +30,12 @@ public class degree_testing extends LinearOpMode {
         gyro = new HardwareGyro(hardwareMap);
         tool = new OrientationTools(hwmp, hardwareMap, this);
         gyro.init(hardwareMap);
+        startPos = tool.getDegree360(gyro.imu);
 
         waitForStart();
 
         if (opModeIsActive()) {
-            tool.turnToDegrees(50, 125, wheel, gyro.imu);
+            tool.driveSidewardEncoder(this, 0, -300, -0.3, wheel, startPos, gyro.imu, 200, 125);
         }
 
     }

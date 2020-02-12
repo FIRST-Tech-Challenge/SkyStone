@@ -26,7 +26,7 @@ public class A5_Blue_Foundation_Bridge_Forward extends LinearOpMode {
     double extenderEncoderValue = 3.5;
     double liftEncoderValue = 0.5;
     double liftStartOffset = 0.75;
-    double liftFoundationValue = 1;
+    double liftFoundationValue = generalTools.liftFoundationValue;
     double extenderFoundationValue = 4;
 
     @Override

@@ -26,6 +26,7 @@ public class HardwareChassis {
     public Servo servo_grab;
     public Servo servo_claw_right;
     public Servo servo_claw_left;
+    public Servo servo_capstone;
 
     // State used for updating telemetry
     private HardwareMap hwMap           =  null;
@@ -87,5 +88,6 @@ public class HardwareChassis {
         this.servo_grab = hwMap.get(Servo.class, "hub1_servoport1");
         this.servo_claw_left = hwMap.get(Servo.class, "hub1_servoport5");
         this.servo_claw_right = hwMap.get(Servo.class, "hub1_servoport4");
+        this.servo_capstone = hwMap.get(Servo.class, "hub2_servoport0");
     }
 }

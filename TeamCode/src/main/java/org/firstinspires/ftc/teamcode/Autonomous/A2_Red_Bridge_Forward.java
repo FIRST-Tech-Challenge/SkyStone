@@ -27,6 +27,7 @@ public class A2_Red_Bridge_Forward extends LinearOpMode {
     double extenderEncoderValue = 3.5;
     double liftEncoderValue = 1.5;
     double liftStartOffset = 0.75;
+    double liftFoundationValue = generalTools.liftFoundationValue;
 
     @Override
     public void runOpMode() {
@@ -40,17 +41,25 @@ public class A2_Red_Bridge_Forward extends LinearOpMode {
         controlledExtender = new ControlledExtender(robot, telemetry);
 
         generalTools.releaseFoundation();
-        controlledLift.start(liftEncoderValue,0.2);
 
         waitForStart();
 
+        if (opModeIsActive()) {
+            controlledLift.start(generalTools.liftFoundationValue,0.2);
+            while (!controlledLift.endReached()) {}
+            controlledLift.stop();
+        }
+
+        // you have noe uplifted the lift
 
         if (opModeIsActive()){
             controlledExtender.start(extenderEncoderValue,0.4);
+            while (!controlledExtender.endReached()) {}
+            controlledExtender.stop();
             controlledLift.start(-(liftEncoderValue + liftStartOffset),0.2);
+            while (!controlledLift.endReached()) {}
+            controlledLift.stop();
         }
-
-        // you have now lowered the lift and pulled out the arm
 
         if (opModeIsActive()){
             while (!colorTools.isRed(robot.color_back) && opModeIsActive()){
@@ -59,8 +68,6 @@ public class A2_Red_Bridge_Forward extends LinearOpMode {
             }
             omniWheel.setMotors(0,0,0);
         }
-
-        // you are now below the bridge
 
         if (opModeIsActive()) {
             backTillButtons();
@@ -73,7 +80,6 @@ public class A2_Red_Bridge_Forward extends LinearOpMode {
             controlledDrive.stop();
         }
 
-        // you are now standing at B3
 
     }
 
@@ -84,5 +90,7 @@ public class A2_Red_Bridge_Forward extends LinearOpMode {
         omniWheel.setMotors(0, 0, 0);
     }
 
+
+    // you are now standing at B3
 
 }

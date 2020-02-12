@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.DutchFTCCore.SubSystems.GuidanceSubSystem;
 import org.firstinspires.ftc.teamcode.DutchFTCCore.SubSystems.IMUSubSystem;
 import org.firstinspires.ftc.teamcode.DutchFTCCore.SubSystems.SubSystem;
+import org.firstinspires.ftc.teamcode.DutchFTCCore.SubSystems.MovementSubSystem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,8 +59,10 @@ public class Robot {
         subSystems.add(a);
     }
 
-    public void getCurrentHeading(){
-
+    public void StartMovementSubSystem(){
+        MovementSubSystem a = new MovementSubSystem();
+        a.Start();
+        subSystems.add(a);
     }
 
     public void StartGuidanceSubSystem () {

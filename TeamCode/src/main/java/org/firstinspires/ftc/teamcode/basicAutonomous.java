@@ -197,14 +197,14 @@ public class basicAutonomous extends LinearOpMode{
                         } else {
                             Drive.turnRightDistance(0.8, 50);
                         }
-                        Drive.moveForwardDistance(0.8, 80);
+                        Drive.moveForwardDistance(0.8, 70);
                     }
                     else
                         if (AllianceColor == true){
-                            Drive.strafeLeftDistance(0.8,80);
+                            Drive.strafeLeftDistance(0.8,90);
                         }
                         else {
-                            Drive.strafeRightDistance(0.8,80);
+                            Drive.strafeRightDistance(0.8,90);
                         }
                     newState(State.Stop);
                     break;

@@ -52,7 +52,7 @@ public class Odometry {
         oldRightPod = rightPodNew;
         oldMecanumPod = mecanumPodNew;
 
-        circularOdometry(dLeftPod, dRightPod, dMecanumPod);
+        smallAngleOdometry(dLeftPod, dRightPod, dMecanumPod);
     }
 
     /* Circular Odometry assumes that the movement that occurred between each update was in the form
@@ -102,9 +102,6 @@ public class Odometry {
         double dRobotX = (dLeftPodInches + dRightPodInches) * .5;
         double dRobotY = dMecanumPodInches + strafePredictionFactor * dAngle;
 
-
-        // Update world x and y positions of the robot by converting from robot's x'y' coordinate
-        // system to the global xy coordinate system
         worldX += dRobotX * Math.cos(worldAngle + dAngle * 0.5) - dRobotY * Math.sin(worldAngle + dAngle * 0.5);
         worldY += dRobotX * Math.sin(worldAngle + dAngle * 0.5) + dRobotY * Math.cos(worldAngle + dAngle * 0.5);
     }

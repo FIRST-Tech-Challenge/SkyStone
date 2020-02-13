@@ -48,6 +48,15 @@ public class Robot {
         }
     }
 
+    /**
+     * calls the calibration functions on all sensors
+     */
+    public void Calibrate(){
+        if (IMUSubSystem.instance != null){
+            IMUSubSystem.instance.Calibrate();
+        }
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                           Create start functions for all subsystems here                                             //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

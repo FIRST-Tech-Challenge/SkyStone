@@ -14,7 +14,7 @@ public class GuidanceSubSystem extends SubSystem {
     //output, read by external subsystems
     public static double angleMovement;
 
-    //angle data
+    //angle data, don't change
     double angleErrorPrev;
     double angleIntegral;
     double lastAngleTime;

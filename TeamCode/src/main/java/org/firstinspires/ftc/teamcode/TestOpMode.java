@@ -13,6 +13,8 @@ public class TestOpMode extends OpMode {
             bot = new Robot(this);
             bot.StartIMUSubSystem();
             bot.StartGuidanceSubSystem();
+            bot.StartMovementSubSystem();
+            bot.Calibrate();
     }
 
     @Override

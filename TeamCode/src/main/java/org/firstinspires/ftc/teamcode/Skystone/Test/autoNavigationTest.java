@@ -22,6 +22,6 @@ public class autoNavigationTest extends AutoBase {
 
         waitForStart();
 
-        robot.splineMoveTest(movement,1,1,1,0,0,0,0, movementActions, false, 1000);
+//        robot.splineMoveTest(movement,1,1,1,0,0,0,0, movementActions, false, 1000);
     }
 }

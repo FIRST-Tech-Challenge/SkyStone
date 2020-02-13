@@ -28,6 +28,7 @@ class NewThread extends AsyncTask<Void, Boolean, Boolean> {
     public NewThread(Robot robot, Odometry o){
         this.robot = robot;
         this.o = o;
+        newPoint = new Point();
     }
 
     @Override

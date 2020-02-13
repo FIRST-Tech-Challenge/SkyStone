@@ -41,7 +41,6 @@ public class BackSideAuto extends AutoBase{
         ArrayList<Action> toFirstStoneActions = new ArrayList<>();
         toFirstStoneActions.add(new Action(ActionType.START_INTAKE, new Point(65,-10), robot));
         Point[] toMove = {new Point(25,0), new Point(25,-20)};
-        robot.splineMoveCatMullRom(toMove,1,1,0.3,20,0,Math.toRadians(0),35,toFirstStoneActions,false,100000);
 
     }
 

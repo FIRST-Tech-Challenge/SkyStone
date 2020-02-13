@@ -80,6 +80,7 @@ public class PlayerControlled extends OpMode {
             robot.motor_extender.setPower(0);
         }
 
+
         //lift
         if (gamepad2.left_stick_y < 0) {
             robot.motor_lift_left.setPower(gamepad2.left_stick_y); //0.1*

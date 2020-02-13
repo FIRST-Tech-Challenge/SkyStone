@@ -41,9 +41,12 @@ public class A2_Blue_Bridge_Forward extends LinearOpMode {
         controlledLift = new ControlledLift(robot, telemetry);
         controlledExtender = new ControlledExtender(robot, telemetry);
 
-        generalTools.releaseFoundation();
 
         waitForStart();
+
+        if (opModeIsActive()){
+            generalTools.releaseFoundation();
+        }
 
         if (opModeIsActive()) {
             controlledLift.start(generalTools.liftFoundationValue,0.2);

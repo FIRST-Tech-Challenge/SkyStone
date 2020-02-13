@@ -40,11 +40,14 @@ public class A2_Blue_Stone_Bridge_Forward extends LinearOpMode {
         controlledLift = new ControlledLift(robot, telemetry);
         controlledExtender = new ControlledExtender(robot, telemetry);
 
-        generalTools.openClamp();
-        generalTools.releaseFoundation();
-        controlledLift.start(liftEncoderValue, 0.2);
 
         waitForStart();
+
+        if (opModeIsActive()){
+            generalTools.openClamp();
+            generalTools.releaseFoundation();
+            controlledLift.start(liftEncoderValue, 0.2);
+        }
 
         controlledLift.stop();
 

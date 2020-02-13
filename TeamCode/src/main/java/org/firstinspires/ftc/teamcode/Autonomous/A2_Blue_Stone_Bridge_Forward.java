@@ -5,12 +5,15 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
+import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassisGyro;
 import org.firstinspires.ftc.teamcode.Library.ColorTools;
 import org.firstinspires.ftc.teamcode.Library.GeneralTools;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
+import org.firstinspires.ftc.teamcode.Library.OrientationTools;
+
 
 @Autonomous (name = "A2_Blue_Stone_Bridge_Forward")
 
@@ -23,12 +26,15 @@ public class A2_Blue_Stone_Bridge_Forward extends LinearOpMode {
     OmniWheel omniWheel;
     ControlledLift controlledLift;
     ControlledExtender controlledExtender;
+    OrientationTools orientationTools;
+    HardwareChassisGyro robotGyro;
 
     double extenderEncoderValue = 3.5;
     double extenderFoundationValue = 4;
     double liftEncoderValue = 1.5;
     double liftStartOffset = 0.75;
-    double liftFoundationValue = generalTools.liftFoundationValue;
+    double liftFoundationValue = 1.6;
+    double startPos;
 
     @Override
     public void runOpMode() {
@@ -39,20 +45,30 @@ public class A2_Blue_Stone_Bridge_Forward extends LinearOpMode {
         omniWheel = new OmniWheel(robot);
         controlledLift = new ControlledLift(robot, telemetry);
         controlledExtender = new ControlledExtender(robot, telemetry);
+        orientationTools = new OrientationTools(robot, hardwareMap, this);
+        robotGyro = new HardwareChassisGyro(hardwareMap);
 
+        startPos = orientationTools.getDegree360(robotGyro.imu);
 
         waitForStart();
 
-        if (opModeIsActive()){
+
+        if (opModeIsActive()) {
             generalTools.openClamp();
-            generalTools.releaseFoundation();
-            controlledLift.start(liftEncoderValue, 0.2);
         }
 
-        controlledLift.stop();
+        if (opModeIsActive()) {
+            generalTools.releaseFoundation();
+        }
+
+        if (opModeIsActive()) {
+            controlledLift.start(liftEncoderValue, 0.4);
+            while (!controlledLift.endReached()) {}
+            controlledLift.stop();
+        }
 
         if (opModeIsActive() ) {
-            controlledExtender.start(extenderEncoderValue, 0.5);
+            controlledExtender.start(extenderEncoderValue, 0.6);
 
             controlledDrive.start(generalTools.ap_forwardGrabStone, 0, 0.4);
 
@@ -73,41 +89,22 @@ public class A2_Blue_Stone_Bridge_Forward extends LinearOpMode {
         // hey... you should have grabbed a stone now...
 
         if (opModeIsActive()) {
-            //controlledDrive.start(-60, 0, 0.4);
-            //while(!controlledDrive.endReached() && opModeIsActive()) {}
-            //controlledDrive.stop();
-
-            backTillButtons();
+            controlledDrive.start(-22, 0, 0.4); //forward -20
+            while (!controlledDrive.endReached()) {}
+            controlledDrive.stop();
         }
 
-        // you are back at the wall
-
+        // you have driven back a few cm
 
         if (opModeIsActive()) {
-            omniWheel.setMotors(0.0, -0.4, 0);
-            while (!colorTools.isBlue(robot.color_back) && opModeIsActive()) {}
+            orientationTools.driveSidewardEncoder(this, 0, -generalTools.bcap_passBridge, -0.4, omniWheel, startPos, robotGyro.imu, 175, 150); //sideways: 220 --> middle
+        }
+
+        if (opModeIsActive()) {
             omniWheel.setMotors(0, 0, 0);
-
         }
 
-        // you are now below the bridge
-
-        if (opModeIsActive()) {
-            controlledDrive.start(0, -30, 0.2);
-            while (!controlledDrive.endReached() && opModeIsActive()) { }
-            controlledDrive.stop();
-        }
-
-        // yay you should now be at A4, besides the bridge
-
-        if (opModeIsActive()) {
-            controlledDrive.start(generalTools.ap_underBridgeForward, 0.2, 0.2);
-            while (!controlledDrive.endReached() && opModeIsActive()) { }
-            controlledDrive.stop();
-
-        }
-
-        // you are now standing at B4 congratulation!
+        // you are now on the other side of the bridge
 
         if (opModeIsActive()) {
             generalTools.openClamp();
@@ -116,21 +113,22 @@ public class A2_Blue_Stone_Bridge_Forward extends LinearOpMode {
         // you have now released the stone!
 
         if (opModeIsActive()) {
-            while (!colorTools.isBlue(robot.color_back)) {
-                omniWheel.setMotors(0, 0.2, 0.2);
-            }
-            omniWheel.setMotors(0, 0, 0);
+            orientationTools.driveSidewardEncoder(this, 0, 30, 0.4, omniWheel, startPos, robotGyro.imu, 175, 150);
+        }
+
+        // you are now next to the stone
+
+        if (opModeIsActive()) {
+            generalTools.closeClamp();
+        }
+
+        generalTools.stopForMilliSeconds(500);
+
+        if (opModeIsActive()) {
+            orientationTools.driveSidewardEncoder(this, 0, 50, 0.4, omniWheel, startPos, robotGyro.imu, 175, 150);
         }
 
         // you are now below the bridge aye
 
-    }
-
-
-    private void backTillButtons() {
-        while(robot.touch_right.getState() && robot.touch_left.getState()) {
-            omniWheel.setMotors(-0.3, 0, 0);
-        }
-        omniWheel.setMotors(0, 0, 0);
     }
 }

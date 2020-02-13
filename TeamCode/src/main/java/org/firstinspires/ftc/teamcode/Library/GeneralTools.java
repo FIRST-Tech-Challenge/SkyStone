@@ -8,9 +8,11 @@ public class GeneralTools {
     HardwareChassis robot;
     OmniWheel omniWheel;
 
-    public double ap_underBridgeForward = 50;
-    public double ap_forwardGrabStone = 55; //65
-    public double liftFoundationValue = 1.6;
+    public double ap_underBridgeForward;
+    public double ap_forwardGrabStone;
+    //public double liftFoundationValue;
+    public double bcap_underBridge;
+    public double bcap_passBridge;
 
     private LinearOpMode opMode;
 
@@ -18,6 +20,12 @@ public class GeneralTools {
         this.opMode = opMode;
         this.robot = robot;
         omniWheel = new OmniWheel(robot);
+
+
+        ap_underBridgeForward = 50;
+        ap_forwardGrabStone = 55; //65
+        bcap_underBridge = 90; // backup program from a2/a5 to under bridge
+        bcap_passBridge = 160; //backup program from a2 pass bridge
     }
 
 
@@ -81,13 +89,6 @@ public class GeneralTools {
     public void backTillButtons(HardwareChassis robot) {
         while((robot.touch_right.getState() && robot.touch_left.getState()) || (robot.touch_right.getState() && !robot.touch_left.getState()) || (!robot.touch_right.getState() && robot.touch_left.getState())) {
             omniWheel.setMotors(-0.4, 0, 0);
-        }
-        omniWheel.setMotors(0, 0, 0);
-    }
-
-    public void backTillButtonsWSidewards(HardwareChassis robot, double sidewardsVelocity) {
-        while((robot.touch_right.getState() && robot.touch_left.getState()) || (robot.touch_right.getState() && !robot.touch_left.getState()) || (!robot.touch_right.getState() && robot.touch_left.getState())) {
-            omniWheel.setMotors(-0.4, sidewardsVelocity, 0);
         }
         omniWheel.setMotors(0, 0, 0);
     }

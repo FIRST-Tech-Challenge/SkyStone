@@ -26,7 +26,7 @@ public class A5_Red_Foundation_Bridge_Forward extends LinearOpMode {
     double extenderEncoderValue = 3.5;
     double liftEncoderValue = 0.5;
     double liftStartOffset = 0.75;
-    double liftFoundationValue = generalTools.liftFoundationValue;
+    double liftFoundationValue = 1.6;
     double extenderFoundationValue = 4.5;
 
     @Override
@@ -121,6 +121,14 @@ public class A5_Red_Foundation_Bridge_Forward extends LinearOpMode {
 
         // now you're next to the foundation
         // it's save to lower the lift
+
+        if (opModeIsActive()) {
+            controlledDrive.start(generalTools.ap_underBridgeForward, 0, 0.6);
+            while(!controlledDrive.endReached() && opModeIsActive()) {}
+            controlledDrive.stop();
+        }
+
+        // you're now on B4
 
         if (opModeIsActive()) {
             controlledLift.start(-liftFoundationValue,1);

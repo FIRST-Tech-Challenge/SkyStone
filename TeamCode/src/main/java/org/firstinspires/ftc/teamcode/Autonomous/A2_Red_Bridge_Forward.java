@@ -5,14 +5,16 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
+import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassisGyro;
 import org.firstinspires.ftc.teamcode.Library.ColorTools;
 import org.firstinspires.ftc.teamcode.Library.GeneralTools;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
+import org.firstinspires.ftc.teamcode.Library.OrientationTools;
 
-@Autonomous (name = "A2_Red_Bridge_Forward")
+@Autonomous (name =  "A2_Red_Bridge_Forward")
 
 public class A2_Red_Bridge_Forward extends LinearOpMode {
 
@@ -23,11 +25,16 @@ public class A2_Red_Bridge_Forward extends LinearOpMode {
     OmniWheel omniWheel;
     ControlledLift controlledLift;
     ControlledExtender controlledExtender;
+    OrientationTools orientationTools;
+    HardwareChassisGyro robotGyro;
 
     double extenderEncoderValue = 3.5;
     double liftEncoderValue = 1.5;
     double liftStartOffset = 0.75;
-    double liftFoundationValue = generalTools.liftFoundationValue;
+    double liftFoundationValue = 1.6;
+    double startPos;
+
+
 
     @Override
     public void runOpMode() {
@@ -39,6 +46,10 @@ public class A2_Red_Bridge_Forward extends LinearOpMode {
         omniWheel = new OmniWheel(robot);
         controlledLift = new ControlledLift(robot, telemetry);
         controlledExtender = new ControlledExtender(robot, telemetry);
+        orientationTools = new OrientationTools(robot, hardwareMap, this);
+        robotGyro = new HardwareChassisGyro(hardwareMap);
+
+        startPos = orientationTools.getDegree360(robotGyro.imu);
 
 
         waitForStart();
@@ -48,52 +59,40 @@ public class A2_Red_Bridge_Forward extends LinearOpMode {
         }
 
         if (opModeIsActive()) {
-            controlledLift.start(generalTools.liftFoundationValue,0.2);
+            controlledLift.start(liftFoundationValue,0.2);
             while (!controlledLift.endReached()) {}
             controlledLift.stop();
         }
 
-        // you have noe uplifted the lift
+        // you have now uplifted the lift
 
         if (opModeIsActive()){
             controlledExtender.start(extenderEncoderValue,0.4);
             while (!controlledExtender.endReached()) {}
             controlledExtender.stop();
-            controlledLift.start(-(liftEncoderValue + liftStartOffset),0.2);
+            controlledLift.start(-(liftFoundationValue + liftStartOffset),0.2);
             while (!controlledLift.endReached()) {}
             controlledLift.stop();
         }
 
-        if (opModeIsActive()){
-            while (!colorTools.isRed(robot.color_back) && opModeIsActive()){
-
-                omniWheel.setMotors(0.0, 0.3, 0);
-            }
-            omniWheel.setMotors(0,0,0);
-        }
+        // you have now lowered the lift and pulled out the arm
 
         if (opModeIsActive()) {
-            backTillButtons();
-        }
-
-
-        if (opModeIsActive()) {
-            controlledDrive.start(generalTools.ap_underBridgeForward, 0, 0.2);
-            while(!controlledExtender.endReached() && opModeIsActive()) {}
+            controlledDrive.start(52, 0, 0.6);
+            while (!controlledDrive.endReached() && opModeIsActive()) {}
             controlledDrive.stop();
         }
 
+        // you are now on B2
 
-    }
-
-    private void backTillButtons() {
-        while(robot.touch_right.getState() && robot.touch_left.getState()) {
-            omniWheel.setMotors(-0.3, 0, 0);
+        if (opModeIsActive()) {
+            orientationTools.driveSidewardEncoder(this, 0, generalTools.bcap_underBridge, 0.6, omniWheel, startPos, robotGyro.imu, 175, 150);
         }
-        omniWheel.setMotors(0, 0, 0);
+
+        // you are now below the bridge
+
     }
 
 
-    // you are now standing at B3
 
 }

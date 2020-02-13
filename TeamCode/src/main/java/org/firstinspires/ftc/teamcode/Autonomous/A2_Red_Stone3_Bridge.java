@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassisGyro;
@@ -11,6 +13,9 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 import org.firstinspires.ftc.teamcode.Library.OrientationTools;
+
+@Disabled
+@TeleOp (name = "A2_Red_Stone3_Bridge")
 
 public class A2_Red_Stone3_Bridge extends LinearOpMode {
 
@@ -29,7 +34,7 @@ public class A2_Red_Stone3_Bridge extends LinearOpMode {
     double extenderFoundationValue = 4;
     double liftEncoderValue = 1.5;
     double liftStartOffset = 0.75;
-    double liftFoundationValue = generalTools.liftFoundationValue;
+    double liftFoundationValue = 1.6;
     double ap_forwardGrabStone = 70;
 
     @Override

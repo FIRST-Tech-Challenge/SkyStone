@@ -5,15 +5,17 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
+import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassisGyro;
 import org.firstinspires.ftc.teamcode.Library.ColorTools;
 import org.firstinspires.ftc.teamcode.Library.GeneralTools;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
+import org.firstinspires.ftc.teamcode.Library.OrientationTools;
 
-@Disabled
-@Autonomous (name = "A5_Blue_Bridge")
+
+@Autonomous (name =  "A5_Blue_Bridge")
 
 public class A5_Blue_Bridge extends LinearOpMode {
 
@@ -24,13 +26,17 @@ public class A5_Blue_Bridge extends LinearOpMode {
     OmniWheel omniWheel;
     ControlledLift controlledLift;
     ControlledExtender controlledExtender;
+    OrientationTools orientationTools;
+    HardwareChassisGyro robotGyro;
 
+    double liftFoundationValue = 1.6;
     double extenderEncoderValue = 3.5;
     double liftEncoderValue = 1.5;
     double liftStartOffset = 0.75;
-
-    double liftFoundationValue = generalTools.liftFoundationValue;
     double extenderFoundationValue = 4;
+    double startPos;
+
+
 
     @Override
     public void runOpMode() {
@@ -42,15 +48,25 @@ public class A5_Blue_Bridge extends LinearOpMode {
         omniWheel = new OmniWheel(robot);
         controlledLift = new ControlledLift(robot, telemetry);
         controlledExtender = new ControlledExtender(robot, telemetry);
+        orientationTools = new OrientationTools(robot, hardwareMap, this);
+        robotGyro = new HardwareChassisGyro(hardwareMap);
+
+        startPos = orientationTools.getDegree360(robotGyro.imu);
+
 
         waitForStart();
 
+        if (opModeIsActive()){
+            generalTools.releaseFoundation();
+        }
 
         if (opModeIsActive()) {
             controlledLift.start(liftFoundationValue,0.2);
             while (!controlledLift.endReached()) {}
             controlledLift.stop();
         }
+
+        // you have noe uplifted the lift
 
         if (opModeIsActive()){
             controlledExtender.start(extenderEncoderValue,0.4);
@@ -61,31 +77,12 @@ public class A5_Blue_Bridge extends LinearOpMode {
             controlledLift.stop();
         }
 
-        // you have now lowered the lift and extended the arm
+        // you have now lowered the lift and pulled out the arm
 
         if (opModeIsActive()){
-            while (!colorTools.isBlue(robot.color_back) && opModeIsActive()){
-
-                omniWheel.setMotors(0.0, 0.3, 0);
-            }
-            omniWheel.setMotors(0,0,0);
+            orientationTools.driveSidewardEncoder(this, 0, generalTools.bcap_underBridge, 0.6, omniWheel, startPos, robotGyro.imu, 175, 150);
         }
 
         // you are now below the bridge
-
-        if (opModeIsActive()) {
-            backTillButtons();
-        }
-
-        // you are now touching the wall behind
     }
-
-    private void backTillButtons() {
-        while(robot.touch_right.getState() && robot.touch_left.getState()) {
-            omniWheel.setMotors(-0.3, 0, 0);
-        }
-        omniWheel.setMotors(0, 0, 0);
-    }
-
-
 }

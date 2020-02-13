@@ -32,6 +32,7 @@ public class Gyro_AutonomousBlue_Forward extends LinearOpMode {
     double extenderEncoderValue = 3; // 2.7
     double extenderFoundationValue = 4;
     double liftEncoderValue = 1.5;
+    double liftFoundationValue = 1.6;
     double liftStartOffset = 0.75;
     double startPos;
     double ap_forwardGrabStone = 72; //70
@@ -56,7 +57,7 @@ public class Gyro_AutonomousBlue_Forward extends LinearOpMode {
         if (opModeIsActive()) {
             generalTools.openClamp();
             generalTools.releaseFoundation();
-            controlledLift.start(generalTools.liftFoundationValue,0.6);
+            controlledLift.start(liftFoundationValue,0.6);
             while (!controlledLift.endReached()) {}
             controlledLift.stop();
         }
@@ -112,7 +113,7 @@ public class Gyro_AutonomousBlue_Forward extends LinearOpMode {
         }
 
         if (opModeIsActive()) {
-            controlledLift.start(generalTools.liftFoundationValue, 0.4);
+            controlledLift.start(liftFoundationValue, 0.4);
             while (!controlledLift.endReached()) {}
             controlledLift.stop();
         }
@@ -165,7 +166,7 @@ public class Gyro_AutonomousBlue_Forward extends LinearOpMode {
         }
 
         if (opModeIsActive()) {
-            controlledLift.start(-generalTools.liftFoundationValue, 0.6); //distance 0.5
+            controlledLift.start(liftFoundationValue, 0.6); //distance 0.5
             while(!controlledLift.endReached() && opModeIsActive()) {}
             controlledLift.stop();
 

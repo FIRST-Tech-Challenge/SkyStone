@@ -54,7 +54,7 @@ import java.util.List;
  * is explained below.
  */
 //@Disabled
-public class ConceptTensorFlowObjectDetectionWebcam extends BotComponent {
+public class DetectionWebCam extends BotComponent {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -86,11 +86,11 @@ public class ConceptTensorFlowObjectDetectionWebcam extends BotComponent {
      */
     private TFObjectDetector tfod;
 
-    public ConceptTensorFlowObjectDetectionWebcam() {
+    public DetectionWebCam() {
 
     }
 
- /*   public ConceptTensorFlowObjectDetectionWebcam(Logger aLogger, OpMode aOpMode)
+ /*   public DetectionWebCam(Logger aLogger, OpMode aOpMode)
     {
         this(aLogger, aOpMode);
     }*/

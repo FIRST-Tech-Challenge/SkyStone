@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.bots.TestBot;
+import org.firstinspires.ftc.teamcode.bots.*;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
 
 
@@ -14,7 +14,7 @@ public class Red_Build_Side_Park extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private TestBot robot = null;
+    private GameAutoBot robot = null;
     private boolean logEnableTrace = true;
     private boolean logToTelemetry = true;
 
@@ -22,7 +22,7 @@ public class Red_Build_Side_Park extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        robot = new TestBot(this, logEnableTrace, logToTelemetry);
+        robot = new GameAutoBot(this, logEnableTrace, logToTelemetry);
         robot.logger.logInfo("runOpMode", "===== [ Start Initializing ]");
 
         /* Use either robot.initAll or select only the components that need initializing below */

@@ -56,7 +56,7 @@ public class GameAutoBot extends Bot {
 
     public GameAutoBot(OpMode aOpMode, boolean enableTrace, boolean enableTelemetry) {
 
-        logger = new Logger("SimpleBot", aOpMode, enableTrace, enableTelemetry);
+        logger = new Logger("GameAutoBot", aOpMode, enableTrace, enableTelemetry);
         gyroNavigator = new GyroNavigator(logger, aOpMode);
         driveTrain = new DriveTrain(logger, aOpMode, "frontLeftMotor", "frontRightMotor",
                 "backLeftMotor", "backRightMotor",

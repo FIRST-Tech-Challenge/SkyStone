@@ -36,14 +36,46 @@ public class MovementSubSystem extends SubSystem {
     }
 
     public void DriveChecks4WheelTankDrive(){
+        //the variables for the motor speeds
+        double right = -yMov + rotation;
+        double left = yMov + rotation;
+
+        //setting the motor speeds
+        bot.MotorBackLeft.setPower(left);
+        bot.MotorFrontLeft.setPower(left);
+        bot.MotorBackRight.setPower(right);
+        bot.MotorFrontRight.setPower(right);
 
     }
 
     public void DriveChecksTankDrive(){
+        //the variables for the motor speeds
+        double right = -yMov + rotation;
+        double left = yMov + rotation;
+
+        //setting the motor speeds
+        bot.MotorBackLeft.setPower(left);
+        bot.MotorBackRight.setPower(right);
 
     }
 
-    public void DriveChecksHDrive(){
+    public void DriveChecksHDrive5Motors(){
+        double left;
+        double right;
+        double middle;
+
+    }
+
+    public void DriveChecksHDrive3Motors(){
+
+        //the variables for the motor speeds
+        double right = -yMov + rotation;
+        double left = yMov + rotation;
+        double middle = xMov;
+
+        //setting the motor speeds
+        bot.MotorBackLeft.setPower(left);
+        bot.MotorBackRight.setPower(right);
 
     }
 

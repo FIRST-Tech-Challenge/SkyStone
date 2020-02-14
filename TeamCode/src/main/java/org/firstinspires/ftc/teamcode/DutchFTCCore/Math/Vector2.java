@@ -47,5 +47,5 @@ public class Vector2 {
     public double Angle(){
         return Math.toDegrees(Math.atan(Slope()));
     }
-    
+
 }

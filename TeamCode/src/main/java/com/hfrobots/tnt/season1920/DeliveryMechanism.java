@@ -461,7 +461,7 @@ public class DeliveryMechanism {
 
     public final static int MAX_ENCODER_DRIFT_FOR_HOME_POS = 15; // approx 1/4" according to Lauren
 
-    private static final double kPdown = .7;
+    private static final double kPdown = .01;
 
     // An example of how to do this is in last year's code,
     // Cmd + B and look for "ElevatorGoUpperLimitState"
@@ -977,7 +977,7 @@ public class DeliveryMechanism {
 
                 setupPidController(kPdown);
 
-                pidController.setOutputRange(-.1, .1); // fix bouncing while descending
+                pidController.setOutputRange(-1, .7); // fix bouncing while descending
                 pidController.setAbsoluteSetPoint(true); // MM
                 pidController.setTarget(LIFT_MIN_HEIGHT_POS - 100,
                         liftMotor.getCurrentPosition());
@@ -1125,15 +1125,15 @@ public class DeliveryMechanism {
     // FIXME! There's a lot of duplicated code in here that we could clean up...
 
     State createStowWristStates(final State lastState, Telemetry telemetry) {
-        StopwatchDelayState waitForWristState = new StopwatchDelayState("Wait for wrist", telemetry, ticker, 1, TimeUnit.SECONDS);
+        // StopwatchDelayState waitForWristState = new StopwatchDelayState("Wait for wrist", telemetry, ticker, 1, TimeUnit.SECONDS);
 
-        StowWristState stowWristState = new StowWristState(waitForWristState, telemetry, 60000);
+        // StowWristState stowWristState = new StowWristState(waitForWristState, telemetry, 60000);
 
         StopwatchDelayState waitForShoulderState = new StopwatchDelayState("Wait for shoulder", telemetry, ticker,1, TimeUnit.SECONDS);
 
         StowShoulderState stowShoulderState = new StowShoulderState(waitForShoulderState, telemetry, 60000);
 
-        waitForWristState.setNextState(stowShoulderState);
+        // waitForWristState.setNextState(stowShoulderState);
 
         StopwatchDelayState waitForFingerState = new StopwatchDelayState("Wait for finger", telemetry,  ticker, 250, TimeUnit.MILLISECONDS);
 
@@ -1143,7 +1143,7 @@ public class DeliveryMechanism {
 
         waitForFingerState.setNextState(lastState);
 
-        return stowWristState;
+        return stowShoulderState;
     }
 
     class StowWristState extends DeliveryMechanismState {

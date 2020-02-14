@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
 import org.firstinspires.ftc.teamcode.Library.OrientationTools;
 
-@Disabled
+
 @Autonomous (name = "A5_Blue_Foundation_Bridge")
 public class A5_Blue_Foundation_Bridge extends LinearOpMode {
 
@@ -57,7 +57,7 @@ public class A5_Blue_Foundation_Bridge extends LinearOpMode {
         }
 
         if (opModeIsActive()) {
-            controlledLift.start(liftFoundationValue,0.2);
+            controlledLift.start(liftFoundationValue,0.4);
             while (!controlledLift.endReached()) {}
             controlledLift.stop();
         }
@@ -65,13 +65,13 @@ public class A5_Blue_Foundation_Bridge extends LinearOpMode {
         // you have noe uplifted the lift
 
         if (opModeIsActive()){
-            orientationTools.driveSidewardEncoder(this, 0, -generalTools.bcap_underBridge, -0.6, omniWheel, startPos, robotGyro.imu, 175, 150);
+            orientationTools.driveSidewardEncoder(this, 0, -40, -0.6, omniWheel, startPos, robotGyro.imu, 175, 150);
         }
 
         //now you are in the corner
 
         if (opModeIsActive()){
-            controlledExtender.start(extenderFoundationValue, 0.3);
+            controlledExtender.start(extenderFoundationValue, 0.4);
             while(!controlledExtender.endReached() && opModeIsActive()) {}
             controlledExtender.stop();
         }
@@ -79,7 +79,7 @@ public class A5_Blue_Foundation_Bridge extends LinearOpMode {
         //now the arm of the robot has the right position, to see the foundation
 
         if (opModeIsActive()) {
-            controlledLift.start(-liftFoundationValue,0.2);
+            controlledLift.start(-liftFoundationValue,0.4);
             while (!controlledLift.endReached()) {}
             controlledLift.stop();
         }
@@ -87,7 +87,7 @@ public class A5_Blue_Foundation_Bridge extends LinearOpMode {
         // the lift is lifted
 
         if (opModeIsActive()) {
-            controlledDrive.start(80, 0, 0.6);
+            controlledDrive.start(80, 0, 0.2);
             while (!controlledDrive.endReached() && opModeIsActive()) {}
             controlledDrive.stop();
         }
@@ -120,13 +120,13 @@ public class A5_Blue_Foundation_Bridge extends LinearOpMode {
         // it's save to lower the lift
 
         if (opModeIsActive()) {
-            controlledLift.start(-liftFoundationValue,1);
+            controlledLift.start(-liftStartOffset,0.4);
             while(!controlledLift.endReached() && opModeIsActive()) {}
             controlledLift.stop();
         }
 
         if (opModeIsActive()) {
-            orientationTools.driveSidewardEncoder(this, 0, 50, 0.4, omniWheel, startPos, robotGyro.imu, 175, 150); //sideways: 220 --> middle
+            orientationTools.driveSidewardEncoder(this, 0, 30, 0.4, omniWheel, startPos, robotGyro.imu, 175, 150); //sideways: 220 --> middle
         }
 
 

@@ -10,7 +10,6 @@ public class GeneralTools {
 
     public double ap_underBridgeForward;
     public double ap_forwardGrabStone;
-    //public double liftFoundationValue;
     public double bcap_underBridge;
     public double bcap_passBridge;
 

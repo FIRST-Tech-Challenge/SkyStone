@@ -29,10 +29,25 @@ public class MovementSubSystem extends SubSystem {
     @Override
     public void Update() {
         super.Update();
-        DriveChecks();
     }
 
-    public void DriveChecks(){
+    public void DriveChecksKiwiDrive(){
+
+    }
+
+    public void DriveChecks4WheelTankDrive(){
+
+    }
+
+    public void DriveChecksTankDrive(){
+
+    }
+
+    public void DriveChecksHDrive(){
+
+    }
+
+    public void DriveChecksMechanum(){
 
         double stickangle;
         double speed;

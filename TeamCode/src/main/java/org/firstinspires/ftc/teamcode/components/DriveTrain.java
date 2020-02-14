@@ -576,7 +576,7 @@ public class DriveTrain extends BotComponent {
         while (opModeIsActive() && !rotationComplete) {
 
             if (Math.abs((int)currentAngle - (int)targetAngle) < 5 ) {
-                adjustedPower = 0.1;
+                adjustedPower = 0.2;
             }
 
             logger.logDebug("gyroRotate", "degrees: %f, power: %f, adjustedPower: %f", degrees, power, adjustedPower);

@@ -45,7 +45,7 @@ public class Grapple extends BotComponent {
     public Servo servo2 = null;
 
 
-    double SERVO_DOWN_POSITION = 0.35;
+    double SERVO_DOWN_POSITION = 0.4;
     double SERVO_UP_POSITION = 0.85;
 
 public Grapple(){
@@ -61,8 +61,8 @@ public void init( ){
 
     //define and initialize motors
     logger.logDebug("initservo", "IamWalrus");
-    servo = initServo(servoName1, 1);
-    servo2 = initServo(servoName2, 1);
+    servo = initServo(servoName1, 0.85);
+    servo2 = initServo(servoName2, 0.85);
     if (servo != null && servo2 != null) {
         isAvailable = true;
     }

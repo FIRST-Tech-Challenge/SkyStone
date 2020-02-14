@@ -43,6 +43,16 @@ public class Mathfunc {
         return var > goal - offset && var < goal + offset;
     }
 
+    public static double FixAngle (double angle){
+        while(angle < -180){
+            angle += 360;
+        }
+        while (angle > 180) {
+            angle -= 360;
+        }
+        return angle;
+    }
+
 
 
 

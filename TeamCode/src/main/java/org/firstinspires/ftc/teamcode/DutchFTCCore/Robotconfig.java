@@ -20,11 +20,7 @@ public class Robotconfig {
     public static String Servo5 = "Servo5";
 
     //drivetrains
-    public static boolean TankDrive2Motors = false;
-    public static boolean TankDrive1Motor = true;
-    public static boolean MechanumDrive = false;
-    public static boolean H_Drive = false;
-    public static boolean KiwiDrive = false;
+    public static Drivetraintypes.Drivetrains DriveTrain = Drivetraintypes.Drivetrains.MECHANUMDRIVE;
 
     //logging
     public static String teamName = "FTCunits";

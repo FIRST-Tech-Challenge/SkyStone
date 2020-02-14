@@ -153,7 +153,7 @@ public class Action {
     private void generateStartIntakeActions() {
         motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, liftHeight, 0, robot));
 
-        motionActions.add(new MotionAction(robot.getBackClamp(), robot.BACKCLAMP_CLAMPED, 0, robot));
+        motionActions.add(new MotionAction(robot.getBackClamp(), robot.BACKCLAMP_RELEASED, 0, robot));
         motionActions.add(new MotionAction(robot.getFrontClamp(), robot.FRONTCLAMP_RELEASED, 0, robot));
 
         motionActions.add(new MotionAction(robot.getIntakeLeft(), 1, 0, robot));

@@ -448,6 +448,10 @@ public class Robot {
     }
 
     public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, ArrayList<Action> actions, boolean isTimeKill, long endTime) {
+        splineMove(data, moveSpeed, turnSpeed, slowDownSpeed, slowDownDistance, optimalAngle, angleLockRadians, angleLockInches, actions, isTimeKill, endTime,false, new Point(0,0));
+    }
+
+    public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, ArrayList<Action> actions, boolean isTimeKill, long endTime, boolean isMecanumPoint, Point mecanumPoint) {
         double posAngle;
 
         Point[] data2 = new Point[data.length];
@@ -506,7 +510,9 @@ public class Robot {
                 } else {
                     turnMovement = 0;
                 }
-            }else {
+            }else if(isMecanumPoint && Math.hypot(robotPos.x-mecanumPoint.x,robotPos.y-mecanumPoint.y)<15) {
+                updateMovementsToPoint(pathPoints[followIndex].x, pathPoints[followIndex].y, moveSpeed, turnSpeed, optimalAngle, true);
+            }else{
                 updateMovementsToPoint(pathPoints[followIndex].x, pathPoints[followIndex].y, moveSpeed, turnSpeed, optimalAngle, false);
             }
 

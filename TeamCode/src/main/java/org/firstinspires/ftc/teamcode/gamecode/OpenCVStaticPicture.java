@@ -27,7 +27,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -44,7 +43,7 @@ import java.util.List;
  * purposes. We also show how to get data from the pipeline to your OpMode.
  */
 @TeleOp
-public class OpenCVSwitchingExample extends LinearOpMode
+public class OpenCVStaticPicture extends LinearOpMode
 {
     OpenCvCamera phoneCam;
     StageSwitchingPipeline stageSwitchingPipeline;
@@ -83,24 +82,16 @@ public class OpenCVSwitchingExample extends LinearOpMode
      * to get data from the pipeline to your OpMode.
      */
     static class StageSwitchingPipeline extends OpenCvPipeline
-    {   Mat yCbCrChan0Mat = new Mat();
-        Mat yCbCrChan1Mat = new Mat();
-        Mat yCbCrChan2Mat = new Mat();
-        Mat thresholdMat = new Mat();
-        Mat contoursOnFrameMat = new Mat();
+    {   Mat a = new Mat();
         List<MatOfPoint> contoursList = new ArrayList<>();
         int numContoursFound;
 
         enum Stage
-        {   YCbCr_CHAN0,
-            YCbCr_CHAN1,
-            YCbCr_CHAN2,
-            THRESHOLD,
-//            CONTOURS_OVERLAYED_ON_FRAME,
+        {   IMAGE,
             RAW_IMAGE,
         }
 
-        private Stage stageToRenderToViewport = Stage.THRESHOLD;
+        private Stage stageToRenderToViewport = Stage.IMAGE;
 
         private Stage[] stages = Stage.values();
 
@@ -133,48 +124,25 @@ public class OpenCVSwitchingExample extends LinearOpMode
              * This pipeline finds the contours of yellow blobs such as the Gold Mineral
              * from the Rover Ruckus game.
              */
-            Imgproc.cvtColor(input, yCbCrChan0Mat, Imgproc.COLOR_RGB2HSV);  //
+            Imgproc.cvtColor(input, a, Imgproc.COLOR_RGB2HSV);  //
 //            Core.extractChannel(yCbCrChan0Mat, yCbCrChan0Mat, 0); // extracts a channel of a thing
 //            Imgproc.threshold(yCbCrChan0Mat, thresholdMat, 200, 255, Imgproc.THRESH_BINARY_INV); // seperates out regions of an image between intensity of pixels
 
-            Imgproc.cvtColor(input, yCbCrChan1Mat, Imgproc.COLOR_RGB2YCrCb);  //
-            Core.extractChannel(yCbCrChan1Mat, yCbCrChan1Mat, 1); // extracts a channel of a thing
-            Imgproc.threshold(yCbCrChan1Mat, thresholdMat, 200, 255, Imgproc.THRESH_BINARY_INV); // seperates out regions of an image between intensity of pixels
 
-            Imgproc.cvtColor(input, yCbCrChan2Mat, Imgproc.COLOR_RGB2YCrCb);  //
-            Core.extractChannel(yCbCrChan2Mat, yCbCrChan2Mat, 2); // extracts a channel of a thing
-            Imgproc.threshold(yCbCrChan2Mat, thresholdMat, 200, 255, Imgproc.THRESH_BINARY_INV); // seperates out regions of an image between intensity of pixels
-
-
-            Imgproc.threshold(thresholdMat,thresholdMat, 200, 255, Imgproc.THRESH_BINARY_INV); // seperates out regions of an image between intensity of pixels
-
-//            Imgproc.findContours(thresholdMat, contoursList, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-//            numContoursFound = contoursList.size();
-//            input.copyTo(contoursOnFrameMat);
-//            Imgproc.drawContours(contoursOnFrameMat, contoursList, -1, new Scalar(0, 0, 255), 3, 8);
+//            Imgproc.threshold(thresholdMat,thresholdMat, 200, 255, Imgproc.THRESH_BINARY_INV); // seperates out regions of an image between intensity of pixels
+//
+////            Imgproc.findContours(thresholdMat, contoursList, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+////            numContoursFound = contoursList.size();
+////            input.copyTo(contoursOnFrameMat);
+////            Imgproc.drawContours(contoursOnFrameMat, contoursList, -1, new Scalar(0, 0, 255), 3, 8);
 
             switch (stageToRenderToViewport)
            {
-                case YCbCr_CHAN0: {
-                    return  yCbCrChan0Mat;
-                }
-                case YCbCr_CHAN1:{
-                    return yCbCrChan1Mat;
-                }
-                case YCbCr_CHAN2:
-                {
-                    return yCbCrChan2Mat;
-                }
 
-                case THRESHOLD:
-                {
-                    return thresholdMat; // red and purple
-                }
-
-//                case CONTOURS_OVERLAYED_ON_FRAME:
-//                {
-//                    return contoursOnFrameMat;
-//                }
+               case IMAGE:
+               {
+                   return a;
+               }
 
                 case RAW_IMAGE:
                 {

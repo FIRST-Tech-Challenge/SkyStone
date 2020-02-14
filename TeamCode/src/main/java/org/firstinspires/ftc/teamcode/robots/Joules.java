@@ -117,6 +117,14 @@ public class Joules  {
         LinearSlides.setPower(-1);
     }
 
+    public void SlidesUpSlow() {
+        LinearSlides.setPower(0.4);
+    }
+
+    public void SlidesDownSlow() {
+        LinearSlides.setPower(-0.4);
+    }
+
 
     public void SlidesStop() {
         LinearSlides.setPower(0);

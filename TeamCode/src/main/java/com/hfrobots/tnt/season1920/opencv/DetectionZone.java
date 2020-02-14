@@ -60,7 +60,7 @@ public class DetectionZone implements Comparable<DetectionZone> {
             Log.d(LOG_TAG, "Max contour area now:" + maxContourSize);
         }
 
-        if (contourArea <= 2000) {
+        if (contourArea <= 1000) {
             return;
         }
 

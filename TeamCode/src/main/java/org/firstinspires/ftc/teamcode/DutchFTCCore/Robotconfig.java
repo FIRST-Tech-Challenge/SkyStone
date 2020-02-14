@@ -7,6 +7,7 @@ public class Robotconfig {
     public static String MotorFrontLeft = "MotorFrontLeft";
     public static String MotorFrontRight = "MotorFrontRight";
     public static String MotorBackRight = "MotorBackRight";
+    public static String MotorMiddle = "MotorMiddle";
 
     //TeleOp variables;
     public static double ShortCutSpeed = 0.3;

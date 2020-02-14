@@ -72,6 +72,8 @@ public class SkystoneTeleop extends OpMode {
 
     protected SkystoneGrabber skystoneGrabber;
 
+    private CapstoneMechanism capstoneMechanism;
+
     private ParkingSticks parkingSticks;
 
     @Override
@@ -99,10 +101,13 @@ public class SkystoneTeleop extends OpMode {
 
         deliveryMechanism = new DeliveryMechanism(simplerHardwareMap, telemetry, ticker);
 
+        capstoneMechanism = new CapstoneMechanism(simplerHardwareMap, telemetry, ticker);
+
         operatorsGamepad = new NinjaGamePad(gamepad2);
 
         operatorControls = OperatorControls.builder().operatorsGamepad(operatorsGamepad)
                 .deliveryMechanism(deliveryMechanism)
+                .capstoneMechanism(capstoneMechanism)
                 .build();
 
         chaosNinja = new ChaosNinjaLandingState(driversGamepad, telemetry);

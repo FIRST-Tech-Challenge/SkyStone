@@ -81,9 +81,13 @@ public class OperatorControls {
 
     protected OnOffButton unsafe;
 
+    protected DebouncedButton dropCapstone;
+
     private NinjaGamePad operatorsGamepad;
 
     private DeliveryMechanism deliveryMechanism;
+
+    private CapstoneMechanism capstoneMechanism;
 
     private final float throttleGain = 0.7F;
 
@@ -111,7 +115,8 @@ public class OperatorControls {
                              RangeInput leftTrigger,
                              RangeInput rightTrigger,
                              NinjaGamePad operatorsGamepad,
-                             DeliveryMechanism deliveryMechanism) {
+                             DeliveryMechanism deliveryMechanism,
+                             CapstoneMechanism capstoneMechanism) {
         if (operatorsGamepad != null) {
             this.operatorsGamepad = operatorsGamepad;
             setupFromGamepad();
@@ -146,6 +151,9 @@ public class OperatorControls {
         this.deliveryMechanism.setRotateWrist(rotateWrist);
         this.deliveryMechanism.setStow(stow);
         this.deliveryMechanism.setUnsafe(unsafe);
+        this.capstoneMechanism = capstoneMechanism;
+        this.capstoneMechanism.setDropButton(dropCapstone);
+        this.capstoneMechanism.setUnsafeButton(unsafe);
     }
 
     private void setupCurvesAndFilters() {
@@ -183,6 +191,7 @@ public class OperatorControls {
         ungrip = aGreenButton;
         unsafe = new RangeInputButton(
                 operatorsGamepad.getRightTrigger(), 0.65f);
+        dropCapstone = dpadDown;
     }
 
     public void periodicTask() {
@@ -192,6 +201,8 @@ public class OperatorControls {
         float requestedIntakeVelocity = intakeThrottle.getPosition() / 1;
 
         deliveryMechanism.setIntakeVelocity(requestedIntakeVelocity);
+
+        capstoneMechanism.periodicTask();
     }
 
 }

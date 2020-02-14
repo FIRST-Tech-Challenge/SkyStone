@@ -113,6 +113,8 @@ public class SkystoneAuto extends OpMode {
 
     private ParkingSticks parkingSticks;
 
+    private CapstoneMechanism capstoneMechanism;
+
     @Override
     public void init() {
         ticker = createAndroidTicker();
@@ -132,6 +134,8 @@ public class SkystoneAuto extends OpMode {
         skystoneGrabber = new SkystoneGrabber(simplerHardwareMap);
 
         parkingSticks = new ParkingSticks(simplerHardwareMap);
+
+        capstoneMechanism = new CapstoneMechanism(simplerHardwareMap, telemetry, ticker);
 
         setupOpenCvCameraAndPipeline();
 
@@ -234,6 +238,12 @@ public class SkystoneAuto extends OpMode {
 
     @Override
     public void loop() {
+        try {
+            capstoneMechanism.periodicTask(); // just to maintain holding
+        } catch (Throwable t) {
+            Log.e(LOG_TAG, "Capstone error", t);
+        }
+
         try {
             if (!stateMachineSetup) {
                 /* We have not configured the state machine yet, do so from the options

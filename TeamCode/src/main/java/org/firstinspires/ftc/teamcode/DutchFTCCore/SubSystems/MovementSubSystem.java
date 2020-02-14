@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.DutchFTCCore.SubSystems;
 
+import org.firstinspires.ftc.teamcode.DutchFTCCore.Drivetraintypes;
 import org.firstinspires.ftc.teamcode.DutchFTCCore.Robot;
 import org.firstinspires.ftc.teamcode.DutchFTCCore.Robotconfig;
 
 public class MovementSubSystem extends SubSystem {
     public static MovementSubSystem instance;
     Robot bot;
+    Drivetraintypes traintypes;
     /**
      * Movement of the robot on the x axis in a value between -1 and 1;
      */
@@ -29,6 +31,7 @@ public class MovementSubSystem extends SubSystem {
     @Override
     public void Update() {
         super.Update();
+        traintypes.DriveChecks();
     }
 
     public void DriveChecksKiwiDrive(){

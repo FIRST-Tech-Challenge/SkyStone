@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.DutchFTCCore;
 
+import org.firstinspires.ftc.teamcode.DutchFTCCore.SubSystems.MovementSubSystem;
+
 public class Drivetraintypes {
 
     public Robot bot;
+    public MovementSubSystem movSys;
 
     public enum Drivetrains{
         TANKDRIVE,
@@ -64,9 +67,41 @@ public class Drivetraintypes {
                     break;
         }
 
+    }
 
+    public void DriveChecks(){
+        Drivetrains Train;
 
+        Train  = Robotconfig.DriveTrain;
 
+        switch (Train){
+            case MECHANUMDRIVE:
+                movSys.DriveChecksMechanum();
+                break;
 
+            case TANKDRIVE:
+                movSys.DriveChecksTankDrive();
+                break;
+
+            case FOURWHEELTANKDRIVE:
+                movSys.DriveChecks4WheelTankDrive();
+                break;
+
+            case KIWIDRIVE:
+                movSys.DriveChecksKiwiDrive();
+                break;
+
+            case FIVEWHEELHDRIVE:
+                movSys.DriveChecksHDrive5Motors();
+                break;
+
+            case THREEWHEELHDRIVE:
+                movSys.DriveChecksHDrive3Motors();
+                break;
+
+            default:
+                System.out.println("PLEASE SELECT A DRIVETRAIN");
+                break;
+        }
     }
 }

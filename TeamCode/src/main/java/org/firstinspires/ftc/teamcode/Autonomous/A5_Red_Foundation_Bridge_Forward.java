@@ -5,12 +5,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassis;
+import org.firstinspires.ftc.teamcode.HardwareMaps.HardwareChassisGyro;
 import org.firstinspires.ftc.teamcode.Library.ColorTools;
 import org.firstinspires.ftc.teamcode.Library.GeneralTools;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledDrive;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledExtender;
 import org.firstinspires.ftc.teamcode.Library.Movement.ControlledLift;
 import org.firstinspires.ftc.teamcode.Library.OmniWheel;
+import org.firstinspires.ftc.teamcode.Library.OrientationTools;
 
 @Autonomous (name = "A5_Red_Foundation_Bridge_Forward")
 public class A5_Red_Foundation_Bridge_Forward extends LinearOpMode {
@@ -22,12 +24,15 @@ public class A5_Red_Foundation_Bridge_Forward extends LinearOpMode {
     OmniWheel omniWheel;
     ControlledLift controlledLift;
     ControlledExtender controlledExtender;
+    OrientationTools orientationTools;
+    HardwareChassisGyro robotGyro;
 
     double extenderEncoderValue = 3.5;
     double liftEncoderValue = 0.5;
     double liftStartOffset = 0.75;
     double liftFoundationValue = 1.6;
-    double extenderFoundationValue = 4.5;
+    double extenderFoundationValue = 4;
+    double startPos;
 
     @Override
     public void runOpMode(){
@@ -39,6 +44,10 @@ public class A5_Red_Foundation_Bridge_Forward extends LinearOpMode {
         omniWheel = new OmniWheel(robot);
         controlledLift = new ControlledLift(robot, telemetry);
         controlledExtender = new ControlledExtender(robot, telemetry);
+        orientationTools = new OrientationTools(robot, hardwareMap, this);
+        robotGyro = new HardwareChassisGyro(hardwareMap);
+
+        startPos = orientationTools.getDegree360(robotGyro.imu);
 
         waitForStart();
 
@@ -47,7 +56,7 @@ public class A5_Red_Foundation_Bridge_Forward extends LinearOpMode {
         }
 
         if (opModeIsActive()) {
-            controlledLift.start(liftFoundationValue,0.2);
+            controlledLift.start(liftFoundationValue,0.4);
             while (!controlledLift.endReached()) {}
             controlledLift.stop();
         }
@@ -55,22 +64,13 @@ public class A5_Red_Foundation_Bridge_Forward extends LinearOpMode {
         // you have noe uplifted the lift
 
         if (opModeIsActive()){
-            while (!colorTools.isRed(robot.color_back) && opModeIsActive()){
-                omniWheel.setMotors(0,0.2,0);
-            }
-            omniWheel.setMotors(0,0,0);
+            orientationTools.driveSidewardEncoder(this, 0, 50, 0.6, omniWheel, startPos, robotGyro.imu, 175, 150);
         }
 
         //now you are in the corner
 
         if (opModeIsActive()){
-            generalTools.backTillButtons(robot);
-        }
-
-        // you are now back at the wall
-
-        if (opModeIsActive()){
-            controlledExtender.start(extenderFoundationValue, 0.3);
+            controlledExtender.start(extenderFoundationValue, 0.4);
             while(!controlledExtender.endReached() && opModeIsActive()) {}
             controlledExtender.stop();
         }
@@ -78,18 +78,17 @@ public class A5_Red_Foundation_Bridge_Forward extends LinearOpMode {
         //now the arm of the robot has the right position, to see the foundation
 
         if (opModeIsActive()) {
-            controlledLift.start(-liftFoundationValue,0.2);
+            controlledLift.start(-liftFoundationValue,0.4);
             while (!controlledLift.endReached()) {}
             controlledLift.stop();
         }
 
-        // the lift is now back to the start 0 level, to see the foundation
+        // the lift is lifted
 
-        if (opModeIsActive()){
-            while (!colorTools.isRed(robot.color_front) && opModeIsActive()){
-                omniWheel.setMotors(0.3,0,0);
-            }
-            omniWheel.setMotors(0,0,0);
+        if (opModeIsActive()) {
+            controlledDrive.start(80, 0, 0.2);
+            while (!controlledDrive.endReached() && opModeIsActive()) {}
+            controlledDrive.stop();
         }
 
         //now you are in front of the foundation
@@ -103,7 +102,7 @@ public class A5_Red_Foundation_Bridge_Forward extends LinearOpMode {
         generalTools.stopForMilliSeconds(1000);
 
         if (opModeIsActive()){
-            generalTools.backTillButtons(robot);
+            backTillButtons();
         }
         //now you have pulled the foundation in the corner
 
@@ -112,38 +111,36 @@ public class A5_Red_Foundation_Bridge_Forward extends LinearOpMode {
         }
         //now you have released the foundation
 
-        if (opModeIsActive()){
-            controlledDrive.start(0,-80,0.3);
-            while(!controlledDrive.endReached() && opModeIsActive()) {}
-            controlledDrive.stop();
-
+        if (opModeIsActive()) {
+            orientationTools.driveSidewardEncoder(this, 0, -90, -0.4, omniWheel, startPos, robotGyro.imu, 175, 150); //sideways: 220 --> middle
         }
 
         // now you're next to the foundation
         // it's save to lower the lift
 
         if (opModeIsActive()) {
-            controlledDrive.start(generalTools.ap_underBridgeForward, 0, 0.6);
-            while(!controlledDrive.endReached() && opModeIsActive()) {}
-            controlledDrive.stop();
-        }
-
-        // you're now on B4
-
-        if (opModeIsActive()) {
-            controlledLift.start(-liftFoundationValue,1);
+            controlledLift.start(-liftStartOffset,1);
             while(!controlledLift.endReached() && opModeIsActive()) {}
             controlledLift.stop();
         }
 
-        if (opModeIsActive()){
-            while (!colorTools.isBlue(robot.color_back) && opModeIsActive()){
-                omniWheel.setMotors(0,0.3,0);
-            }
-            omniWheel.setMotors(0,0,0);
+        if (opModeIsActive()) {
+            controlledDrive.start(generalTools.ap_underBridgeForward, 0, 0.4);
+            while (!controlledDrive.endReached() && opModeIsActive()) { }
+            controlledDrive.stop();
         }
-        //now you are below the bridge
+
+        if (opModeIsActive()) {
+            orientationTools.driveSidewardEncoder(this, 0, -40, -0.4, omniWheel, startPos, robotGyro.imu, 175, 150); //sideways: 220 --> middle
+        }
 
 
     }
+    private void backTillButtons() {
+        while((robot.touch_right.getState() && robot.touch_left.getState()) || (robot.touch_right.getState() && !robot.touch_left.getState()) || (!robot.touch_right.getState() && robot.touch_left.getState())) {
+            omniWheel.setMotors(-0.3, 0, 0);
+        }
+        omniWheel.setMotors(0, 0, 0);
+    }
+
 }

@@ -29,6 +29,7 @@ import com.disnodeteam.dogecv.filters.LeviColorFilter;
 import com.disnodeteam.dogecv.scoring.MaxAreaScorer;
 import com.disnodeteam.dogecv.scoring.PerfectAreaScorer;
 import com.disnodeteam.dogecv.scoring.RatioScorer;
+import com.hfrobots.tnt.corelib.util.Logging;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Mat;
@@ -38,9 +39,17 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
@@ -85,11 +94,11 @@ public class TntSkystoneDetector extends DogeCVDetector {
 
     private boolean stopPipeline;
 
-    private boolean pipelineStopped = false;
+    private OutputStream logStream;
 
-    public Point getScreenPosition() {
-        return screenPosition;
-    }
+    private PrintWriter logWriter;
+
+    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     public void setTelemetry(final Telemetry telemetry) {
         this.telemetry = telemetry;
@@ -100,6 +109,15 @@ public class TntSkystoneDetector extends DogeCVDetector {
         detectionZones.add(innerZone);
         detectionZones.add(middleZone);
         detectionZones.add(outerZone);
+
+        try {
+            String timestamp = formatter.format(new Date());
+
+            logStream = new FileOutputStream(Logging.getLogFile("skystone-detector-" + timestamp + ".log"));
+            logWriter = new PrintWriter(logStream);
+        } catch (Throwable t) {
+            Log.e(LOG_TAG, "Unable to open detector logfile", t);
+        }
     }
 
     @Override
@@ -187,17 +205,38 @@ public class TntSkystoneDetector extends DogeCVDetector {
         Collections.sort(detectionZones);
         DetectionZone skystoneZone = detectionZones.get(detectionZones.size() - 1);
         bestScoringZone.set(skystoneZone);
-        telemetry.addData("DZ", "skystone in %s?", skystoneZone.getZoneName());
-        Log.d(LOG_TAG, "skystone in " + skystoneZone.getZoneName() + ", " + skystoneZone.getTotalBlackArea());
-
 
         // Show where the pipeline is looking for skystone contours
         Imgproc.rectangle(displayMat, new Point(0, 0), new Point(106, 239), new Scalar(255, 192, 203), 4);
         Imgproc.rectangle(displayMat, new Point(106, 0), new Point(212, 239), new Scalar(255, 192, 203), 4);
         Imgproc.rectangle(displayMat, new Point(212, 0), new Point(320, 239), new Scalar(255, 192, 203), 4);
 
-        if (telemetry != null) {
-            telemetry.addData("BLA", innerZone.getTotalBlackArea() + ", " + middleZone.getTotalBlackArea() + ", " + outerZone.getTotalBlackArea());
+        if (startSearching) {
+            String timestamp = formatter.format(new Date());
+
+            if (telemetry != null) {
+                telemetry.addData("BLA", innerZone.getTotalBlackArea() + ", "
+                        + middleZone.getTotalBlackArea() + ", "
+                        + outerZone.getTotalBlackArea());
+            }
+
+            if (logWriter != null) {
+                writeLogLine(timestamp + " black area: " + innerZone.getTotalBlackArea() + ", "
+                            + middleZone.getTotalBlackArea() + ", "
+                            + outerZone.getTotalBlackArea());
+            }
+
+            if (telemetry != null) {
+                telemetry.addData("DZ", "skystone in %s?", skystoneZone.getZoneName());
+            }
+
+            if (logWriter != null) {
+                writeLogLine(String.format(timestamp + " skystone in %s?",
+                        skystoneZone.getZoneName()));
+            }
+
+            Log.d(LOG_TAG, "skystone in " + skystoneZone.getZoneName() + ", "
+                    + skystoneZone.getTotalBlackArea());
         }
 
         switch (stageToRenderToViewport) {
@@ -235,9 +274,35 @@ public class TntSkystoneDetector extends DogeCVDetector {
 
     public void stopPipeline() {
         stopPipeline = true;
+
+        if (logWriter != null) {
+            try {
+                logWriter.flush();
+                logWriter.close();
+            } catch (Throwable t) {
+                Log.e(LOG_TAG, "Unable to close log writer", t);
+            }
+        }
+
+        if (logStream != null) {
+            try {
+                logStream.flush();
+                logStream.close();
+            } catch (Throwable t) {
+                Log.e(LOG_TAG, "Unable to close log stream", t);
+            }
+        }
     }
 
     public DetectionZone getBestScoringZone() {
         return bestScoringZone.get();
+    }
+
+    private void writeLogLine(String line) {
+        try {
+            logWriter.println(line);
+        } catch (Throwable t) {
+            Log.e(LOG_TAG, "unable to write to vision log", t);
+        }
     }
 }

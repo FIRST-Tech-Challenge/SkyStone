@@ -120,7 +120,7 @@ public class Robot {
     private double yMovement;
     private double turnMovement;
 
-    private boolean isDebug = false;
+    private boolean isDebug = true;
 
     private StringBuilder odometryPoints = new StringBuilder();
     private StringBuilder splinePoints = new StringBuilder();
@@ -462,6 +462,8 @@ public class Robot {
 
         Point[] pathPoints = CatmullRomSplineUtils.generateSpline(data2,100, this);
 
+        addSplinePoints(pathPoints);
+        addWaypoints(data);
 
         boolean isMoving = true;
 
@@ -575,7 +577,6 @@ public class Robot {
         double[][] pathPoints = s.getOutputData();
 
 
-        addSplinePoints(pathPoints);
         addWaypoints(data);
 
         boolean isMoving = true;
@@ -1014,8 +1015,10 @@ public class Robot {
     public static void writeToFile(String directoryName, String fileName, String data) {
         File captureDirectory = new File(AppUtil.ROBOT_DATA_DIR, "/" + directoryName + "/");
         if (!captureDirectory.exists()) {
-            captureDirectory.mkdir();
+            boolean isFileCreated = captureDirectory.mkdirs();
+            Log.d("DumpToFile", " " + isFileCreated);
         }
+        Log.d("DumpToFile", " hey ");
         File file = new File(captureDirectory, fileName);
         try {
             FileOutputStream outputStream = new FileOutputStream(file);
@@ -1253,12 +1256,12 @@ public class Robot {
         return splinePoints.toString();
     }
 
-    public void addSplinePoints(double[][] data) {
+    public void addSplinePoints(Point[] data) {
         if (!isDebug) {
             return;
         }
         for (int i = 0; i < data.length; i++) {
-            addSplinePoints(data[i][0], data[i][1]);
+            addSplinePoints(data[i].x, data[i].y);
         }
     }
 

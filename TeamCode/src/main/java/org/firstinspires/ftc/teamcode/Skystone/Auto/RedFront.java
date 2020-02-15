@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "RedFrontOB", group = "LinearOpmode")
+@Autonomous(name = "RedFrontAS", group = "LinearOpmode")
 public class RedFront extends AutoBase {
     @Override
     public void runOpMode() {
@@ -179,7 +179,9 @@ public class RedFront extends AutoBase {
 
         robot.splineMove(toReleaseFoundation, 1, 1, 1, 5, 0, Math.toRadians(270), 12,
                 toReleaseFoundationActions, true, 2500);
+        robot.foundationMovers(false);
 
+        robot.getLinearOpMode().sleep(150); // Allow foundation movers to deploy
         robot.dumpPoints("" + startTime, "3");
 
 //        robot.getLinearOpMode().sleep(150); // Wait to finish releasing foundation

@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 import java.util.LinkedList;
 import java.util.Queue;
 
-@TeleOp(name = "MainTeleOpSky2", group = "Linear Opmode")
+@TeleOp(name = "MainTeleOpSky", group = "Linear Opmode")
 public class MainTeleop extends LinearOpMode {
     Robot robot;
 

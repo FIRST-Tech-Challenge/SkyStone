@@ -39,6 +39,9 @@ class NewThread extends AsyncTask<Void, Boolean, Boolean> {
             newPoint.y = o.worldY;
             robot.setRobotPos(newPoint);
             robot.setAnglePos(o.worldAngle);
+            if(robot.isDebug()) {
+                robot.addOdometryPoints(newPoint.x, newPoint.y);
+            }
 //            if ((count%5) == 0){
 //                robot.addOdometryPoints(o.worldX, o.worldY);
 //            }

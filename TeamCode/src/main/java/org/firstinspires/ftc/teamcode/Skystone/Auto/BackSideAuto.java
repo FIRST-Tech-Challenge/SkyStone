@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 
 import java.util.ArrayList;
 
-@Autonomous(name="BackSideAuto", group ="LinearOpmode")
+@Autonomous(name="BackSideAuto2", group ="LinearOpmode")
 public class BackSideAuto extends AutoBase{
     @Override
     public void runOpMode() {

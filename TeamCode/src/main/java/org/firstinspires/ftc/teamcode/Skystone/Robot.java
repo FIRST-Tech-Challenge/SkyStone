@@ -120,7 +120,7 @@ public class Robot {
     private double yMovement;
     private double turnMovement;
 
-    private boolean isDebug = true;
+    private boolean isDebug = false;
 
     private StringBuilder odometryPoints = new StringBuilder();
     private StringBuilder splinePoints = new StringBuilder();

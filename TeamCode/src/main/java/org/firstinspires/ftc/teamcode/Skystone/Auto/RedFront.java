@@ -30,6 +30,7 @@ public class RedFront extends AutoBase {
         double anglelock = 30;
         double angleLockThird = 55;
         double thirdStoneXPath = 33;
+        long foundationTimeKill = 4500;
 
         Vision.Location skystoneLocation = Vision.Location.UNKNOWN;
 
@@ -63,6 +64,7 @@ public class RedFront extends AutoBase {
             anglelock = 30;
             thirdStoneX = 46.5;
             thirdStoneY = -20.25;
+            foundationTimeKill = 4150;
         }
 
         double[][] toFirstStone = {
@@ -169,7 +171,7 @@ public class RedFront extends AutoBase {
         robot.dumpPoints("" + startTime, "1");
 
         robot.splineMove(toFoundation, 1, 1, 1, 20, Math.toRadians(180), Math.toRadians(180), 30,
-                toFoundationActions, true, 4000, true, new Point(20,5));
+                toFoundationActions, true, foundationTimeKill, true, new Point(20,5));
 
         robot.foundationMovers(true);
 
@@ -191,7 +193,7 @@ public class RedFront extends AutoBase {
 
         robot.dumpPoints("" + startTime, "4");
 
-        robot.splineMove(toDepositSecondStone, 1, 1, 0.5, 35, Math.toRadians(180), Math.toRadians(270), 80,
+        robot.splineMove(toDepositSecondStone, 1, 1, 0.5, 35, Math.toRadians(180), Math.toRadians(270), 85,
                 toDepositSecondStoneActions, true, 4000, true, new Point(20,5));
 
         robot.getBackClamp().setPosition(robot.BACKCLAMP_RELEASED);
@@ -206,7 +208,7 @@ public class RedFront extends AutoBase {
 
         robot.dumpPoints("" + startTime, "6");
 
-        robot.splineMove(toDepositThirdStone, 1, 1, .5, 35, Math.toRadians(180), Math.toRadians(270), 80, toParkAfterThirdStoneActions, true, 4000, true, new Point(20,5));
+        robot.splineMove(toDepositThirdStone, 1, 1, .5, 35, Math.toRadians(180), Math.toRadians(270), 85, toParkAfterThirdStoneActions, true, 4000, true, new Point(20,5));
 
         robot.getBackClamp().setPosition(robot.BACKCLAMP_RELEASED);
         robot.getFrontClamp().setPosition(robot.FRONTCLAMP_RELEASED);

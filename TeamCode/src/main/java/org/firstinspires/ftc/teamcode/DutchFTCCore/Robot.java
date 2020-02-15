@@ -36,7 +36,8 @@ public class Robot {
     public Robot (OpMode _opmode) {
         instance = this;
         opMode = _opmode;
-        drivetrains.initDrivetrain();
+        drivetrains = new Drivetraintypes();
+        drivetrains.initDrivetrain(this);
         imu = opMode.hardwareMap.get(BNO055IMU.class,"imu");
         subSystems = new ArrayList<>();
     }

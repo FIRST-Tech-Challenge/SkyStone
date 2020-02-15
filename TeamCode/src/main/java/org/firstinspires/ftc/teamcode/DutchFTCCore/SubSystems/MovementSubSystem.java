@@ -26,6 +26,7 @@ public class MovementSubSystem extends SubSystem {
         super.Start();
         bot = Robot.instance;
         instance = this;
+        traintypes = bot.drivetrains;
     }
 
     @Override

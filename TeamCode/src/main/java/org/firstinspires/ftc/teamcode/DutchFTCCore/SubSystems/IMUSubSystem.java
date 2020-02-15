@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.DutchFTCCore.SubSystems;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.util.ReadWriteFile;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.DutchFTCCore.Robot;
 
@@ -43,9 +46,11 @@ public class IMUSubSystem extends SubSystem {
     @Override
     public void Update() {
         super.Update();
+        currHeading = Robot.instance.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
         //polls the sensor directly, converts from byte array to double
-        byte[] a = Robot.instance.imu.read(BNO055IMU.Register.EUL_H_LSB, 2);
-        currHeading = ByteBuffer.wrap(a).getDouble();
-
+        //byte[] a = new byte[2];
+        //a[1] = Robot.instance.imu.read8(BNO055IMU.Register.EUL_H_LSB);
+        //a[0] = Robot.instance.imu.read8(BNO055IMU.Register.EUL_H_MSB);
+        //currHeading = ByteBuffer.wrap(a).getFloat();
     }
 }

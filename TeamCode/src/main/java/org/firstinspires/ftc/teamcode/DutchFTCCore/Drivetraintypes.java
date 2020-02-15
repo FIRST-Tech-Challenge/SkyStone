@@ -16,10 +16,11 @@ public class Drivetraintypes {
         KIWIDRIVE
     }
 
-    public void initDrivetrain(){
+    public void initDrivetrain(Robot _bot){
         Drivetrains Train;
-
+        bot = _bot;
         Train  = Robotconfig.DriveTrain;
+
 
         switch (Train){
             case MECHANUMDRIVE:
@@ -76,31 +77,31 @@ public class Drivetraintypes {
 
         switch (Train){
             case MECHANUMDRIVE:
-                movSys.DriveChecksMechanum();
+                movSys.instance.DriveChecksMechanum();
                 break;
 
             case TANKDRIVE:
-                movSys.DriveChecksTankDrive();
+                movSys.instance.DriveChecksTankDrive();
                 break;
 
             case FOURWHEELTANKDRIVE:
-                movSys.DriveChecks4WheelTankDrive();
+                movSys.instance.DriveChecks4WheelTankDrive();
                 break;
 
             case KIWIDRIVE:
-                movSys.DriveChecksKiwiDrive();
+                movSys.instance.DriveChecksKiwiDrive();
                 break;
 
             case FIVEWHEELHDRIVE:
-                movSys.DriveChecksHDrive5Motors();
+                movSys.instance.DriveChecksHDrive5Motors();
                 break;
 
             case THREEWHEELHDRIVE:
-                movSys.DriveChecksHDrive3Motors();
+                movSys.instance.DriveChecksHDrive3Motors();
                 break;
 
             default:
-                System.out.println("PLEASE SELECT A DRIVETRAIN");
+                //System.out.println("PLEASE SELECT A DRIVETRAIN");
                 break;
         }
     }

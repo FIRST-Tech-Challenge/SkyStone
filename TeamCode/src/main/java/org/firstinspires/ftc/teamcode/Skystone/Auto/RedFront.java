@@ -26,8 +26,9 @@ public class RedFront extends AutoBase {
         double secondSkyStoneY = -15.5;
         double secondSkyStoneX = 42.5;
         double thirdStoneY = -28.5;
-        double thirdStoneX = 39.5;
+        double thirdStoneX = 39;
         double anglelock = 30;
+        double angleLockThird = 55;
 
         Vision.Location skystoneLocation = Vision.Location.UNKNOWN;
 
@@ -50,8 +51,9 @@ public class RedFront extends AutoBase {
             secondSkyStoneY = -23;
             secondSkyStoneX = 48;
             anglelock = 30;
-            thirdStoneX = 60;
+            thirdStoneX = 57;
             thirdStoneY = -26;
+            angleLockThird = 40;
         } else if (skystoneLocation == Vision.Location.RIGHT) {
             firstSkystoneY = 10;
             secondSkyStoneY = -6;
@@ -96,8 +98,8 @@ public class RedFront extends AutoBase {
 
         double[][] toSecondStone = {
                 {toReleaseFoundation[toReleaseFoundation.length - 1][0], toReleaseFoundation[toReleaseFoundation.length - 1][1], -10, 0},
-                {24, 60, -10, 0},
-                {24, 29, 0, -10},
+                {22, 60, -10, 0},
+                {23, 29, 0, -10},
                 {27.5, secondSkyStoneY + 5, 0, 10},
                 {47, secondSkyStoneY, 30, 0},
                 {43, secondSkyStoneY-4.5, 30, 0}};
@@ -105,7 +107,7 @@ public class RedFront extends AutoBase {
         toSecondStoneActions.add(new Action(ActionType.START_INTAKE, new Point(20,-10), robot));
 
         double[][] toDepositSecondStone = {
-                {24, -7, 0, 20},
+                {22, -9, 0, 20},
                 {24, 29, 0, 20},
                 {24, 47, 0, 10},
                 {25, 50, 0, 10},
@@ -121,7 +123,7 @@ public class RedFront extends AutoBase {
                 {25, 30, 0, -10},
                 {25, 15, 0, -10},
                 {32, 10, 0, -10},
-                {35, 0, 0, -10},
+                {35, 5, 0, -10},
                 {thirdStoneX, thirdStoneY, 10, 0}};
         ArrayList<Action> toThirdStoneActions = new ArrayList<Action>();
         toThirdStoneActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE, new Point(25,71), robot, 0));
@@ -138,15 +140,15 @@ public class RedFront extends AutoBase {
                 {24, 45, 0, 10},
                 {24, 55, 0, 20},
                 {25, 65, 0, 20},
-                {25, 72, 0, 10}};
+                {25, 73, 0, 10}};
         ArrayList<Action> toParkAfterThirdStoneActions = new ArrayList<Action>();
         toParkAfterThirdStoneActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(24,7), robot, 450));
         toParkAfterThirdStoneActions.add(new Action(ActionType.STOP_INTAKE, new Point(toThirdStone[toThirdStone.length - 1][0] - 20, toThirdStone[toThirdStone.length - 1][1] + 25), robot));
 
         double[][] toPark = {
                 {toDepositThirdStone[toDepositThirdStone.length - 1][0], toDepositThirdStone[toDepositThirdStone.length - 1][1], 0, -10},
-                {20, 55, 0, -10},
-                {20, 34, 0, -10}};
+                {23, 55, 0, -10},
+                {23, 34, 0, -10}};
         ArrayList<Action> toParkActions = new ArrayList<Action>();
         toParkActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE, new Point(25,74), robot, 0));
 
@@ -157,7 +159,7 @@ public class RedFront extends AutoBase {
         ArrayList<Action> toParkDitchActions = new ArrayList<Action>();
         toParkDitchActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE, new Point(25,65), robot, 0));
 
-        robot.splineMove(toFirstStone, 0.65, 0.5, 0.65, 35, 0, Math.toRadians(0), 0,
+        robot.splineMove(toFirstStone, 0.65, 0.5, 0.55, 35, 0, Math.toRadians(0), 0,
                 toFirstStoneActions, true, 2500);
 
         robot.dumpPoints("" + startTime, "1");
@@ -193,7 +195,7 @@ public class RedFront extends AutoBase {
 
         robot.dumpPoints("" + startTime, "5");
 
-        robot.splineMove(toThirdStone, 1, 1, 0.65, 20, 0, Math.toRadians(270), 40,
+        robot.splineMove(toThirdStone, 1, 1, 0.75, 20, 0, Math.toRadians(270), 55,
                 toThirdStoneActions, true, 4500);
 
         robot.dumpPoints("" + startTime, "6");

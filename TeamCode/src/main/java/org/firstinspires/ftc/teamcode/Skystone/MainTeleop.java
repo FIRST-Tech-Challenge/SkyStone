@@ -67,26 +67,16 @@ public class MainTeleop extends LinearOpMode {
     public void runOpMode() {
         resetRobot();
         robot.initServos();
+
         waitForStart();
+
         DcMotorEx motor = hardwareMap.get(DcMotorEx.class, "fLeft");
         double currentVelocity;
-        double maxVelocity =0;
+        double maxVelocity = 0;
         position2D = new Position2D(robot);
         position2D.startOdometry();
 
         while (opModeIsActive()) {
-            waitForStart();
-
-            currentVelocity = motor.getVelocity();
-
-            if (currentVelocity > maxVelocity) {
-                maxVelocity = currentVelocity;
-            }
-
-            telemetry.addData("current velocity", currentVelocity);
-            telemetry.addData("maximum velocity", maxVelocity);
-            telemetry.update();
-
             telemetry.update();
 
             robotModeLogic();
@@ -95,27 +85,27 @@ public class MainTeleop extends LinearOpMode {
             driveLogic();
 
             foundationLogic();
-
-            outtakeLogic();
-            capstoneLogic();
-            spoolLogic();
-            intakeLogic();
-
             foundationMoveLogic();
 
-            if (robot.isDebug()) {
+            intakeLogic();
 
-            }
-            telemetry.addLine("xPos: " + robot.getRobotPos().x);
-            telemetry.addLine("yPos: " + robot.getRobotPos().y);
-            telemetry.addLine("angle: " + Math.toDegrees(robot.getAnglePos()));
-            telemetry.addLine("XPODLeft " + robot.getfLeft().getCurrentPosition());
-            telemetry.addLine("XPODRight " + robot.getfRight().getCurrentPosition());
-            telemetry.addLine("YPOD " + robot.getbLeft().getCurrentPosition());
-            if (isIntakeMode) {
+            if (!isIntakeMode) {
                 telemetry.addLine("CURRENT ROBOT MODE: INTAKE BOT");
+
+                outtakeLogic();
+                capstoneLogic();
+                spoolLogic();
             } else {
                 telemetry.addLine("CURRENT ROBOT MODE: NORMAL");
+            }
+
+            if (robot.isDebug()) {
+                telemetry.addLine("xPos: " + robot.getRobotPos().x);
+                telemetry.addLine("yPos: " + robot.getRobotPos().y);
+                telemetry.addLine("angle: " + Math.toDegrees(robot.getAnglePos()));
+                telemetry.addLine("XPODLeft " + robot.getfLeft().getCurrentPosition());
+                telemetry.addLine("XPODRight " + robot.getfRight().getCurrentPosition());
+                telemetry.addLine("YPOD " + robot.getbLeft().getCurrentPosition());
             }
         }
     }
@@ -123,9 +113,9 @@ public class MainTeleop extends LinearOpMode {
     private void spoolLogic() {
         double spoolPower = -gamepad2.left_stick_y;
 
-        if (spoolPower > 0.9){
+        if (spoolPower > 0.9) {
             spoolPower = 1.0;
-        } else if (spoolPower < -0.9){
+        } else if (spoolPower < -0.9) {
             spoolPower = -1.0;
         } else {
             spoolPower /= 3;
@@ -139,21 +129,21 @@ public class MainTeleop extends LinearOpMode {
 
         // auto stack on git
 
-        if(spoolPosition >= 4200){
-            if(spoolPower == 0){
+        if (spoolPosition >= 4200) {
+            if (spoolPower == 0) {
                 spoolPower += 0.15;
             }
-            spoolPower = Math.min(spoolPower/2,0.15);
+            spoolPower = Math.min(spoolPower / 2, 0.15);
         }
-        if (!gamepad2.left_bumper){
-            if(spoolPower < 0 && spoolPosition <= 0){
+        if (!gamepad2.left_bumper) {
+            if (spoolPower < 0 && spoolPosition <= 0) {
                 spoolPower = 0;
             }
         } else {
             isOverridingSlideFloor = true;
         }
 
-        if (isOverridingSlideFloor && !gamepad2.left_bumper){
+        if (isOverridingSlideFloor && !gamepad2.left_bumper) {
             spoolOffset += spoolPosition;
             isOverridingSlideFloor = false;
         }
@@ -235,7 +225,7 @@ public class MainTeleop extends LinearOpMode {
             robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
             long startTime = SystemClock.elapsedRealtime();
 
-            while(SystemClock.elapsedRealtime() - startTime <= 350){
+            while (SystemClock.elapsedRealtime() - startTime <= 350) {
                 robotModeLogic();
 
                 slowDriveLogic();
@@ -251,7 +241,7 @@ public class MainTeleop extends LinearOpMode {
             startTime = SystemClock.elapsedRealtime();
             robot.getFrontClamp().setPosition(robot.FRONTCLAMP_ACTIVATECAPSTONE);
 
-            while(SystemClock.elapsedRealtime() - startTime <= 350){
+            while (SystemClock.elapsedRealtime() - startTime <= 350) {
                 robotModeLogic();
 
                 slowDriveLogic();
@@ -265,7 +255,7 @@ public class MainTeleop extends LinearOpMode {
             startTime = SystemClock.elapsedRealtime();
             robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
 
-            while(SystemClock.elapsedRealtime() - startTime <= 200){
+            while (SystemClock.elapsedRealtime() - startTime <= 200) {
                 robotModeLogic();
 
                 slowDriveLogic();
@@ -293,20 +283,22 @@ public class MainTeleop extends LinearOpMode {
     }
 
     private void intakeLogic() {
-        if (Math.abs(gamepad2.left_stick_y) <= 0.25) {
+        if (Math.abs(gamepad2.left_stick_y) >= 0.25) {
             intakeLeftPower = gamepad2.right_stick_y;
             intakeRightPower = gamepad2.right_stick_y;
 
             robot.getIntakeLeft().setPower(intakeLeftPower);
             robot.getIntakeRight().setPower(intakeRightPower);
-            if (Math.abs(gamepad2.right_stick_y) >= 0.25 && !isIntakeMode && !isClamp && !isRetract && !isExtend && !is90 && robot.getOuttakeExtender().getPosition() != robot.OUTTAKE_SLIDE_EXTENDED && robot.getOuttakeExtender().getPosition() != robot.OUTTAKE_SLIDE_PARTIAL_EXTEND) {
-                robot.getBackClamp().setPosition(robot.BACKCLAMP_CLAMPED);
-                robot.getFrontClamp().setPosition(robot.FRONTCLAMP_RELEASED);
+            if (!isClamp && !isRetract && !isExtend && !is90 && robot.getOuttakeExtender().getPosition() != robot.OUTTAKE_SLIDE_EXTENDED && robot.getOuttakeExtender().getPosition() != robot.OUTTAKE_SLIDE_PARTIAL_EXTEND) {
+                if (isIntakeMode) {
+                    robot.getBackClamp().setPosition(robot.BACKCLAMP_CLAMPED);
+                    robot.getFrontClamp().setPosition(robot.FRONTCLAMP_CLAMPED);
+                    robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED - 0.15);
+                } else {
+                    robot.getBackClamp().setPosition(robot.BACKCLAMP_CLAMPED);
+                    robot.getFrontClamp().setPosition(robot.FRONTCLAMP_RELEASED);
+                }
             }
-        }
-
-        if (isIntakeMode) {
-            robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED - 0.15);
         }
     }
 
@@ -370,10 +362,13 @@ public class MainTeleop extends LinearOpMode {
         }
     }
 
+    private long foundationRaiseTime = 0;
+
     private void foundationLogic() {
         if (gamepad1.right_bumper) {
             if (foundationToggle && !resetfoundation) {
                 foundationToggle = false;
+                foundationRaiseTime = SystemClock.elapsedRealtime();
             } else if (!foundationToggle && !resetfoundation) {
                 foundationToggle = true;
             }
@@ -382,17 +377,23 @@ public class MainTeleop extends LinearOpMode {
             resetfoundation = false;
         }
 
+        if (!foundationToggle && (SystemClock.elapsedRealtime() - 750 > foundationRaiseTime)) {
+            robot.getLeftFoundation().getController().pwmDisable();
+        } else {
+            robot.getLeftFoundation().getController().pwmEnable();
+        }
+
         robot.foundationMovers(foundationToggle);
     }
 
-    private void foundationMoveLogic(){
-        if(gamepad1.a){
+    private void foundationMoveLogic() {
+        if (gamepad1.a) {
             robot.setDrivetrainMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             robot.setDrivetrainMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
             position2D.o.resetOdometry();
 
-            robot.moveToPoint(24.5,0,0.8,1,0);
+            robot.moveToPoint(24.5, 0, 0.8, 1, 0);
         }
     }
 

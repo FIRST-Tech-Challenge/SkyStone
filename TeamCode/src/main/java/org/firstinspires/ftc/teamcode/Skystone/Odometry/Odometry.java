@@ -2,44 +2,23 @@ package org.firstinspires.ftc.teamcode.Skystone.Odometry;
 
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
 
-
-// The letter "d" preceding variable names in this class indicates delta
 public class Odometry {
-    //for constant velo
 
-    public double oldLeftPod = 0;
-    public double oldRightPod = 0;
-    public double oldMecanumPod = 0;
-
-    double xPosGlobal = 0;
-    double yPosGlobal = 0;
-    double angleGlobal = 0;
-
-    private double fLeftOLD = 0;
-    private double fRightOLD = 0;
-    private double bLeftOLD = 0;
-    private double bRightOLD = 0;
-
-    //circular odometry stuff
-    double mecanumPodOld;
-    double rightPodOld;
-    double leftPodOld;
+    private double oldLeftPod = 0;
+    private double oldRightPod = 0;
+    private double oldMecanumPod = 0;
 
     double worldX;
     double worldY;
     double worldAngle;
 
-    double moveScaleFactor = (0.004177098/125) * 123;
-    double turnScaleFactor = 0.000301686*240;
-    double strafePredictionFactor = 0.092;
+    private double moveScaleFactor = (0.004177098/125) * 123;
+    private double turnScaleFactor = 0.000301686*240;
+    private double strafePredictionFactor = -0.25;
 
-//    double encoderToInches = ;
+    public Odometry() {}
 
-    public Odometry() {
-
-    }
-
-    public void circularOdometry (Robot robot) {
+    public void runOdometry(Robot robot) {
         double leftPodNew = -1 * robot.getfLeft().getCurrentPosition(); // fix this for new odo config
         double rightPodNew = -1 * robot.getfRight().getCurrentPosition(); //fix this for new odo config
         double mecanumPodNew = -1 * robot.getbLeft().getCurrentPosition(); // fix this for new odo config
@@ -114,60 +93,13 @@ public class Odometry {
         }
     }
 
-    public void linearOdometry (Robot robot) {
-        double leftPodNew = -1 * robot.getfLeft().getCurrentPosition(); // fix this for new odo config
-        double rightPodNew = -1 * robot.getfRight().getCurrentPosition(); //fix this for new odo config
-        double mecanumPodNew = -1 * robot.getbLeft().getCurrentPosition(); // fix this for new odo config
-
-        double dLeftPod = leftPodNew - oldLeftPod;
-        double dRightPod = rightPodNew - oldRightPod;
-        double dMecanumPod = mecanumPodNew - oldMecanumPod;
-
-        oldLeftPod = leftPodNew;
-        oldRightPod = rightPodNew;
-        oldMecanumPod = mecanumPodNew;
-
-        linearOdometry(dLeftPod, dRightPod, dMecanumPod);
-    }
-
-    public void linearOdometry (double dLeftPod, double dRightPod, double dMecanumPod) {
-        double dTheta = (dLeftPod - dRightPod) * turnScaleFactor;
-
-        double midAngle = worldAngle + dTheta * .5;
-
-        worldAngle += dTheta;
-
-        double dXPrime = (dLeftPod + dRightPod) * .5 * moveScaleFactor;
-        double dYPrime = dMecanumPod * moveScaleFactor;
-
-        worldX += dXPrime * Math.cos(midAngle) + dYPrime * Math.sin(midAngle);
-        worldY += -1 * dXPrime * Math.sin(midAngle) + dYPrime * Math.cos(midAngle);
-    }
-
     public void resetOdometry(){
-        xPosGlobal = 0;
-        yPosGlobal = 0;
-        angleGlobal = 0;
-
-        //circular odometry stuff
-        mecanumPodOld = 0;
-        rightPodOld = 0;
-        leftPodOld = 0;
+        oldLeftPod = 0;
+        oldRightPod = 0;
+        oldMecanumPod = 0;
 
         worldX = 0;
         worldY = 0;
         worldAngle = 0;
-    }
-
-    public double getWorldX() {
-        return worldX;
-    }
-
-    public double getWorldY() {
-        return worldY;
-    }
-
-    public double getWorldAngle() {
-        return worldAngle;
     }
 }

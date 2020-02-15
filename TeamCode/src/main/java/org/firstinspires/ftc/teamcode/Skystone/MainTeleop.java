@@ -52,6 +52,9 @@ public class MainTeleop extends LinearOpMode {
     private boolean foundationToggle = false;
     private boolean resetfoundation = false;
 
+    private boolean isOverridingSlideFloor = false;
+    private double spoolOffset = 0;
+
     private boolean motionExecuted;
 
     private static double powerScaleFactor = 0.9;
@@ -120,55 +123,41 @@ public class MainTeleop extends LinearOpMode {
     private void spoolLogic() {
         double spoolPower = -gamepad2.left_stick_y;
 
-        if (Math.abs(gamepad2.left_stick_y) >= .1) {
-            isMovingSpoolToPosition = false;
+        if (spoolPower > 0.9){
+            spoolPower = 1.0;
+        } else if (spoolPower < -0.9){
+            spoolPower = -1.0;
+        } else {
+            spoolPower /= 3;
         }
 
         if (gamepad2.left_trigger != 0) {
             spoolPower = .15;
         }
 
-        spoolPosition = robot.getOuttakeSpool().getCurrentPosition();
+        spoolPosition = robot.getOuttakeSpool().getCurrentPosition() - spoolOffset;
 
-        if (!gamepad2.dpad_down && isG2DPDPushed) {
-            isMovingSpoolToPosition = true;
-            spoolTargetPosition = robot.getOuttakeSpool().getCurrentPosition() - 150;
+        // auto stack on git
 
-            isG2DPDPushed = false;
-        } else if (gamepad2.dpad_down) {
-            isG2DPDPushed = true;
-        }
-
-        if (gamepad2.left_bumper) {
-            double lastDropLevel = Math.floor((lastDropPosition - robot.SPOOL_FIRSTLEVEL_POSITION) / robot.SPOOL_LEVEL_INCREMENT);
-
-            spoolTargetPosition = robot.SPOOL_FIRSTLEVEL_POSITION + ((lastDropLevel + 1) * robot.SPOOL_LEVEL_INCREMENT) + 150;
-
-            isMovingSpoolToPosition = true;
-        }
-
-        if (isMovingSpoolToPosition) {
-            if (spoolTargetPosition < 0) {
-                spoolTargetPosition = 0;
-            }
-            if (Math.abs(spoolPosition - spoolTargetPosition) < 25) {
-                spoolPower = .15;
-            } else if (spoolPosition < spoolTargetPosition) {
-                spoolPower = 1;
-            } else {
-                spoolPower = -1;
-            }
-        }
-
-        if(robot.getOuttakeSpool().getCurrentPosition() >= 4200){
+        if(spoolPosition >= 4200){
             if(spoolPower == 0){
                 spoolPower += 0.15;
             }
             spoolPower = Math.min(spoolPower/2,0.15);
         }
-        if(spoolPower < 0 && robot.getOuttakeSpool().getCurrentPosition() <= 0){
-            spoolPower = 0;
+        if (!gamepad2.left_bumper){
+            if(spoolPower < 0 && spoolPosition <= 0){
+                spoolPower = 0;
+            }
+        } else {
+            isOverridingSlideFloor = true;
         }
+
+        if (isOverridingSlideFloor && !gamepad2.left_bumper){
+            spoolOffset += spoolPosition;
+            isOverridingSlideFloor = false;
+        }
+
         robot.getOuttakeSpool().setPower(spoolPower);
         robot.getOuttakeSpool2().setPower(spoolPower);
 

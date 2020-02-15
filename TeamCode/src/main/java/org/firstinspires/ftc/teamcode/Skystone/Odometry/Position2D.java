@@ -34,7 +34,7 @@ class NewThread extends AsyncTask<Void, Boolean, Boolean> {
     @Override
     protected Boolean doInBackground(Void... params) {
         while(robot.getLinearOpMode().opModeIsActive()) {
-            o.circularOdometry(robot);
+            o.runOdometry(robot);
             newPoint.x = o.worldX;
             newPoint.y = o.worldY;
             robot.setRobotPos(newPoint);

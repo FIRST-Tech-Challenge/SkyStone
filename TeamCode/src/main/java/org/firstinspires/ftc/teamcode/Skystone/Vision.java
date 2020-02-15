@@ -117,7 +117,7 @@ public class Vision {
 
             final ExecutorService executorService = ThreadPool.getDefault();
 
-            while (linearOpMode.opModeIsActive() && resultLocation.size() == 0 && SystemClock.elapsedRealtime() - startTime <= 1000) {
+            while (linearOpMode.opModeIsActive() && resultLocation.size() == 0 && SystemClock.elapsedRealtime() - startTime <= 100) {
                 final ConditionVariable resultAvaliable = new ConditionVariable(false);
 
                 vuforia.getFrameOnce(Continuation.create(executorService, new Consumer<Frame>() {

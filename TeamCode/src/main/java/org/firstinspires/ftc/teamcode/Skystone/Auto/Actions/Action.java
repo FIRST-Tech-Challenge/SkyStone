@@ -167,6 +167,8 @@ public class Action {
         motionActions.add(new MotionAction(robot.getIntakeRight(), -1, 0, robot));
         motionActions.add(new MotionAction(robot.getIntakeLeft(), 1, 500, robot));
         motionActions.add(new MotionAction(robot.getIntakeRight(), 1, 500, robot));
+        motionActions.add(new MotionAction(robot.getIntakeLeft(), 0, 1000, robot));
+        motionActions.add(new MotionAction(robot.getIntakeRight(), 0, 1000, robot));
     }
 
     public Point getActionPoint() {

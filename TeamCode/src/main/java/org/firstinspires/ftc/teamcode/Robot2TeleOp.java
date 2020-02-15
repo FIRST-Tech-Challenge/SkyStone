@@ -231,7 +231,7 @@
 
                 foundationLeft.setPosition(0.27); //perpendicular to ground
                 foundationRight.setPosition(0.37);
-x
+
             }
             else if (down) {
 

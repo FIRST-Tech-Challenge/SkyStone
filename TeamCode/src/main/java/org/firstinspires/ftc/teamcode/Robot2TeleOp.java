@@ -101,7 +101,7 @@
         private Servo rotation = null;
         private Servo foundationLeft = null;
         private Servo foundationRight = null;
-        private Servo release = null;
+        private CRServo release = null;
         private Servo capstone = null;
         private Servo sideArm = null;
         private CRServo extenderTop = null;
@@ -205,7 +205,7 @@
             if (dPadUp) {
 
                 //clamp.setDirection(DcMotorSimple.Direction.FORWARD);
-                clamp.setPosition(0.5); //0.53
+                clamp.setPosition(0.43); //0.50
                 telemetry.addData("Status: ","Up Activated" );
 
             }
@@ -213,7 +213,7 @@
             {
 
                 //     clamp.setDirection(DcMotorSimple.Direction.REVERSE);
-                clamp.setPosition(1.0); //0.63
+                clamp.setPosition(0.61); //0.61
                 telemetry.addData("Status: ","Down Activated" );
 
             }
@@ -231,7 +231,7 @@
 
                 foundationLeft.setPosition(0.27); //perpendicular to ground
                 foundationRight.setPosition(0.37);
-
+x
             }
             else if (down) {
 
@@ -245,13 +245,13 @@
 
             if (released) {
 
-                release.setPosition(-1.0);
+                release.setPower(-1.0);
 
             }
             else
             {
 
-                release.setPosition(1.0);
+                release.setPower(0.0);
 
             }
 
@@ -260,12 +260,12 @@
 
             if (rotateLeft) {
 
-                rotation.setPosition(0.875);
+                rotation.setPosition(0.95);
 
             }
             else if (rotateRight) {
 
-                rotation.setPosition(-0.7);
+                rotation.setPosition(0.2);
 
 
             }
@@ -356,7 +356,7 @@
             foundationLeft = hardwareMap.servo.get("foundationLeft");
             foundationRight = hardwareMap.servo.get("foundationRight");
             rotation = hardwareMap.servo.get("rotation");
-            release = hardwareMap.servo.get("release");
+            release = hardwareMap.crservo.get("release");
             extenderTop = hardwareMap.crservo.get("extenderTop");
             extenderBottom = hardwareMap.crservo.get("extenderBottom");
             sideArm = hardwareMap.servo.get("sideArm");

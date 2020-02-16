@@ -52,6 +52,9 @@ public class MainTeleop extends LinearOpMode {
     private boolean foundationToggle = false;
     private boolean resetfoundation = false;
 
+    private boolean isCapstone = false;
+    private boolean toggleCap = false;
+
     private boolean isOverridingSlideFloor = false;
     private double spoolOffset = 0;
 
@@ -90,13 +93,12 @@ public class MainTeleop extends LinearOpMode {
             intakeLogic();
 
             if (!isIntakeMode) {
-                telemetry.addLine("CURRENT ROBOT MODE: INTAKE BOT");
-
+                telemetry.addLine("CURRENT ROBOT MODE: NORMAL");
                 outtakeLogic();
                 capstoneLogic();
                 spoolLogic();
             } else {
-                telemetry.addLine("CURRENT ROBOT MODE: NORMAL");
+                telemetry.addLine("CURRENT ROBOT MODE: INTAKE BOT");
             }
 
             if (robot.isDebug()) {
@@ -113,12 +115,10 @@ public class MainTeleop extends LinearOpMode {
     private void spoolLogic() {
         double spoolPower = -gamepad2.left_stick_y;
 
-        if (spoolPower > 0.9) {
-            spoolPower = 1.0;
-        } else if (spoolPower < -0.9) {
-            spoolPower = -1.0;
-        } else {
-            spoolPower /= 3;
+        if (spoolPower <= -0.85) {
+            spoolPower = -gamepad2.left_stick_y;
+        } else if(spoolPower<0){
+            spoolPower /= 6;
         }
 
         if (gamepad2.left_trigger != 0) {
@@ -221,7 +221,8 @@ public class MainTeleop extends LinearOpMode {
     }
 
     private void capstoneLogic() {
-        if (gamepad2.right_trigger != 0) {
+        if (gamepad2.right_trigger != 0 && !toggleCap) {
+            toggleCap = true;
             robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
             long startTime = SystemClock.elapsedRealtime();
 
@@ -236,7 +237,6 @@ public class MainTeleop extends LinearOpMode {
                 spoolLogic();
                 intakeLogic();
             }
-
 
             startTime = SystemClock.elapsedRealtime();
             robot.getFrontClamp().setPosition(robot.FRONTCLAMP_ACTIVATECAPSTONE);
@@ -268,13 +268,15 @@ public class MainTeleop extends LinearOpMode {
             }
 
             robot.getFrontClamp().setPosition(robot.FRONTCLAMP_CLAMPED);
+        }else if(!(gamepad2.right_trigger != 0)){
+            toggleCap = false;
         }
     }
 
     private void slowDriveLogic() {
         //toggle driving speed
         if (gamepad1.left_bumper && !changedSlowDrive) {
-            powerScaleFactor = (onSlowDrive) ? 0.9 : 0.4;
+            powerScaleFactor = (onSlowDrive) ? 0.9 : 0.65;
             onSlowDrive = !onSlowDrive;
             changedSlowDrive = true;
         } else if (!gamepad1.left_bumper) {
@@ -283,23 +285,24 @@ public class MainTeleop extends LinearOpMode {
     }
 
     private void intakeLogic() {
-        if (Math.abs(gamepad2.left_stick_y) >= 0.25) {
+        if (Math.abs(gamepad2.left_stick_y) <= 0.25 && Math.abs(gamepad2.right_stick_y) >= 0.1) {
             intakeLeftPower = gamepad2.right_stick_y;
             intakeRightPower = gamepad2.right_stick_y;
 
-            robot.getIntakeLeft().setPower(intakeLeftPower);
-            robot.getIntakeRight().setPower(intakeRightPower);
-            if (!isClamp && !isRetract && !isExtend && !is90 && robot.getOuttakeExtender().getPosition() != robot.OUTTAKE_SLIDE_EXTENDED && robot.getOuttakeExtender().getPosition() != robot.OUTTAKE_SLIDE_PARTIAL_EXTEND) {
-                if (isIntakeMode) {
-                    robot.getBackClamp().setPosition(robot.BACKCLAMP_CLAMPED);
-                    robot.getFrontClamp().setPosition(robot.FRONTCLAMP_CLAMPED);
-                    robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED - 0.15);
-                } else {
-                    robot.getBackClamp().setPosition(robot.BACKCLAMP_CLAMPED);
-                    robot.getFrontClamp().setPosition(robot.FRONTCLAMP_RELEASED);
-                }
+            if (isIntakeMode) {
+                robot.getBackClamp().setPosition(robot.BACKCLAMP_CLAMPED);
+                robot.getFrontClamp().setPosition(robot.FRONTCLAMP_CLAMPED);
+                robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED - 0.15);
+            } else {
+                robot.getBackClamp().setPosition(robot.BACKCLAMP_CLAMPED);
+                robot.getFrontClamp().setPosition(robot.FRONTCLAMP_RELEASED);
             }
+        }else{
+            intakeLeftPower = 0;
+            intakeRightPower = 0;
         }
+        robot.getIntakeLeft().setPower(intakeLeftPower);
+        robot.getIntakeRight().setPower(intakeRightPower);
     }
 
     private void outtakeLogic() {
@@ -393,15 +396,15 @@ public class MainTeleop extends LinearOpMode {
 
             position2D.o.resetOdometry();
 
-            robot.moveToPoint(24.5, 0, 0.8, 1, 0);
+            robot.moveToPoint(24.5, 0, 1, 0.9, 0);
         }
     }
 
     private void robotModeLogic() {
-        if (gamepad1.a && gamepad1.x && toggleMode) {
+        if (gamepad1.y && gamepad1.b && toggleMode) {
             isIntakeMode = !isIntakeMode;
             toggleMode = false;
-        } else if (!toggleMode && !(gamepad1.a && gamepad1.x)) {
+        } else if (!toggleMode && !(gamepad1.y && gamepad1.b)) {
             toggleMode = true;
         }
     }

@@ -63,7 +63,7 @@ public class Robot {
     private Servo rightFoundation;
 
     // Outtake Slide Positions
-    public final double OUTTAKE_SLIDE_EXTENDED = 0.02;
+    public final double OUTTAKE_SLIDE_EXTENDED = 0.01;
     public final double OUTTAKE_SLIDE_RETRACTED = 1;
     public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = 0.27; // First peg .27, second peg .121
 
@@ -951,7 +951,7 @@ public class Robot {
         long startTime = SystemClock.elapsedRealtime();
 
         // keep on running this
-        while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime() - startTime < totalTimeSeconds * 2000) {
+        while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime() - startTime < totalTimeSeconds * 1000) {
             // store your current position in variables
             double xPos = robotPos.x;
             double yPos = robotPos.y;

@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Skystone.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-;
+
 import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
 import org.firstinspires.ftc.teamcode.Skystone.Vision;
@@ -12,7 +12,8 @@ public class AutoBase extends LinearOpMode {
     protected Vision vision;
     protected long currentTime;
     Position2D position2D;
-    public void initLogic(){
+
+    public void initLogic() {
         //Init's robot
         robot = new Robot(this.hardwareMap, this.telemetry, this);
         vision = new Vision(this);
@@ -28,7 +29,8 @@ public class AutoBase extends LinearOpMode {
     }
 
     @Override
-    public void runOpMode() {}
+    public void runOpMode() {
+    }
 
     protected void intake(boolean intake) {
         if (intake) {

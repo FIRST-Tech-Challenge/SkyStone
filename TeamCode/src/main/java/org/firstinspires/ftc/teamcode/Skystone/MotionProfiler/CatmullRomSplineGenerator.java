@@ -11,7 +11,7 @@ public class CatmullRomSplineGenerator {
     }
 
     public double q(double t) {
-        return 0.5 * ((2 * p1) + (p2 - p0) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * Math.pow(t,2) + (3 * p1 - p0 - 3 * p2 + p3) * Math.pow(t,3));
+        return 0.5 * ((2 * p1) + (p2 - p0) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * Math.pow(t, 2) + (3 * p1 - p0 - 3 * p2 + p3) * Math.pow(t, 3));
     }
 }
 

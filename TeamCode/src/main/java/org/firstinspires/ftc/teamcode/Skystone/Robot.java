@@ -26,7 +26,6 @@ import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Action;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Enums.ActionState;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CatmullRomSplineUtils;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
-import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.SplineGenerator;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -320,8 +319,6 @@ public class Robot {
     }
 
     /**
-     *
-     *
      * @param motor the motor you want to reset
      */
     public void resetMotor(DcMotor motor) {
@@ -448,7 +445,7 @@ public class Robot {
     }
 
     public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, ArrayList<Action> actions, boolean isTimeKill, long endTime) {
-        splineMove(data, moveSpeed, turnSpeed, slowDownSpeed, slowDownDistance, optimalAngle, angleLockRadians, angleLockInches, actions, isTimeKill, endTime,false, new Point(0,0));
+        splineMove(data, moveSpeed, turnSpeed, slowDownSpeed, slowDownDistance, optimalAngle, angleLockRadians, angleLockInches, actions, isTimeKill, endTime, false, new Point(0, 0));
     }
 
     public void splineMove(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, ArrayList<Action> actions, boolean isTimeKill, long endTime, boolean isMecanumPoint, Point mecanumPoint) {
@@ -456,11 +453,11 @@ public class Robot {
 
         Point[] data2 = new Point[data.length];
 
-        for(int i = 0;i<data.length;i++){
+        for (int i = 0; i < data.length; i++) {
             data2[i] = new Point(data[i][0], data[i][1]);
         }
 
-        Point[] pathPoints = CatmullRomSplineUtils.generateSpline(data2,100, this);
+        Point[] pathPoints = CatmullRomSplineUtils.generateSpline(data2, 100, this);
 
         addSplinePoints(pathPoints);
         addWaypoints(data);
@@ -481,7 +478,7 @@ public class Robot {
 
             posAngle = MathFunctions.angleWrap(anglePos + 2 * Math.PI);
 
-            for(int p = pathPoints.length-1;p>=0;p--){
+            for (int p = pathPoints.length - 1; p >= 0; p--) {
                 if (Math.hypot(robotPos.x - pathPoints[p].x, robotPos.y - pathPoints[p].y) < 10) {
                     followIndex = p;
                     break;
@@ -512,9 +509,9 @@ public class Robot {
                 } else {
                     turnMovement = 0;
                 }
-            }else if(isMecanumPoint && Math.hypot(robotPos.x-mecanumPoint.x,robotPos.y-mecanumPoint.y)<15) {
+            } else if (isMecanumPoint && Math.hypot(robotPos.x - mecanumPoint.x, robotPos.y - mecanumPoint.y) < 15) {
                 updateMovementsToPoint(pathPoints[followIndex].x, pathPoints[followIndex].y, moveSpeed, turnSpeed, optimalAngle, true);
-            }else{
+            } else {
                 updateMovementsToPoint(pathPoints[followIndex].x, pathPoints[followIndex].y, moveSpeed, turnSpeed, optimalAngle, false);
             }
 
@@ -543,7 +540,7 @@ public class Robot {
 
                     Point actionPoint = action.getActionPoint();
 
-                    if(action.getActionState() == ActionState.PROCESSING || action.getActionState() == ActionState.PENDING){
+                    if (action.getActionState() == ActionState.PROCESSING || action.getActionState() == ActionState.PENDING) {
                         isFinishedAllActions = false;
                     }
 
@@ -570,117 +567,6 @@ public class Robot {
         }
     }
 
-    public void splineMove2(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, ArrayList<Action> actions, boolean isTimeKill, long endTime) {
-        double posAngle;
-
-        SplineGenerator s = new SplineGenerator(data, this);
-        double[][] pathPoints = s.getOutputData();
-
-
-        addWaypoints(data);
-
-        boolean isMoving = true;
-
-
-        int followIndex = 1;
-        double angleLockScale;
-        double distanceToEnd;
-        double distanceToNext;
-        double desiredHeading;
-
-        long currentTime;
-        long startTime = SystemClock.elapsedRealtime();
-        while (linearOpMode.opModeIsActive()) {
-            currentTime = SystemClock.elapsedRealtime();
-
-            if (isTimeKill && currentTime - startTime >= endTime) {
-                brakeRobot();
-                isMoving = false;
-            }
-
-            posAngle = MathFunctions.angleWrap(anglePos + 2 * Math.PI);
-
-            for(int p = pathPoints.length-1;p>=0;p--){
-                if (Math.hypot(robotPos.x - pathPoints[p][0], robotPos.y - pathPoints[p][1]) < 7) {
-                    followIndex = p;
-                    break;
-                }
-            }
-
-            distanceToEnd = Math.hypot(robotPos.x - data[data.length - 1][0], robotPos.y - data[data.length - 1][1]);
-            distanceToNext = Math.hypot(robotPos.x - pathPoints[followIndex][0], robotPos.y - pathPoints[followIndex][1]);
-            desiredHeading = angleWrap(Math.atan2(pathPoints[followIndex][1] - pathPoints[followIndex - 1][1], pathPoints[followIndex][0] - pathPoints[followIndex - 1][0]) + 2 * Math.PI);
-
-            if (desiredHeading == 0) {
-                desiredHeading = Math.toRadians(360);
-            }
-            if (angleLockRadians == 0) {
-                angleLockRadians = Math.toRadians(360);
-            }
-
-            angleLockScale = Math.abs(angleLockRadians - posAngle) * Math.abs(desiredHeading - angleLockRadians) * 1.8;
-
-
-            if (distanceToEnd < angleLockInches) {
-                updateMovementsToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, true);
-
-                if (angleLockRadians - posAngle > Math.toRadians(0) && angleLockRadians - posAngle < Math.toRadians(180)) {
-                    turnMovement = 1 * angleLockScale;
-                } else if (angleLockRadians - posAngle < Math.toRadians(0) || angleLockRadians - posAngle > Math.toRadians(180)) {
-                    turnMovement = -1 * angleLockScale;
-                } else {
-                    turnMovement = 0;
-                }
-            } else if (distanceToEnd < 30) {
-                updateMovementsToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, true);
-            } else {
-                updateMovementsToPoint(pathPoints[followIndex][0], pathPoints[followIndex][1], moveSpeed, turnSpeed, optimalAngle, false);
-            }
-
-            if (distanceToEnd < 1) {
-                brakeRobot();
-                isMoving = false;
-            }
-
-            if (distanceToEnd < slowDownDistance) {
-                if (slowDownSpeed > moveSpeed) {
-                    xMovement *= slowDownSpeed * (slowDownSpeed / moveSpeed);
-                    yMovement *= slowDownSpeed * (slowDownSpeed / moveSpeed);
-                    turnMovement *= slowDownSpeed * (slowDownSpeed / moveSpeed);
-                } else {
-                    xMovement *= slowDownSpeed;
-                    yMovement *= slowDownSpeed;
-                    turnMovement *= slowDownSpeed;
-                }
-            }
-
-            // go through all actionpoints and see if the robot is near one
-            if (actions.size() != 0) {
-                currentTime = SystemClock.elapsedRealtime();
-                for (int i = 0; i < actions.size(); i++) {
-                    Action action = actions.get(i);
-
-                    Point actionPoint = action.getActionPoint();
-                    if (action.isExecuteOnEndOfPath()) {
-                        if (!isMoving) {
-                            action.executeAction(currentTime);
-                        }
-                    } else if ((Math.hypot(actionPoint.x - robotPos.x, actionPoint.y - robotPos.y) < 10) || (action.getActionState() == ActionState.PROCESSING)) {
-                        action.executeAction(currentTime);
-                    }
-                }
-            }
-
-            if (isTimeKill && currentTime - startTime >= endTime) {
-                break;
-            }
-
-            if (isMoving) {
-                applyMove();
-            }
-        }
-    }
-
     public void splineMoveCatMullRomPID(double[][] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, ArrayList<Action> actions, boolean isTimeKill, long endTime) {
         double P = 2;
 //        double P = 1.65;
@@ -694,11 +580,11 @@ public class Robot {
 
         Point[] data2 = new Point[data.length];
 
-        for(int i = 0;i<data.length;i++){
+        for (int i = 0; i < data.length; i++) {
             data2[i] = new Point(data[i][0], data[i][1]);
         }
 
-        Point[] pathPoints = CatmullRomSplineUtils.generateSpline(data2,1, this);
+        Point[] pathPoints = CatmullRomSplineUtils.generateSpline(data2, 1, this);
 
 //
 //        addSplinePoints(pathPoints);
@@ -737,11 +623,10 @@ public class Robot {
             double error = distanceToEnd; // Error = Target - Actual
             integral += (error) * 0.02; // Integral is increased by the error*time (which is .02 seconds using normal IterativeRobot)
             double derivative = (error - previous_error) * 0.02;
-            double rcw = (P * error + I * integral + D * derivative)/100;
+            double rcw = (P * error + I * integral + D * derivative) / 100;
 
 
-
-            if(isMoving) {
+            if (isMoving) {
                 telemetry.addLine(" value " + rcw);
                 telemetry.addLine(" Delta P " + Math.abs(error - previous_error));
 
@@ -773,7 +658,7 @@ public class Robot {
                 } else {
                     turnMovement = 0;
                 }
-            }else if (distanceToEnd < 30) {
+            } else if (distanceToEnd < 30) {
                 updateMovementsToPoint(pathPoints[followIndex].x, pathPoints[followIndex].y, moveSpeed, turnSpeed, optimalAngle, true);
             } else {
                 updateMovementsToPoint(pathPoints[followIndex].x, pathPoints[followIndex].y, moveSpeed, turnSpeed, optimalAngle, false);
@@ -818,10 +703,10 @@ public class Robot {
     }
 
     public void splineMoveTest(Point[] data, double moveSpeed, double turnSpeed, double slowDownSpeed, double slowDownDistance, double optimalAngle, double angleLockRadians, double angleLockInches, ArrayList<Action> actions, boolean isTimeKill, long endTime) {
-        Point[] pathPoints = CatmullRomSplineUtils.generateSpline(data,10, this);
+        Point[] pathPoints = CatmullRomSplineUtils.generateSpline(data, 10, this);
 
         int pathPointIndex = 0;
-        while(linearOpMode.opModeIsActive()) {
+        while (linearOpMode.opModeIsActive()) {
             double[][] nextPoint = new double[1][2];
             nextPoint[0][0] = pathPoints[pathPointIndex].x;
             nextPoint[0][1] = pathPoints[pathPointIndex].y;
@@ -896,10 +781,10 @@ public class Robot {
         bRightPower *= scaleDownAmount;
 
         // apply movement with decelerationScaleFactor
-        fLeft.setPower(fLeftPower*scale);
-        fRight.setPower(fRightPower*scale);
-        bLeft.setPower(bLeftPower*scale);
-        bRight.setPower(bRightPower*scale);
+        fLeft.setPower(fLeftPower * scale);
+        fRight.setPower(fRightPower * scale);
+        bLeft.setPower(bLeftPower * scale);
+        bRight.setPower(bRightPower * scale);
     }
 
     public void applyMove() {

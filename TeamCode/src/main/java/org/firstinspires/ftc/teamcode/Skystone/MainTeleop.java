@@ -117,7 +117,7 @@ public class MainTeleop extends LinearOpMode {
 
         if (spoolPower <= -0.85) {
             spoolPower = -gamepad2.left_stick_y;
-        } else if(spoolPower<0){
+        } else if (spoolPower < 0) {
             spoolPower /= 6;
         }
 
@@ -268,7 +268,7 @@ public class MainTeleop extends LinearOpMode {
             }
 
             robot.getFrontClamp().setPosition(robot.FRONTCLAMP_CLAMPED);
-        }else if(!(gamepad2.right_trigger != 0)){
+        } else if (!(gamepad2.right_trigger != 0)) {
             toggleCap = false;
         }
     }
@@ -297,7 +297,7 @@ public class MainTeleop extends LinearOpMode {
                 robot.getBackClamp().setPosition(robot.BACKCLAMP_CLAMPED);
                 robot.getFrontClamp().setPosition(robot.FRONTCLAMP_RELEASED);
             }
-        }else{
+        } else {
             intakeLeftPower = 0;
             intakeRightPower = 0;
         }

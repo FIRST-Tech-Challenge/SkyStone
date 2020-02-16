@@ -31,8 +31,8 @@ import java.util.concurrent.ExecutorService;
 public class Vision {
     private final String VUFORIA_KEY = "AbSCRq//////AAAAGYEdTZut2U7TuZCfZGlOu7ZgOzsOlUVdiuQjgLBC9B3dNvrPE1x/REDktOALxt5jBEJJBAX4gM9ofcwMjCzaJKoZQBBlXXxrOscekzvrWkhqs/g+AtWJLkpCOOWKDLSixgH0bF7HByYv4h3fXECqRNGUUCHELf4Uoqea6tCtiGJvee+5K+5yqNfGduJBHcA1juE3kxGMdkqkbfSjfrNgWuolkjXR5z39tRChoOUN24HethAX8LiECiLhlKrJeC4BpdRCRazgJXGLvvI74Tmih9nhCz6zyVurHAHttlrXV17nYLyt6qQB1LtVEuSCkpfLJS8lZWS9ztfC1UEfrQ8m5zA6cYGQXjDMeRumdq9ugMkS";
 
-    public enum Location{
-        CENTER,LEFT,RIGHT,UNKNOWN;
+    public enum Location {
+        CENTER, LEFT, RIGHT, UNKNOWN;
     }
 
     File captureDirectory = AppUtil.ROBOT_DATA_DIR;
@@ -42,38 +42,37 @@ public class Vision {
 
     private LinearOpMode linearOpMode;
 
-    public Vision(LinearOpMode linearOpmode){
+    public Vision(LinearOpMode linearOpmode) {
         this.linearOpMode = linearOpmode;
         initVision();
     }
 
-    public void initVision(){
+    public void initVision() {
         initVuforia();
     }
 
-    public static double calcAverageYellow(Bitmap bitmap, int x, int y, int width, int height){
+    public static double calcAverageYellow(Bitmap bitmap, int x, int y, int width, int height) {
         double sum = 0;
-        int endX = x+width;
-        int endY = y+height;
+        int endX = x + width;
+        int endY = y + height;
         int intColor;
         int redGreen;
 
-        for(int i = x; i<endX;i++){
-            for(int j = y; j<endY;j++){
-                intColor = bitmap.getPixel(i,j);
-                redGreen = Color.red(intColor)  + Color.green(intColor);
-                sum+=redGreen;
+        for (int i = x; i < endX; i++) {
+            for (int j = y; j < endY; j++) {
+                intColor = bitmap.getPixel(i, j);
+                redGreen = Color.red(intColor) + Color.green(intColor);
+                sum += redGreen;
             }
         }
 
-        return sum/(width*height);
+        return sum / (width * height);
     }
 
     public void captureFrameToFile() {
-        vuforia.getFrameOnce(Continuation.create(ThreadPool.getDefault(), new Consumer<Frame>()
-        {
-            @Override public void accept(Frame frame)
-            {
+        vuforia.getFrameOnce(Continuation.create(ThreadPool.getDefault(), new Consumer<Frame>() {
+            @Override
+            public void accept(Frame frame) {
                 Bitmap bitmap = vuforia.convertFrameToBitmap(frame);
 
                 if (bitmap != null) {
@@ -84,7 +83,7 @@ public class Vision {
                             bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
                         } finally {
                             outputStream.close();
-                            Log.d("Vision","captured %s" + file.getAbsolutePath());
+                            Log.d("Vision", "captured %s" + file.getAbsolutePath());
                         }
                     } catch (IOException e) {
                         RobotLog.ee("TAG", e, "exception in captureFrameToFile()");
@@ -94,23 +93,23 @@ public class Vision {
         }));
     }
 
-    public void updateBitmapWithBoundingBoxes(Bitmap bitmap, int x, int y, int width, int height){
-        int endX = x+width;
-        int endY = y+height;
+    public void updateBitmapWithBoundingBoxes(Bitmap bitmap, int x, int y, int width, int height) {
+        int endX = x + width;
+        int endY = y + height;
 
-        for(int i = x; i<endX;i++){
-            for(int j = y; j<endY;j++){
-                if(i == x || i==endX-1) {
+        for (int i = x; i < endX; i++) {
+            for (int j = y; j < endY; j++) {
+                if (i == x || i == endX - 1) {
                     bitmap.setPixel(i, j, Color.argb(1, 0, 0, 0));
-                }else if(j== y || j == endY-1){
+                } else if (j == y || j == endY - 1) {
                     bitmap.setPixel(i, j, Color.argb(1, 0, 0, 0));
                 }
             }
         }
     }
 
-    public Location runDetection(final boolean deactiviated, final boolean isRed){
-        if(vuforia != null) {
+    public Location runDetection(final boolean deactiviated, final boolean isRed) {
+        if (vuforia != null) {
             final ArrayList<Location> resultLocation = new ArrayList<>();
 
             final long startTime = SystemClock.elapsedRealtime();
@@ -141,10 +140,10 @@ public class Vision {
                         int startX;
                         int startY;
 
-                        if(!isRed){
+                        if (!isRed) {
                             startX = 210;
                             startY = 245;
-                        }else {
+                        } else {
                             startX = 344;
                             startY = 320;
                         }
@@ -213,17 +212,17 @@ public class Vision {
             this.vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
             vuforia.enableConvertFrameToBitmap();
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
 }
 
-class BoxDetection{
+class BoxDetection {
     double averageRedGreen;
     Vision.Location location;
 
-    public BoxDetection(Vision.Location location){
+    public BoxDetection(Vision.Location location) {
         this.location = location;
     }
 }

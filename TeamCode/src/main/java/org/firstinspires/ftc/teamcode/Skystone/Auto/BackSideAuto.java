@@ -35,10 +35,12 @@ public class BackSideAuto extends AutoBase {
 
         double[][] toPark = {
                 {0, 0},
-                {36, 0}};
+                {12, -.5}};
         ArrayList<Action> toParkActions = new ArrayList<>();
 
-        robot.splineMove(toPark, 1, 1, 1, 0, 0, 0, 0, toParkActions, true, 5000);
+        robot.splineMove(toPark, 1, 1, 1, 0, 0, 0, 24, toParkActions, true, 5000);
+
+        sleep(500);
     }
 
 

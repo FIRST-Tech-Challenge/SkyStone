@@ -33,6 +33,8 @@ public class Odometry {
         oldMecanumPod = mecanumPodNew;
 
         smallAngleOdometry(dLeftPod, dRightPod, dMecanumPod);
+
+//        robot.addOdometryAllData(leftPodNew, rightPodNew, mecanumPodNew, worldX, worldY, worldAngle);
     }
 
     /* Circular Odometry assumes that the movement that occurred between each update was in the form

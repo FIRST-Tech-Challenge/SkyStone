@@ -121,6 +121,7 @@ public class Robot {
 
     private boolean isDebug = false;
 
+    private StringBuilder odometryAllData = new StringBuilder();
     private StringBuilder odometryPoints = new StringBuilder();
     private StringBuilder splinePoints = new StringBuilder();
     private StringBuilder waypoints = new StringBuilder();
@@ -1191,6 +1192,29 @@ public class Robot {
         odometryPoints.append(" ");
         odometryPoints.append(y);
         odometryPoints.append("\n");
+    }
+
+    public void addOdometryAllData(double leftEncoder, double rightEncoder, double mecanumEncoder, double x, double y, double theta) {
+        if (!isDebug) {
+            return;
+        }
+        odometryAllData.append(leftEncoder);
+        odometryAllData.append(" ");
+        odometryAllData.append(rightEncoder);
+        odometryAllData.append(" ");
+        odometryAllData.append(mecanumEncoder);
+        odometryAllData.append(" ");
+        odometryAllData.append(x);
+        odometryAllData.append(" ");
+        odometryAllData.append(y);
+        odometryAllData.append(" ");
+        odometryAllData.append(theta);
+        odometryAllData.append("\n");
+    }
+
+    public String getOdometryAllData() {
+        odometryAllData.insert(0, "l r m x y theta\n");
+        return odometryAllData.toString();
     }
 
     public boolean isDebug() {

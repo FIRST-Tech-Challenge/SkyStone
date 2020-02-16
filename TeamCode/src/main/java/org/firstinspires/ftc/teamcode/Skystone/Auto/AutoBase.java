@@ -22,6 +22,7 @@ public class AutoBase extends LinearOpMode {
 
         robot.setDrivetrainMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.setDrivetrainMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.getOuttakeSpool().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         position2D = new Position2D(robot);
     }

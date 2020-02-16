@@ -86,7 +86,7 @@ public class GeneralTools {
     }
 
     public void backTillButtons(HardwareChassis robot) {
-        while((robot.touch_right.getState() && robot.touch_left.getState())) {
+        while((robot.touch_right.getState() && robot.touch_left.getState()) || (robot.touch_right.getState() && !robot.touch_left.getState()) || (!robot.touch_right.getState() && robot.touch_left.getState())) {
             omniWheel.setMotors(-0.4, 0, 0);
         }
         omniWheel.setMotors(0, 0, 0);

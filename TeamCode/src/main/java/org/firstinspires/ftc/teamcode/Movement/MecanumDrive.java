@@ -7,31 +7,28 @@ import org.firstinspires.ftc.teamcode.Utility.RobotHardware;
 
 public class MecanumDrive extends Drivebase {
 
-    public MecanumDrive(RobotHardware robotHardware){
-
-        this.rightFront = robotHardware.rightFront;
-        this.leftFront = robotHardware.leftFront;
-        this.leftBack = robotHardware.leftBack;
-        this.rightBack = robotHardware.rightBack;
-
-    }
+    public MecanumDrive(){}
 
     @Override
     public void initialize(){
-        setRunMode("withEncoder");
-        setPowerBehavior("coast");
-        resetDriveEncoders();
+        lf = 0;
+        rf = 0;
+        lb = 0;
+        rb = 0;
+
         reverseMotors();
+        setRunMode("withoutEncoder");
+        setPowerBehavior("brake");
 
     }
 
     @Override
     public void update(){
 
-        rightFront.setPower(rf);
-        leftFront.setPower(lf);
-        leftBack.setPower(lb);
-        rightBack.setPower(rb);
+        RobotHardware.rightFront.setPower(rf);
+        RobotHardware.leftFront.setPower(lf);
+        RobotHardware.leftBack.setPower(lb);
+        RobotHardware.rightBack.setPower(rb);
 
     }
 
@@ -43,10 +40,10 @@ public class MecanumDrive extends Drivebase {
           |          A
           V          |
         */
-        lf = velY + velX*1.3 - velHeading/2;
-        rf = velY - velX*1.3 + velHeading/2;
-        lb = velY - velX*1.3 - velHeading/2;
-        rb = velY + velX*1.3 + velHeading/2;
+        lf = velY + velX*1.1 - velHeading/2;
+        rf = velY - velX*1.1 + velHeading/2;
+        lb = velY - velX*1.1 - velHeading/2;
+        rb = velY + velX*1.1 + velHeading/2;
 
     }
 
@@ -64,48 +61,49 @@ public class MecanumDrive extends Drivebase {
     private void setPowerBehavior(String behavior){
 
         if(behavior.equals("brake")){
-            rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            RobotHardware.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            RobotHardware.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            RobotHardware.leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            RobotHardware.rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }else if(behavior.equals("coast")){
-            rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            RobotHardware.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            RobotHardware.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            RobotHardware.leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            RobotHardware.rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
     }
 
     private void setRunMode(String runMode){
 
         if(runMode.equals("withEncoder")){
-            rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            RobotHardware.rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            RobotHardware.leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            RobotHardware.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            RobotHardware.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }else if(runMode.equals("withoutEncoder")){
-            rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            RobotHardware.rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            RobotHardware.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            RobotHardware.leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            RobotHardware.rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
     }
 
     private void resetDriveEncoders(){
 
-        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RobotHardware.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RobotHardware.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RobotHardware.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RobotHardware.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     }
 
     private void reverseMotors(){
 
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        // Reverse the necessary motors so that when positive power is set to all four, the robot moves forward
+        RobotHardware.rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        RobotHardware.leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        RobotHardware.leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
+        RobotHardware.rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
     }
 

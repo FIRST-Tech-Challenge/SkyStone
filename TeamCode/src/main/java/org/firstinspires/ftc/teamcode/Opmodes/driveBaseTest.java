@@ -15,7 +15,6 @@ import org.firstinspires.ftc.teamcode.Utility.Timer;
 public class driveBaseTest extends LinearOpMode {
 
     // Declare OpMode Members
-    private RobotHardware robotHardware = new RobotHardware(hardwareMap);
     private OdometerIMU2W odometer;
     private MecanumDrive drivetrain;
     private Movement movement;
@@ -27,6 +26,8 @@ public class driveBaseTest extends LinearOpMode {
         waitForStart();
         timer.start();
         odometer.startTracking(0, 0, 0);
+        telemetry.addData("status","running");
+        telemetry.update();
 
         drivetrain.lf = 0.3;
         drivetrain.rf = 0.3;
@@ -34,21 +35,24 @@ public class driveBaseTest extends LinearOpMode {
         drivetrain.rb = 0.3;
         drivetrain.update();
 
-        timer.waitMillis(1000);
+        timer.waitMillis(5000);
 
         drivetrain.freeze();
 
     }
 
     private void initialize(){
-        robotHardware.hardwareMap();
+        RobotHardware.hardwareMap(hardwareMap);
 
-        odometer = new OdometerIMU2W(robotHardware);
-        drivetrain = new MecanumDrive(robotHardware);
+        odometer = new OdometerIMU2W();
+        drivetrain = new MecanumDrive();
         timer = new Timer(this, odometer);
         movement = new Movement(this, drivetrain, odometer);
         drivetrain.initialize();
         odometer.initialize();
+
+        telemetry.addData("status","initialized");
+        telemetry.update();
 
     }
 }

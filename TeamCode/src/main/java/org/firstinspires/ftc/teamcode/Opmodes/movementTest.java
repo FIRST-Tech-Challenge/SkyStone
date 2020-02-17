@@ -5,12 +5,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Movement.Localization.OdometerIMU2W;
 import org.firstinspires.ftc.teamcode.Movement.MecanumDrive;
+import org.firstinspires.ftc.teamcode.Movement.MotionPlanning.RobotPoint;
 import org.firstinspires.ftc.teamcode.Movement.Movement;
 import org.firstinspires.ftc.teamcode.Utility.RobotHardware;
 import org.firstinspires.ftc.teamcode.Utility.Timer;
+import java.util.ArrayList;
 
-@Autonomous(name="Odometer Test", group="Testing")
-public class odometerTest extends LinearOpMode {
+@Autonomous(name="Movement Test", group="Testing")
+public class movementTest extends LinearOpMode {
 
     // Declare OpMode Members
     private OdometerIMU2W odometer;
@@ -27,16 +29,11 @@ public class odometerTest extends LinearOpMode {
         telemetry.addData("status","running");
         telemetry.update();
 
-        while(opModeIsActive()){
-            odometer.update();
-            telemetry.addData("Vertical", odometer.vertical);
-            telemetry.addData("Horizontal", odometer.horizontal);
-            telemetry.addData("X", odometer.x);
-            telemetry.addData("Y", odometer.y);
-            telemetry.addData("Heading", odometer.heading);
-            telemetry.update();
+        movement.setGlobalVelocity(0.4, 0, 0.8);
 
-        }
+        timer.waitMillis(5000);
+
+        drivetrain.freeze();
 
     }
 

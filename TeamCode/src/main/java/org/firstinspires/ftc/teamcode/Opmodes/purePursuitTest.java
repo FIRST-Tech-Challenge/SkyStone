@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Movement.Localization.OdometerIMU2W;
 import org.firstinspires.ftc.teamcode.Movement.MecanumDrive;
+import org.firstinspires.ftc.teamcode.Movement.MotionPlanning.PathingAgent;
 import org.firstinspires.ftc.teamcode.Movement.MotionPlanning.RobotPoint;
 import org.firstinspires.ftc.teamcode.Movement.Movement;
 import org.firstinspires.ftc.teamcode.Utility.RobotHardware;
@@ -15,7 +16,6 @@ import java.util.ArrayList;
 public class purePursuitTest extends LinearOpMode {
 
     // Declare OpMode Members
-    private RobotHardware robotHardware = new RobotHardware(hardwareMap);
     private OdometerIMU2W odometer;
     private MecanumDrive drivetrain;
     private Movement movement;
@@ -27,26 +27,33 @@ public class purePursuitTest extends LinearOpMode {
         waitForStart();
         timer.start();
         odometer.startTracking(0, 0, 0);
+        telemetry.addData("status","running");
+        telemetry.update();
 
         ArrayList<RobotPoint> testPath = new ArrayList<>();
-        testPath.add(new RobotPoint(0, 50, 0));
-        testPath.add(new RobotPoint(50, 50, 0));
+        testPath.add(new RobotPoint(0, 0, 0, 0.7, 20));
+        testPath.add(new RobotPoint(0, 110, -90, 0.7, 20));
+        testPath.add(new RobotPoint(90, 110, -90, 0.7, 20));
+        RobotPoint lastPoint = new RobotPoint(0,0,0, 0, 0);
+        lastPoint.isLastPoint = true;
+        testPath.add(lastPoint);
 
-        movement.followPath(6, testPath);
-
-        drivetrain.freeze();
+        movement.followPath(testPath);
 
     }
 
     private void initialize(){
-        robotHardware.hardwareMap();
+        RobotHardware.hardwareMap(hardwareMap);
 
-        odometer = new OdometerIMU2W(robotHardware);
-        drivetrain = new MecanumDrive(robotHardware);
+        odometer = new OdometerIMU2W();
+        drivetrain = new MecanumDrive();
         timer = new Timer(this, odometer);
         movement = new Movement(this, drivetrain, odometer);
         drivetrain.initialize();
         odometer.initialize();
+
+        telemetry.addData("status","initialized");
+        telemetry.update();
 
     }
 }

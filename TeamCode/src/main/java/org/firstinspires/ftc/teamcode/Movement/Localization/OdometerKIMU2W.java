@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-public class OdometerIMU2W extends Odometer{
+public class OdometerKIMU2W extends Odometer{
 
     /* Top-Down View of The Bottom of a Robot
 
@@ -35,8 +35,8 @@ public class OdometerIMU2W extends Odometer{
     Odometer measurements can be in whatever units you want, as long as you use the same units for every constant
     */
 
-    private double horizontalOffset = 6.24;
-    private double verticalOffset = -16.1;
+    private double horizontalOffset = -6.24;
+    private double verticalOffset = 16.1;
 
     private double verticalDirection = -1;
     private double horizontalDirection = 1;
@@ -52,14 +52,14 @@ public class OdometerIMU2W extends Odometer{
     private double ticksToDistance;
     // Math Variables
     private double headingChange, headingImu, lastHeadingImu;
-    private double verticallAdjust, verticalExtra;
+    private double verticallAdjust;
     private double horizontalAdjust, horizontalExtra;
     private double[] positionChangeVertical = {0, 0}; //Position change vector from vertical encoders
     private double[] positionChangeHorizontal = {0, 0}; //Position change vector from horizontal encoder
     private double[] totalRelativeMovement = {0, 0};
     private double[] totalPositionChange = {0, 0};
 
-    public OdometerIMU2W(){
+    public OdometerKIMU2W(){
 
         this.verticalEncoder = RobotHardware.intakeLeft;
         this.horizontalEncoder = RobotHardware.intakeRight;
@@ -109,12 +109,23 @@ public class OdometerIMU2W extends Odometer{
 
         headingRadians += headingChange;
 
-        // Calculating the position-change-vector from vertical encoder
-        verticallAdjust = verticalOffset * headingChange;
-        verticalExtra = verticalChange - verticallAdjust;
+        if(headingChange == 0){
+            positionChangeVertical[0] = 0;
+            positionChangeVertical[1] = verticalChange;
 
-        positionChangeVertical[1] = Math.cos(headingChange) * verticalExtra;
-        positionChangeVertical[0] = Math.sin(headingChange) * verticalExtra;
+        }else{
+            if(headingChange < 0){
+                verticallAdjust = verticalChange/headingChange;
+
+                positionChangeVertical[0] = Math.cos(headingChange) * (verticallAdjust + verticalOffset) - (verticallAdjust + verticalOffset);
+                positionChangeVertical[1] = Math.sin(headingChange) * (verticallAdjust + verticalOffset);
+            }else {
+                verticallAdjust = verticalChange/(-headingChange);
+
+                positionChangeVertical[0] = (verticallAdjust - verticalOffset) - Math.cos(-headingChange) * (verticallAdjust - verticalOffset);
+                positionChangeVertical[1] = Math.sin(-headingChange) * (verticallAdjust - verticalOffset);
+            }
+        }
 
         //Calculating the position-change-vector from horizontal encoder
         horizontalAdjust = horizontalOffset * headingChange;

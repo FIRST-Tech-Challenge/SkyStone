@@ -28,8 +28,8 @@ public class Odometer3W extends Odometer{
     Odometer measurements can be in whatever units you want, as long as you use the same units for every constant
     */
 
-    private double horizontalOffset = 10;
-    private double verticalOffset = 10;
+    private double horizontalOffset = 6.24;
+    private double verticalOffset = 16.1;
 
     private double rightVerticalDirection = 1;
     private double leftVerticalDirection = 1;
@@ -51,11 +51,11 @@ public class Odometer3W extends Odometer{
     private double[] totalRelativeMovement = {0, 0};
     private double[] totalPositionChange = {0, 0};
 
-    public Odometer3W(RobotHardware robotHardware){
+    public Odometer3W(){
 
-        this.leftVerticalEncoder = robotHardware.leftBack;
-        this.rightVerticalEncoder = robotHardware.rightFront;
-        this.horizontalEncoder = robotHardware.rightBack;
+        this.leftVerticalEncoder = RobotHardware.leftBack;
+        this.rightVerticalEncoder = RobotHardware.rightFront;
+        this.horizontalEncoder = RobotHardware.rightBack;
 
     }
 

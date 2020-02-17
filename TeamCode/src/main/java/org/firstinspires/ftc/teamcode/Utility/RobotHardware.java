@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Utility;
 
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -7,20 +8,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class RobotHardware {
 
-    private HardwareMap hardwareMap;
     //Drive Motors
-    public DcMotor rightFront, leftFront, leftBack, rightBack; //Drive Motor Objects
+    public static DcMotor rightFront, leftFront, leftBack, rightBack; //Drive Motor Objects
     //IMU
-    public BNO055IMU imu;
+    public static BNO055IMU imu;
     //Intake Motors
-    public DcMotor intakeLeft, intakeRight;
+    public static DcMotor intakeLeft, intakeRight;
 
-    public RobotHardware(HardwareMap hardwareMap){
-        this.hardwareMap = hardwareMap;
-
-    }
-
-    public void hardwareMap() {
+    public static void hardwareMap(HardwareMap hardwareMap) {
 
         rightFront = hardwareMap.dcMotor.get("driveFrontRight");
         leftFront = hardwareMap.dcMotor.get("driveFrontLeft");
@@ -32,5 +27,12 @@ public class RobotHardware {
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
+    }
+
+    public static void testHardware(){
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightFront.setPower(0.3);
     }
 }

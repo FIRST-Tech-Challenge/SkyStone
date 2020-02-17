@@ -70,8 +70,6 @@ public class DetectionZone implements Comparable<DetectionZone> {
 
         int boundingRectangleXEnd = boundingRectangleXStart + boundingRectangleWidth;
 
-
-
         if (
             // (1) X values of bounding rectangle completely inside detection zone
 

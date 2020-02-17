@@ -8,7 +8,7 @@ import com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants;
 @Config
 public class SkystoneDriveConstants extends DriveConstants {
 
-    private static DriveConstraints DRIVE_CONSTRAINTS = new DriveConstraints(40, 20.0, 0.0,
+    private static DriveConstraints DRIVE_CONSTRAINTS = new DriveConstraints(80, 30.0, 0.0,
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0);
     private static PIDCoefficients TRANSLATIONAL_PID_COEFFICIENTS = new PIDCoefficients(4.2D, 0, 0);
     private static PIDCoefficients HEADING_PID_COEFFICIENTS = new PIDCoefficients(0.295D, 0, 0);

@@ -88,6 +88,8 @@ public class TntSkystoneDetector extends DogeCVDetector {
 
     private AtomicReference<DetectionZone> bestScoringZone = new AtomicReference<>(middleZone); // have to start somewhere!
 
+    private AtomicReference<DetectionZone> secondBestScoringZone = new AtomicReference<>(null);
+
     List<DetectionZone> detectionZones = new ArrayList<>();
 
     private boolean startSearching;
@@ -205,6 +207,7 @@ public class TntSkystoneDetector extends DogeCVDetector {
         Collections.sort(detectionZones);
         DetectionZone skystoneZone = detectionZones.get(detectionZones.size() - 1);
         bestScoringZone.set(skystoneZone);
+        secondBestScoringZone.set(detectionZones.get(1));
 
         // Show where the pipeline is looking for skystone contours
         Imgproc.rectangle(displayMat, new Point(0, 0), new Point(106, 239), new Scalar(255, 192, 203), 4);
@@ -296,6 +299,10 @@ public class TntSkystoneDetector extends DogeCVDetector {
 
     public DetectionZone getBestScoringZone() {
         return bestScoringZone.get();
+    }
+
+    public DetectionZone getSecondBestScoringZone() {
+        return secondBestScoringZone.get();
     }
 
     private void writeLogLine(String line) {

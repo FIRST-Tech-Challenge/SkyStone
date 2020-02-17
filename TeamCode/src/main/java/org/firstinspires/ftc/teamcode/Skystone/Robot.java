@@ -62,8 +62,8 @@ public class Robot {
     private Servo rightFoundation;
 
     // Outtake Slide Positions
-    public final double OUTTAKE_SLIDE_EXTENDED = 0.01;
-    public final double OUTTAKE_SLIDE_RETRACTED = 1;
+    public final double OUTTAKE_SLIDE_EXTENDED = 0.1;
+    public final double OUTTAKE_SLIDE_RETRACTED = 0.85;
     public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = 0.27; // First peg .27, second peg .121
 
     // Clamp positions

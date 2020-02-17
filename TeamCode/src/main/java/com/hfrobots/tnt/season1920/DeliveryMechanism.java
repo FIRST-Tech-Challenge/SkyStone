@@ -109,6 +109,10 @@ public class DeliveryMechanism {
     public final static double FINGER_GRIP = 0.57; // 0.0;
     public final static double FINGER_UNGRIP = 1.0;
 
+    public final static double EJECTION_EJECT_POSITION = 0.328;
+    public final static double EJECTION_STOWED_POSITION = 0.0;
+
+    private Servo ejectorServo;
 
     public DeliveryMechanism(SimplerHardwareMap hardwareMap, Telemetry telemetry, Ticker ticker) {
         this.telemetry = telemetry;
@@ -119,6 +123,8 @@ public class DeliveryMechanism {
 
         wristServo = hardwareMap.get(Servo.class, "wristServo");
         fingerServo = hardwareMap.get(Servo.class, "fingerServo");
+        ejectorServo = hardwareMap.get(Servo.class, "ejectorServo");
+        ejectorServo.setPosition(EJECTION_STOWED_POSITION);
 
         liftMotor = NinjaMotor.asNeverest20Orbital(hardwareMap.get(DcMotor.class, "liftMotor"));
 
@@ -149,6 +155,12 @@ public class DeliveryMechanism {
     public void setIntakeVelocity(double velocity) {
         leftIntakeMotor.setPower(velocity);
         rightIntakeMotor.setPower(velocity);
+
+        if (velocity < 0) {
+            ejectorServo.setPosition(EJECTION_EJECT_POSITION);
+        } else {
+            ejectorServo.setPosition(EJECTION_STOWED_POSITION);
+        }
     }
 
     public void gripBlock() {

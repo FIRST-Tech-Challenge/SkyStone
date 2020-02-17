@@ -82,7 +82,10 @@ public class PlayerControlled extends OpMode {
 
 
         //lift
-        if (gamepad2.left_stick_y < 0) {
+        if (gamepad2.left_stick_y < 0 && (robot.motor_lift_left.getCurrentPosition() >= -10*712.6 && robot.motor_lift_right.getCurrentPosition() <= 10*712.6)) {  // override/ignore zero
+            robot.motor_lift_left.setPower(gamepad2.left_stick_y); //0.1*
+            robot.motor_lift_right.setPower(-gamepad2.left_stick_y); //-0.1*
+        } else if (gamepad2.left_stick_y < 0 && gamepad2.b) {  // override/ignore zero
             robot.motor_lift_left.setPower(gamepad2.left_stick_y); //0.1*
             robot.motor_lift_right.setPower(-gamepad2.left_stick_y); //-0.1*
         } else if (gamepad2.left_stick_y > 0 && (robot.motor_lift_left.getCurrentPosition() <= liftZeros[0] && robot.motor_lift_right.getCurrentPosition() >= liftZeros[1])) {
@@ -136,7 +139,6 @@ public class PlayerControlled extends OpMode {
         telemetry.addData("LiftRpos: ", (robot.motor_lift_right.getCurrentPosition() - liftZeros[1]) / 712.6);
         telemetry.addData("ExtenderPos", robot.motor_extender.getCurrentPosition()/195.4);
         telemetry.update();
-
     }
 
     public void setZeros() {

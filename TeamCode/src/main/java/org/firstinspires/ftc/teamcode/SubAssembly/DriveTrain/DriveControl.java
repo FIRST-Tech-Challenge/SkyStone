@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.SubAssembly.Sensors.ColorControl;
+import org.firstinspires.ftc.teamcode.SubAssembly.Sensors.IMUcontrol;
 
 public class DriveControl {
     private LinearOpMode opmode = null;
@@ -23,7 +24,10 @@ public class DriveControl {
     private double CONVERT_DEG_TO_CM = (360.0 / (2 * 3.1415 * ROBOT_RADIUS_CM));
     private double RUN_TO_TOLERANCE_CM = 1.0;
     private ElapsedTime runtime = new ElapsedTime();
-    private ColorControl Color = new ColorControl();
+
+    // public sensors
+    public ColorControl Color = new ColorControl();
+    public IMUcontrol IMU = new IMUcontrol();
 
     public void init(LinearOpMode opMode) {
         HardwareMap hwMap;
@@ -70,6 +74,7 @@ public class DriveControl {
         ((DcMotorEx) BackRightM).setTargetPositionTolerance(tolerance);
 
         Color.init(opMode);
+        IMU.init(opMode);
     }
 
     // delays for a fixed number of seconds
@@ -306,21 +311,31 @@ public class DriveControl {
                 speed, -speed, distCM);
     }
 
-    public void driveUntilColor(double speed) {
+    public void turnToAngle(double speed, double toangleDEG) {
+        double angleDEG;
+        angleDEG = toangleDEG - IMU.getAngle();
+        while (angleDEG > 180.0) angleDEG -= 360.0;
+        while (angleDEG < -180.0) angleDEG += 360.0;
+        if (angleDEG < 0.0)
+            turnLeftAngle(speed, -angleDEG);
+        else
+            turnRightAngle(speed, angleDEG);
+    }
 
+    public void driveUntilColor(double speed) {
+        // return immediately if color detected
         if (Color.isBlue() || Color.isRed())
             return;
-
+        // start moving forward ...
         moveForward(speed);
-
         do {
+            // debugging display
             Color.Telemetry();
             opmode.telemetry.update();
 
             opmode.sleep(40);
+            // ... until color is detected of stop requested
         } while (!Color.isBlue() && !Color.isRed() && !opmode.isStopRequested());
-
         stop();
     }
-
 }

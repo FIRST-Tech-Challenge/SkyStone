@@ -4,8 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class ColorControl {/* Declare private class object */
-    private LinearOpMode opmode = null; /* local copy of HardwareMap object from opmode class */
+public class ColorControl {
+    /* Declare private class object */
+    private LinearOpMode opmode = null;     /* local copy of opmode class */
     private ColorSensor sensorColor;
     private int COLOR_THRESHOLD = 8000;
 

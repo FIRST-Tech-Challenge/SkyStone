@@ -19,18 +19,10 @@ public class DriveAutoTest extends LinearOpMode {
     DriveControl Drive = new DriveControl();
     final double INCREMENT_SPEED = 0.1;
     double speed = 0.3;
-    final double INCREMENT_TIME = 0.1;
-    final double MIN_VALUE_TIME = 0.1;
-    final double MAX_VALUE_TIME = 5.0;
     double time = 2.0;
-    final double INCREMENT_DISTANCE = 1.0;
-    final double MIN_VALUE_DISTANCE = 10.0;
-    final double MAX_VALUE_DISTANCE = 50.0;
     double distance = 2.0;
-    final double INCREMENT_ANGLE = 5.0;
-    final double MIN_VALUE_ANGLE = 10.0;
-    final double MAX_VALUE_ANGLE = 180.0;
     double angle = 90.0;
+    double toangle = 0.0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -76,6 +68,15 @@ public class DriveAutoTest extends LinearOpMode {
                     testDistance();
                     break;
                 case 2:
+                    testAngle();
+                    break;
+                case 3:
+                    testToAngle();
+                    break;
+                case 4:
+                    testColor();
+                    break;
+                default:
                     mode = 0;
                     break;
             }
@@ -86,13 +87,22 @@ public class DriveAutoTest extends LinearOpMode {
         }
     }
 
-    public void testTime() {
-        // check time input
+    public double adjustValue(double val, double inc, double min, double max) {
         if (egamepad1.left_bumper.pressed)
-            time += INCREMENT_TIME;
+            val += inc;
         if (egamepad1.left_trigger.pressed)
-            time -= INCREMENT_TIME;
-        time = Math.max(MIN_VALUE_TIME, Math.min(time, MAX_VALUE_TIME));
+            val -= inc;
+        val = Math.max(min, Math.min(val, max));
+        return val;
+    }
+
+    public void testTime() {
+        final double INC_TIME = 0.1;
+        final double MIN_TIME = 0.1;
+        final double MAX_TIME = 5.0;
+
+        // adjust values
+        time = adjustValue(time, INC_TIME, MIN_TIME, MAX_TIME);
         telemetry.addLine("Time: " + time);
 
         // check for move input
@@ -112,19 +122,13 @@ public class DriveAutoTest extends LinearOpMode {
     }
 
     public void testDistance() {
-        // check time input
-        if (egamepad1.left_bumper.pressed)
-            distance += INCREMENT_DISTANCE;
-        if (egamepad1.left_trigger.pressed)
-            distance -= INCREMENT_DISTANCE;
-        distance = Math.max(MIN_VALUE_DISTANCE, Math.min(time, MAX_VALUE_DISTANCE));
+        final double INC_DISTANCE = 1.0;
+        final double MIN_DISTANCE = 10.0;
+        final double MAX_DISTANCE = 50.0;
+
+        // adjust values
+        distance = adjustValue(distance, INC_DISTANCE, MIN_DISTANCE, MAX_DISTANCE);
         telemetry.addLine("Distance: " + distance);
-        if (egamepad1.x.pressed)
-            angle += INCREMENT_ANGLE;
-        if (egamepad1.y.pressed)
-            angle -= INCREMENT_ANGLE;
-        angle = Math.max(MIN_VALUE_ANGLE, Math.min(time, MAX_VALUE_ANGLE));
-        telemetry.addLine("Angle: " + angle);
 
         // check for move input
         if (egamepad1.dpad_up.released) {
@@ -135,10 +139,51 @@ public class DriveAutoTest extends LinearOpMode {
             Drive.strafeLeftDistance(speed, distance);
         } else if (egamepad1.dpad_right.released) {
             Drive.strafeRightDistance(speed, distance);
-        } else if (gamepad1.left_stick_x < -0.1) {
-            Drive.turnRightAngle(speed, angle);
-        } else if (gamepad1.left_stick_x > 0.1) {
+        }
+    }
+
+    public void testAngle() {
+        final double INC_ANGLE = 5.0;
+        final double MIN_ANGLE = 10.0;
+        final double MAX_ANGLE = 180.0;
+
+        // adjust values
+        angle = adjustValue(angle, INC_ANGLE, MIN_ANGLE, MAX_ANGLE);
+        telemetry.addLine("Angle: " + angle);
+
+        // check for move input
+        if (egamepad1.dpad_left.released) {
             Drive.turnLeftAngle(speed, angle);
+        } else if (egamepad1.dpad_right.released) {
+            Drive.turnRightAngle(speed, angle);
+        }
+    }
+
+    public void testToAngle() {
+        final double INC_TO_ANGLE = 5.0;
+        final double MIN_TO_ANGLE = -180.0;
+        final double MAX_TO_ANGLE = 180.0;
+
+        // adjust values
+        toangle = adjustValue(toangle, INC_TO_ANGLE, MIN_TO_ANGLE, MAX_TO_ANGLE);
+        telemetry.addLine("To Angle: " + toangle);
+        telemetry.addLine("Current Angle: " + Drive.IMU.getAngle());
+
+        // check for move input
+        if (egamepad1.dpad_left.released) {
+            Drive.turnToAngle(speed, toangle);
+        } else if (egamepad1.dpad_right.released) {
+            Drive.turnToAngle(speed, toangle);
+        }
+    }
+
+    public void testColor() {
+
+        Drive.Color.Telemetry();
+
+        // check for move input
+        if (egamepad1.dpad_up.released) {
+            Drive.driveUntilColor(speed);
         }
     }
 }

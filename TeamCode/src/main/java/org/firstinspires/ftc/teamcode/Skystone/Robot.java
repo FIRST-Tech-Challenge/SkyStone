@@ -96,8 +96,10 @@ public class Robot {
     public final long DELAY_CLAMP_ON_CLAMP = 700;
 
     // Constants for spool encoder positions
-    public final double SPOOL_FIRSTLEVEL_POSITION = -130;
-    public final double SPOOL_LEVEL_INCREMENT = 330;
+    public final double SPOOL_FIRSTLEVEL_POSITION = -56;
+    public final int SPOOL_LEVEL_INCREMENT = 400;
+//    public final int[] spoolHeights = {150,365,728, 1040, 1385, 1729, 2062, 2411, 2743, 3100, 3435, 3790};
+    public final int[] spoolHeights = {150,380,743, 1055, 1400, 1744, 2077, 2426, 2758, 3115, 3450, 3805};
 
     //robots position
     private Point robotPos = new Point();

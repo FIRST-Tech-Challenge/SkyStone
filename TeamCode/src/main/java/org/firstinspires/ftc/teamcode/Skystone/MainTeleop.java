@@ -80,8 +80,6 @@ public class MainTeleop extends LinearOpMode {
         position2D.startOdometry();
 
         while (opModeIsActive()) {
-            telemetry.update();
-
             robotModeLogic();
 
             slowDriveLogic();
@@ -109,32 +107,82 @@ public class MainTeleop extends LinearOpMode {
                 telemetry.addLine("XPODRight " + robot.getfRight().getCurrentPosition());
                 telemetry.addLine("YPOD " + robot.getbLeft().getCurrentPosition());
             }
+            telemetry.addLine("target:" +spoolTargetPosition);
+            telemetry.addLine("lastDropPosition:" +lastDropPosition);
+            telemetry.addLine("index:" + indexPosition);
+
+            telemetry.update();
+
         }
     }
+    boolean isTogglingRB;
+    int indexPosition;
+    double spoolPower;
 
     private void spoolLogic() {
-        double spoolPower = -gamepad2.left_stick_y;
-
-        if (spoolPower <= -0.85) {
-            spoolPower = -gamepad2.left_stick_y;
-        } else if (spoolPower < 0) {
-            spoolPower /= 6;
-        }
-
-        if (gamepad2.left_trigger != 0) {
-            spoolPower = .15;
-        }
-
         spoolPosition = robot.getOuttakeSpool().getCurrentPosition() - spoolOffset;
+
+        if (!gamepad2.dpad_down && isG2DPDPushed) {
+            isMovingSpoolToPosition = true;
+            if(lastDropPosition == 0){
+                spoolTargetPosition = 0;
+            }else {
+                if(isCapped){
+                    spoolTargetPosition = spoolTargetPosition - 200;
+                }else {
+                    spoolTargetPosition = spoolTargetPosition - 150;
+                }
+            }
+
+            isG2DPDPushed = false;
+        } else if (gamepad2.dpad_down) {
+            isG2DPDPushed = true;
+        }
+
+        if (gamepad2.right_bumper && !isTogglingRB) {
+            isTogglingRB = true;
+            double centerPosition = lastDropPosition;
+
+            if(lastDropPosition == 0){
+                indexPosition = 0;
+            }else {
+                for(int i = 0;i<robot.spoolHeights.length;i++){
+                    if(robot.spoolHeights[i] > centerPosition){
+                        indexPosition = i+1;
+                        break;
+                    }
+                }
+            }
+
+            spoolTargetPosition = robot.spoolHeights[indexPosition];
+
+            isMovingSpoolToPosition = true;
+        }else if(!gamepad2.right_bumper){
+            isTogglingRB = false;
+        }
+
+        if (isMovingSpoolToPosition) {
+            if (spoolTargetPosition < 0) {
+                spoolTargetPosition = 0;
+            }
+            if (Math.abs(spoolPosition - spoolTargetPosition) < 50) {
+                spoolPower = .125;
+            }else if(spoolTargetPosition<spoolPosition){
+                spoolPower = (spoolTargetPosition-spoolPosition)/1200;
+            }else{
+                spoolPower = (spoolTargetPosition-spoolPosition)/200;
+            }
+        }
 
         // auto stack on git
 
         if (spoolPosition >= 4200) {
             if (spoolPower == 0) {
-                spoolPower += 0.15;
+                spoolPower = 0.125;
             }
             spoolPower = Math.min(spoolPower / 2, 0.15);
         }
+
         if (!gamepad2.left_bumper) {
             if (spoolPower < 0 && spoolPosition <= 0) {
                 spoolPower = 0;
@@ -147,6 +195,23 @@ public class MainTeleop extends LinearOpMode {
             spoolOffset += spoolPosition;
             isOverridingSlideFloor = false;
         }
+
+        //override mode
+        if(gamepad2.left_stick_y != 0){
+            isMovingSpoolToPosition = false;
+            isTogglingRB = false;
+        }
+        if(!isMovingSpoolToPosition){
+            spoolPower = -gamepad2.left_stick_y;
+        }
+        if (gamepad2.left_trigger != 0 && gamepad2.left_stick_y != 0) {
+            spoolPower = -gamepad2.left_stick_y/10000;
+        }else if(gamepad2.left_trigger != 0){
+            isTogglingRB = false;
+
+            spoolPower = .125;
+        }
+
 
         robot.getOuttakeSpool().setPower(spoolPower);
         robot.getOuttakeSpool2().setPower(spoolPower);
@@ -219,9 +284,10 @@ public class MainTeleop extends LinearOpMode {
 
         robot.allWheelDrive(fLPower, fRPower, bLPower, bRPower);
     }
-
+    boolean isCapped = false;
     private void capstoneLogic() {
         if (gamepad2.right_trigger != 0 && !toggleCap) {
+            isCapped = true;
             toggleCap = true;
             robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
             long startTime = SystemClock.elapsedRealtime();
@@ -319,7 +385,7 @@ public class MainTeleop extends LinearOpMode {
         }
 
         if (gamepad2.b && !isTogglingG2B) { // Deposit and Reset
-            lastDropPosition = robot.getOuttakeSpool().getCurrentPosition() + 250;
+            lastDropPosition = robot.getOuttakeSpool().getCurrentPosition();
             isMovingSpoolToPosition = false;
 
             isTogglingG2B = true;

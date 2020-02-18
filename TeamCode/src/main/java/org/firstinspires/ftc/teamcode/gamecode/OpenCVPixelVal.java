@@ -43,7 +43,7 @@ import java.util.List;
  * purposes. We also show how to get data from the pipeline to your OpMode.
  */
 @TeleOp
-public class OpenCVStaticPicture extends LinearOpMode
+public class OpenCVPixelVal extends LinearOpMode
 {
     OpenCvCamera phoneCam;
     StageSwitchingPipeline stageSwitchingPipeline;
@@ -70,6 +70,7 @@ public class OpenCVStaticPicture extends LinearOpMode
         while (opModeIsActive())
         {
             telemetry.addData("Num contours found", stageSwitchingPipeline.getNumContoursFound());
+
             telemetry.update();
             sleep(100);
         }
@@ -82,8 +83,10 @@ public class OpenCVStaticPicture extends LinearOpMode
      * to get data from the pipeline to your OpMode.
      */
     static class StageSwitchingPipeline extends OpenCvPipeline
-    {   Mat a = new Mat();
+    {
         List<MatOfPoint> contoursList = new ArrayList<>();
+        Mat OneChannel = new Mat();
+        Mat YCrCB = new Mat();
         int numContoursFound;
 
         enum Stage
@@ -118,30 +121,19 @@ public class OpenCVStaticPicture extends LinearOpMode
         @Override
         public Mat processFrame(Mat input)
         {
-            contoursList.clear();
+            Imgproc.cvtColor(input, YCrCB, Imgproc.COLOR_RGB2YCrCb);  //
 
-            /*
-             * This pipeline finds the contours of yellow blobs such as the Gold Mineral
-             * from the Rover Ruckus game.
-             */
-            Imgproc.cvtColor(input, a, Imgproc.COLOR_RGB2HSV);  //
-//            Core.extractChannel(yCbCrChan0Mat, yCbCrChan0Mat, 0); // extracts a channel of a thing
-//            Imgproc.threshold(yCbCrChan0Mat, thresholdMat, 200, 255, Imgproc.THRESH_BINARY_INV); // seperates out regions of an image between intensity of pixels
+            //Core.extractChannel(OneChannel, OneChannel, 2);
 
 
-//            Imgproc.threshold(thresholdMat,thresholdMat, 200, 255, Imgproc.THRESH_BINARY_INV); // seperates out regions of an image between intensity of pixels
-//
-////            Imgproc.findContours(thresholdMat, contoursList, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-////            numContoursFound = contoursList.size();
-////            input.copyTo(contoursOnFrameMat);
-////            Imgproc.drawContours(contoursOnFrameMat, contoursList, -1, new Scalar(0, 0, 255), 3, 8);
+
 
             switch (stageToRenderToViewport)
            {
 
                case IMAGE:
                {
-                   return a;
+                   return YCrCB;
                }
 
                 case RAW_IMAGE:
@@ -160,5 +152,6 @@ public class OpenCVStaticPicture extends LinearOpMode
         {
             return numContoursFound;
         }
+
     }
 }

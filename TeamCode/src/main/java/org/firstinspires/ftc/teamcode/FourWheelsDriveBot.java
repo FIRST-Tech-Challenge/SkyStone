@@ -277,6 +277,56 @@ public class FourWheelsDriveBot
                 rightRear.getCurrentPosition()));
     }
 
+    public void driveCurveByDistance(int direction, double distance, double curvePower,double maxPower) {
+        if (direction != DIRECTION_FORWARD && direction != DIRECTION_BACKWARD && direction != DIRECTION_LEFT && direction != DIRECTION_RIGHT){
+            String msg = String.format("Unaccepted direction value (%d) for driveStraightByGyro()", direction);
+            print(msg);
+            return;
+        }
+        // distance (in mm) = revolution * pi * diameter (100 mm)
+        int distanceTicks = (int) (distance / 3.1415 / 100 * DRIVING_MOTOR_TICK_COUNT);
+        int startingPosition = leftFront.getCurrentPosition();
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        int currentPosition = leftFront.getCurrentPosition();
+        while (Math.abs(currentPosition - startingPosition) < distanceTicks) {
+            RobotLog.d(String.format("driveCurveByDistance : Current: %d - Start:%d > 10 => power: %.3f , curvePower: %.3f", currentPosition, startingPosition, maxPower, curvePower));
+            switch (direction){
+                case DIRECTION_FORWARD:
+                    leftFront.setPower(maxPower - curvePower);
+                    rightFront.setPower(maxPower + curvePower);
+                    leftRear.setPower(maxPower - curvePower);
+                    rightRear.setPower(maxPower + curvePower);
+                    break;
+                case DIRECTION_BACKWARD:
+                    leftFront.setPower(- maxPower - curvePower);
+                    rightFront.setPower(- maxPower + curvePower);
+                    leftRear.setPower(- maxPower - curvePower);
+                    rightRear.setPower(- maxPower + curvePower);
+                    break;
+                case DIRECTION_LEFT:
+                    leftFront.setPower(- maxPower - curvePower);
+                    rightFront.setPower(+ maxPower + curvePower);
+                    leftRear.setPower(+ maxPower - curvePower);
+                    rightRear.setPower(- maxPower + curvePower);
+                    break;
+                case DIRECTION_RIGHT:
+                    leftFront.setPower(+ maxPower - curvePower);
+                    rightFront.setPower(- maxPower + curvePower);
+                    leftRear.setPower(- maxPower - curvePower);
+                    rightRear.setPower(+ maxPower + curvePower);
+                    break;
+            }
+            opMode.sleep(50);
+            currentPosition = leftFront.getCurrentPosition();
+        };
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftRear.setPower(0);
+        rightRear.setPower(0);
+    }
     public void driveByDistanceWithAcceleration(int direction, double distance, double maxPower, int accelerationSteps){
         // distance (in mm) = revolution * pi * diameter (100 mm)
         int target = (int)(distance / 3.1415 / 100 * DRIVING_MOTOR_TICK_COUNT);

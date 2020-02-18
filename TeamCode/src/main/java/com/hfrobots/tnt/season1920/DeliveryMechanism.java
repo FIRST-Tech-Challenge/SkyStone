@@ -95,7 +95,7 @@ public class DeliveryMechanism {
 
     protected final Telemetry telemetry;
 
-    public final static double SHOULDER_OUT = 1.0;
+    public final static double SHOULDER_OUT = 0.73;
     public final static double SHOULDER_STOW = 0;
     boolean shoulderFar = false;
 
@@ -153,11 +153,28 @@ public class DeliveryMechanism {
     }
 
     public void setIntakeVelocity(double velocity) {
+        if (velocity < 0) {
+            if (!unsafe.isPressed()) {
+                velocity = -0.2;
+            }
+        }
+
         leftIntakeMotor.setPower(velocity);
         rightIntakeMotor.setPower(velocity);
 
         if (velocity < 0) {
-            ejectorServo.setPosition(EJECTION_EJECT_POSITION);
+            // Safety - there's only certain states
+            // where it is safe to eject, namely LoadingState,
+            // or when position is above some certain height, let's say 1/2 of the way
+            // up?
+
+            if (getCurrentStateName().equals(LoadingState.class.getSimpleName()) ||
+                    liftMotor.getCurrentPosition() > LIFT_MAX_HEIGHT_POS / 2) {
+                ejectorServo.setPosition(EJECTION_EJECT_POSITION);
+            } else {
+                telemetry.addData("DM", "Eject servo - not safe");
+                ejectorServo.setPosition(EJECTION_STOWED_POSITION);
+            }
         } else {
             ejectorServo.setPosition(EJECTION_STOWED_POSITION);
         }
@@ -585,7 +602,7 @@ public class DeliveryMechanism {
                     return atMinState;
                 }
 
-                liftMotor.setPower(liftThrottlePos);
+                liftMotor.setPower(liftThrottlePos * .5);
 
                 return this;
             } else if (liftThrottlePos > 0 /*up command given*/) {
@@ -930,6 +947,8 @@ public class DeliveryMechanism {
             if (!initialized) {
                 Log.d(LOG_TAG, "Running states for stowing the arm");
 
+                ungripblock();
+
                 stowingArmState = createStowWristStates(null, telemetry);
                 initialized = true;
                 stallDetector = new StallDetector(ticker, 1, TimeUnit.SECONDS.toMillis(2));
@@ -1233,7 +1252,7 @@ public class DeliveryMechanism {
 
         @Override
         public State doStuffAndGetNextState() {
-            gripBlock();
+            ungripblock();
 
             stowed();
 

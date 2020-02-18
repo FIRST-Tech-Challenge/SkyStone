@@ -81,25 +81,40 @@ public class PlayerControlled extends OpMode {
         }
 
 
-        //lift
-        if (gamepad2.left_stick_y < 0 && (robot.motor_lift_left.getCurrentPosition() >= -10*712.6 && robot.motor_lift_right.getCurrentPosition() <= 10*712.6)) {  // override/ignore zero
-            robot.motor_lift_left.setPower(gamepad2.left_stick_y); //0.1*
-            robot.motor_lift_right.setPower(-gamepad2.left_stick_y); //-0.1*
-        } else if (gamepad2.left_stick_y < 0 && gamepad2.b) {  // override/ignore zero
-            robot.motor_lift_left.setPower(gamepad2.left_stick_y); //0.1*
-            robot.motor_lift_right.setPower(-gamepad2.left_stick_y); //-0.1*
-        } else if (gamepad2.left_stick_y > 0 && (robot.motor_lift_left.getCurrentPosition() <= liftZeros[0] && robot.motor_lift_right.getCurrentPosition() >= liftZeros[1])) {
-            robot.motor_lift_left.setPower(gamepad2.left_stick_y);
-            robot.motor_lift_right.setPower(-gamepad2.left_stick_y);
-        } else if (gamepad2.left_stick_y > 0 && gamepad2.b) {  // override/ignore zero
+        //* lift *//
+        // upper limit
+        if (gamepad2.left_stick_y < 0 && (
+                (robot.motor_lift_left.getCurrentPosition() - liftZeros[0]) >= -7126 &&
+                (robot.motor_lift_right.getCurrentPosition() - liftZeros[1]) <= 7126
+        )) {
             robot.motor_lift_left.setPower(gamepad2.left_stick_y);
             robot.motor_lift_right.setPower(-gamepad2.left_stick_y);
         }
-        else { // set all motors 0 if nothing is pressed
+        // override/ignore upper limit
+        else if (gamepad2.left_stick_y < 0 && gamepad2.b) {
+            robot.motor_lift_left.setPower(gamepad2.left_stick_y);
+            robot.motor_lift_right.setPower(-gamepad2.left_stick_y);
+        }
+
+        // lower limit
+        else if (gamepad2.left_stick_y > 0 && (
+                robot.motor_lift_left.getCurrentPosition() <= liftZeros[0] &&
+                robot.motor_lift_right.getCurrentPosition() >= liftZeros[1]
+        )) {
+            robot.motor_lift_left.setPower(gamepad2.left_stick_y);
+            robot.motor_lift_right.setPower(-gamepad2.left_stick_y);
+        }
+        // override/ignore lower limit
+        else if (gamepad2.left_stick_y > 0 && gamepad2.b) {
+            robot.motor_lift_left.setPower(gamepad2.left_stick_y);
+            robot.motor_lift_right.setPower(-gamepad2.left_stick_y);
+        }
+
+        // set all motors 0 if nothing is pressed
+        else {
             robot.motor_lift_left.setPower(0);
             robot.motor_lift_right.setPower(0);
         }
-
         // set new zero-point
         if (gamepad2.a) {
             setZeros();

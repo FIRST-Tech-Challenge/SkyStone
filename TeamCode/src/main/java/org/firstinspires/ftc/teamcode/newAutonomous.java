@@ -134,27 +134,27 @@ public class newAutonomous extends LinearOpMode{
                     Drive.TimeDelay(0.5);
                     Drive.moveBackwardDistance(0.8,40);
                     if (AllianceColor == true) {
-                        Drive.turnRightDistance(0.5, 50);
+                        Drive.turnRightAngle(0.5, 90);
                     }
                     else {
-                        Drive.turnLeftDistance(0.5,50);
+                        Drive.turnLeftAngle(0.5,90);
                     }
                     Drive.moveForwardDistance(0.8, 175);
                     if (AllianceColor == true) {
-                        Drive.turnRightDistance(0.5, 50);
+                        Drive.turnRightAngle(0.5, 90);
                     }
                     else {
-                        Drive.turnLeftDistance(0.5,50);
+                        Drive.turnLeftAngle(0.5,90);
                     }
                     Drive.moveBackwardDistance(0.8, 45);
                     FoundationGrabber.close();
                     Drive.TimeDelay(1.0);
                     Drive.moveForwardDistance(0.8, 40);
                     if (AllianceColor == true) {
-                        Drive.turnRightDistance(0.5, 50);
+                        Drive.turnRightAngle(0.5, 90);
                     }
                     else {
-                        Drive.turnLeftDistance(0.5,50);
+                        Drive.turnLeftAngle(0.5,90);
                     }
                     Drive.moveForwardDistance(0.8, 10.0);
                     newState(State.Stop);

@@ -18,7 +18,9 @@ public class DriveControl {
     private double GEARING = 2.0 / 3.0;
     private double ENCODER_LINES = 1120;
     private double WHEEL_CIRCUMFERENCE_CM = 3.1415 * (4 * 2.54);
+    private double ROBOT_RADIUS_CM = 103.0;
     private double CONVERT_CM_TO_ENCODER = GEARING * ENCODER_LINES / WHEEL_CIRCUMFERENCE_CM;
+    private double CONVERT_DEG_TO_CM = (360.0 / (2 * 3.1415 * ROBOT_RADIUS_CM));
     private double RUN_TO_TOLERANCE_CM = 1.0;
     private ElapsedTime runtime = new ElapsedTime();
     private ColorControl Color = new ColorControl();
@@ -292,27 +294,33 @@ public class DriveControl {
                 -speed, speed, distCM);
     }
 
-    public void turnLeftDistance(double speed, double distCM) {
+    public void turnLeftAngle(double speed, double angleDEG) {
+        double distCM = CONVERT_DEG_TO_CM * angleDEG;
         moveMotorsDistance(-speed, speed,
                 -speed, speed, distCM);
     }
 
-    public void turnRightDistance(double speed, double distCM) {
+    public void turnRightAngle(double speed, double angleDEG) {
+        double distCM = CONVERT_DEG_TO_CM * angleDEG;
         moveMotorsDistance(speed, -speed,
                 speed, -speed, distCM);
     }
 
-    public void DriveUntilColor(double speed) {
+    public void driveUntilColor(double speed) {
 
-        while (((Color.blueV < Color.COLOR_THRESHOLD) && (Color.redV < Color.COLOR_THRESHOLD))) {
-            Color.getBlue();
-            Color.getRed();
-            opmode.telemetry.addLine("redV: " + Color.redV);
-            opmode.telemetry.addLine("blueV: " + Color.blueV);
+        if (Color.isBlue() || Color.isRed())
+            return;
+
+        moveForward(speed);
+
+        do {
+            Color.Telemetry();
             opmode.telemetry.update();
-            moveForward(speed);
-        }
-        stop();
 
+            opmode.sleep(40);
+        } while (!Color.isBlue() && !Color.isRed() && !opmode.isStopRequested());
+
+        stop();
     }
+
 }

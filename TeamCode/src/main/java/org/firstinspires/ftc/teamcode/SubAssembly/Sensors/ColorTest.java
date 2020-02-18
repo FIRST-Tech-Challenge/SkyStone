@@ -17,7 +17,6 @@ public class ColorTest extends LinearOpMode {
         /* initialize sub-assemblies
          */
         ColorControl Color = new ColorControl();
-        DriveControl Drive = new DriveControl();
 
         GamepadWrapper egamepad1 = new GamepadWrapper(gamepad1);
         GamepadWrapper egamepad2 = new GamepadWrapper(gamepad2);
@@ -36,33 +35,7 @@ public class ColorTest extends LinearOpMode {
             egamepad1.updateEdge();
             egamepad2.updateEdge();
 
-            //Color.Telemetry();
-
-
-            if (egamepad1.b.pressed) {
-                Color.getRed();
-            } else if (egamepad1.x.pressed) {
-                Color.getBlue(); }
-             else if (egamepad1.a.pressed) {
-                Drive.DriveUntilColor(0.5);
-            }
-
-             /*
-            while (egamepad1.b.state) {
-                Color.getRed();
-                telemetry.addData("Red value: ", Color.redV);
-                telemetry.update();
-            }
-            while (egamepad1.x.state) {
-                Color.getBlue();
-                telemetry.addData("Blue value: ", Color.blueV);
-                telemetry.update();
-            }
-
-            */
-
-
-            //SubAssembly.test();
+            Color.Telemetry();
             telemetry.update();
 
             //let the robot have a little rest, sleep is healthy

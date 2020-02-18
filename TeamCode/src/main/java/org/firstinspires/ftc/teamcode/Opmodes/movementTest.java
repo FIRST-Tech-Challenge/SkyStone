@@ -29,9 +29,8 @@ public class movementTest extends LinearOpMode {
         telemetry.addData("status","running");
         telemetry.update();
 
-        movement.setGlobalVelocity(0.4, 0, 0.8);
-
-        timer.waitMillis(5000);
+        RobotPoint targetPoint = new RobotPoint(40, 40, 0, 0, 0);
+        movement.movetoPointConstants(targetPoint, 0.4, 0.2, 2);
 
         drivetrain.freeze();
 

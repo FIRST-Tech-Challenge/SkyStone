@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.Utility.RobotHardware;
 import org.firstinspires.ftc.teamcode.Utility.Timer;
 import java.util.ArrayList;
 
-@Autonomous(name="Pure Pursuit Test", group="Testing")
-public class purePursuitTest extends LinearOpMode {
+@Autonomous(name="Intake Auto Test", group="Testing")
+public class intakeBlockAuto extends LinearOpMode {
 
     // Declare OpMode Members
     private OdometerIMU2W odometer;
@@ -31,14 +31,26 @@ public class purePursuitTest extends LinearOpMode {
         telemetry.update();
 
         ArrayList<RobotPoint> testPath = new ArrayList<>();
-        testPath.add(new RobotPoint(0, 0, 0, 0.7, 30));
-        testPath.add(new RobotPoint(0, 121, -90, 0.7, 30));
-        testPath.add(new RobotPoint(140, 121, -90, 0.7, 30)); //This point is the final point, threshold is the final threshold
-        RobotPoint testPathGoal = new RobotPoint(150, 121, -90, 0.7,0);
+        testPath.add(new RobotPoint(0, 0, 0, 0.5, 7));
+        testPath.add(new RobotPoint(49, 40, 39, 0.5, 5));
+        testPath.add(new RobotPoint(24, 91, 44, 0.5, 5));
+        testPath.add(new RobotPoint(24, 91, 38, 0.5, 5));//This point is the final point, threshold is the final threshold
+        RobotPoint testPathGoal = new RobotPoint(18, 101, 23, 0.5,0);
         testPath.add(testPathGoal); //Extension of the path to keep the robot moving, the eventual goal of the movement
 
+        ArrayList<RobotPoint> deliverPath = new ArrayList<>();
+        deliverPath.add(new RobotPoint(15, 27, 60, 0.7, 10));
+        deliverPath.add(new RobotPoint(30, 10, 80, 0.5, 5));//This point is the final point, threshold is the final threshold
+        RobotPoint deliverPathGoal = new RobotPoint(59, 3, 90, 0.5,0);
+        deliverPath.add(testPathGoal); //Extension of the path to keep the robot moving, the eventual goal of the movement
+
         movement.followPath(testPath);
-        movement.movetoPointConstants(testPathGoal, 0.4, 0.4, 2);
+        movement.movetoPointConstants(testPathGoal, 0.4, 0.2, 2);
+
+        timer.waitMillis(50);
+
+        movement.followPath(deliverPath);
+        movement.movetoPointConstants(deliverPathGoal, 0.4, 0.3, 2);
 
     }
 

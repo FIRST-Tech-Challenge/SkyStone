@@ -27,11 +27,21 @@ public class Movement {
     public void followPath(ArrayList<RobotPoint> path){
 
         Proportional orient = new Proportional(0.06, 0.6);
+        RobotPoint lastPoint = path.get(path.size()-2); //Actually is the second to last point
 
         while(opMode.opModeIsActive()){
             RobotPoint targetPoint = PathingAgent.getTargetPoint(odometer.x, odometer.y, path);
 
             if(targetPoint.x == 404 || targetPoint.y == 404){ //If it's the end of the path, or there is no intersection
+                break;
+            }
+
+            // Checking if the robot is within a certain distance of the "last" point
+            double distanceX = lastPoint.x - odometer.x;
+            double distanceY = lastPoint.y - odometer.y;
+            double totalDistance = Math.hypot(distanceX, distanceY);
+
+            if(totalDistance < lastPoint.radius+5){
                 break;
             }
 
@@ -78,7 +88,7 @@ public class Movement {
     // Stand-alone Movement Functions
     public void movetoPointConstants(RobotPoint targetPoint, double speedFar, double speedNear, double arrivedThresh) {
 
-        Proportional orient = new Proportional(0.02, 0.2);
+        Proportional orient = new Proportional(0.02, 0.3);
 
         double xDist, yDist, distance, heading;
         double targSpeed, scale;
@@ -101,12 +111,15 @@ public class Movement {
             targVY = yDist * scale;
             // Verified ^
 
+            speedFinder.update(0, distance);
             orient.update(targetPoint.heading, heading);
             hCorrect = orient.correction;
 
             setGlobalVelocity(targVX, targVY, hCorrect);
 
             endCondition = (distance < arrivedThresh);
+
+            odometer.update();
 
         }while(!endCondition && opMode.opModeIsActive());
 

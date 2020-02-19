@@ -182,7 +182,7 @@ public class SkystoneAutonomous extends LinearOpMode{
 
                 case TurnFoundation:
                     if (AllianceColor == false) {
-                        Drive.turnRightDistance(0.5, 50);
+                        Drive.turnRightAngle(0.5, 90);
                     }
                     else {
                         Drive.turnLeftAngle(0.5,90);
@@ -193,7 +193,7 @@ public class SkystoneAutonomous extends LinearOpMode{
                     Drive.TimeDelay(1.0);
                     Drive.moveBackwardDistance(0.8, 25);
                     if (AllianceColor == false) {
-                        Drive.turnRightDistance(0.5, 50);
+                        Drive.turnRightAngle(0.5, 90);
                     }
                     else {
                         Drive.turnLeftAngle(0.5,90);

@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.Utilities.GamepadWrapper;
 public class DriveAutoTest extends LinearOpMode {
 
     // declare class variables
-    GamepadWrapper egamepad1 = new GamepadWrapper(gamepad1);
-    GamepadWrapper egamepad2 = new GamepadWrapper(gamepad2);
+    GamepadWrapper egamepad1;
+    GamepadWrapper egamepad2;
     DriveControl Drive = new DriveControl();
     final double INCREMENT_SPEED = 0.1;
     double speed = 0.3;
@@ -33,6 +33,9 @@ public class DriveAutoTest extends LinearOpMode {
         telemetry.setAutoClear(false);
         telemetry.addLine("Drive Auto Test: ");
         telemetry.update();
+
+        egamepad1 = new GamepadWrapper(gamepad1);
+        egamepad2 = new GamepadWrapper(gamepad2);
 
         // create and initialize sub-assemblies
         Drive.init(this);
@@ -114,9 +117,9 @@ public class DriveAutoTest extends LinearOpMode {
             Drive.strafeLeftTime(speed, time);
         } else if (egamepad1.dpad_right.released) {
             Drive.strafeRightTime(speed, time);
-        } else if (gamepad1.left_stick_x < -0.1) {
-            Drive.turnRightTime(speed, time);
         } else if (gamepad1.left_stick_x > 0.1) {
+            Drive.turnRightTime(speed, time);
+        } else if (gamepad1.left_stick_x < -0.1) {
             Drive.turnLeftTime(speed, time);
         }
     }

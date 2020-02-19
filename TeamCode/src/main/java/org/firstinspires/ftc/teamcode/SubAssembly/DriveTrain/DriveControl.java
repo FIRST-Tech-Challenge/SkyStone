@@ -317,9 +317,9 @@ public class DriveControl {
         while (angleDEG > 180.0) angleDEG -= 360.0;
         while (angleDEG < -180.0) angleDEG += 360.0;
         if (angleDEG < 0.0)
-            turnLeftAngle(speed, -angleDEG);
+            turnRightAngle(speed, -angleDEG);
         else
-            turnRightAngle(speed, angleDEG);
+            turnLeftAngle(speed, angleDEG);
     }
 
     public void driveUntilColor(double speed) {

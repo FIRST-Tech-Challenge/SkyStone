@@ -19,6 +19,7 @@ public class LiftControl {/* Constants */
     private DcMotor LifterLeftM;
     private TouchSensor LifterButtonT;
     private TouchSensor LifterButtonB;
+    private ElapsedTime runtime = new ElapsedTime();
 
     /* Declare public class object */
 
@@ -55,21 +56,37 @@ public class LiftControl {/* Constants */
         //LifterLeftM.setDirection(DcMotor.Direction.REVERSE);
     }
 
+    public void TimeDelay(double delayTimeSEC) {
+        double startTime = 0;
+        double elapsedTime = 0;
+        startTime = runtime.seconds();
+        do {
+            elapsedTime = runtime.seconds() - startTime;
+            opmode.sleep(40);
+        } while ((elapsedTime < delayTimeSEC) && !opmode.isStopRequested());
+    }
     public void MoveUp() {
         LifterLeftM.setPower(LIFT_SPEED);
         LifterRightM.setPower(LIFT_SPEED);
     }
 
-    /* time NOT implemented
     public void MoveUpTime (double time){
         LifterLeftM.setPower(LIFT_SPEED);
         LifterRightM.setPower(LIFT_SPEED);
+        TimeDelay(time);
+        Stop();
     }
-    */
 
     public void MoveDown() {
         LifterLeftM.setPower(-LIFT_SPEED);
         LifterRightM.setPower(-LIFT_SPEED);
+    }
+
+    public void MoveDownTime (double time){
+        LifterLeftM.setPower(-LIFT_SPEED);
+        LifterRightM.setPower(-LIFT_SPEED);
+        TimeDelay(time);
+        Stop();
     }
 
     public void Stop() {

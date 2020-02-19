@@ -43,6 +43,10 @@ public class LiftTest extends LinearOpMode {
                 Lift.Stop();
             }
 
+            if (egamepad2.a.released){
+                Lift.MoveUpTime(0.4);
+            }
+
             telemetry.update();
 
             //let the robot have a little rest, sleep is healthy

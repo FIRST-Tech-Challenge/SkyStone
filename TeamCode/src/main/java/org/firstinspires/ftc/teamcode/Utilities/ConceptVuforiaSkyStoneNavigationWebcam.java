@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode.Utilities;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -85,10 +86,23 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 @TeleOp(name="SKYSTONE Vuforia Nav Webcam", group ="Concept")
 public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
 
+    DriveControl Drive = new DriveControl();
+
+    double numberBeingHelpful = 0;
+
     // IMPORTANT: If you are using a USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false  ;
 
+    private enum SkystonePosition {
+        R1,
+        R2,
+        R3,
+        B1,
+        B2,
+        B3,
+    }
+    private SkystonePosition Skystone = SkystonePosition.B1;
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
      * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
@@ -138,13 +152,19 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
 
-    public enum positionSkystone {
+    public enum positionRedSkystone {
+        LEFT,
+        CENTER,
+        RIGHT,
+    }
+    public enum positionBlueSkystone {
         LEFT,
         CENTER,
         RIGHT,
     }
 
-    public positionSkystone PS = positionSkystone.CENTER;
+    public positionRedSkystone PRS;
+    public positionBlueSkystone PBS;
 
     @Override public void runOpMode() {
         /*
@@ -329,14 +349,20 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
         // CONSEQUENTLY do not put any driving commands in this loop.
         // To restore the normal opmode structure, just un-comment the following line:
 
-        // waitForStart();
+        Drive.init(this);
+
+        waitForStart();
 
         // Note: To use the remote camera preview:
         // AFTER you hit Init on the Driver Station, use the "options menu" to select "Camera Stream"
         // Tap the preview window to receive a fresh image.
 
         targetsSkyStone.activate();
-        while (!isStopRequested()) {
+        while (!isStopRequested() && numberBeingHelpful < 1) {
+
+            numberBeingHelpful++;
+
+            /*Drive.moveForwardDistance(0.5, 40);*/
 
             // check all the trackable targets to see which one (if any) is visible.
             targetVisible = false;
@@ -361,15 +387,36 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
                 VectorF translation = lastLocation.getTranslation();
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-                double yPosition = translation.get(0);
+                double yPosition = translation.get(1);
                 //String positionSkystone = "";
-                if (yPosition<0){
-                    PS = positionSkystone.LEFT;
-                }else if (0<yPosition){
-                    PS = positionSkystone.CENTER;
+                if (yPosition>4.5){
+                    PRS = positionRedSkystone.RIGHT;
+                    telemetry.addLine("Red Right");
+                }else if (yPosition<4.5){
+                    PRS = positionRedSkystone.CENTER;
+                    telemetry.addLine("Red Center");
                 }else {
-                    PS = positionSkystone.RIGHT;
+                    PRS = positionRedSkystone.LEFT;
+                    telemetry.addLine("Red Left");
                 }
+                //Red not working, switching between right and center at y=0 not 4.5 as directed
+                if (yPosition<-3){
+                    PBS = positionBlueSkystone.LEFT;
+                    telemetry.addLine("Blue Left");
+                } else if (yPosition>-3){
+                    PBS = positionBlueSkystone.CENTER;
+                    telemetry.addLine("Blue Center");
+                } else {
+                    PBS = positionBlueSkystone.RIGHT;
+                    telemetry.addLine("Blue Right");
+                }
+                //Blue working great
+                /* Blue Left x=-18.7 y=-7.7 z=6.7 LEFT
+                * Blue Center x=-20.9 y=2 z=7.4 LEFT
+                * Blue Right x= y= z= Cannot see right*/
+                /*Red Right x=-17.5 y=-2.4 z=6.3 LEFT (lined up edge of robot, not edge of grabber)
+                * Red Center x=-21.4 y=-9.5 z=5.8 LEFT (lined up edge of robot, not edge of grabber)
+                * Red Left x= y= z= */
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
@@ -377,7 +424,16 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
             else {
                 telemetry.addData("Visible Target", "none");
             }
-            telemetry.addData("Skystone Position", PS);
+            telemetry.addData("Red Skystone Position", PRS);
+            telemetry.addData("Blue Skystone Position", PBS);
+            telemetry.update();
+            Drive.TimeDelay(5);
+            /*if (PRS == PRS.RIGHT)
+                Drive.turnRightDistance(0.5, 50);
+            else if (PRS == PRS.CENTER)
+                Drive.moveForwardDistance(0.5, 25);
+            else
+                Drive.turnLeftDistance(0.5, 50);*/
             telemetry.update();
         }
 
@@ -385,3 +441,4 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
         targetsSkyStone.deactivate();
     }
 }
+

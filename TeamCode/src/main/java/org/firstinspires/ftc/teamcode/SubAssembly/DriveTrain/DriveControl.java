@@ -19,7 +19,7 @@ public class DriveControl {
     private double ENCODER_LINES = 1120;
     private double WHEEL_CIRCUMFERENCE_CM = 3.1415 * (4 * 2.54);
     private double CONVERT_CM_TO_ENCODER = GEARING * ENCODER_LINES / WHEEL_CIRCUMFERENCE_CM;
-    private double RUN_TO_TOLERANCE_CM = 1.0;
+    private double RUN_TO_TOLERANCE_CM = 2.0;
     private ElapsedTime runtime = new ElapsedTime();
     private ColorControl Color = new ColorControl();
 
@@ -251,11 +251,11 @@ public class DriveControl {
                 isBusy = true;
             else
                 isBusy = false;
-            opmode.telemetry.addData("FL error ", FrontLeftM.getCurrentPosition() - FrontLeftM.getTargetPosition());
-            opmode.telemetry.addData("FR error ", FrontRightM.getCurrentPosition() - FrontRightM.getTargetPosition());
-            opmode.telemetry.addData("BL error ", BackLeftM.getCurrentPosition() - BackLeftM.getTargetPosition());
-            opmode.telemetry.addData("BR error ", BackRightM.getCurrentPosition() - BackRightM.getTargetPosition());
-            opmode.telemetry.update();
+//            opmode.telemetry.addData("FL error ", FrontLeftM.getCurrentPosition() - FrontLeftM.getTargetPosition());
+//            opmode.telemetry.addData("FR error ", FrontRightM.getCurrentPosition() - FrontRightM.getTargetPosition());
+//            opmode.telemetry.addData("BL error ", BackLeftM.getCurrentPosition() - BackLeftM.getTargetPosition());
+//            opmode.telemetry.addData("BR error ", BackRightM.getCurrentPosition() - BackRightM.getTargetPosition());
+//            opmode.telemetry.update();
             opmode.sleep(40);
         } while (!opmode.isStopRequested() && isBusy);
 

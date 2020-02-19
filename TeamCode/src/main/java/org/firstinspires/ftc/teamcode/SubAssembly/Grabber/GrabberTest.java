@@ -49,7 +49,7 @@ public class GrabberTest extends LinearOpMode {
                 Grabber.extend();
             }
             if (egamepad2.y.released) {
-                Grabber.home();
+                Grabber.Pos0();
             }
 
             telemetry.update();

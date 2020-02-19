@@ -19,6 +19,7 @@ public class LiftControl {/* Constants */
     private DcMotor LifterLeftM;
     private TouchSensor LifterButtonT;
     private TouchSensor LifterButtonB;
+    private ElapsedTime runtime = new ElapsedTime();
 
     /* Declare public class object */
 
@@ -58,34 +59,43 @@ public class LiftControl {/* Constants */
     // !!!! need to add thread to monitor limit switches to ensure lift
     //      does not travel past limits
     public void MoveUp() {
-        if (isLimitTop()) {
-            Stop();
-        } else {
-            LifterLeftM.setPower(LIFT_SPEED);
-            LifterRightM.setPower(LIFT_SPEED);
-        }
+        LifterLeftM.setPower(LIFT_SPEED);
+        LifterRightM.setPower(LIFT_SPEED);
+	}
+
+    public void TimeDelay(double delayTimeSEC) {
+        double startTime = 0;
+        double elapsedTime = 0;
+        startTime = runtime.seconds();
+        do {
+            elapsedTime = runtime.seconds() - startTime;
+            opmode.sleep(40);
+        } while ((elapsedTime < delayTimeSEC) && !opmode.isStopRequested());
+    }
+
+    public void MoveUpTime (double time){
+        LifterLeftM.setPower(LIFT_SPEED);
+        LifterRightM.setPower(LIFT_SPEED);
+        TimeDelay(time);
+        Stop();
     }
 
     public void MoveDown() {
-        if ( isLimitBottom() ) {
-            Stop();
-        } else {
-            LifterLeftM.setPower(-LIFT_SPEED);
-            LifterRightM.setPower(-LIFT_SPEED);
-        }
+        LifterLeftM.setPower(-LIFT_SPEED);
+        LifterRightM.setPower(-LIFT_SPEED);
+    }
+
+    public void MoveDownTime (double time){
+        LifterLeftM.setPower(-LIFT_SPEED);
+        LifterRightM.setPower(-LIFT_SPEED);
+        TimeDelay(time);
+        Stop();
     }
 
     public void Stop() {
         LifterLeftM.setPower(0);
         LifterRightM.setPower(0);
     }
-
-    /* time NOT implemented
-    public void MoveUpTime (double time){
-        LifterLeftM.setPower(LIFT_SPEED);
-        LifterRightM.setPower(LIFT_SPEED);
-    }
-    */
 
     public boolean isLimitTop() {
         // !!! current hardware configuration has isPressed returning

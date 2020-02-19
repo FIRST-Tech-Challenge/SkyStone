@@ -40,7 +40,7 @@ public class GrabberControl {
     }
 
     public enum ExtenderSetpt implements EnumWrapper<ExtenderSetpt> {
-        Home, Pos1, Pos2, Pos3;
+        Home, Pos0, Pos1, Pos2, Pos3;
     }
 
     /* Subassembly constructor */
@@ -59,8 +59,8 @@ public class GrabberControl {
 
         // create servo mappings
         MapGrabber = new EnumMap<GrabberSetpt, Double>(GrabberSetpt.class);
-        MapGrabber.put(GrabberSetpt.Close, 0.00001);
-        MapGrabber.put(GrabberSetpt.Open, 0.68);
+        MapGrabber.put(GrabberSetpt.Open, 0.00001);
+        MapGrabber.put(GrabberSetpt.Close, 0.79);
 
         MapWrist = new EnumMap<WristSetpt, Double>(WristSetpt.class);
         MapWrist.put(WristSetpt.Horizontal, 0.44);
@@ -68,9 +68,10 @@ public class GrabberControl {
 
         MapExtender = new EnumMap<ExtenderSetpt, Double>(ExtenderSetpt.class);
         MapExtender.put(ExtenderSetpt.Home, 0.81);
-        MapExtender.put(ExtenderSetpt.Pos1, 0.55);
-        MapExtender.put(ExtenderSetpt.Pos2, 0.34);
-        MapExtender.put(ExtenderSetpt.Pos3, 0.16);
+        MapExtender.put(ExtenderSetpt.Pos0, 0.70);
+        MapExtender.put(ExtenderSetpt.Pos1, 0.52);
+        MapExtender.put(ExtenderSetpt.Pos2, 0.30);
+        MapExtender.put(ExtenderSetpt.Pos3, 0.13);
 
         /* Map hardware devices */
         grabberS = hwMap.servo.get("grabberS");
@@ -100,11 +101,11 @@ public class GrabberControl {
     }
 
     public void extend() {
-        ExtenderServo.nextSetpoint(true);
+        ExtenderServo.nextSetpoint(false);
     }
 
-    public void home() {
-        ExtenderServo.setSetpoint(ExtenderSetpt.Home);
+    public void Pos0() {
+        ExtenderServo.setSetpoint(ExtenderSetpt.Pos0);
     }
 
     public void Pos1() {

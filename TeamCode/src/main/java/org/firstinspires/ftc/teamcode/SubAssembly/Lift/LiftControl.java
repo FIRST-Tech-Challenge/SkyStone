@@ -55,9 +55,29 @@ public class LiftControl {/* Constants */
         //LifterLeftM.setDirection(DcMotor.Direction.REVERSE);
     }
 
+    // !!!! need to add thread to monitor limit switches to ensure lift
+    //      does not travel past limits
     public void MoveUp() {
-        LifterLeftM.setPower(LIFT_SPEED);
-        LifterRightM.setPower(LIFT_SPEED);
+        if (isLimitTop()) {
+            Stop();
+        } else {
+            LifterLeftM.setPower(LIFT_SPEED);
+            LifterRightM.setPower(LIFT_SPEED);
+        }
+    }
+
+    public void MoveDown() {
+        if ( isLimitBottom() ) {
+            Stop();
+        } else {
+            LifterLeftM.setPower(-LIFT_SPEED);
+            LifterRightM.setPower(-LIFT_SPEED);
+        }
+    }
+
+    public void Stop() {
+        LifterLeftM.setPower(0);
+        LifterRightM.setPower(0);
     }
 
     /* time NOT implemented
@@ -66,16 +86,6 @@ public class LiftControl {/* Constants */
         LifterRightM.setPower(LIFT_SPEED);
     }
     */
-
-    public void MoveDown() {
-        LifterLeftM.setPower(-LIFT_SPEED);
-        LifterRightM.setPower(-LIFT_SPEED);
-    }
-
-    public void Stop() {
-        LifterLeftM.setPower(0);
-        LifterRightM.setPower(0);
-    }
 
     public boolean isLimitTop() {
         // !!! current hardware configuration has isPressed returning

@@ -65,11 +65,15 @@ public class SkystoneAuto extends OpMode {
 
     private StateMachine stateMachine;
 
-
+    private enum ParkOrLane {
+        WALL,
+        NEUTRAL_SKYBRIDGE
+    }
 
     // The routes our robot knows how to do
     private enum Routes {
-        MOVE_FOUNDATION("Move Foundation"),
+        MOVE_FOUNDATION_WALL("Move Foundation - Wall"),
+        MOVE_FOUNDATION_BRIDGE("Move Foundation - Bridge"),
         DELIVER_SKYSTONE("Deliver Skystone - Bridge"),
         DELIVER_SKYSTONE_WALL_PATH("Deliver Skystone - Wall"),
         PARK_LEFT_NEAR_POS("Park from left to near"),
@@ -271,8 +275,11 @@ public class SkystoneAuto extends OpMode {
                     case DELIVER_SKYSTONE_WALL_PATH:
                         setupBetterDeliverSkystoneWallPath();
                         break;
-                    case MOVE_FOUNDATION:
-                        setupMoveFoundation();
+                    case MOVE_FOUNDATION_WALL:
+                        setupMoveFoundation(ParkOrLane.WALL);
+                        break;
+                    case MOVE_FOUNDATION_BRIDGE:
+                        setupMoveFoundation(ParkOrLane.NEUTRAL_SKYBRIDGE);
                         break;
                     default:
                         stateMachine.addSequential(newDoneState("Default done"));
@@ -846,7 +853,7 @@ public class SkystoneAuto extends OpMode {
         };
     }
 
-    protected void setupMoveFoundation() {
+    protected void setupMoveFoundation(@NonNull ParkOrLane whereToPark) {
         // Robot starts against wall, left side on tile seam nearest to tape
         // Gripper hooks are forward, which means robot is facing backwards (!)
 
@@ -913,8 +920,13 @@ public class SkystoneAuto extends OpMode {
                 telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(5 * 1000)) {
             @Override
             protected Trajectory createTrajectory() {
-                return driveBase.trajectoryBuilder().back(18)
-                        .build();
+                if (currentAlliance == Constants.Alliance.RED) {
+                    return driveBase.trajectoryBuilder().back(18)
+                            .build();
+                } else {
+                    return driveBase.trajectoryBuilder().back(24)
+                            .build();
+                }
             }
         };
 
@@ -927,7 +939,7 @@ public class SkystoneAuto extends OpMode {
             }
         });
 
-        State getCleatState = new TrajectoryFollowerState("get clear",
+        State getClearState = new TrajectoryFollowerState("get clear",
                 telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(5 * 1000)) {
             @Override
             protected Trajectory createTrajectory() {
@@ -936,24 +948,45 @@ public class SkystoneAuto extends OpMode {
             }
         };
 
-        // strafe  3-4
-        State strafeToParkState = new TrajectoryFollowerState("StrafeToPark",
-                telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
-            @Override
-            protected Trajectory createTrajectory() {
-                BaseTrajectoryBuilder trajectoryBuilder = driveBase.trajectoryBuilder();
+        final State strafeToParkState;
 
-                if (currentAlliance == Constants.Alliance.RED) {
-                    trajectoryBuilder.strafeRight(3);
-                } else {
-                    trajectoryBuilder.strafeLeft(3);
+        if (whereToPark == ParkOrLane.NEUTRAL_SKYBRIDGE) {
+            // strafe  3-4
+            strafeToParkState = new TrajectoryFollowerState("StrafeToPark",
+                    telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
+                @Override
+                protected Trajectory createTrajectory() {
+                    BaseTrajectoryBuilder trajectoryBuilder = driveBase.trajectoryBuilder();
+
+                    if (currentAlliance == Constants.Alliance.RED) {
+                        trajectoryBuilder.strafeRight(6);
+                    } else {
+                        trajectoryBuilder.strafeLeft(6);
+                    }
+
+                    return trajectoryBuilder.build();
                 }
+            };
+        } else {
+            strafeToParkState = new TrajectoryFollowerState("StrafeToPark",
+                    telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
+                @Override
+                protected Trajectory createTrajectory() {
+                    BaseTrajectoryBuilder trajectoryBuilder = driveBase.trajectoryBuilder();
 
-                return trajectoryBuilder.build();
-            }
-        };
+                    if (currentAlliance == Constants.Alliance.RED) {
+                        trajectoryBuilder.strafeLeft(18);
+                    } else {
+                        trajectoryBuilder.strafeRight(21);
+                    }
 
-        State backToParkState = new TrajectoryFollowerState("Spline",
+                    return trajectoryBuilder.build();
+                }
+            };
+
+        }
+
+        State backToParkState = new TrajectoryFollowerState("back to park",
                 telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
             @Override
             protected Trajectory createTrajectory() {
@@ -962,7 +995,43 @@ public class SkystoneAuto extends OpMode {
                 return trajectoryBuilder.build();
             }
         };
-        // go back 33
+
+        final State snugUpState;
+
+        if (whereToPark == ParkOrLane.NEUTRAL_SKYBRIDGE) {
+            snugUpState = new TrajectoryFollowerState("snug up bridge",
+                    telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
+                @Override
+                protected Trajectory createTrajectory() {
+                    BaseTrajectoryBuilder trajectoryBuilder = driveBase.trajectoryBuilder();
+
+                    if (currentAlliance == Constants.Alliance.RED) {
+                        trajectoryBuilder.strafeRight(6);
+                    } else {
+                        trajectoryBuilder.strafeLeft(6);
+                    }
+
+                    return trajectoryBuilder.build();
+                }
+            };
+        } else {
+            snugUpState = new TrajectoryFollowerState("snug up wall",
+                    telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
+                @Override
+                protected Trajectory createTrajectory() {
+                    BaseTrajectoryBuilder trajectoryBuilder = driveBase.trajectoryBuilder();
+
+                    if (currentAlliance == Constants.Alliance.RED) {
+                        trajectoryBuilder.strafeLeft(6);
+                    } else {
+                        trajectoryBuilder.strafeRight(6);
+                    }
+
+                    return trajectoryBuilder.build();
+                }
+            };
+
+        }
 
         // Win!
 
@@ -974,12 +1043,10 @@ public class SkystoneAuto extends OpMode {
         stateMachine.addSequential(pushToWallTrajectoryState);
         stateMachine.addSequential(ungripState);
         stateMachine.addSequential(newDelayState("wait for un-grip", 1));
-        stateMachine.addSequential(getCleatState);
+        stateMachine.addSequential(getClearState);
         stateMachine.addSequential(strafeToParkState);
         stateMachine.addSequential(backToParkState);
-
-        // FIXME: Back up to make it obvious we are clear of the foundation
-        // TODO: Later - for qualifier, offer parking options
+        stateMachine.addSequential(snugUpState);
 
         stateMachine.addSequential(newDoneState("Done!"));
     }

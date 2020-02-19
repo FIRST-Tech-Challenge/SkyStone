@@ -168,7 +168,7 @@ public class MainTeleop extends LinearOpMode {
             if (Math.abs(spoolPosition - spoolTargetPosition) < 50) {
                 spoolPower = .125;
             }else if(spoolTargetPosition<spoolPosition){
-                spoolPower = (spoolTargetPosition-spoolPosition)/1200;
+                spoolPower = (spoolTargetPosition-spoolPosition)/1500;
             }else{
                 spoolPower = (spoolTargetPosition-spoolPosition)/200;
             }

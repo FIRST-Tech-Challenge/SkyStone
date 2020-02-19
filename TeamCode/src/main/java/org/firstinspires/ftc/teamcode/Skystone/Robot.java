@@ -99,7 +99,7 @@ public class Robot {
     public final double SPOOL_FIRSTLEVEL_POSITION = -56;
     public final int SPOOL_LEVEL_INCREMENT = 400;
 //    public final int[] spoolHeights = {150,365,728, 1040, 1385, 1729, 2062, 2411, 2743, 3100, 3435, 3790};
-    public final int[] spoolHeights = {150,380,743, 1055, 1400, 1744, 2077, 2426, 2758, 3115, 3450, 3805};
+    public final int[] spoolHeights = {150,400,763, 1075, 1420, 1764, 2097, 2446, 2778, 3135, 3470, 3825};
 
     //robots position
     private Point robotPos = new Point();

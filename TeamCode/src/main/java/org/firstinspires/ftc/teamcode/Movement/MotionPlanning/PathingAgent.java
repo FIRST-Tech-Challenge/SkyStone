@@ -42,6 +42,10 @@ public class PathingAgent {
             targetPoint.heading = (pathPoint1.heading * distanceToOne + pathPoint2.heading * distanceToTwo) / (segmentDistance);
             targetPoint.speed = (pathPoint1.speed * distanceToOne + pathPoint2.speed * distanceToTwo) / (segmentDistance);
 
+            targetPoint.intakePower = pathPoint1.intakePower;
+            targetPoint.clampPosition = pathPoint1.clampPosition;
+            targetPoint.hookPosition = pathPoint1.hookPosition;
+
         }
 
         return targetPoint;

@@ -1,24 +1,27 @@
-package org.firstinspires.ftc.teamcode.Opmodes;
+package org.firstinspires.ftc.teamcode.Opmodes.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.HardwareSystems.AutoClaws;
 import org.firstinspires.ftc.teamcode.Movement.Localization.OdometerIMU2W;
 import org.firstinspires.ftc.teamcode.Movement.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Movement.MotionPlanning.RobotPoint;
 import org.firstinspires.ftc.teamcode.Movement.Movement;
 import org.firstinspires.ftc.teamcode.Utility.RobotHardware;
 import org.firstinspires.ftc.teamcode.Utility.Timer;
+
 import java.util.ArrayList;
 
-@Autonomous(name="Movement Test", group="Testing")
-public class movementTest extends LinearOpMode {
+@Autonomous(name="Action System Test", group="Testing")
+public class actionsTest extends LinearOpMode {
 
     // Declare OpMode Members
+    private Timer timer;
     private OdometerIMU2W odometer;
     private MecanumDrive drivetrain;
     private Movement movement;
-    private Timer timer;
+    private AutoClaws autoClaws;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -29,20 +32,42 @@ public class movementTest extends LinearOpMode {
         telemetry.addData("status","running");
         telemetry.update();
 
-        RobotPoint targetPoint = new RobotPoint(40, 40, 0, 0, 0);
-        movement.movetoPointConstants(targetPoint, 0.4, 0.2, 2);
+        /*
+        ArrayList<RobotPoint> testPath = new ArrayList<>();
 
-        drivetrain.freeze();
+        RobotPoint point1 = new RobotPoint(0, 0, 0, 0.7, 10);
+        point1.addActions(0.7, 0.575, 0);
+        RobotPoint point2 = new RobotPoint(38, 74, 0, 0.7, 10);
+        point2.addActions(0.7, 0.575, 0);
+        RobotPoint point3 = new RobotPoint(55, 55, 0, 0.7, 0);
+        testPath.add(point1);
+        testPath.add(point2);
+        testPath.add(point3);
+
+        movement.followPath(testPath);
+        */
+
+        RobotPoint point = new RobotPoint(50, 50, 0, 0, 0);
+        point.addActions(0.99, 0.985, 0);
+        movement.movetoPointConstants(point, 0.4, 0.3, 3, 2);
+
+        timer.waitMillis(500);
+        autoClaws.grabBlock();
 
     }
 
     private void initialize(){
         RobotHardware.hardwareMap(hardwareMap);
 
-        odometer = new OdometerIMU2W();
         drivetrain = new MecanumDrive();
+        odometer = new OdometerIMU2W();
         timer = new Timer(this, odometer);
+        autoClaws = new AutoClaws("RED", timer);
         movement = new Movement(this, drivetrain, odometer);
+        movement.setActionHandlers(null, autoClaws);
+        movement.useActionHandlers = true;
+
+        autoClaws.initialize();
         drivetrain.initialize();
         odometer.initialize();
 

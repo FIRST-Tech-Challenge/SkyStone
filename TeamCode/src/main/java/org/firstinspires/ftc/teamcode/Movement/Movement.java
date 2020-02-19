@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Controllers.GatedConstant;
 import org.firstinspires.ftc.teamcode.Controllers.Proportional;
+import org.firstinspires.ftc.teamcode.HardwareSystems.AutoClaws;
+import org.firstinspires.ftc.teamcode.HardwareSystems.Intake;
 import org.firstinspires.ftc.teamcode.Movement.Localization.Odometer;
 import org.firstinspires.ftc.teamcode.Movement.MotionPlanning.PathingAgent;
 import org.firstinspires.ftc.teamcode.Movement.MotionPlanning.RobotPoint;
@@ -17,16 +19,28 @@ public class Movement {
     private Odometer odometer;
     private LinearOpMode opMode;
 
+    private Intake intake;
+    private AutoClaws autoClaws;
+
+    public boolean useActionHandlers = false;
+
     public Movement(LinearOpMode opMode, Drivebase drivebase, Odometer odometer){
+
         this.drivebase = drivebase;
         this.odometer = odometer;
         this.opMode = opMode;
 
     }
 
+    public void setActionHandlers(Intake intake, AutoClaws autoClaws){
+        this.intake = intake;
+        this.autoClaws = autoClaws;
+
+    }
+
     public void followPath(ArrayList<RobotPoint> path){
 
-        Proportional orient = new Proportional(0.06, 0.6);
+        Proportional orient = new Proportional(0.035, 0.2);
         RobotPoint lastPoint = path.get(path.size()-2); //Actually is the second to last point
 
         while(opMode.opModeIsActive()){
@@ -63,6 +77,8 @@ public class Movement {
 
             setGlobalVelocity(targVX, targVY, orient.correction);
 
+            doActions(targetPoint);
+
             odometer.update();
             drivebase.update();
 
@@ -86,16 +102,16 @@ public class Movement {
     }
 
     // Stand-alone Movement Functions
-    public void movetoPointConstants(RobotPoint targetPoint, double speedFar, double speedNear, double arrivedThresh) {
+    public void movetoPointConstants(RobotPoint targetPoint, double speedFar, double speedNear, double switchThresh, double arrivedThresh) {
 
-        Proportional orient = new Proportional(0.02, 0.3);
+        Proportional orient = new Proportional(0.04, 0.65);
 
         double xDist, yDist, distance, heading;
         double targSpeed, scale;
         double targVX, targVY, hCorrect;
         boolean endCondition;
 
-        GatedConstant speedFinder = new GatedConstant(speedFar, speedNear, arrivedThresh);
+        GatedConstant speedFinder = new GatedConstant(speedFar, speedNear, switchThresh);
 
         do {
 
@@ -117,12 +133,21 @@ public class Movement {
 
             setGlobalVelocity(targVX, targVY, hCorrect);
 
-            endCondition = (distance < arrivedThresh);
+            endCondition = (distance < arrivedThresh) && orient.error < 2;
+
+            doActions(targetPoint);
 
             odometer.update();
 
         }while(!endCondition && opMode.opModeIsActive());
 
+    }
+
+    private void doActions(RobotPoint point){
+        if(useActionHandlers){
+            autoClaws.setPositions(point.clampPosition, point.hookPosition);
+            //Do intake actions, outtake actions everything here.
+        }
     }
 
 }

@@ -3,23 +3,26 @@ package org.firstinspires.ftc.teamcode.Opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.HardwareSystems.AutoClaws;
 import org.firstinspires.ftc.teamcode.Movement.Localization.OdometerIMU2W;
+import org.firstinspires.ftc.teamcode.Movement.Localization.OdometerKIMU2W;
 import org.firstinspires.ftc.teamcode.Movement.MecanumDrive;
-import org.firstinspires.ftc.teamcode.Movement.MotionPlanning.PathingAgent;
 import org.firstinspires.ftc.teamcode.Movement.MotionPlanning.RobotPoint;
 import org.firstinspires.ftc.teamcode.Movement.Movement;
 import org.firstinspires.ftc.teamcode.Utility.RobotHardware;
 import org.firstinspires.ftc.teamcode.Utility.Timer;
+
 import java.util.ArrayList;
 
-@Autonomous(name="Pure Pursuit Test", group="Testing")
-public class purePursuitTest extends LinearOpMode {
+@Autonomous(name="Red Auto", group="Auto")
+public class redSideAuto extends LinearOpMode {
 
     // Declare OpMode Members
-    private OdometerIMU2W odometer;
+    private Timer timer;
+    private OdometerKIMU2W odometer;
     private MecanumDrive drivetrain;
     private Movement movement;
-    private Timer timer;
+    private AutoClaws autoClaws;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -30,25 +33,36 @@ public class purePursuitTest extends LinearOpMode {
         telemetry.addData("status","running");
         telemetry.update();
 
-        ArrayList<RobotPoint> testPath = new ArrayList<>();
-        testPath.add(new RobotPoint(0, 0, 0, 0.7, 30));
-        testPath.add(new RobotPoint(0, 121, -90, 0.7, 30));
-        testPath.add(new RobotPoint(140, 121, -90, 0.7, 30)); //This point is the final point, threshold is the final threshold
-        RobotPoint testPathGoal = new RobotPoint(150, 121, -90, 0.7,0);
-        testPath.add(testPathGoal); //Extension of the path to keep the robot moving, the eventual goal of the movement
+        RobotPoint point1 = new RobotPoint( -38, 74, 90, 0.9, 0);
+        movement.movetoPointConstants(point1, 0.8, 0.11, 20, 3);
+        autoClaws.grabBlock();
 
-        movement.followPath(testPath);
-        movement.movetoPointConstants(testPathGoal, 0.4, 0.4, 2);
-
+        ArrayList<RobotPoint> delivery = new ArrayList<>();
+        RobotPoint point2 = new RobotPoint(0, 0, 90, 0.9, 10);
+        RobotPoint point3 = new RobotPoint(97, 57, 90, 0.9, 10);
+        point3.addActions(0.482, 0.985, 0);
+        RobotPoint point4 = new RobotPoint(215, 80, 90, 0.9, 10);
+        point4.addActions(0.482, 0.985, 0);
+        delivery.add(point2);
+        delivery.add(point3);
+        delivery.add(point4);
+        movement.followPath(delivery);
+        movement.movetoPointConstants(point4, 0.8, 0.3, 15, 4);
+        autoClaws.depositBlock();
     }
 
     private void initialize(){
         RobotHardware.hardwareMap(hardwareMap);
 
-        odometer = new OdometerIMU2W();
         drivetrain = new MecanumDrive();
+        odometer = new OdometerKIMU2W();
         timer = new Timer(this, odometer);
+        autoClaws = new AutoClaws("RED", timer);
         movement = new Movement(this, drivetrain, odometer);
+        movement.setActionHandlers(null, autoClaws);
+        movement.useActionHandlers = true;
+
+        autoClaws.initialize();
         drivetrain.initialize();
         odometer.initialize();
 

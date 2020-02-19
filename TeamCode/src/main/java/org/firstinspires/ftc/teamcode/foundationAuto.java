@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 //This part is importing information from other programs
 import org.firstinspires.ftc.teamcode.SubAssembly.FoundationGrabber.FoundationGrabberControl;
 import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
@@ -58,7 +60,6 @@ public class foundationAuto extends LinearOpMode{
         boolean bAnswer;
         boolean AllianceColor;
         boolean bridgeanswer;
-        boolean stoneanswer;
 
         //This asks whether you want to delay start or not and whether you are red or blue
         bAnswer = User.getYesNo("Wait?");
@@ -129,10 +130,18 @@ public class foundationAuto extends LinearOpMode{
                     if (AllianceColor == true) {
                         if (bridgeanswer == true) {
                             Drive.moveForwardDistance(0.8, 45);
-                            Drive.strafeRightDistance(0.8, 90);
+                            Drive.strafeRightDistance(0.8, 80);
+                            resetStartTime();
                             Drive.DriveUntilColor(0.5);
+                            if (time == 1.0){
+                                Drive.stop();
+                            }
                         } else {
+                            resetStartTime();
                             Drive.DriveUntilColor(0.5);
+                            if (time == 1.0){
+                                Drive.stop();
+                            }
                         }
                     }
                     else {
@@ -141,10 +150,18 @@ public class foundationAuto extends LinearOpMode{
                             Drive.turnLeftDistance(0.8,50);
                             Drive.moveForwardDistance(0.8, 55);
                             Drive.turnRightDistance(0.8,50);
+                            resetStartTime();
                             Drive.DriveUntilColor(0.5);
+                            if (time == 1.0) {
+                                Drive.stop();
+                            }
                         }
                         else {
-                            Drive.DriveUntilColor(0.5);
+                            resetStartTime();
+                            Drive.DriveUntilColor(0.8);
+                            if (time == 1.0) {
+                                Drive.stop();
+                            }
                         }
                     }
                     newState(State.Stop);

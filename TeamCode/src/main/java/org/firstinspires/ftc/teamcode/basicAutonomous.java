@@ -127,10 +127,10 @@ public class basicAutonomous extends LinearOpMode{
                 case MoveToBuildZone:
                     Drive.moveBackwardDistance(0.8,40);
                     if (AllianceColor == true) {
-                        Drive.turnRightDistance(0.5, 50);
+                        Drive.turnRightAngle(0.5, 90);
                     }
                     else {
-                        Drive.turnLeftDistance(0.5,50);
+                        Drive.turnLeftAngle(0.5,90);
                     }
                     Drive.moveForwardDistance(0.8, 175);
                     newState(State.MoveToFoundation);
@@ -139,10 +139,10 @@ public class basicAutonomous extends LinearOpMode{
 
                 case MoveToFoundation:
                     if (AllianceColor == true) {
-                        Drive.turnLeftDistance(0.5, 50);
+                        Drive.turnLeftAngle(0.5, 90);
                     }
                     else {
-                        Drive.turnRightDistance(0.5,50);
+                        Drive.turnRightAngle(0.5,90);
                     }
                     Lift.MoveUpTime(0.4);
                     Drive.moveForwardDistance(0.5, 35);
@@ -162,12 +162,12 @@ public class basicAutonomous extends LinearOpMode{
                     //checks to see where to park
                     if (bridgeanswer == true) {
                             if (AllianceColor == true) {
-                                Drive.turnLeftDistance(0.5, 50);
+                                Drive.turnLeftAngle(0.5, 90);
                                 Drive.moveForwardDistance(0.8,50);
                                 //Drive.strafeRightDistance(0.8,15);
                             }
                             else {
-                                Drive.turnRightDistance(0.5,50);
+                                Drive.turnRightAngle(0.5,90);
                                //Drive.strafeLeftDistance(0.8,15);
                                 Drive.moveForwardDistance(0.8,50);
                             }
@@ -176,10 +176,10 @@ public class basicAutonomous extends LinearOpMode{
                     else {
                             Drive.moveBackwardDistance(0.8, 60);
                             if (AllianceColor == true) {
-                                Drive.turnLeftDistance(0.5, 50);
+                                Drive.turnLeftAngle(0.5, 90);
                             }
                             else {
-                                Drive.turnRightDistance(0.5,50);
+                                Drive.turnRightAngle(0.5,90);
                             }
                             Drive.moveForwardDistance(0.8, 100);
                         }
@@ -193,9 +193,9 @@ public class basicAutonomous extends LinearOpMode{
                     if (bridgeanswer == true) {
                         Drive.moveForwardDistance(0.8, 65);
                         if (AllianceColor == true) {
-                            Drive.turnLeftDistance(0.8, 50);
+                            Drive.turnLeftAngle(0.8, 90);
                         } else {
-                            Drive.turnRightDistance(0.8, 50);
+                            Drive.turnRightAngle(0.8, 90);
                         }
                         Drive.moveForwardDistance(0.8, 70);
                     }

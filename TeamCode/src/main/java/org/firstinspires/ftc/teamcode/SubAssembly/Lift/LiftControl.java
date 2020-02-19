@@ -56,6 +56,13 @@ public class LiftControl {/* Constants */
         //LifterLeftM.setDirection(DcMotor.Direction.REVERSE);
     }
 
+    // !!!! need to add thread to monitor limit switches to ensure lift
+    //      does not travel past limits
+    public void MoveUp() {
+        LifterLeftM.setPower(LIFT_SPEED);
+        LifterRightM.setPower(LIFT_SPEED);
+	}
+
     public void TimeDelay(double delayTimeSEC) {
         double startTime = 0;
         double elapsedTime = 0;
@@ -64,10 +71,6 @@ public class LiftControl {/* Constants */
             elapsedTime = runtime.seconds() - startTime;
             opmode.sleep(40);
         } while ((elapsedTime < delayTimeSEC) && !opmode.isStopRequested());
-    }
-    public void MoveUp() {
-        LifterLeftM.setPower(LIFT_SPEED);
-        LifterRightM.setPower(LIFT_SPEED);
     }
 
     public void MoveUpTime (double time){

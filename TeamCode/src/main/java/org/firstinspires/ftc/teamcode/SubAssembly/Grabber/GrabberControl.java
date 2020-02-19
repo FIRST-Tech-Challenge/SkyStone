@@ -94,10 +94,6 @@ public class GrabberControl {
 
     public void grab() {
         GrabberServo.nextSetpoint(true);
-        /*if (GrabberServo.getSetpoint() == GrabberSetpt.Open)
-            GrabberServo.setSetpoint(GrabberSetpt.Close);
-        else
-            GrabberServo.setSetpoint(GrabberSetpt.Open);*/
     }
 
     public void wrist() {

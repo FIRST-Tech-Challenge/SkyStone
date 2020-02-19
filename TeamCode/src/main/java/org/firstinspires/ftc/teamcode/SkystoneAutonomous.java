@@ -168,10 +168,10 @@ public class SkystoneAutonomous extends LinearOpMode{
                 case MoveToBuildZone:
                     Drive.moveBackwardDistance(0.8,40);
                     if (AllianceColor == true) {
-                        Drive.turnRightDistance(0.5, 50);
+                        Drive.turnRightAngle(0.5, 90);
                     }
                     else {
-                        Drive.turnLeftDistance(0.5,50);
+                        Drive.turnLeftAngle(0.5,90);
                     }
                     Drive.moveForwardDistance(0.8, 175);
                     if (Skystone != SkystonePosition.R3 && Skystone != SkystonePosition.B1)
@@ -182,10 +182,10 @@ public class SkystoneAutonomous extends LinearOpMode{
 
                 case TurnFoundation:
                     if (AllianceColor == false) {
-                        Drive.turnRightDistance(0.5, 50);
+                        Drive.turnRightAngle(0.5, 90);
                     }
                     else {
-                        Drive.turnLeftDistance(0.5,50);
+                        Drive.turnLeftAngle(0.5,90);
                     }
                     Lift.MoveUpTime(0.4);
                     Drive.moveForwardDistance(0.5, 35);
@@ -193,10 +193,10 @@ public class SkystoneAutonomous extends LinearOpMode{
                     Drive.TimeDelay(1.0);
                     Drive.moveBackwardDistance(0.8, 25);
                     if (AllianceColor == false) {
-                        Drive.turnRightDistance(0.5, 50);
+                        Drive.turnRightAngle(0.5, 90);
                     }
                     else {
-                        Drive.turnLeftDistance(0.5,50);
+                        Drive.turnLeftAngle(0.5,90);
                     }
                     Lift.MoveDownTime(0.4);
                     //FoundationGrabber.open();

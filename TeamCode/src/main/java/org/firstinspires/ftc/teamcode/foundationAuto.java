@@ -109,17 +109,17 @@ public class foundationAuto extends LinearOpMode{
                     telemetry.update();
                     Drive.moveForwardDistance(0.8,77);
                     if (AllianceColor == false) {
-                        Drive.turnLeftDistance(0.8, 45 * 5. / 9.);
+                        Drive.turnLeftAngle(0.8, 45);
                     }
                     else{
-                        Drive.turnRightDistance(0.8, 45 * 5. / 9.);
+                        Drive.turnRightAngle(0.8, 45);
                     }
                     FoundationGrabber.open();
                     if (AllianceColor == false) {
-                        Drive.turnLeftDistance(0.8, 80 * 5. / 9.);
+                        Drive.turnLeftAngle(0.8, 80 );
                     }
                     else {
-                        Drive.turnRightDistance(0.8, 80 * 5. / 9.);
+                        Drive.turnRightAngle(0.8, 80 );
                     }
                     newState(State.Park);
                     break;
@@ -132,13 +132,13 @@ public class foundationAuto extends LinearOpMode{
                             Drive.moveForwardDistance(0.8, 45);
                             Drive.strafeRightDistance(0.8, 80);
                             resetStartTime();
-                            Drive.DriveUntilColor(0.5);
+                            Drive.driveUntilColor(0.5);
                             if (time == 1.0){
                                 Drive.stop();
                             }
                         } else {
                             resetStartTime();
-                            Drive.DriveUntilColor(0.5);
+                            Drive.driveUntilColor(0.5);
                             if (time == 1.0){
                                 Drive.stop();
                             }
@@ -147,18 +147,18 @@ public class foundationAuto extends LinearOpMode{
                     else {
                         if (bridgeanswer == true){
                             Drive.moveForwardDistance(0.8,45);
-                            Drive.turnLeftDistance(0.8,50);
+                            Drive.turnLeftAngle(0.8,90);
                             Drive.moveForwardDistance(0.8, 55);
-                            Drive.turnRightDistance(0.8,50);
+                            Drive.turnRightAngle(0.8,90);
                             resetStartTime();
-                            Drive.DriveUntilColor(0.5);
+                            Drive.driveUntilColor(0.5);
                             if (time == 1.0) {
                                 Drive.stop();
                             }
                         }
                         else {
                             resetStartTime();
-                            Drive.DriveUntilColor(0.8);
+                            Drive.driveUntilColor(0.8);
                             if (time == 1.0) {
                                 Drive.stop();
                             }

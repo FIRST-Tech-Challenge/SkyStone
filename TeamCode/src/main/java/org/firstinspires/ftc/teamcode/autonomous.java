@@ -169,10 +169,10 @@ public class autonomous extends LinearOpMode {
                     telemetry.update();
                     Drive.moveBackwardDistance(0.5,10.16);
                     if (AllianceColor == true) {
-                        Drive.turnRightDistance(0.5, 50);
+                        Drive.turnRightAngle(0.5, 90);
                     }
                     else {
-                        Drive.turnLeftDistance(0.5,50);
+                        Drive.turnLeftAngle(0.5,90);
                     }
                     Drive.moveForwardDistance(0.75, 76.2);
                     /*if (Skystone == SkystonePosition.R3 || Skystone == SkystonePosition.B3){
@@ -205,10 +205,10 @@ public class autonomous extends LinearOpMode {
                     telemetry.update();
                     Drive.moveBackwardDistance(0.5,95.2);
                     if (AllianceColor == true){
-                        Drive.turnLeftDistance(0.5,50);
+                        Drive.turnLeftAngle(0.5,90);
                     }
                     else {
-                        Drive.turnRightDistance(0.75,50);
+                        Drive.turnRightAngle(0.75,90);
                     }
                     newState(State.GrabSkystone2);
                     break;
@@ -226,9 +226,9 @@ public class autonomous extends LinearOpMode {
                     telemetry.update();
                     Drive.moveBackwardDistance(0.5,10.16);
                     if (AllianceColor == true)
-                        Drive.turnRightDistance(0.5,50);
+                        Drive.turnRightAngle(0.5,90);
                     else{
-                        Drive.turnLeftDistance(0.5,50);
+                        Drive.turnLeftAngle(0.5,90);
                     }
                     Drive.moveForwardDistance(0.75, 95.2);
                     //Drive until sees red or blue line

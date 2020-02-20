@@ -39,7 +39,7 @@ public class teleop extends LinearOpMode {
         LiftControl Lift = new LiftControl();
         Drive.init(this);
         Grabber.init(this);
-        Lift.init(this);
+        Lift.initialize(this);
         FoundationGrabber.init(this);
 
         //Grabber.home();
@@ -130,5 +130,8 @@ public class teleop extends LinearOpMode {
             // let the robot have a little rest, sleep is healthy
             sleep(40);
         }
+
+        // ensure proper closure of subassemblies
+        Lift.finalize();
     }
 }

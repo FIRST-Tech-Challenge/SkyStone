@@ -15,8 +15,8 @@ public class LiftControl {/* Constants */
     /* Declare private class object */
     private LinearOpMode opmode = null;     /* local copy of opmode class */
 
+    Thread updateThread = new updateThread();
     private enum Modes {STOP, UP, DOWN}
-
     private Modes mode = Modes.STOP;
 
     private DcMotor LifterRightM;
@@ -32,7 +32,7 @@ public class LiftControl {/* Constants */
     public LiftControl() {
     }
 
-    public void init(LinearOpMode opMode) {
+    public void initialize(LinearOpMode opMode) {
         HardwareMap hwMap;
 
         opMode.telemetry.addLine("Lift Control" + " initialize");
@@ -57,14 +57,12 @@ public class LiftControl {/* Constants */
         LifterButtonB = hwMap.touchSensor.get("LifterButtonB");
         LifterButtonT = hwMap.touchSensor.get("LifterButtonT");
 
-        // set up the thread
-        Thread updateThread = new updateThread();
-
-        // start the thread
         updateThread.start();
+    }
 
-        // stop the thread.
-//        updateThread.interrupt();
+    /* Subassembly destructor */
+    public void finalize() {
+        updateThread.interrupt();
     }
 
     public void MoveUp() {

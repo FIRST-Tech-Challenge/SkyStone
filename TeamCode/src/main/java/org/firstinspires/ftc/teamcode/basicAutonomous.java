@@ -61,7 +61,7 @@ public class basicAutonomous extends LinearOpMode{
         Drive.init(this);
         Grabber.init(this);
         FoundationGrabber.init(this);
-        Lift.init(this);
+        Lift.initialize(this);
 
         // get user input
         boolean bAnswer;
@@ -216,7 +216,8 @@ public class basicAutonomous extends LinearOpMode{
                     break;
             }
         }
+
+        // ensure proper closure of subassemblies
+        Lift.finalize();
     }
-
-
 }

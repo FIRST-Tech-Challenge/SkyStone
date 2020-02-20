@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Opmodes.Tests;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.HardwareSystems.ActionHandler;
+import org.firstinspires.ftc.teamcode.HardwareSystems.ActionHandlerClaws;
 import org.firstinspires.ftc.teamcode.HardwareSystems.AutoClaws;
 import org.firstinspires.ftc.teamcode.Movement.Localization.OdometerIMU2W;
 import org.firstinspires.ftc.teamcode.Movement.MecanumDrive;
@@ -22,6 +24,8 @@ public class actionsTest extends LinearOpMode {
     private MecanumDrive drivetrain;
     private Movement movement;
     private AutoClaws autoClaws;
+
+    private ActionHandlerClaws handler;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -48,7 +52,7 @@ public class actionsTest extends LinearOpMode {
         */
 
         RobotPoint point = new RobotPoint(50, 50, 0, 0, 0);
-        point.addActions(0.99, 0.985, 0);
+        point.setHookActions(0.99, 0.985);
         movement.movetoPointConstants(point, 0.4, 0.3, 3, 2);
 
         timer.waitMillis(500);
@@ -64,8 +68,8 @@ public class actionsTest extends LinearOpMode {
         timer = new Timer(this, odometer);
         autoClaws = new AutoClaws("RED", timer);
         movement = new Movement(this, drivetrain, odometer);
-        movement.setActionHandlers(null, autoClaws);
-        movement.useActionHandlers = true;
+        movement.setActionHandler(handler);
+        movement.useActionHandler = true;
 
         autoClaws.initialize();
         drivetrain.initialize();

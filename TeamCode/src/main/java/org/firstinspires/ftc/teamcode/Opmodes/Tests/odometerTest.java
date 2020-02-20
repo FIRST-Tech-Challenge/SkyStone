@@ -47,6 +47,7 @@ public class odometerTest extends LinearOpMode {
         drivetrain = new MecanumDrive();
         timer = new Timer(this, odometer);
         movement = new Movement(this, drivetrain, odometer);
+
         drivetrain.initialize();
         odometer.initialize();
 

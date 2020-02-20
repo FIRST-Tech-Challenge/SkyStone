@@ -19,6 +19,12 @@ public class RobotHardware {
     public static Servo foundationClampLeft, foundationClampRight;
     //Auto Block Arms
     public static Servo autoFlipperLeft, autoFlipperRight, autoGrabberLeft, autoGrabberRight;
+    //Lift Motors
+    public static DcMotor liftRight, liftLeft;
+    //Block Clamp
+    public static Servo blockGrabberFront, blockGrabberBack;
+    //Outtake Flipper
+    public static Servo flipperServoLeft, flipperServoRight;
 
     public static void hardwareMap(HardwareMap hardwareMap) {
 
@@ -40,6 +46,15 @@ public class RobotHardware {
         //Foundation Clamp
         foundationClampLeft = hardwareMap.servo.get("foundationClampLeft");
         foundationClampRight = hardwareMap.servo.get("foundationClampRight");
+        //Block Clamp
+        blockGrabberFront = hardwareMap.servo.get("blockGrabberFront");
+        blockGrabberBack = hardwareMap.servo.get("blockGrabberBack");
+        //Outtake Flipper
+        flipperServoLeft = hardwareMap.servo.get("flipperServoLeft");
+        flipperServoRight = hardwareMap.servo.get("flipperServoRight");
+        //Extrusion Motors
+        liftRight = hardwareMap.dcMotor.get("liftRight");
+        liftLeft = hardwareMap.dcMotor.get("liftLeft");
 
     }
 

@@ -43,7 +43,7 @@ public class movementTest extends LinearOpMode {
         drivetrain = new MecanumDrive();
         timer = new Timer(this, odometer);
         movement = new Movement(this, drivetrain, odometer);
-        movement.useActionHandlers = false;
+
         drivetrain.initialize();
         odometer.initialize();
 

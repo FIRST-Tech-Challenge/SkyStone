@@ -4,8 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Controllers.GatedConstant;
 import org.firstinspires.ftc.teamcode.Controllers.Proportional;
+import org.firstinspires.ftc.teamcode.HardwareSystems.ActionHandler;
 import org.firstinspires.ftc.teamcode.HardwareSystems.AutoClaws;
 import org.firstinspires.ftc.teamcode.HardwareSystems.Intake;
+import org.firstinspires.ftc.teamcode.HardwareSystems.Outtake;
 import org.firstinspires.ftc.teamcode.Movement.Localization.Odometer;
 import org.firstinspires.ftc.teamcode.Movement.MotionPlanning.PathingAgent;
 import org.firstinspires.ftc.teamcode.Movement.MotionPlanning.RobotPoint;
@@ -19,10 +21,10 @@ public class Movement {
     private Odometer odometer;
     private LinearOpMode opMode;
 
-    private Intake intake;
-    private AutoClaws autoClaws;
+    // External Action Handlers
+    private ActionHandler handler;
 
-    public boolean useActionHandlers = false;
+    public boolean useActionHandler = false;
 
     public Movement(LinearOpMode opMode, Drivebase drivebase, Odometer odometer){
 
@@ -32,10 +34,8 @@ public class Movement {
 
     }
 
-    public void setActionHandlers(Intake intake, AutoClaws autoClaws){
-        this.intake = intake;
-        this.autoClaws = autoClaws;
-
+    public void setActionHandler(ActionHandler handler) {
+        this.handler = handler;
     }
 
     public void followPath(ArrayList<RobotPoint> path){
@@ -144,9 +144,8 @@ public class Movement {
     }
 
     private void doActions(RobotPoint point){
-        if(useActionHandlers){
-            autoClaws.setPositions(point.clampPosition, point.hookPosition);
-            //Do intake actions, outtake actions everything here.
+        if(useActionHandler){
+            handler.doActions(point);
         }
     }
 

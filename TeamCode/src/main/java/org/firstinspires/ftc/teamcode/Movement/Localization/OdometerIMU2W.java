@@ -38,6 +38,7 @@ public class OdometerIMU2W extends Odometer{
     private double horizontalOffset = 6.24;
     private double verticalOffset = -16.1;
 
+    //Directions without using intake
     private double verticalDirection = -1;
     private double horizontalDirection = 1;
 

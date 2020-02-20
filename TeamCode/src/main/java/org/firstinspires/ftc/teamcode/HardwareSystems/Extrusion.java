@@ -1,7 +1,12 @@
 package org.firstinspires.ftc.teamcode.HardwareSystems;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+
+import org.firstinspires.ftc.teamcode.Controllers.Pid;
+import org.firstinspires.ftc.teamcode.Utility.RobotHardware;
 
 /* An extrusion class to automate all extrusion tasks
 The direction of the motors must be such that a positive power causes the encoder to increase
@@ -9,135 +14,62 @@ The direction of the motors must be such that a positive power causes the encode
 
 public class Extrusion {
 
-    private int upperLimit;
-    private int lowerLimit;
-    private DigitalChannel limitSwitch;
+    private LinearOpMode opMode;
 
-    //private PID run;
+    private int liftMax = 99999;
+    private int liftCurrent = 0;
+    private int liftTarget = 0;
+    private int[] levels = {0, 185, 420, 655, 871, 1067, 1261, 1465, 1690, 1900, 2110};
 
-    private double powerLowLimit;
-    private double powerHighLimit;
+    private double weight = 0.2; //F term of the virtual PIDF controller for this lift
+    private Pid controller;
 
-    private LinearOpMode op;
+    public Extrusion(LinearOpMode opMode){
+        this.opMode = opMode;
+    }
 
-    public Extrusion(int upLimit, int lowLimit, LinearOpMode oppy) {
+    public void initialize(){
+        //Set Run Mode
+        RobotHardware.liftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RobotHardware.liftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //Reversing the motors so they don't fight and move in the right direction
+        RobotHardware.liftRight.setDirection(DcMotor.Direction.FORWARD);
+        RobotHardware.liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        //Set them to brake
+        RobotHardware.liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        RobotHardware.liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //Reset the encoders
+        RobotHardware.liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RobotHardware.liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        this.upperLimit = upLimit;
-        this.lowerLimit = lowLimit;
-        this.limitSwitch = null;
-        this.op = oppy;
+        controller = new Pid(0.06, 0.001, 0.01, 50, 0.5, 0);
 
     }
 
-    /*
-    public void setPidConstants(double P, double I, double D) {
-        //run = new PID(P, I, D, 15, 0.7, 0);
-    }
-
-    public void initialize(double minPower, double maxPower) {
-
-        //lowSwitch.setMode(DigitalChannel.Mode.INPUT);
-
-
-        this.powerLowLimit = minPower;
-        this.powerHighLimit = maxPower;
-
-    }
-
-    // Utility Methods =============================================================================
-
-    private void setPower(double power) {
-        if(power > powerHighLimit) {
-            power = powerHighLimit;
-        }else if(power < -powerHighLimit) {
-            power = -powerHighLimit;
-        }
-
-        //motor1.setPower(power);
-        //motor2.setPower(power);
-
-    }
-
-    // Autonomous Methods ==========================================================================
-
-    public void runToPosition(double target) {
-
-        double correct;
-        while(op.opModeIsActive()) {
-            //correct = run.getCorrection(target, motor1.getCurrentPosition());
-            if (Math.abs(correct) > powerLowLimit) {
-                setPower(-correct);
-            }else {
-                break;
-            }
-        }
-        isRunning = false;
-    }
-
-    public void extend(String method) {
-        isRunning = true;
-        if(method.equals("encoder")) {
-            runToPosition(upperLimit - 10);
-        }
-        isRunning = false;
-    }
-
-    public void retract(String method) {
-        isRunning = true;
-        if(method.equals("encoder")) {
-            runToPosition(lowerLimit);
-        }else if(method.equals("switch")) {
-            while(lowSwitch.getState()) {
-                setPower(-0.4);
-            }
-        }
-        isRunning = false;
-    }
-
-    // Continuous Methods ==========================================================================
-    public void runManual(double input, double deadZone) {
-        if(Math.abs(input) > deadZone) {
-            setPower(input);
-        }else {
-            setPower(0);
+    public void setTargetPosition(int position){
+        if(position > 0 && position < liftMax){
+            liftTarget = position;
         }
     }
 
-    public void extrudeManual(boolean trigger) {
-        if(trigger) {
-            setPower(0.4);
-        }else{
-            setPower(0);
+    public void goToLevelLinear(int blockLevel){ //1 means the "first block level"
+        setTargetPosition(levels[blockLevel-1]);
+
+        while(opMode.opModeIsActive()){
+            update();
         }
+
     }
 
-    public void retractManual(boolean trigger) {
-        if(trigger) {
-            setPower(-0.4);
-        }else{
-            setPower(0);
-        }
+    public void update(){
+        liftCurrent = (RobotHardware.liftLeft.getCurrentPosition() + RobotHardware.liftRight.getCurrentPosition())/2;
+        controller.update(liftTarget, liftCurrent);
+        setPower(controller.correction + weight);
     }
 
-    public void runToPositionTeleOp(double target) {
-        double correct = run.getCorrection(target, motor1.getCurrentPosition());
-        if (Math.abs(correct) > powerLowLimit) {
-            isRunning = true;
-            setPower(correct);
-        }else {
-            setPower(0);
-            isRunning = false;
-        }
+    public void setPower(double power){
+        RobotHardware.liftRight.setPower(power);
+        RobotHardware.liftLeft.setPower(power);
     }
 
-    public void retractTeleOp() {
-        if (!lowSwitch.getState()) {
-            setPower(0);
-            isRunning = false;
-        }else {
-            setPower(-0.4);
-            isRunning = true;
-        }
-    }
-     */
 }

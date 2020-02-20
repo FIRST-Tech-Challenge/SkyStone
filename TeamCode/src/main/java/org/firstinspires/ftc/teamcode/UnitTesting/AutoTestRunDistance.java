@@ -42,7 +42,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.*;
  * @IntakeAutoMethods : detectSkystoneColor()
  * @IntakeAutoMethods : detectSkystoneDistance()
  */
-@Disabled
+
 @Autonomous(name = "HzAutoRunDistance", group = "AutoTest")
 public class AutoTestRunDistance extends LinearOpMode{
 
@@ -82,9 +82,9 @@ public class AutoTestRunDistance extends LinearOpMode{
         waitForStart();
 
         while (opModeIsActive()&& !parked) {
-            //chassisFwdBackTest();
-            chassisLeftRightTest();
-            autoChassis.turnby90degree(1,0.1, this);
+            chassisFwdBackTest();
+            //chassisLeftRightTest();
+            //autoChassis.turnby90degree(1,0.1, this);
             parked = true;
         }
 
@@ -124,6 +124,7 @@ public class AutoTestRunDistance extends LinearOpMode{
                 10,
                 15,
                 20,*/
+                8,
                 25,
                 30,
                 35,

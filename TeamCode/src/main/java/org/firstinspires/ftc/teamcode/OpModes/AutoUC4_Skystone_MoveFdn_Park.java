@@ -92,7 +92,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
 
     private double x_translate = 0;
     private double y_translate = 0;
-    double stoneTostone = 8;
+    double stoneTostone = 8.5;
 
     VuforiaTrackables targetsSkyStone;
     VuforiaTrackable stoneTarget;
@@ -200,13 +200,14 @@ public class AutoUC4_Skystone_MoveFdn_Park {
        //Move forward till Chassis bumber limit switch is pressed.
         double expectedMaxDistanceToFoundation = 81 + (5 - skystonePosition) * stoneTostone; // was 40 --> 70
         autoUCChassis.runFwdBackLeftRight(expectedMaxDistanceToFoundation, 0, 0.6, callingOpMode) ;
+        callingOpMode.sleep(100);
 
         //Lift Arm
         autoUCArm.moveArm_aboveFoundationLevel();
 
         // Turn 90 degrees right
-        autoUCChassis.turnby90degree(playingAlliance,0.1, callingOpMode); // was 0.1
-        callingOpMode.sleep(250);
+        autoUCChassis.turnby90degree(playingAlliance,0.2, callingOpMode); // was 0.1
+        callingOpMode.sleep(300);
 
         //Move forward till Chassis bumber limit switch is pressed
         autoUCChassis.runFwdTill_frontChassisTouchSensor_Pressed(18, 0.25, callingOpMode);
@@ -249,7 +250,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         //callingOpMode.sleep(100);
 
         //Move out of foundation area
-        autoUCChassis.runFwdBackLeftRight(35, playingAlliance, 0.5, callingOpMode);
+        autoUCChassis.runFwdBackLeftRight(27, playingAlliance, 0.4, callingOpMode);
 
         //Move Arm to ground Level
         autoUCArm.turnArmBrakeModeOn();
@@ -269,10 +270,10 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         //Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
         if (playingAlliance == 1) {
             //Blue Alliance
-            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-15, 0, 0.2, callingOpMode);
+            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-10, 0, 0.2, callingOpMode);
         } else {
             //Red Alliance
-            autoUCChassis.runTill_ChassisRightColorSensorIsRed(-15, 0, 0.2, callingOpMode);
+            autoUCChassis.runTill_ChassisRightColorSensorIsRed(-10, 0, 0.2, callingOpMode);
         }
 
         //Reached Parking position

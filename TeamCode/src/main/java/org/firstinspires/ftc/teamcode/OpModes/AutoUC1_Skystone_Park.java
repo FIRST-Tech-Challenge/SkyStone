@@ -194,7 +194,7 @@ public class AutoUC1_Skystone_Park{
         autoUCArm.moveArm_aboveFoundationLevel();
 
         //Move forward till Chassis bumber limit switch is pressed.
-        double expectedMaxDistanceToFoundation = 80 + (5 - skystonePosition) * stoneTostone;; // was 40 --> 70
+        double expectedMaxDistanceToFoundation = 83 + (5 - skystonePosition) * stoneTostone;; // was 40 --> 70
         autoUCChassis.runFwdTill_frontChassisTouchSensor_Pressed(expectedMaxDistanceToFoundation, 0.25, callingOpMode);
 
         // Drop block
@@ -205,9 +205,9 @@ public class AutoUC1_Skystone_Park{
         // Park near wall
         // Move back by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
         if (playingAlliance == 1) {
-            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-40, 0, 0.2, callingOpMode);
+            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-35, 0, 0.2, callingOpMode);
         } else {
-            autoUCChassis.runTill_ChassisLeftColorSensorIsRed(-40, 0, 0.2, callingOpMode);
+            autoUCChassis.runTill_ChassisLeftColorSensorIsRed(-35, 0, 0.2, callingOpMode);
         }
 
         //Drop arm to ground

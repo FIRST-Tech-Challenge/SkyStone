@@ -127,7 +127,7 @@ public class Chassis {
 
         //target90degRotations = (Math.PI*robotRadius/2)/(2*Math.PI*wheelRadius);
 
-        target90degRotations = 1.0; //1.0865; Original value
+        target90degRotations = 1.02; //1.0865; Original value
 
 
         frontRight.setDirection(DcMotor.Direction.REVERSE);

@@ -39,7 +39,7 @@ public class teleop extends LinearOpMode {
         LiftControl Lift = new LiftControl();
         Drive.init(this);
         Grabber.init(this);
-        Lift.init(this);
+        Lift.initialize(this);
         FoundationGrabber.init(this);
 
         //Grabber.home();
@@ -95,10 +95,10 @@ public class teleop extends LinearOpMode {
             //go player 2-----------------------------------------------
 
 
-            if (egamepad2.b.released){
+            if (egamepad2.b.released) {
                 Grabber.grab();
             }
-             if (egamepad2.right_bumper.released) {
+            if (egamepad2.right_bumper.released) {
                 Grabber.wrist();
             }
             if (egamepad2.x.released) {
@@ -108,17 +108,17 @@ public class teleop extends LinearOpMode {
                 Grabber.Pos0();
             }
 
-            if (egamepad1.left_bumper.released){
+            if (egamepad1.left_bumper.released) {
                 FoundationGrabber.close();
             }
 
-            if (egamepad1.left_trigger.released){
+            if (egamepad1.left_trigger.released) {
                 FoundationGrabber.open();
             }
 
-            if (egamepad2.dpad_up.state && !Lift.isLimitTop()) {
+            if (egamepad2.dpad_up.state) {
                 Lift.MoveUp();
-            } else if (egamepad2.dpad_down.state && !Lift.isLimitBottom()) {
+            } else if (egamepad2.dpad_down.state) {
                 Lift.MoveDown();
             } else {
                 Lift.Stop();
@@ -130,5 +130,8 @@ public class teleop extends LinearOpMode {
             // let the robot have a little rest, sleep is healthy
             sleep(40);
         }
+
+        // ensure proper closure of subassemblies
+        Lift.finalize();
     }
 }

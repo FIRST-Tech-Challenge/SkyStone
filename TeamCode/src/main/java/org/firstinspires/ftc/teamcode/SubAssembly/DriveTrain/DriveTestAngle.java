@@ -10,18 +10,23 @@ import org.firstinspires.ftc.teamcode.Utilities.GamepadWrapper;
  */
 
 // Assign OpMode type (TeleOp or Autonomous), name, and grouping
-@TeleOp(name = "Drive Test", group = "Drive Test")
-public class DriveTest extends LinearOpMode {
+@TeleOp(name = "Drive Angle", group = "Drive Test")
+public class DriveTestAngle extends LinearOpMode {
+
+    // declare class variables
+    DriveControl Drive = new DriveControl();
+    final double INCREMENT_SPEED = 0.1;
+    double speed = 0.3;
+    double angle = 90.0;
 
     @Override
     public void runOpMode() throws InterruptedException {
         // declare local variables
-        double X1, Y1, X2, Y2, FL, FR, BL, BR;  // for joystick control
-        double speed = 0.3;
+        int mode = 0;
 
         // display welcome message
         telemetry.setAutoClear(false);
-        telemetry.addLine("Drive Test: ");
+        telemetry.addLine("Drive Angle Test: ");
         telemetry.update();
 
         // create extended gamepads (for press and release options)
@@ -29,7 +34,6 @@ public class DriveTest extends LinearOpMode {
         GamepadWrapper egamepad2 = new GamepadWrapper(gamepad2);
 
         // create and initialize sub-assemblies
-        DriveControl Drive = new DriveControl();
         Drive.init(this);
 
         // wait for PLAY button to be pressed on driver station
@@ -45,45 +49,34 @@ public class DriveTest extends LinearOpMode {
             egamepad1.updateEdge();
             egamepad2.updateEdge();
 
+            telemetry.addLine("Press DPAD left/right to turn for angle");
+
             // check speed input
             if (egamepad1.right_bumper.pressed)
-                speed += 0.1;
+                speed += INCREMENT_SPEED;
             if (egamepad1.right_trigger.pressed)
-                speed -= 0.1;
+                speed -= INCREMENT_SPEED;
             speed = Drive.limitSpeedPositive(speed);
+            telemetry.addLine("Speed: " + speed);
 
-            if (egamepad1.a.released)
-                Drive.strafeRightDistance(0.5,15);
+            // check time input
+            final double INC = 5.0;
+            final double MIN = 10.0;
+            final double MAX = 180.0;
+            if (egamepad1.left_bumper.pressed)
+                angle += INC;
+            if (egamepad1.left_trigger.pressed)
+                angle -= INC;
+            angle = Math.max(MIN, Math.min(angle, MAX));
+            telemetry.addLine("Angle: " + angle);
 
             // check for move input
-            if (egamepad1.dpad_up.state) {
-                Drive.moveForward(speed);
-            } else if (egamepad1.dpad_down.state) {
-                Drive.moveBackward(speed);
-            } else if (egamepad1.a.state) {
-                Drive.driveUntilColor(0.2);
-            } else if (egamepad1.dpad_left.state) {
-                Drive.strafeLeft(speed);
-            } else if (egamepad1.dpad_right.state) {
-                Drive.strafeRight(speed);
-            } else {
-                // Get joystick values
-                Y1 = -gamepad1.left_stick_y;    // invert so up is positive
-                X1 = gamepad1.left_stick_x;
-                Y2 = -gamepad1.right_stick_y;   // Y2 is not used at present
-                X2 = gamepad1.right_stick_x;
-
-                // Combine Forward/back, Side to side, Rotation movement
-                // scale for speed
-                FL = (Y1 + X1 + X2) * speed;
-                FR = (Y1 - X1 - X2) * speed;
-                BL = (Y1 - X1 + X2) * speed;
-                BR = (Y1 + X1 - X2) * speed;
-
-                Drive.moveMotors(FL, FR, BL, BR);
+            if (egamepad1.dpad_left.released) {
+                Drive.turnLeftAngle(speed, angle);
+            } else if (egamepad1.dpad_right.released) {
+                Drive.turnRightAngle(speed, angle);
             }
 
-            telemetry.addLine("Speed: " + speed);
             telemetry.update();
 
             // let the robot have a little rest, sleep is healthy

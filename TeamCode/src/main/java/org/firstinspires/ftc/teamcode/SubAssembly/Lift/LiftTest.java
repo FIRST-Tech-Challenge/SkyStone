@@ -23,7 +23,7 @@ public class LiftTest extends LinearOpMode {
         GamepadWrapper egamepad1 = new GamepadWrapper(gamepad1);
         GamepadWrapper egamepad2 = new GamepadWrapper(gamepad2);
 
-        Lift.init(this);
+        Lift.initialize(this);
         telemetry.update();
 
         //waits for that giant PLAY button to be pressed on RC
@@ -35,15 +35,15 @@ public class LiftTest extends LinearOpMode {
             egamepad1.updateEdge();
             egamepad2.updateEdge();
 
-            if (egamepad2.dpad_up.state && !Lift.isLimitTop()) {
+            if (egamepad2.dpad_up.state) {
                 Lift.MoveUp();
-            } else if (egamepad2.dpad_down.state && !Lift.isLimitBottom()) {
+            } else if (egamepad2.dpad_down.state) {
                 Lift.MoveDown();
             } else {
                 Lift.Stop();
             }
 
-            if (egamepad2.a.released){
+            if (egamepad2.a.released) {
                 Lift.MoveUpTime(0.4);
             }
 
@@ -52,5 +52,8 @@ public class LiftTest extends LinearOpMode {
             //let the robot have a little rest, sleep is healthy
             sleep(40);
         }
+
+        // ensure proper closure of subassemblies
+        Lift.finalize();
     }
 }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.gamecode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -14,12 +15,22 @@ public class RandomStoneBlue extends AutoOpMode {
     private VoltageSensor ExpansionHub2_VoltageSensor;
     public void runOp() throws InterruptedException {
         Joules joules = new Joules();
-        ColorSensor colorSensor;
+        ColorSensor colorSensorLeft;
+        ColorSensor colorSensorRight;
+        ColorSensor colorSensordown;
 
+        DistanceSensor DistanceSensorLeft;
+        DistanceSensor DistanceSensorRight;
 
         ExpansionHub2_VoltageSensor =  hardwareMap.voltageSensor.get("Expansion Hub 2");
 
-        colorSensor = hardwareMap.colorSensor.get("colour");
+        colorSensorLeft = hardwareMap.colorSensor.get("colourLeft");
+
+        colorSensorRight = hardwareMap.colorSensor.get("colourRight");
+
+        colorSensordown = hardwareMap.colorSensor.get("colourDown");
+
+
 
         telemetry.addData("Status", "initialized");
 
@@ -56,21 +67,25 @@ public class RandomStoneBlue extends AutoOpMode {
         joules.Stop();
 
         joules.DaffyUp();
-        sleep(100);
+        sleep(1000);
         joules.DaffyStop();
 
         clearTimer(1);
-        while (opModeIsActive() && getSeconds(1) < 1000 && colorSensor.blue() < bluetapeval) {
-                    joules.StrafeRight(0.3);
-                    telemetry.addData("Seconds", getSeconds(1));
-                    telemetry.addData("blue", colorSensor.blue());
-            }
+//        while (opModeIsActive() && getSeconds(1) < 2 && colorSensordown.blue() < bluetapeval) {
+//                    joules.StrafeRight(0.3);
+//                    telemetry.addData("Seconds", getSeconds(1));
+//                    telemetry.addData("blue", colorSensorLeft.blue());
+//            }
 
             joules.Stop();
         joules.DaffyGrab();
-        joules.DriveForward(0.4);
+        joules.StrafeRight(0.4);
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 600));
         joules.DaffyStop();
+        joules.Stop();
+
+        joules.DriveForward(0.4);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 600));
         joules.Stop();
 
 

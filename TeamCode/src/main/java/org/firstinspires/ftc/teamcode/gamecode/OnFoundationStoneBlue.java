@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.robots.Joules;
 
 @Autonomous
 
-public class OnFoundationStone extends AutoOpMode {
+public class OnFoundationStoneBlue extends AutoOpMode {
     private VoltageSensor ExpansionHub2_VoltageSensor;
     public void runOp() throws InterruptedException {
         Joules joules = new Joules();
@@ -43,13 +43,13 @@ public class OnFoundationStone extends AutoOpMode {
         joules.SlidesStop();
 
 
-        joules.StrafeRight(0.3);
+        joules.StrafeLeft(0.3);
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1000));
         joules.Stop();
         sleep(500);
 
         clearTimer(1);
-        while (opModeIsActive() && getSeconds(1) < 2000 && colorSensorLeft.blue() < bluetapeval) {
+        while (opModeIsActive() && getSeconds(1) < 2000 && colorSensorRight.blue() < bluetapeval) {
                     joules.DriveForward(0.1);
                     telemetry.addData("Seconds", getSeconds(1));
                     telemetry.addData("blue", colorSensorLeft.blue());
@@ -66,21 +66,29 @@ public class OnFoundationStone extends AutoOpMode {
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 600));
         joules.Stop();
 
-        joules.StrafeLeft(0.3);
+        joules.StrafeRight(0.3);
         sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 600));
         joules.Stop();
 
-        joules.TurnLeft(0.5);
+        joules.TurnRight(0.5);
         sleep(750);
         joules.Stop();
 
         joules.DriveForward(0.5);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 800));
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 900));
         joules.Stop();
 
-        joules.StrafeLeft(0.5);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1000));
+        joules.FoundationDrop();
+        sleep(2000);
+
+        joules.DaffyUp();
+        sleep(1000);
         joules.Stop();
+
+        joules.DriveBackward(0.3);
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1200));
+        joules.Stop();
+
 
 
 

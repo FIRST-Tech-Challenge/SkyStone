@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robots;
 
 import android.graphics.Paint;
 import android.hardware.Sensor;
+import android.util.Log;
 
 import org.firstinspires.ftc.teamcode.RC;
 import org.firstinspires.ftc.teamcode.newhardware.FXTCRServo;
@@ -10,6 +11,8 @@ import org.firstinspires.ftc.teamcode.newhardware.FXTSensors.FXTAnalogUltrasonic
 import org.firstinspires.ftc.teamcode.newhardware.FXTServo;
 import org.firstinspires.ftc.teamcode.newhardware.Motor;
 import org.firstinspires.ftc.teamcode.roboticslibrary.TaskHandler;
+
+import com.qualcomm.hardware.lynx.LynxEmbeddedIMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import org.firstinspires.ftc.teamcode.opmodesupport.AutoOpMode;
@@ -29,6 +32,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import org.firstinspires.ftc.teamcode.util.MathUtils;
 //import org.firstinspires.ftc.robotcore.external.Func;​
 import java.util.Locale;
 
@@ -44,8 +48,8 @@ public class Joules  {
 
     public Boolean ScissorUp = Boolean.FALSE;
     public Boolean ScissorDown = Boolean.FALSE;
+    public LynxEmbeddedIMU imu;
 
-    BNO055IMU imu;
     Orientation angles;
     Acceleration gravity;
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -106,6 +110,13 @@ public class Joules  {
         FrontLeft.setMinimumSpeed(0.1);
         BackRight.setMinimumSpeed(0.1);
         BackLeft.setMinimumSpeed(0.1);
+
+        BNO055IMU.Parameters params = new BNO055IMU.Parameters();
+        params.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        params.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+
+        imu = (LynxEmbeddedIMU) RC.h.get(BNO055IMU.class, "imu");
+        imu.initialize(params);
 
     }
 
@@ -297,6 +308,44 @@ public class Joules  {
     }
 
 
+
+    public int getAngle(){
+
+        return 3;
+    }
+
+
+    public boolean Straight(double initialangle, double speed){
+        double currentAngle = MathUtils.cvtAngleToNewDomain(getAngle());
+        if ((currentAngle == initialangle)){
+            return true;
+        }
+        else{
+            return false;
+        }
+
+    }
+
+    public void imuTurnR(double degrees, double speed) {
+
+        double beginAngle = MathUtils.cvtAngleToNewDomain(getAngle());
+        //Assigns begin angle and target angle
+        double targetAngle = MathUtils.cvtAngleToNewDomain(beginAngle + degrees);
+
+        while (RC.l.opModeIsActive()) {
+
+            double currentAngle = MathUtils.cvtAngleToNewDomain(getAngle());
+            //figure out curret angl
+            double angleToTurn = MathUtils.cvtAngleJumpToNewDomain(targetAngle - currentAngle);
+
+            Log.i("Angle", currentAngle + "");
+
+            TurnRight(speed);
+
+        }//while
+
+
+    }//imuTurnR
 
 
 

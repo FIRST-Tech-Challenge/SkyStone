@@ -1,11 +1,6 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Trash;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
-import org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl;
-
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 //This part is importing information from other programs
 import org.firstinspires.ftc.teamcode.SubAssembly.Lift.LiftControl;
@@ -13,7 +8,6 @@ import org.firstinspires.ftc.teamcode.SubAssembly.FoundationGrabber.FoundationGr
 import org.firstinspires.ftc.teamcode.SubAssembly.Grabber.GrabberControl;
 import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
 import org.firstinspires.ftc.teamcode.Utilities.UserControl;
-import org.firstinspires.ftc.teamcode.Utilities.ConceptVuforiaSkyStoneNavigationWebcam;
 
 
 @Autonomous(name = "Skystone Autonomous", group = "Auto")

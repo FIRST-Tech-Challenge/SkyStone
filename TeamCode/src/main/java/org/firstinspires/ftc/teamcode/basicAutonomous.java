@@ -1,11 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
-import org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl;
-
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 //This part is importing information from other programs
 import org.firstinspires.ftc.teamcode.SubAssembly.Lift.LiftControl;

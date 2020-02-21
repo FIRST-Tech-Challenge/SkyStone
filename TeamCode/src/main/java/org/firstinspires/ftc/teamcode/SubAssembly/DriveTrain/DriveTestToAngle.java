@@ -50,6 +50,7 @@ public class DriveTestToAngle extends LinearOpMode {
             egamepad2.updateEdge();
 
             telemetry.addLine("Press A to turn to angle");
+            telemetry.addLine("Use DPAD-2 to adjust PID coefficients");
 
             // check speed input
             if (egamepad1.right_bumper.pressed)
@@ -78,6 +79,18 @@ public class DriveTestToAngle extends LinearOpMode {
                 Drive.turnToAngle(speed, toangle);
             }
 
+            // check for PID adjustments
+            if (egamepad2.dpad_up.released) {
+                Drive.IncrementPID(1, 0,0);
+            } else if (egamepad2.dpad_down.released) {
+                Drive.IncrementPID(-1, 0,0);
+            } else if (egamepad2.dpad_left.released) {
+                Drive.IncrementPID(0, -1,0);
+            } else if (egamepad2.dpad_right.released) {
+                Drive.IncrementPID(0, 1,0);
+            }
+
+            Drive.TelemetryPID();
             telemetry.update();
 
             // let the robot have a little rest, sleep is healthy

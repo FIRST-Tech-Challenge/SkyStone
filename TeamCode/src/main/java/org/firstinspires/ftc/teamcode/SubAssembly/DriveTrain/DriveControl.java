@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.SubAssembly.Sensors.ColorControl;
@@ -11,18 +13,18 @@ import org.firstinspires.ftc.teamcode.SubAssembly.Sensors.IMUcontrol;
 
 public class DriveControl {
     private LinearOpMode opmode = null;
-    private DcMotor FrontRightM = null;
-    private DcMotor FrontLeftM = null;
-    private DcMotor BackRightM = null;
-    private DcMotor BackLeftM = null;
-    private double MAX_SPEED = 0.8;
-    private double GEARING = 2.0 / 3.0;
-    private double ENCODER_LINES = 1120;
-    private double WHEEL_CIRCUMFERENCE_CM = 3.1415 * (4 * 2.54);
-    private double ROBOT_RADIUS_CM = 103.0;
-    private double CONVERT_CM_TO_ENCODER = GEARING * ENCODER_LINES / WHEEL_CIRCUMFERENCE_CM;
-    private double CONVERT_DEG_TO_CM = (360.0 / (2 * 3.1415 * ROBOT_RADIUS_CM));
-    private double RUN_TO_TOLERANCE_CM = 2.0;
+    private DcMotorEx FrontRightM = null;
+    private DcMotorEx FrontLeftM = null;
+    private DcMotorEx BackRightM = null;
+    private DcMotorEx BackLeftM = null;
+    private final double MAX_SPEED = 0.8;
+    private final double GEARING = 2.0 / 3.0;
+    private final double ENCODER_LINES = 1120;
+    private final double WHEEL_CIRCUMFERENCE_CM = 3.1415 * (4 * 2.54);
+    private final double ROBOT_RADIUS_CM = 103.0;
+    private final double CONVERT_CM_TO_ENCODER = GEARING * ENCODER_LINES / WHEEL_CIRCUMFERENCE_CM;
+    private final double CONVERT_DEG_TO_CM = (360.0 / (2 * 3.1415 * ROBOT_RADIUS_CM));
+    private final double RUN_TO_TOLERANCE_CM = 2.0;
     private ElapsedTime runtime = new ElapsedTime();
 
     // public sensors
@@ -36,10 +38,10 @@ public class DriveControl {
 
         opmode = opMode;
         hwMap = opMode.hardwareMap;
-        FrontLeftM = hwMap.dcMotor.get("leftFrontMotor");
-        FrontRightM = hwMap.dcMotor.get("rightFrontMotor");
-        BackLeftM = hwMap.dcMotor.get("leftRearMotor");
-        BackRightM = hwMap.dcMotor.get("rightRearMotor");
+        FrontLeftM = (DcMotorEx)hwMap.dcMotor.get("leftFrontMotor");
+        FrontRightM = (DcMotorEx)hwMap.dcMotor.get("rightFrontMotor");
+        BackLeftM = (DcMotorEx)hwMap.dcMotor.get("leftRearMotor");
+        BackRightM = (DcMotorEx)hwMap.dcMotor.get("rightRearMotor");
 
         // Set the drive motor direction
         FrontLeftM.setDirection(DcMotor.Direction.FORWARD);
@@ -75,6 +77,36 @@ public class DriveControl {
 
         Color.init(opMode);
         IMU.init(opMode);
+    }
+
+    public void TelemetryPID() {
+        // get the PID coefficients for the RUN_USING_ENCODER modes.
+        PIDFCoefficients pid;
+        pid = FrontLeftM.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        opmode.telemetry.addData("FL PID", "%.04f, %.04f, %.0f",pid.p, pid.i, pid.d);
+        pid = FrontRightM.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        opmode.telemetry.addData("FR PID", "%.04f, %.04f, %.0f",pid.p, pid.i, pid.d);
+        pid = BackLeftM.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        opmode.telemetry.addData("BL PID", "%.04f, %.04f, %.0f",pid.p, pid.i, pid.d);
+        pid = BackRightM.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        opmode.telemetry.addData("BR PID", "%.04f, %.04f, %.0f",pid.p, pid.i, pid.d);
+    }
+
+    public void IncrementPID(double p, double i, double d) {
+        final double INC_P = 0.1;
+        final double INC_I = 0.1;
+        final double INC_D = 0.1;
+        // get current PID coefficients
+        PIDFCoefficients pid;
+        pid = FrontLeftM.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        // change coefficients using methods included with DcMotorEx class.
+        pid.p += p*INC_P;
+        pid.i += i*INC_I;
+        pid.d += d*INC_D;
+        FrontLeftM.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pid);
+        FrontRightM.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pid);
+        BackLeftM.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pid);
+        BackRightM.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pid);
     }
 
     // delays for a fixed number of seconds

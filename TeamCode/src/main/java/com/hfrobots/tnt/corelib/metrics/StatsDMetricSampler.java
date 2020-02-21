@@ -117,7 +117,7 @@ public class StatsDMetricSampler implements MetricsSampler {
         addVoltages();
         addDigitalChannels();
         addServos();
-        addDistanceSensors();
+        //addDistanceSensors();
     }
 
     @Override

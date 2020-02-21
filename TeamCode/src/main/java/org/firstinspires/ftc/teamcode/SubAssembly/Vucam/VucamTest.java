@@ -24,19 +24,18 @@ public class VucamTest extends LinearOpMode {
         telemetry.setAutoClear(true);
         waitForStart();
 
-        /* Only works once and must wait a while after init before calling */
         Vucam.setSamplePos();
-        telemetry.update();
 
         //telling the code to run until you press that giant STOP button on RC
         while (opModeIsActive()) {
+
+            Vucam.Telemetry();
+            telemetry.update();
 
             //let the robot have a little rest, sleep is healthy
             sleep(40);
         }
 
-        // crashes when you use Stop
-        // How to turn off camera when done???
         Vucam.Stop();
     }
 }

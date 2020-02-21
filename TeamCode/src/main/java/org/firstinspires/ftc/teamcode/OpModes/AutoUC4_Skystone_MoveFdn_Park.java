@@ -199,18 +199,26 @@ public class AutoUC4_Skystone_MoveFdn_Park {
 
        //Move forward till Chassis bumber limit switch is pressed.
         double expectedMaxDistanceToFoundation = 81 + (5 - skystonePosition) * stoneTostone; // was 40 --> 70
-        autoUCChassis.runFwdBackLeftRight(expectedMaxDistanceToFoundation, 0, 0.6, callingOpMode) ;
+        //Section to solve for curving of robot
+        autoUCChassis.runFwdBackLeftRight(expectedMaxDistanceToFoundation-49, 0, 0.6, callingOpMode) ;
+        callingOpMode.sleep(100);
+        autoUCChassis.turnbydegree(1,0.2,17.5, callingOpMode);
+        callingOpMode.sleep(200);
+        autoUCChassis.runFwdBackLeftRight(49, 0, 0.6, callingOpMode) ;
+        //autoUCChassis.runFwdBackLeftRight(expectedMaxDistanceToFoundation, 0, 0.6, callingOpMode) ;
         callingOpMode.sleep(100);
 
         //Lift Arm
         autoUCArm.moveArm_aboveFoundationLevel();
 
         // Turn 90 degrees right
-        autoUCChassis.turnby90degree(playingAlliance,0.2, callingOpMode); // was 0.1
+        //autoUCChassis.turnby90degree(playingAlliance,0.2, callingOpMode); // was 0.1
+        autoUCChassis.turnbydegree(playingAlliance,0.2,100, callingOpMode); // was 0.1
         callingOpMode.sleep(300);
 
         //Move forward till Chassis bumber limit switch is pressed
         autoUCChassis.runFwdTill_frontChassisTouchSensor_Pressed(18, 0.25, callingOpMode);
+        //autoUCChassis.runFwdTill_frontChassisTouchSensor_Pressed(30, 0.25, callingOpMode);
 
         // Drop block
         autoUCIntake.openGrip();
@@ -232,7 +240,8 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         autoUCArm.moveArm_onFoundationLevel();
 
         // Move Back
-        autoUCChassis.runFwdBackLeftRight(-37,0,0.2, callingOpMode);
+        autoUCChassis.runFwdBackLeftRight(-45,0,0.2, callingOpMode);
+        //autoUCChassis.runFwdBackLeftRight(-49,0,0.2, callingOpMode);
 
         //Lift Arm to Above foundation level and release hook
         autoUCArm.moveArm_aboveFoundationLevel();
@@ -250,7 +259,7 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         //callingOpMode.sleep(100);
 
         //Move out of foundation area
-        autoUCChassis.runFwdBackLeftRight(27, playingAlliance, 0.4, callingOpMode);
+        autoUCChassis.runFwdBackLeftRight(44, playingAlliance, 0.4, callingOpMode);
 
         //Move Arm to ground Level
         autoUCArm.turnArmBrakeModeOn();
@@ -270,10 +279,10 @@ public class AutoUC4_Skystone_MoveFdn_Park {
         //Move right by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
         if (playingAlliance == 1) {
             //Blue Alliance
-            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-10, 0, 0.2, callingOpMode);
+            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-15, 0, 0.2, callingOpMode);
         } else {
             //Red Alliance
-            autoUCChassis.runTill_ChassisRightColorSensorIsRed(-10, 0, 0.2, callingOpMode);
+            autoUCChassis.runTill_ChassisRightColorSensorIsRed(-15, 0, 0.2, callingOpMode);
         }
 
         //Reached Parking position

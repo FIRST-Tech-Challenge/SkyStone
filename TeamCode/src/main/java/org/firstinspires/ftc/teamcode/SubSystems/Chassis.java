@@ -68,6 +68,7 @@ public class Chassis {
     public double wheelRadius;
     public double robotRadius;
     public double target90degRotations;
+    public double target1degRotations;
 
     //Timer for timing out Arm motion incase targetPosition cannot be achieved
     ElapsedTime ChassisMotionTimeOut = new ElapsedTime();
@@ -128,6 +129,7 @@ public class Chassis {
         //target90degRotations = (Math.PI*robotRadius/2)/(2*Math.PI*wheelRadius);
 
         target90degRotations = 1.02; //1.0865; Original value
+        target1degRotations = target90degRotations/90.0;
 
 
         frontRight.setDirection(DcMotor.Direction.REVERSE);
@@ -604,6 +606,36 @@ public class Chassis {
         backLeft.setPower(0.0);
         backRight.setPower(0.0);
     }
+
+    /**
+     * Method to turn robot by 90 degrees
+     * @param clockOrAntiClockwise + 1 for clockwise, -1 for anticlockwise
+     * @param power to run motors
+     * @param callingOpMode passed for checking for isStopRequested()
+     */
+    public void turnbydegree(
+            int clockOrAntiClockwise,
+            double power,
+            double angle,
+            LinearOpMode callingOpMode){
+        resetChassis();
+        setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        while (!callingOpMode.isStopRequested() &&
+                (Math.abs(backLeft.getCurrentPosition()) < Math.abs(ChassisMotorEncoderCount * target1degRotations * angle))
+        ) {
+            frontLeft.setPower(clockOrAntiClockwise*power);
+            frontRight.setPower(-clockOrAntiClockwise*power);
+            backLeft.setPower(clockOrAntiClockwise*power);
+            backRight.setPower(-clockOrAntiClockwise*power);
+        }
+        frontLeft.setPower(0.0);
+        frontRight.setPower(0.0);
+        backLeft.setPower(0.0);
+        backRight.setPower(0.0);
+    }
+
+
 
     /**
      * Method to identify when frontleftChassisTouchSensor is pressed.

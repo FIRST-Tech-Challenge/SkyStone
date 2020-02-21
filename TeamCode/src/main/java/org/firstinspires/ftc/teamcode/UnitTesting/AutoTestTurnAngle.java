@@ -78,7 +78,9 @@ public class AutoTestTurnAngle extends LinearOpMode{
 
         while (opModeIsActive()) {
             hzChassis.turnby90degree(1,0.2, this);
-            sleep(5000);
+            sleep(2500);
+            hzChassis.turnbydegree(1,0.2, 20, this);
+            sleep(2500);
             if(HzDEBUG_FLAG) printDebugMessages();
             telemetry.update();
             idle();

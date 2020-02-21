@@ -70,10 +70,10 @@ public class DriveControl {
         /* change tolerance for RUN_TO_POSITION */
         int tolerance = (int) (RUN_TO_TOLERANCE_CM * CONVERT_CM_TO_ENCODER);
         opmode.telemetry.addData("Motor tolerance ", tolerance);
-        ((DcMotorEx) FrontLeftM).setTargetPositionTolerance(tolerance);
-        ((DcMotorEx) FrontRightM).setTargetPositionTolerance(tolerance);
-        ((DcMotorEx) BackLeftM).setTargetPositionTolerance(tolerance);
-        ((DcMotorEx) BackRightM).setTargetPositionTolerance(tolerance);
+        FrontLeftM.setTargetPositionTolerance(tolerance);
+        FrontRightM.setTargetPositionTolerance(tolerance);
+        BackLeftM.setTargetPositionTolerance(tolerance);
+        BackRightM.setTargetPositionTolerance(tolerance);
 
         Color.init(opMode);
         IMU.init(opMode);

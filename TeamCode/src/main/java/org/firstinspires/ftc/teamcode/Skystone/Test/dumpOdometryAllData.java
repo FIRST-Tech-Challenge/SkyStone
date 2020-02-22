@@ -2,12 +2,14 @@ package org.firstinspires.ftc.teamcode.Skystone.Test;
 
 import android.os.SystemClock;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
 
+@Disabled
 @TeleOp
 public class dumpOdometryAllData extends LinearOpMode {
     Robot robot;

@@ -24,6 +24,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 //import com.qualcomm.robotcore.util.ElapsedTime;​
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -45,10 +46,14 @@ public class Joules  {
     public Motor BackRight;
     public Motor BackLeft;
     private String VEER_CHECK_TASK_KEY = "Joules.VEERCHECK";
-
+    private VoltageSensor ExpansionHub2_VoltageSensor;
+    ColorSensor colorSensorLeft;
+    ColorSensor colorSensorRight;
+    ColorSensor colorSensordown;
     public Boolean ScissorUp = Boolean.FALSE;
     public Boolean ScissorDown = Boolean.FALSE;
     public LynxEmbeddedIMU imu;
+    int bluetapeval = 27;
 
     Orientation angles;
     Acceleration gravity;
@@ -325,6 +330,87 @@ public class Joules  {
         }
 
     }
+
+//    public void OnFoundBothBlue(){
+//        DaffyUp();
+//        RC.l.sleep( 2000);
+//        DaffyStop();
+//
+//        DriveForward(0.4);
+//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 650));
+//        Stop();
+//
+//        DriveForward(0.2);
+//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 600));
+//        Stop();
+//
+//        DaffyGrab();
+//        RC.l.sleep(2000);
+//
+//        SlidesUp();
+//        RC.l.sleep(100);
+//        SlidesStop();
+//
+//        DriveBackward(0.3);
+//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 350));
+//        Stop();
+//
+//        StrafeLeft(0.5);
+//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 2000));
+//        Stop();
+//
+//
+//        SlidesUp();
+//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),800));
+//        SlidesStop();
+//
+//
+//        StrafeLeft(0.3);
+//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1000));
+//        Stop();
+//        RC.l.sleep(500);
+//
+//        RC.l.clearTimer(1);
+//        while (opModeIsActive() && getSeconds(1) < 2000 && colorSensorRight.blue() < bluetapeval) {
+//            DriveForward(0.1);
+//
+//        }
+//        Stop();
+//
+//        SlidesDown();
+//        FoundationGrab();
+//        RC.l.sleep(100);
+//        SlidesStop();
+//        RC.l.sleep(1500);
+//
+//        DriveBackward(0.5);
+//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 600));
+//        Stop();
+//
+//        StrafeRight(0.3);
+//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 600));
+//        Stop();
+//
+//        TurnRight(0.5);
+//        RC.l.sleep(750);
+//        Stop();
+//
+//        DriveForward(0.5);
+//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 900));
+//        Stop();
+//
+//        FoundationDrop();
+//        RC.l.sleep(2000);
+//
+//        DaffyUp();
+//        RC.l.sleep(1000);
+//        Stop();
+//
+//        DriveBackward(0.3);
+//        RC.l.sleep(getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1200));
+//        Stop();
+//
+//    }
 
     public void imuTurnR(double degrees, double speed) {
 

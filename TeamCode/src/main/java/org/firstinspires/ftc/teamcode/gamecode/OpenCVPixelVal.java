@@ -25,9 +25,10 @@ import android.provider.ContactsContract;
 import android.service.notification.NotificationListenerService;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.vuforia.Rectangle;
 import org.opencv.core.Point;
+import org.firstinspires.ftc.teamcode.opmodesupport.AutoOpMode;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -41,6 +42,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
+import org.firstinspires.ftc.teamcode.robots.Joules;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -51,13 +53,13 @@ import java.util.List;
  * callback to switch which stage of a pipeline is rendered to the viewport for debugging
  * purposes. We also show how to get data from the pipeline to your OpMode.
  */
-@TeleOp
+@Autonomous
 
 public class OpenCVPixelVal extends LinearOpMode
 {
     OpenCvCamera phoneCam;
     StageSwitchingPipeline stageSwitchingPipeline;
-
+    Joules joules = new Joules();
     @Override
     public void runOpMode()
     {
@@ -76,17 +78,37 @@ public class OpenCVPixelVal extends LinearOpMode
         phoneCam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
 
         waitForStart();
-
         while (opModeIsActive())
         {
             telemetry.addData("Num contours found", stageSwitchingPipeline.getNumContoursFound());
             telemetry.addData("Mean", stageSwitchingPipeline.getMean());
             telemetry.addData("Mean RectOneRed", stageSwitchingPipeline.getRectOneRed());
+            telemetry.addData("Mean RectTwoGreen", stageSwitchingPipeline.getRectTwoGreen());
+            telemetry.addData("Mean RectTwoGreen", stageSwitchingPipeline.getRectThreeBlue());
+
 
             telemetry.update();
             sleep(100);
         }
+
+        if (opModeIsActive()) {
+            if (stageSwitchingPipeline.getRectOneRed() < stageSwitchingPipeline.getRectTwoGreen() && stageSwitchingPipeline.getRectOneRed() < stageSwitchingPipeline.getRectThreeBlue()) {
+                telemetry.addData("Skystone", "Left");
+                joules.StrafeRight(0.3);
+            }
+
+            else if (stageSwitchingPipeline.getRectThreeBlue() < stageSwitchingPipeline.getRectOneRed() && stageSwitchingPipeline.getRectThreeBlue() < stageSwitchingPipeline.getRectTwoGreen()) {
+                telemetry.addData("Skystone", "Right");
+                joules.StrafeLeft(0.3);
+            }
+
+            else if (stageSwitchingPipeline.getRectTwoGreen() < stageSwitchingPipeline.getRectOneRed() && stageSwitchingPipeline.getRectTwoGreen() < stageSwitchingPipeline.getRectThreeBlue()) {
+                telemetry.addData("Skystone", "Center");
+                //go to rest of program
+            }
+        }
     }
+
 
     /*
      * With this pipeline, we demonstrate how to change which stage of
@@ -116,6 +138,8 @@ public class OpenCVPixelVal extends LinearOpMode
         enum Stage
         {   IMAGE,
             RECT1,
+            RECT2,
+            RECT3,
         }
 
         private Stage stageToRenderToViewport = Stage.IMAGE;
@@ -146,12 +170,11 @@ public class OpenCVPixelVal extends LinearOpMode
         {
             Imgproc.cvtColor(input, YCrCB, Imgproc.COLOR_RGB2YCrCb);
              Core.extractChannel(YCrCB, YCrCB, 0);
-             final int ten = 10;
-             final int twenty = 20;
-            Range YX1 = new Range(0, 150);
-            Range YX2 = new Range(0, 150);
 
            RectOneRed = YCrCB.submat(y1,y2,x1,x2);
+           RectTwoGreen = YCrCB.submat(y1,y2,x3,x4);
+           RectThreeBlue = YCrCB.submat(y1,y2,x5,x6);
+
 
 
 
@@ -165,15 +188,15 @@ public class OpenCVPixelVal extends LinearOpMode
 
            Imgproc.rectangle (
                     YCrCB,                    //Matrix obj of the image
-                    new Point(165, 500),        //p1
-                    new Point(315, 800),       //p2
+                    new Point(x3, y1),        //p1
+                    new Point(x4, y2),       //p2
                     new Scalar(0, 255, 0),     //Green
                     5                          //Thickness of the line
             );
            Imgproc.rectangle (
                     YCrCB,                    //Matrix obj of the image
-                    new Point(325, 500),        //p1
-                    new Point(475, 800),       //p2
+                    new Point(x5, y1),        //p1
+                    new Point(x6, y2),       //p2
                     new Scalar(0, 0, 255),     //Blue
                     5                          //Thickness of the line
             );
@@ -190,6 +213,12 @@ public class OpenCVPixelVal extends LinearOpMode
                }
                case RECT1:{
                    return RectOneRed;
+               }
+               case RECT2:{
+                   return RectTwoGreen;
+               }
+               case RECT3:{
+                   return RectThreeBlue;
                }
 
                 default:
@@ -211,6 +240,16 @@ public class OpenCVPixelVal extends LinearOpMode
         public double getRectOneRed(){
             return Core.mean(RectOneRed).val[0];
         }
+
+        public double getRectTwoGreen(){
+            return Core.mean(RectTwoGreen).val[0];
+        }
+
+        public double getRectThreeBlue(){
+            return Core.mean(RectThreeBlue).val[0];
+        }
+
+
     }
 
 

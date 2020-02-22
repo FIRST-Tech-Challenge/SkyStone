@@ -19,8 +19,6 @@ public class OnFoundBothBlue extends AutoOpMode {
         ColorSensor colorSensorRight;
         ColorSensor colorSensordown;
 
-        DistanceSensor DistanceSensorLeft;
-        DistanceSensor DistanceSensorRight;
 
         ExpansionHub2_VoltageSensor =  hardwareMap.voltageSensor.get("Expansion Hub 2");
 

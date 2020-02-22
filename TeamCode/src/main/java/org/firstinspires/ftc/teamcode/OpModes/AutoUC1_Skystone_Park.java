@@ -205,9 +205,9 @@ public class AutoUC1_Skystone_Park{
         // Park near wall
         // Move back by distance or till Chassis light sensor does not detect Blue line to be under blue skybridge
         if (playingAlliance == 1) {
-            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-35, 0, 0.2, callingOpMode);
+            autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-45, 0, 0.2, callingOpMode);
         } else {
-            autoUCChassis.runTill_ChassisLeftColorSensorIsRed(-35, 0, 0.2, callingOpMode);
+            autoUCChassis.runTill_ChassisLeftColorSensorIsRed(-45, 0, 0.2, callingOpMode);
         }
 
         //Drop arm to ground

@@ -48,6 +48,7 @@ public class TestBot extends Bot {
     public SkystoneFinder skystoneFinder = null;
     public Intake intake = null;
     public Ramp ramp = null;
+    public TapeGun tapeGun = null;
 
     public ColorFinder colorFinder = null;
 
@@ -79,6 +80,7 @@ public class TestBot extends Bot {
         intake = new Intake(logger, aOpMode, "Right_Intake", "Left_Intake");
         ramp = new Ramp(logger, aOpMode, "rampServo", "rampServo2");
         colorFinder = new ColorFinder(logger, aOpMode, "leftColor", "rightColor");
+        tapeGun = new TapeGun(logger, aOpMode, "tapeGun");
 
     }
 

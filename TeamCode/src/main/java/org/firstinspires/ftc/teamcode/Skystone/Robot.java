@@ -64,7 +64,7 @@ public class Robot {
     // Outtake Slide Positions
     public final double OUTTAKE_SLIDE_EXTENDED = 0.1;
     public final double OUTTAKE_SLIDE_RETRACTED = 0.85;
-    public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = 0.27; // First peg .27, second peg .121
+//    public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = 0.27; // First peg .27, second peg .121
 
     // Clamp positions
     public final double FRONTCLAMP_ACTIVATECAPSTONE = 0;
@@ -96,10 +96,7 @@ public class Robot {
     public final long DELAY_CLAMP_ON_CLAMP = 700;
 
     // Constants for spool encoder positions
-    public final double SPOOL_FIRSTLEVEL_POSITION = -56;
-    public final int SPOOL_LEVEL_INCREMENT = 400;
-//    public final int[] spoolHeights = {150,365,728, 1040, 1385, 1729, 2062, 2411, 2743, 3100, 3435, 3790};
-    public final int[] spoolHeights = {150,400,763, 1075, 1420, 1764, 2097, 2446, 2778, 3135, 3470, 3825};
+    public final int[] spoolHeights = {150, 400, 763, 1075, 1420, 1764, 2097, 2446, 2778, 3135, 3470, 3825};
 
     //robots position
     private Point robotPos = new Point();
@@ -466,12 +463,15 @@ public class Robot {
         addWaypoints(data);
 
         boolean isMoving = true;
-
+        boolean isStuck = false;
+        boolean maybeStuck = false;
+        long maybeStuckTime = Long.MAX_VALUE;
 
         int followIndex = 1;
         double angleLockScale;
         double distanceToEnd;
-        double distanceToNext;
+        double distanceToNext = Double.MAX_VALUE;
+        double lastDistanceToNext = Double.MAX_VALUE;
         double desiredHeading;
 
         long currentTime;
@@ -483,6 +483,11 @@ public class Robot {
 
             for (int p = pathPoints.length - 1; p >= 0; p--) {
                 if (Math.hypot(robotPos.x - pathPoints[p].x, robotPos.y - pathPoints[p].y) < 10) {
+                    if (followIndex != p) {
+                        lastDistanceToNext = Double.MAX_VALUE;
+                    } else {
+                        lastDistanceToNext = distanceToNext;
+                    }
                     followIndex = p;
                     break;
                 }
@@ -490,7 +495,30 @@ public class Robot {
 
             distanceToEnd = Math.hypot(robotPos.x - data2[data2.length - 1].x, robotPos.y - data2[data2.length - 1].y);
             distanceToNext = Math.hypot(robotPos.x - pathPoints[followIndex].x, robotPos.y - pathPoints[followIndex].y);
-            desiredHeading = angleWrap(Math.atan2(pathPoints[followIndex].y - pathPoints[followIndex - 1].y, pathPoints[followIndex].x - pathPoints[followIndex - 1].x) + 2 * Math.PI);
+            if (followIndex > 0) {
+                desiredHeading = angleWrap(Math.atan2(pathPoints[followIndex].y - pathPoints[followIndex - 1].y, pathPoints[followIndex].x - pathPoints[followIndex - 1].x) + 2 * Math.PI);
+            } else {
+                desiredHeading = angleWrap(Math.atan2(pathPoints[followIndex + 1].y - pathPoints[followIndex].y, pathPoints[followIndex + 1].x - pathPoints[followIndex].x) + 2 * Math.PI);
+            }
+
+            if ((followIndex != (pathPoints.length - 1)) && Math.abs(distanceToNext - lastDistanceToNext) < 1) {
+                if (!maybeStuck) {
+                    maybeStuck = true;
+                    maybeStuckTime = SystemClock.elapsedRealtime();
+                }
+            } else {
+                maybeStuck = false;
+            }
+
+            if (maybeStuck && (currentTime - maybeStuckTime > 500)) { // .9 speed is 2 seconds for 36 inches
+                isStuck = true;
+            } else {
+                isStuck = false;
+            }
+
+            Log.d("splineMove", "isStuck: " + isStuck);
+            telemetry.addLine("isStuck: " + isStuck);
+            telemetry.update();
 
             if (desiredHeading == 0) {
                 desiredHeading = Math.toRadians(360);

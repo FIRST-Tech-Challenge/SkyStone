@@ -3,10 +3,8 @@ package org.firstinspires.ftc.teamcode.Opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.HardwareSystems.ActionHandler;
 import org.firstinspires.ftc.teamcode.HardwareSystems.ActionHandlerClaws;
 import org.firstinspires.ftc.teamcode.HardwareSystems.AutoClaws;
-import org.firstinspires.ftc.teamcode.Movement.Localization.OdometerIMU2W;
 import org.firstinspires.ftc.teamcode.Movement.Localization.OdometerKIMU2W;
 import org.firstinspires.ftc.teamcode.Movement.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Movement.MotionPlanning.RobotPoint;
@@ -16,8 +14,8 @@ import org.firstinspires.ftc.teamcode.Utility.Timer;
 
 import java.util.ArrayList;
 
-@Autonomous(name="Red Auto", group="Auto")
-public class redSideAuto extends LinearOpMode {
+@Autonomous(name="Blue Auto", group="Auto")
+public class blueSideAuto extends LinearOpMode {
 
     // Declare OpMode Members
     private Timer timer;
@@ -30,6 +28,7 @@ public class redSideAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
         initialize();
         waitForStart();
         timer.start();
@@ -37,22 +36,45 @@ public class redSideAuto extends LinearOpMode {
         telemetry.addData("status","running");
         telemetry.update();
 
-        RobotPoint point1 = new RobotPoint( -38, 74, 90, 0.9, 0);
-        movement.moveToPointConstants(point1, 0.8, 0.11, 20, 3);
-        autoClaws.grabBlock();
+        int skyPosition = 0;
 
-        ArrayList<RobotPoint> delivery = new ArrayList<>();
-        RobotPoint point2 = new RobotPoint(0, 0, 90, 0.9, 10);
-        RobotPoint point3 = new RobotPoint(97, 57, 90, 0.9, 10);
-        point3.setHookActions(0.482, 0.985);
-        RobotPoint point4 = new RobotPoint(215, 80, 90, 0.9, 10);
-        point4.setHookActions(0.482, 0.985);
-        delivery.add(point2);
-        delivery.add(point3);
-        delivery.add(point4);
-        movement.followPath(delivery);
-        movement.moveToPointConstants(point4, 0.8, 0.3, 15, 4);
-        autoClaws.depositBlock();
+        //GRAB FIRST BLOCK
+        if(skyPosition == 0) { //Closest to wall
+            movement.moveToPointPD(new RobotPoint(56, 74.5, -90, 0,0), 100, 2);
+
+            timer.waitMillis(3000);
+
+        }else if(skyPosition == 1) { //Middle Stone
+        }else if(skyPosition == 2) { //Furthest From Wall
+        }
+
+        ArrayList<RobotPoint> deliverPath = new ArrayList<>();
+        deliverPath.add(new RobotPoint(55, 75.5, -90, 1, 50));
+        deliverPath.add(new RobotPoint(-40, 40, -90, 0.8, 50));
+        deliverPath.add(new RobotPoint(-105, 53, -90, 1, 50));
+        deliverPath.add(new RobotPoint(-165, 63, -90, 1, 20));
+        deliverPath.add(new RobotPoint(-175, 65, -90, 1, 0));
+
+        ArrayList<RobotPoint> returnPath = new ArrayList<>();
+        returnPath.add(new RobotPoint(-175, 65, -90, 1, 50));
+        returnPath.add(new RobotPoint(-165, 63, -90, 1, 50));//added
+        returnPath.add(new RobotPoint(-105, 53, -90, 1, 50));
+        returnPath.add(new RobotPoint(-70, 45, -90, 1, 50));//added
+        returnPath.add(new RobotPoint(-40, 40, -90, 0.8, 50));
+        returnPath.add(new RobotPoint(55, 75.5, -90, 1, 0));
+
+        movement.followPath(deliverPath);
+        timer.waitMillis(3000);
+        movement.followPath(returnPath);
+
+
+        //GRAB SECOND BLOCK
+        if(skyPosition == 0) { //Closest to wall
+            //movement.moveToPointPD2(new RobotPoint(-5, 75, -90, 0, 0), 50,2);
+        }else if(skyPosition == 1) { //Middle Stone
+        }else if(skyPosition == 2) { //Furthest From Wall
+        }
+
     }
 
     private void initialize(){
@@ -61,7 +83,7 @@ public class redSideAuto extends LinearOpMode {
         drivetrain = new MecanumDrive();
         odometer = new OdometerKIMU2W();
         timer = new Timer(this, odometer);
-        autoClaws = new AutoClaws("RED", timer);
+        autoClaws = new AutoClaws("BLUE", timer);
         handler = new ActionHandlerClaws(autoClaws);
         movement = new Movement(this, drivetrain, odometer);
         movement.setActionHandler(handler);

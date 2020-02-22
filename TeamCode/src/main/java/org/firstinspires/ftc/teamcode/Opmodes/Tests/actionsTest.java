@@ -53,7 +53,7 @@ public class actionsTest extends LinearOpMode {
 
         RobotPoint point = new RobotPoint(50, 50, 0, 0, 0);
         point.setHookActions(0.99, 0.985);
-        movement.movetoPointConstants(point, 0.4, 0.3, 3, 2);
+        movement.moveToPointConstants(point, 0.4, 0.3, 3, 2);
 
         timer.waitMillis(500);
         autoClaws.grabBlock();

@@ -30,15 +30,21 @@ public class purePursuitTest extends LinearOpMode {
         telemetry.addData("status","running");
         telemetry.update();
 
-        ArrayList<RobotPoint> testPath = new ArrayList<>();
-        testPath.add(new RobotPoint(0, 0, 0, 0.7, 30));
-        testPath.add(new RobotPoint(0, 121, -90, 0.7, 30));
-        testPath.add(new RobotPoint(140, 121, -90, 0.7, 30)); //This point is the final point, threshold is the final threshold
-        RobotPoint testPathGoal = new RobotPoint(150, 121, -90, 0.7,0);
-        testPath.add(testPathGoal); //Extension of the path to keep the robot moving, the eventual goal of the movement
+        ArrayList<RobotPoint> deliverPath = new ArrayList<>();
+        deliverPath.add(new RobotPoint(55, 75.5, -90, 0.8, 10));
+        deliverPath.add(new RobotPoint(-40, 30, -90, 0.5, 30));
+        deliverPath.add(new RobotPoint(-165, 63, -90, 0.7, 30));
+        deliverPath.add(new RobotPoint(-175, 65, -90, 0.8, 0));
 
-        movement.followPath(testPath);
-        movement.movetoPointConstants(testPathGoal, 0.4, 0.4, 3, 2);
+        while(opModeIsActive()) {
+            RobotPoint target = PathingAgent.getTargetPoint(odometer.x, odometer.y, deliverPath);
+            telemetry.addData("RobotX", odometer.x);
+            telemetry.addData("RobotY", odometer.y);
+            telemetry.addData("targetPointX", target.x);
+            telemetry.addData("targetPointY", target.y);
+            telemetry.update();
+            odometer.update();
+        }
 
     }
 

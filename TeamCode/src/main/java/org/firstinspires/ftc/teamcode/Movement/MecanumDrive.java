@@ -18,7 +18,7 @@ public class MecanumDrive extends Drivebase {
 
         reverseMotors();
         setRunMode("withEncoder");
-        setPowerBehavior("coast");
+        setPowerBehavior("brake");
 
     }
 
@@ -40,10 +40,10 @@ public class MecanumDrive extends Drivebase {
           |          A
           V          |
         */
-        lf = velY + velX*1.3 - velHeading/2;
-        rf = velY - velX*1.3 + velHeading/2;
-        lb = velY - velX*1.3 - velHeading/2;
-        rb = velY + velX*1.3 + velHeading/2;
+        lf = velY + velX*1.3 - velHeading;
+        rf = velY - velX*1.3 + velHeading;
+        lb = velY - velX*1.3 - velHeading;
+        rb = velY + velX*1.3 + velHeading;
 
     }
 

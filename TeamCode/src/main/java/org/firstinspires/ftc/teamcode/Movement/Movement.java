@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Movement;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Controllers.GatedConstant;
+import org.firstinspires.ftc.teamcode.Controllers.GatedPid;
 import org.firstinspires.ftc.teamcode.Controllers.Proportional;
 import org.firstinspires.ftc.teamcode.HardwareSystems.ActionHandler;
 import org.firstinspires.ftc.teamcode.HardwareSystems.AutoClaws;
@@ -40,7 +41,7 @@ public class Movement {
 
     public void followPath(ArrayList<RobotPoint> path){
 
-        Proportional orient = new Proportional(0.035, 0.2);
+        Proportional orient = new Proportional(0.035, 0.26);
         RobotPoint lastPoint = path.get(path.size()-2); //Actually is the second to last point
 
         while(opMode.opModeIsActive()){
@@ -67,8 +68,8 @@ public class Movement {
             distance = Math.hypot(xDist, yDist);
             heading = odometer.heading;
 
-            targSpeed = targetPoint.speed;
-            scale = targSpeed/distance;
+            targSpeed = Math.abs(targetPoint.speed);
+            scale = targSpeed / distance;
 
             targVX = xDist * scale;
             targVY = yDist * scale;
@@ -102,9 +103,9 @@ public class Movement {
     }
 
     // Stand-alone Movement Functions
-    public void movetoPointConstants(RobotPoint targetPoint, double speedFar, double speedNear, double switchThresh, double arrivedThresh) {
+    public void moveToPointConstants(RobotPoint targetPoint, double speedFar, double speedNear, double switchThresh, double arrivedThresh) {
 
-        Proportional orient = new Proportional(0.04, 0.65);
+        GatedPid orient = new GatedPid(10, 0.3,0.009,0,0.023,0, 0.4, 0.05);
 
         double xDist, yDist, distance, heading;
         double targSpeed, scale;
@@ -141,6 +142,94 @@ public class Movement {
 
         }while(!endCondition && opMode.opModeIsActive());
 
+        drivebase.freeze();
+
+    }
+
+    public void moveToPointPD(RobotPoint targetPoint, double switchThresh, double arrivedThresh) {
+
+        GatedPid orient = new GatedPid(10, 0.3,0.009,0,0.023,0, 0.4, 0.05);
+
+        double xDist, yDist, distance, heading;
+        double targSpeed, scale;
+        double targVX, targVY, hCorrect;
+        boolean endCondition;
+
+        GatedPid speedFinder = new GatedPid(switchThresh, 0.8, 0.018, 0, 0.05, 0, 0.8,0.2);
+
+        do {
+
+            xDist = targetPoint.x - odometer.x;
+            yDist = targetPoint.y - odometer.y;
+            distance = Math.hypot(xDist, yDist);
+            heading = odometer.heading;
+
+            targSpeed = Math.abs(speedFinder.correction);
+            scale = targSpeed / distance;
+
+            targVX = xDist * scale;
+            targVY = yDist * scale;
+            // Verified ^
+
+            speedFinder.update(0, distance);
+            orient.update(targetPoint.heading, heading);
+            hCorrect = orient.correction;
+
+            setGlobalVelocity(targVX, targVY, hCorrect);
+
+            endCondition = (distance < arrivedThresh) && orient.error < 2;
+
+            doActions(targetPoint);
+
+            odometer.update();
+
+        }while(!endCondition && opMode.opModeIsActive());
+
+        drivebase.freeze();
+
+    }
+
+    public void moveToPointPD2(RobotPoint targetPoint,double switchThresh, double arrivedThresh) {
+
+        GatedPid orient = new GatedPid(10, 0.3,0.009,0,0.023,0, 0.4, 0.05);
+
+        double xDist, yDist, distance, heading;
+        double targSpeed, scale;
+        double targVX, targVY, hCorrect;
+        boolean endCondition;
+
+        GatedPid speedFinder = new GatedPid(switchThresh, 1.25, 0.026, 0, 0.06, 0, 1.25,0.1);
+
+        do {
+
+            xDist = targetPoint.x - odometer.x;
+            yDist = targetPoint.y - odometer.y;
+            distance = Math.hypot(xDist, yDist);
+            heading = odometer.heading;
+
+            targSpeed = Math.abs(speedFinder.correction);
+            scale = targSpeed / distance;
+
+            targVX = xDist * scale;
+            targVY = yDist * scale;
+            // Verified ^
+
+            speedFinder.update(0, distance);
+            orient.update(targetPoint.heading, heading);
+            hCorrect = orient.correction;
+
+            setGlobalVelocity(targVX, targVY, hCorrect);
+
+            endCondition = (distance < arrivedThresh) && orient.error < 2;
+
+            doActions(targetPoint);
+
+            odometer.update();
+
+        }while(!endCondition && opMode.opModeIsActive());
+
+        drivebase.freeze();
+
     }
 
     private void doActions(RobotPoint point){
@@ -148,5 +237,7 @@ public class Movement {
             handler.doActions(point);
         }
     }
+
+
 
 }

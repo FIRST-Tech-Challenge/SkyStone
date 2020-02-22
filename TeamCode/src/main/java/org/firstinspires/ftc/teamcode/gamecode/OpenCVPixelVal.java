@@ -59,7 +59,7 @@ public class OpenCVPixelVal extends LinearOpMode
 {
     OpenCvCamera phoneCam;
     StageSwitchingPipeline stageSwitchingPipeline;
-    Joules joules = new Joules();
+//    Joules joules = new Joules();
     @Override
     public void runOpMode()
     {
@@ -78,6 +78,9 @@ public class OpenCVPixelVal extends LinearOpMode
         phoneCam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
 
         waitForStart();
+
+
+
         while (opModeIsActive())
         {
             telemetry.addData("Num contours found", stageSwitchingPipeline.getNumContoursFound());
@@ -89,17 +92,15 @@ public class OpenCVPixelVal extends LinearOpMode
 
             telemetry.update();
             sleep(100);
-        }
-
         if (opModeIsActive()) {
             if (stageSwitchingPipeline.getRectOneRed() < stageSwitchingPipeline.getRectTwoGreen() && stageSwitchingPipeline.getRectOneRed() < stageSwitchingPipeline.getRectThreeBlue()) {
                 telemetry.addData("Skystone", "Left");
-                joules.StrafeRight(0.3);
+                //joules.StrafeRight(0.3);
             }
 
             else if (stageSwitchingPipeline.getRectThreeBlue() < stageSwitchingPipeline.getRectOneRed() && stageSwitchingPipeline.getRectThreeBlue() < stageSwitchingPipeline.getRectTwoGreen()) {
                 telemetry.addData("Skystone", "Right");
-                joules.StrafeLeft(0.3);
+                //joules.StrafeLeft(0.3);
             }
 
             else if (stageSwitchingPipeline.getRectTwoGreen() < stageSwitchingPipeline.getRectOneRed() && stageSwitchingPipeline.getRectTwoGreen() < stageSwitchingPipeline.getRectThreeBlue()) {
@@ -107,6 +108,8 @@ public class OpenCVPixelVal extends LinearOpMode
                 //go to rest of program
             }
         }
+        }
+
     }
 
 

@@ -15,7 +15,7 @@ public class GBlFarFound extends AutoOpMode {
         Joules joules = new Joules();
         ColorSensor colorSensor;
 
-        colorSensor = hardwareMap.colorSensor.get("colour");
+        colorSensor = hardwareMap.colorSensor.get("colourRight");
         ExpansionHub2_VoltageSensor =  hardwareMap.voltageSensor.get("Expansion Hub 2");
 
 

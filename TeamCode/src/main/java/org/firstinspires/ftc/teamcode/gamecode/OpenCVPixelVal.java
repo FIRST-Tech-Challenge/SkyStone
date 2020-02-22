@@ -21,12 +21,20 @@
 
 package org.firstinspires.ftc.teamcode.gamecode;
 
+import android.provider.ContactsContract;
+import android.service.notification.NotificationListenerService;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.vuforia.Rectangle;
+import org.opencv.core.Point;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.Range;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -34,6 +42,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +52,7 @@ import java.util.List;
  * purposes. We also show how to get data from the pipeline to your OpMode.
  */
 @TeleOp
+
 public class OpenCVPixelVal extends LinearOpMode
 {
     OpenCvCamera phoneCam;
@@ -70,6 +80,8 @@ public class OpenCVPixelVal extends LinearOpMode
         while (opModeIsActive())
         {
             telemetry.addData("Num contours found", stageSwitchingPipeline.getNumContoursFound());
+            telemetry.addData("Mean", stageSwitchingPipeline.getMean());
+            telemetry.addData("Mean RectOneRed", stageSwitchingPipeline.getRectOneRed());
 
             telemetry.update();
             sleep(100);
@@ -84,14 +96,26 @@ public class OpenCVPixelVal extends LinearOpMode
      */
     static class StageSwitchingPipeline extends OpenCvPipeline
     {
-        List<MatOfPoint> contoursList = new ArrayList<>();
-        Mat OneChannel = new Mat();
+        Mat RectOneRed = new Mat();
+        Mat RectTwoGreen = new Mat();
+        Mat RectThreeBlue = new Mat();
         Mat YCrCB = new Mat();
+        final int x1 = 5;
+        final int x2 = 155;
+        final int x3 = 165;
+        final int x4 = 315;
+        final int x5 = 325;
+        final int x6 = 475;
+
+        final int y1 = 500;
+        final int y2 = 600;
+        List<MatOfPoint> contoursList = new ArrayList<>();
         int numContoursFound;
+        double mean;
 
         enum Stage
         {   IMAGE,
-            RAW_IMAGE,
+            RECT1,
         }
 
         private Stage stageToRenderToViewport = Stage.IMAGE;
@@ -118,12 +142,41 @@ public class OpenCVPixelVal extends LinearOpMode
             stageToRenderToViewport = stages[nextStageNum];
         }
 
-        @Override
         public Mat processFrame(Mat input)
         {
-            Imgproc.cvtColor(input, YCrCB, Imgproc.COLOR_RGB2YCrCb);  //
+            Imgproc.cvtColor(input, YCrCB, Imgproc.COLOR_RGB2YCrCb);
+             Core.extractChannel(YCrCB, YCrCB, 0);
+             final int ten = 10;
+             final int twenty = 20;
+            Range YX1 = new Range(0, 150);
+            Range YX2 = new Range(0, 150);
 
-            //Core.extractChannel(OneChannel, OneChannel, 2);
+           RectOneRed = YCrCB.submat(y1,y2,x1,x2);
+
+
+
+           Imgproc.rectangle(
+                    YCrCB,                    //Matrix obj of the image
+                    new Point(x1, y1),        //p1
+                    new Point(x2, y2),       //p2
+                    new Scalar(255, 0, 0),     //Red
+                    5                          //Thickness of the line
+            );
+
+           Imgproc.rectangle (
+                    YCrCB,                    //Matrix obj of the image
+                    new Point(165, 500),        //p1
+                    new Point(315, 800),       //p2
+                    new Scalar(0, 255, 0),     //Green
+                    5                          //Thickness of the line
+            );
+           Imgproc.rectangle (
+                    YCrCB,                    //Matrix obj of the image
+                    new Point(325, 500),        //p1
+                    new Point(475, 800),       //p2
+                    new Scalar(0, 0, 255),     //Blue
+                    5                          //Thickness of the line
+            );
 
 
 
@@ -135,11 +188,9 @@ public class OpenCVPixelVal extends LinearOpMode
                {
                    return YCrCB;
                }
-
-                case RAW_IMAGE:
-                {
-                    return input;
-                }
+               case RECT1:{
+                   return RectOneRed;
+               }
 
                 default:
                 {
@@ -153,5 +204,14 @@ public class OpenCVPixelVal extends LinearOpMode
             return numContoursFound;
         }
 
+        public double getMean(){
+         return Core.mean(YCrCB).val[0];
+        }
+
+        public double getRectOneRed(){
+            return Core.mean(RectOneRed).val[0];
+        }
     }
+
+
 }

@@ -26,6 +26,7 @@ import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Action;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Enums.ActionState;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CatmullRomSplineUtils;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
+import org.firstinspires.ftc.teamcode.Skystone.Test.StuckTest;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -62,7 +63,7 @@ public class Robot {
     private Servo rightFoundation;
 
     // Outtake Slide Positions
-    public final double OUTTAKE_SLIDE_EXTENDED = 1;
+    public final double OUTTAKE_SLIDE_EXTENDED = 0.15;
     public final double OUTTAKE_SLIDE_RETRACTED = 0.85;
 //    public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = 0.27; // First peg .27, second peg .121
 
@@ -464,8 +465,9 @@ public class Robot {
 
         boolean isMoving = true;
         boolean isStuck = false;
-        boolean maybeStuck = false;
-        long maybeStuckTime = Long.MAX_VALUE;
+
+        long lastPosTime = SystemClock.elapsedRealtime();
+        Point lastPos = new Point(robotPos.x,robotPos.y);
 
         int followIndex = 1;
         double angleLockScale;
@@ -501,24 +503,6 @@ public class Robot {
                 desiredHeading = angleWrap(Math.atan2(pathPoints[followIndex + 1].y - pathPoints[followIndex].y, pathPoints[followIndex + 1].x - pathPoints[followIndex].x) + 2 * Math.PI);
             }
 
-            if ((followIndex != (pathPoints.length - 1)) && Math.abs(distanceToNext - lastDistanceToNext) < 1) {
-                if (!maybeStuck) {
-                    maybeStuck = true;
-                    maybeStuckTime = SystemClock.elapsedRealtime();
-                }
-            } else {
-                maybeStuck = false;
-            }
-
-            if (maybeStuck && (currentTime - maybeStuckTime > 500)) { // .9 speed is 2 seconds for 36 inches
-                isStuck = true;
-            } else {
-                isStuck = false;
-            }
-
-            Log.d("splineMove", "isStuck: " + isStuck);
-            telemetry.addLine("isStuck: " + isStuck);
-            telemetry.update();
 
             if (desiredHeading == 0) {
                 desiredHeading = Math.toRadians(360);
@@ -583,6 +567,28 @@ public class Robot {
                         action.executeAction(currentTime);
                     }
                 }
+            }
+
+            if((currentTime - lastPosTime) >= 1000){
+                if(followIndex != pathPoints.length-1 && (Math.hypot(lastPos.x-robotPos.x, lastPos.y - robotPos.y)) < 3){
+                    isStuck = true;
+                }else{
+                    isStuck = false;
+                }
+
+                Log.d("Stuck", isStuck + "");
+                telemetry.addLine("Stuck:" + isStuck);
+                telemetry.update();
+
+                if (isStuck) {
+                    brakeRobot();
+                    linearOpMode.stop();
+                }
+
+                lastPos.x = robotPos.x;
+                lastPos.y = robotPos.y;
+                lastPosTime = currentTime;
+
             }
 
             if (distanceToEnd < 1 && Math.abs(Math.toDegrees(posAngle) - Math.toDegrees(angleLockRadians)) < 5 && isFinishedAllActions) {

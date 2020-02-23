@@ -25,7 +25,7 @@ public class RedFront extends AutoBase {
         double firstSkystoneY = -7;
         double secondSkyStoneY = -14;
         double thirdStoneY = -26;
-        double thirdStoneX = 41;
+        double thirdStoneX = 42;
         double anglelock = 30;
         double angleLockThird = 55;
         double thirdStoneXPath = 33;
@@ -59,9 +59,9 @@ public class RedFront extends AutoBase {
             firstSkystoneY = 10;
             secondSkyStoneY = -6;
             anglelock = 30;
-            thirdStoneX = 46.5;
+            thirdStoneX = 43;
             thirdStoneY = -20.25;
-            foundationTimeKill = 4150;
+            foundationTimeKill = 4250;
         }
 
         double[][] toFirstStone = {
@@ -160,7 +160,7 @@ public class RedFront extends AutoBase {
 
         robot.dumpPoints("" + startTime, "1");
 
-        robot.splineMove(toFoundation, 1, 1, 1, 20, Math.toRadians(180), Math.toRadians(180), 30,
+        robot.splineMove(toFoundation, 1, 1, 0.5, 10, Math.toRadians(180), Math.toRadians(180), 30,
                 toFoundationActions, true, foundationTimeKill, true, new Point(20, 5));
 
         robot.foundationMovers(true);
@@ -179,7 +179,7 @@ public class RedFront extends AutoBase {
 //        robot.getLinearOpMode().sleep(150); // Wait to finish releasing foundation
 
         robot.splineMove(toSecondStone, 1, 1, 1, 1, 0, Math.toRadians(290), anglelock,
-                toSecondStoneActions, true, 5000);
+                toSecondStoneActions, true, 5500);
 
         robot.dumpPoints("" + startTime, "4");
 

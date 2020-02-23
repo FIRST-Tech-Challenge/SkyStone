@@ -44,23 +44,23 @@ public class intakeBlockAuto extends LinearOpMode {
 
         //Write paths here
         ArrayList<RobotPoint> intakePath = new ArrayList<>();
-        intakePath.add(new RobotPoint(0, 0, 0, 0.5, 10));
-        intakePath.add(new RobotPoint(32, 52, 21, 0.5, 8));
-        intakePath.add(new RobotPoint(30, 76, 27, 0.5, 7));
-        intakePath.add(new RobotPoint(16, 104, 32, 0.5, 7));//This point is the final point, threshold
-        RobotPoint intakePathGoal = new RobotPoint(14, 130, 20, 0.5,0);
+        intakePath.add(new RobotPoint(0, 0, 0, 0.5));
+        intakePath.add(new RobotPoint(32, 52, 21, 0.5));
+        intakePath.add(new RobotPoint(30, 76, 27, 0.5));
+        intakePath.add(new RobotPoint(16, 104, 32, 0.5));//This point is the final point, threshold
+        RobotPoint intakePathGoal = new RobotPoint(14, 130, 20, 0.5);
 
         intakePath.add(intakePathGoal); //Extension of the path to keep the robot moving, the eventual goal of the movement
 
         ArrayList<RobotPoint> deliverPath = new ArrayList<>();
-        deliverPath.add(new RobotPoint(30, 95, 20, 0.7, 8));
-        deliverPath.add(new RobotPoint(30, 76, 20, 0.7, 8));
-        deliverPath.add(new RobotPoint(41, 50, 70, 0.7, 8));
-        deliverPath.add(new RobotPoint(65, 47, 90, 0.7, 8));
-        deliverPath.add(new RobotPoint(122, 47, 90, 0.7, 8));
-        deliverPath.add(new RobotPoint(162, 45, 135, 0.7, 8));
-        deliverPath.add(new RobotPoint(205, 53, 180, 0.7, 8));
-        RobotPoint deliverPathGoal = new RobotPoint(205, 53, 180, 0.5,0);
+        deliverPath.add(new RobotPoint(30, 95, 20, 0.7));
+        deliverPath.add(new RobotPoint(30, 76, 20, 0.7));
+        deliverPath.add(new RobotPoint(41, 50, 70, 0.7));
+        deliverPath.add(new RobotPoint(65, 47, 90, 0.7));
+        deliverPath.add(new RobotPoint(122, 47, 90, 0.7));
+        deliverPath.add(new RobotPoint(162, 45, 135, 0.7));
+        deliverPath.add(new RobotPoint(205, 53, 180, 0.7));
+        RobotPoint deliverPathGoal = new RobotPoint(205, 53, 180, 0.5);
         deliverPath.add(deliverPathGoal);
 
         deliverPath.add(deliverPathGoal); //Extension of the path to keep the robot moving, the eventual goal of the movement
@@ -69,7 +69,7 @@ public class intakeBlockAuto extends LinearOpMode {
         //Write autonomous program
         intake.setPower(0.8);
 
-        movement.followPath(intakePath);
+        movement.followPath(intakePath, 30);
         telemetry.addData("status", "made it 1");
         telemetry.update();
         //movement.movetoPointConstants(intakePathGoal, 0.3, 0.2, 3, 4);
@@ -78,7 +78,7 @@ public class intakeBlockAuto extends LinearOpMode {
         outtake.setGripperState("Clamped");
         telemetry.addData("status", "made it 2");
         telemetry.update();
-        movement.followPath(deliverPath);
+        movement.followPath(deliverPath, 30);
       //  movement.movetoPointConstants(deliverPathGoal, 0.3, 0.2, 3, 4);
 
 

@@ -29,7 +29,7 @@ public class movementTest extends LinearOpMode {
         telemetry.addData("status","running");
         telemetry.update();
 
-        RobotPoint targetPoint = new RobotPoint(40, 40, 0, 0, 0);
+        RobotPoint targetPoint = new RobotPoint(40, 40, 0, 0);
         movement.moveToPointConstants(targetPoint, 0.4, 0.2, 3, 2);
 
         drivetrain.freeze();

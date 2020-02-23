@@ -37,20 +37,20 @@ public class redSideAuto extends LinearOpMode {
         telemetry.addData("status","running");
         telemetry.update();
 
-        RobotPoint point1 = new RobotPoint( -38, 74, 90, 0.9, 0);
+        RobotPoint point1 = new RobotPoint( -38, 74, 90, 0.9);
         movement.moveToPointConstants(point1, 0.8, 0.11, 20, 3);
         autoClaws.grabBlock();
 
         ArrayList<RobotPoint> delivery = new ArrayList<>();
-        RobotPoint point2 = new RobotPoint(0, 0, 90, 0.9, 10);
-        RobotPoint point3 = new RobotPoint(97, 57, 90, 0.9, 10);
+        RobotPoint point2 = new RobotPoint(0, 0, 90, 0.9);
+        RobotPoint point3 = new RobotPoint(97, 57, 90, 0.9);
         point3.setHookActions(0.482, 0.985);
-        RobotPoint point4 = new RobotPoint(215, 80, 90, 0.9, 10);
+        RobotPoint point4 = new RobotPoint(215, 80, 90, 0.9);
         point4.setHookActions(0.482, 0.985);
         delivery.add(point2);
         delivery.add(point3);
         delivery.add(point4);
-        movement.followPath(delivery);
+        movement.followPath(delivery, 40);
         movement.moveToPointConstants(point4, 0.8, 0.3, 15, 4);
         autoClaws.depositBlock();
     }

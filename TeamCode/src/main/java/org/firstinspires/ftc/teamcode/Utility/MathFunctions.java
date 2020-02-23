@@ -57,7 +57,7 @@ public class MathFunctions {
             double maxX = lineX1 > lineX2 ? lineX1 : lineX2;
 
             if(xRoot1 > minX && xRoot1 < maxX){
-                allPoints.add(new RobotPoint(xRoot1, yRoot1, 0, 0, 0));
+                allPoints.add(new RobotPoint(xRoot1, yRoot1, 0, 0));
             }
 
             // Do the same for the other root
@@ -70,7 +70,7 @@ public class MathFunctions {
 
             // Make sure it was within range of the segment
             if(xRoot2 > minX && xRoot2 < maxX){
-                allPoints.add(new RobotPoint(xRoot2, yRoot2, 0, 0, 0));
+                allPoints.add(new RobotPoint(xRoot2, yRoot2, 0, 0));
             }
 
         }catch(Exception e){

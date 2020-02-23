@@ -51,7 +51,7 @@ public class actionsTest extends LinearOpMode {
         movement.followPath(testPath);
         */
 
-        RobotPoint point = new RobotPoint(50, 50, 0, 0, 0);
+        RobotPoint point = new RobotPoint(50, 50, 0, 0);
         point.setHookActions(0.99, 0.985);
         movement.moveToPointConstants(point, 0.4, 0.3, 3, 2);
 

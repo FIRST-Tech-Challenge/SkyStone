@@ -9,7 +9,7 @@ public class PathingAgent {
     public static RobotPoint getTargetPoint(double robotX, double robotY, double radius, ArrayList<RobotPoint> path){
 
         // Initialized like this to create a condition where there is no intersection
-        RobotPoint targetPoint = new RobotPoint(404, 404, 0, 0, 0); // Default case
+        RobotPoint targetPoint = new RobotPoint(404, 404, 0, 0); // Default case
 
         for(int i=0; i<path.size()-1; i++){
 

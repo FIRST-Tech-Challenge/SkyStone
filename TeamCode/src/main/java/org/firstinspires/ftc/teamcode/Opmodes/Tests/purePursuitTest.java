@@ -31,13 +31,13 @@ public class purePursuitTest extends LinearOpMode {
         telemetry.update();
 
         ArrayList<RobotPoint> deliverPath = new ArrayList<>();
-        deliverPath.add(new RobotPoint(55, 75.5, -90, 0.8, 10));
-        deliverPath.add(new RobotPoint(-40, 30, -90, 0.5, 30));
-        deliverPath.add(new RobotPoint(-165, 63, -90, 0.7, 30));
-        deliverPath.add(new RobotPoint(-175, 65, -90, 0.8, 0));
+        deliverPath.add(new RobotPoint(55, 75.5, -90, 0.8));
+        deliverPath.add(new RobotPoint(-40, 30, -90, 0.5));
+        deliverPath.add(new RobotPoint(-165, 63, -90, 0.7));
+        deliverPath.add(new RobotPoint(-175, 65, -90, 0.8));
 
         while(opModeIsActive()) {
-            RobotPoint target = PathingAgent.getTargetPoint(odometer.x, odometer.y, deliverPath);
+            RobotPoint target = PathingAgent.getTargetPoint(odometer.x, odometer.y, 50, deliverPath);
             telemetry.addData("RobotX", odometer.x);
             telemetry.addData("RobotY", odometer.y);
             telemetry.addData("targetPointX", target.x);

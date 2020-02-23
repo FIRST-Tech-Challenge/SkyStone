@@ -40,7 +40,7 @@ public class blueSideAuto extends LinearOpMode {
 
         //GRAB FIRST BLOCK
         if(skyPosition == 0) { //Closest to wall
-            movement.moveToPointPD(new RobotPoint(56, 74.5, -90, 0,0), 100, 2);
+            movement.moveToPointPD(new RobotPoint(56, 74.5, -90, 0), 100, 2);
 
             timer.waitMillis(3000);
 
@@ -49,23 +49,23 @@ public class blueSideAuto extends LinearOpMode {
         }
 
         ArrayList<RobotPoint> deliverPath = new ArrayList<>();
-        deliverPath.add(new RobotPoint(55, 75.5, -90, 1, 50));
-        deliverPath.add(new RobotPoint(-40, 40, -90, 0.8, 50));
-        deliverPath.add(new RobotPoint(-105, 53, -90, 1, 50));
-        deliverPath.add(new RobotPoint(-165, 63, -90, 1, 20));
-        deliverPath.add(new RobotPoint(-175, 65, -90, 1, 0));
+        deliverPath.add(new RobotPoint(55, 75.5, -90, 1));
+        deliverPath.add(new RobotPoint(-40, 40, -90, 0.8));
+        deliverPath.add(new RobotPoint(-105, 53, -90, 1));
+        deliverPath.add(new RobotPoint(-165, 63, -90, 1));
+        deliverPath.add(new RobotPoint(-175, 65, -90, 1));
 
         ArrayList<RobotPoint> returnPath = new ArrayList<>();
-        returnPath.add(new RobotPoint(-175, 65, -90, 1, 50));
-        returnPath.add(new RobotPoint(-165, 63, -90, 1, 50));//added
-        returnPath.add(new RobotPoint(-105, 53, -90, 1, 50));
-        returnPath.add(new RobotPoint(-70, 45, -90, 1, 50));//added
-        returnPath.add(new RobotPoint(-40, 40, -90, 0.8, 50));
-        returnPath.add(new RobotPoint(55, 75.5, -90, 1, 0));
+        returnPath.add(new RobotPoint(-175, 65, -90, 1));
+        returnPath.add(new RobotPoint(-165, 63, -90, 1));//added
+        returnPath.add(new RobotPoint(-105, 53, -90, 1));
+        returnPath.add(new RobotPoint(-70, 45, -90, 1));//added
+        returnPath.add(new RobotPoint(-40, 40, -90, 0.8));
+        returnPath.add(new RobotPoint(55, 75.5, -90, 1));
 
-        movement.followPath(deliverPath);
+        movement.followPath(deliverPath, 40);
         timer.waitMillis(3000);
-        movement.followPath(returnPath);
+        movement.followPath(returnPath, 40);
 
 
         //GRAB SECOND BLOCK

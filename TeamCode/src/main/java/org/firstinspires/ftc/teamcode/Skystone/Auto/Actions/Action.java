@@ -123,7 +123,7 @@ public class Action {
         motionActions.add(new MotionAction(robot.getFrontClamp(), robot.FRONTCLAMP_CLAMPED, 800, robot));
         motionActions.add(new MotionAction(robot.getOuttakeSpool(), 1, liftHeight, 1700, robot));
 
-        motionActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_EXTENDED, 1700, robot));
+        motionActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_EXTENDED, 2000, robot));
     }
 
     private void generateDropStoneAndRetractOuttakeActions() {

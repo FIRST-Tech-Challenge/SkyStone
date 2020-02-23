@@ -873,7 +873,8 @@ public class Robot {
         long startTime = SystemClock.elapsedRealtime();
 
         // keep on running this
-        while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime() - startTime < totalTimeSeconds * 1000) {
+        while (linearOpMode.opModeIsActive() && SystemClock.elapsedRealtime() - startTime < totalTimeSeconds * 1000
+                && linearOpMode.gamepad1.left_stick_y == 0 && linearOpMode.gamepad1.left_trigger == 0 && linearOpMode.gamepad1.right_trigger == 0 && linearOpMode.gamepad1.right_stick_x == 0) {
             // store your current position in variables
             double xPos = robotPos.x;
             double yPos = robotPos.y;

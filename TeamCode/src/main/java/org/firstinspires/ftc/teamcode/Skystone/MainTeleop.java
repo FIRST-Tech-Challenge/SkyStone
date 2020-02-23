@@ -239,6 +239,8 @@ public class MainTeleop extends LinearOpMode {
 
         robot.getIntakeLeft().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.getIntakeRight().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        robot.setBrakeModeDriveMotors();
     }
 
     //teleop methods

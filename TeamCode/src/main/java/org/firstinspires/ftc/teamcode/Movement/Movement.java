@@ -42,10 +42,12 @@ public class Movement {
     public void followPath(ArrayList<RobotPoint> path){
 
         Proportional orient = new Proportional(0.035, 0.26);
-        RobotPoint lastPoint = path.get(path.size()-2); //Actually is the second to last point
+        RobotPoint lastPoint = path.get(path.size()-1); //Last point in the ArrayList
 
         while(opMode.opModeIsActive()){
             RobotPoint targetPoint = PathingAgent.getTargetPoint(odometer.x, odometer.y, path);
+            //Pathing agent uses line-circle intersect to get 0,1, or 2 points, then picks whichever point is closest to the current "goal" RobotPoint
+            //If LineCircleIntersect (called by pathingAgent) finds 0 intersections, error is thrown
 
             if(targetPoint.x == 404 || targetPoint.y == 404){ //If it's the end of the path, or there is no intersection
                 break;
@@ -56,10 +58,11 @@ public class Movement {
             double distanceY = lastPoint.y - odometer.y;
             double totalDistance = Math.hypot(distanceX, distanceY);
 
-            if(totalDistance < lastPoint.radius+5){
+            if(totalDistance < lastPoint.radius+5){ //currently says "end loop if you are within 5 cm of the last RobotPoint".
+                //(Assuming you set the FINAL RobotPoint to have radius = 0)
                 break;
             }
-
+            //Now that the robot knows where to go (targetPoint, returned by PathingAgent), the following code handles motor powers.
             double xDist, yDist, distance, heading;
             double targSpeed, scale, targVX, targVY;
 
@@ -74,7 +77,7 @@ public class Movement {
             targVX = xDist * scale;
             targVY = yDist * scale;
 
-            orient.update(targetPoint.heading, heading);
+            orient.update(targetPoint.heading, heading); //targetPoint.heading is goal heading
 
             setGlobalVelocity(targVX, targVY, orient.correction);
 

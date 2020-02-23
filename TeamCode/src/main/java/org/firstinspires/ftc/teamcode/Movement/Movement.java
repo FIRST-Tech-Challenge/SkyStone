@@ -58,7 +58,7 @@ public class Movement {
             double distanceY = lastPoint.y - odometer.y;
             double totalDistance = Math.hypot(distanceX, distanceY);
 
-            if(totalDistance < 5){ // End loop if you are within 5 cm of the last point
+            if(totalDistance < 10){ // End loop if you are within 5 cm of the last point
                 break;
             }
 

@@ -37,19 +37,19 @@ public class PPMovementTesting extends LinearOpMode {
         telemetry.update();
 
 //TEST #1: SHORT PATH TEST: RUNS THE SAME PATH WITH 3 DIFFERENT RADII
+        /*
         ArrayList <RobotPoint> shortPath = new ArrayList<>();
         shortPath.add(new RobotPoint(0, 0, 0, .8));
         shortPath.add(new RobotPoint(10, 20, 0, .8));
         shortPath.add(new RobotPoint(15, 50, 0, .8));
         movement.followPath(shortPath, 30);
+        telemetry.addData("Status", "Done First Run");
+        telemetry.update();
         timer.waitMillis(3000);
-        movement.followPath(shortPath, 20);
-        timer.waitMillis(3000);
-        movement.followPath(shortPath, 8);
-        timer.waitMillis(50000);
+         */
 
 //TEST #2: LONG PATH TEST: RUNS A LONG SMOOTH ARC GOING FORWARDS THEN BACKWARDS
-/*
+
         ArrayList <RobotPoint> longPath = new ArrayList<>();
         longPath.add(new RobotPoint(-5, 30, 0, .8));
         longPath.add(new RobotPoint(-20, 60, 0, .8));
@@ -59,7 +59,7 @@ public class PPMovementTesting extends LinearOpMode {
         longPath.add(new RobotPoint(-30, 180, 0, .8));
         longPath.add(new RobotPoint(-10, 200, 0, .8));
         movement.followPath(longPath, 20);
-        timer.waitMillis(3000);
+        timer.waitMillis(1000);
 
 
         ArrayList <RobotPoint> longBackwardsPath = new ArrayList<>();
@@ -72,7 +72,6 @@ public class PPMovementTesting extends LinearOpMode {
         longBackwardsPath.add(new RobotPoint(-5, 30, 0, .8));
         movement.followPath(longBackwardsPath, 20);
         timer.waitMillis(50000);
-*/
 
     }
     private void initialize(){

@@ -26,7 +26,6 @@ import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Action;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Enums.ActionState;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CatmullRomSplineUtils;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
-import org.firstinspires.ftc.teamcode.Skystone.Test.StuckTest;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -473,7 +472,6 @@ public class Robot {
         double angleLockScale;
         double distanceToEnd;
         double distanceToNext = Double.MAX_VALUE;
-        double lastDistanceToNext = Double.MAX_VALUE;
         double desiredHeading;
 
         long currentTime;
@@ -485,11 +483,6 @@ public class Robot {
 
             for (int p = pathPoints.length - 1; p >= 0; p--) {
                 if (Math.hypot(robotPos.x - pathPoints[p].x, robotPos.y - pathPoints[p].y) < 10) {
-                    if (followIndex != p) {
-                        lastDistanceToNext = Double.MAX_VALUE;
-                    } else {
-                        lastDistanceToNext = distanceToNext;
-                    }
                     followIndex = p;
                     break;
                 }
@@ -569,6 +562,7 @@ public class Robot {
                 }
             }
 
+            // Test to see if the robot is stuck, every second
             if((currentTime - lastPosTime) >= 1000){
                 if(followIndex != pathPoints.length-1 && (Math.hypot(lastPos.x-robotPos.x, lastPos.y - robotPos.y)) < 3){
                     isStuck = true;

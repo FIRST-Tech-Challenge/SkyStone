@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Skystone.Test;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Action;
@@ -10,8 +11,9 @@ import org.firstinspires.ftc.teamcode.Skystone.Robot;
 
 import java.util.ArrayList;
 
-@Autonomous(name="StuckTest ", group="LinearOpmode")
-public class StuckTest extends LinearOpMode {
+@Disabled
+@Autonomous(name="StraightSplineMoveTest ", group="LinearOpmode")
+public class StraightSplineMoveTest extends LinearOpMode {
     Robot robot;
     Position2D position2D;
 

@@ -71,7 +71,7 @@ public class PathingAgent {
         double leastDistance = 500;
         for(int i=0; i<path.size(); i++){
             double distance = Math.hypot((robotX - path.get(i).x), (robotY - path.get(i).y));
-            if(leastDistance < distance){
+            if(distance < leastDistance){
                 leastDistance = distance;
             }
         }

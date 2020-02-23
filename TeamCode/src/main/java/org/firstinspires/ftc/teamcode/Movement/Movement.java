@@ -39,18 +39,18 @@ public class Movement {
         this.handler = handler;
     }
 
-    public void followPath(ArrayList<RobotPoint> path){
+    public void followPath(ArrayList<RobotPoint> path, double radius){
 
         Proportional orient = new Proportional(0.035, 0.26);
         RobotPoint lastPoint = path.get(path.size()-1); //Last point in the ArrayList
 
         while(opMode.opModeIsActive()){
-            RobotPoint targetPoint = PathingAgent.getTargetPoint(odometer.x, odometer.y, path);
-            //Pathing agent uses line-circle intersect to get 0,1, or 2 points, then picks whichever point is closest to the current "goal" RobotPoint
-            //If LineCircleIntersect (called by pathingAgent) finds 0 intersections, error is thrown
+            RobotPoint targetPoint = PathingAgent.getTargetPoint(odometer.x, odometer.y, radius, path);
+            // PathingAgent uses line-circle intersect to get 0,1, or 2 points, then picks whichever point is closest to the current "goal" RobotPoint
 
-            if(targetPoint.x == 404 || targetPoint.y == 404){ //If it's the end of the path, or there is no intersection
-                break;
+            if(targetPoint.x == 404 || targetPoint.y == 404){ // If there are no intersections
+                // Trigger fail-safe to regain the path
+                targetPoint = PathingAgent.getFailsafePoint(odometer.x, odometer.y, path);
             }
 
             // Checking if the robot is within a certain distance of the "last" point
@@ -58,10 +58,10 @@ public class Movement {
             double distanceY = lastPoint.y - odometer.y;
             double totalDistance = Math.hypot(distanceX, distanceY);
 
-            if(totalDistance < lastPoint.radius+5){ //currently says "end loop if you are within 5 cm of the last RobotPoint".
-                //(Assuming you set the FINAL RobotPoint to have radius = 0)
+            if(totalDistance < 5){ // End loop if you are within 5 cm of the last point
                 break;
             }
+
             //Now that the robot knows where to go (targetPoint, returned by PathingAgent), the following code handles motor powers.
             double xDist, yDist, distance, heading;
             double targSpeed, scale, targVX, targVY;

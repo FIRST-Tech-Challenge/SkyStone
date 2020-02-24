@@ -24,7 +24,10 @@ public class DriveControl {
     private final double ROBOT_RADIUS_CM = 103.0;
     private final double CONVERT_CM_TO_ENCODER = GEARING * ENCODER_LINES / WHEEL_CIRCUMFERENCE_CM;
     private final double CONVERT_DEG_TO_CM = (360.0 / (2 * 3.1415 * ROBOT_RADIUS_CM));
-    private final double RUN_TO_TOLERANCE_CM = 2.0;
+    private final double RUN_TO_TOLERANCE_CM = 1.0;
+    private final double STRAFE_SCALING = 4.0/3.0;
+    private final double P_GAIN = 4.0;
+    private final double I_GAIN = 2.0;
     private ElapsedTime runtime = new ElapsedTime();
 
     // public sensors
@@ -66,6 +69,16 @@ public class DriveControl {
         FrontLeftM.setPower(0);
         BackRightM.setPower(0);
         BackLeftM.setPower(0);
+
+        // adjust PID gains
+        PIDFCoefficients pid;
+        pid = FrontLeftM.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        pid.p = P_GAIN;
+        pid.i = I_GAIN;
+        FrontLeftM.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pid);
+        FrontRightM.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pid);
+        BackLeftM.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pid);
+        BackRightM.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pid);
 
         /* change tolerance for RUN_TO_POSITION */
         int tolerance = (int) (RUN_TO_TOLERANCE_CM * CONVERT_CM_TO_ENCODER);
@@ -205,13 +218,17 @@ public class DriveControl {
     }
 
     public void strafeLeftTime(double speed, double timeSEC) {
+        double angle = IMU.getAngle();
         moveMotorsTime(-speed, speed,
                 speed, -speed, timeSEC);
+        turnToAngle(speed, angle);
     }
 
     public void strafeRightTime(double speed, double timeSEC) {
+        double angle = IMU.getAngle();
         moveMotorsTime(speed, -speed,
                 -speed, speed, timeSEC);
+        turnToAngle(speed, angle);
     }
 
     public void turnLeftTime(double speed, double timeSEC) {
@@ -322,13 +339,19 @@ public class DriveControl {
     }
 
     public void strafeLeftDistance(double speed, double distCM) {
+        double angle = IMU.getAngle();
+        distCM *= STRAFE_SCALING;
         moveMotorsDistance(-speed, speed,
                 speed, -speed, distCM);
+        turnToAngle(speed, angle);
     }
 
     public void strafeRightDistance(double speed, double distCM) {
+        double angle = IMU.getAngle();
+        distCM *= STRAFE_SCALING;
         moveMotorsDistance(speed, -speed,
                 -speed, speed, distCM);
+        turnToAngle(speed, angle);
     }
 
     public void turnLeftAngle(double speed, double angleDEG) {

@@ -52,7 +52,7 @@ public class AutoUC3_Park {
 
         /***************************************/
         //Delay to move only by end of autonomous mode
-        callingOpMode.sleep(15000);
+        callingOpMode.sleep(3000);
         /***************************************/
 
 
@@ -65,14 +65,14 @@ public class AutoUC3_Park {
                     autoUCChassis.runFwdBackLeftRight(27, playingAlliance,0.25, callingOpMode);
                 }
                 //Blue Alliance
-                autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-30, 0, 0.2, callingOpMode);
+                autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-10, 0, 0.2, callingOpMode);
             } else {
                 //Optional : Move to park near skybridge Neutral
                 if (parkingPlaceNearSkyBridge){
                     autoUCChassis.runFwdBackLeftRight(27, playingAlliance,0.25, callingOpMode);
                 }
                 //Red Alliance
-                autoUCChassis.runTill_ChassisRightColorSensorIsRed(-30, 0, 0.2, callingOpMode);
+                autoUCChassis.runTill_ChassisRightColorSensorIsRed(-10, 0, 0.2, callingOpMode);
             }
         } else {
             if (playingAlliance == 1) {
@@ -82,14 +82,14 @@ public class AutoUC3_Park {
                 }
                 //Blue Alliance
                 //runTill_ChassisLeftColorSensorIsBlue(30, -1, 0.2);
-                autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-30, 0, 0.2, callingOpMode);
+                autoUCChassis.runTill_ChassisRightColorSensorIsBlue(-10, 0, 0.2, callingOpMode);
             } else {
                 //Optional : Move to park near skybridge Neutral
                 if (parkingPlaceNearSkyBridge){
                     autoUCChassis.runFwdBackLeftRight(27, -playingAlliance,0.25, callingOpMode);
                 }
                 //Red Alliance
-                autoUCChassis.runTill_ChassisRightColorSensorIsRed(-30, 0, 0.2, callingOpMode);
+                autoUCChassis.runTill_ChassisRightColorSensorIsRed(-10, 0, 0.2, callingOpMode);
             }
         }
         //Reached Parking position

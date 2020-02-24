@@ -18,16 +18,16 @@ public class DriveControl {
     private DcMotorEx BackRightM = null;
     private DcMotorEx BackLeftM = null;
     private final double MAX_SPEED = 0.8;
-    private final double GEARING = 2.0 / 3.0;
-    private final double ENCODER_LINES = 1120;
-    private final double WHEEL_CIRCUMFERENCE_CM = 3.1415 * (4 * 2.54);
+    private final double GEARING = (2.0 / 3.0);
+    private final double ENCODER_LINES = 1120.0;
+    private final double WHEEL_CIRCUMFERENCE_CM = ( 3.1415 * (4 * 2.54));
     private final double ROBOT_RADIUS_CM = 103.0;
     private final double CONVERT_CM_TO_ENCODER = GEARING * ENCODER_LINES / WHEEL_CIRCUMFERENCE_CM;
     private final double CONVERT_DEG_TO_CM = (360.0 / (2 * 3.1415 * ROBOT_RADIUS_CM));
     private final double RUN_TO_TOLERANCE_CM = 1.0;
     private final double STRAFE_SCALING = 4.0/3.0;
-    private final double P_GAIN = 4.0;
-    private final double I_GAIN = 2.0;
+    private final double P_GAIN = 10.0;
+    private final double I_GAIN = 5.0;
     private ElapsedTime runtime = new ElapsedTime();
 
     // public sensors
@@ -97,12 +97,10 @@ public class DriveControl {
         PIDFCoefficients pid;
         pid = FrontLeftM.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
         opmode.telemetry.addData("FL PID", "%.04f, %.04f, %.0f",pid.p, pid.i, pid.d);
-        pid = FrontRightM.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-        opmode.telemetry.addData("FR PID", "%.04f, %.04f, %.0f",pid.p, pid.i, pid.d);
-        pid = BackLeftM.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-        opmode.telemetry.addData("BL PID", "%.04f, %.04f, %.0f",pid.p, pid.i, pid.d);
-        pid = BackRightM.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-        opmode.telemetry.addData("BR PID", "%.04f, %.04f, %.0f",pid.p, pid.i, pid.d);
+        opmode.telemetry.addData("FL position", FrontLeftM.getCurrentPosition());
+        opmode.telemetry.addData("FR position", FrontRightM.getCurrentPosition());
+        opmode.telemetry.addData("BL position", BackLeftM.getCurrentPosition());
+        opmode.telemetry.addData("BR position", BackRightM.getCurrentPosition());
     }
 
     public void IncrementPID(double p, double i, double d) {
@@ -302,8 +300,9 @@ public class DriveControl {
         boolean isBusy;
         do {
             // if 3 or more motors are busy, then we are busy
-            if ((FrontLeftM.isBusy() ? 1 : 0) + (FrontRightM.isBusy() ? 1 : 0) +
-                    (BackLeftM.isBusy() ? 1 : 0) + (BackRightM.isBusy() ? 1 : 0) >= 3)
+//          if ((FrontLeftM.isBusy() ? 1 : 0) + (FrontRightM.isBusy() ? 1 : 0) +
+//              (BackLeftM.isBusy() ? 1 : 0) + (BackRightM.isBusy() ? 1 : 0) >= 3)
+            if ( FrontLeftM.isBusy() || FrontRightM.isBusy() || BackLeftM.isBusy() || BackRightM.isBusy() )
                 isBusy = true;
             else
                 isBusy = false;

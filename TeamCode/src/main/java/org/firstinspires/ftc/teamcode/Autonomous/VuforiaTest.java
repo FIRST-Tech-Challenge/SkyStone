@@ -16,7 +16,7 @@ public class VuforiaTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // declare local variables
-        double speed = 0.3;
+        double speed = 0.5;
 
         // display welcome message
         telemetry.setAutoClear(false);
@@ -36,7 +36,7 @@ public class VuforiaTest extends LinearOpMode {
         Vucam.Start();
 
         Drive.moveForwardDistance(speed, 30);
-        Vucam.findTarget(1.0);
+        Vucam.findTarget(2.0);
         // MUST STOP vucam or it will mess up next time it is started
         Vucam.Stop();
         switch (Vucam.Skystone) {
@@ -45,12 +45,16 @@ public class VuforiaTest extends LinearOpMode {
                 break;
             case LEFT:
                 telemetry.addLine("Left");
+                Drive.strafeLeftDistance(speed, 20);
+                Drive.strafeRightDistance(speed, 20);
                 break;
             case CENTER:
                 telemetry.addLine("Center");
                 break;
             case RIGHT:
                 telemetry.addLine("Right");
+                Drive.strafeRightDistance(speed, 20);
+                Drive.strafeLeftDistance(speed, 20);
                 break;
         }
 

@@ -24,12 +24,28 @@ public class VucamTest extends LinearOpMode {
         telemetry.setAutoClear(true);
         waitForStart();
 
-        Vucam.setSamplePos();
+        // don't start until targets are randomized
+        Vucam.Start();
 
         //telling the code to run until you press that giant STOP button on RC
         while (opModeIsActive()) {
 
+            Vucam.findTarget(0);
             Vucam.Telemetry();
+            switch (Vucam.Skystone) {
+                case INIT:
+                    telemetry.addLine("Initial");
+                    break;
+                case LEFT:
+                    telemetry.addLine("Left");
+                    break;
+                case CENTER:
+                    telemetry.addLine("Center");
+                    break;
+                case RIGHT:
+                    telemetry.addLine("Right");
+                    break;
+            }
             telemetry.update();
 
             //let the robot have a little rest, sleep is healthy

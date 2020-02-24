@@ -62,6 +62,7 @@ package org.firstinspires.ftc.teamcode.SubAssembly.Vucam;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -87,6 +88,7 @@ public class VucamControl {
     /* Declare private class object */
     private boolean debugcode = false;
     private LinearOpMode opmode = null;     /* local copy of opmode class */
+    private ElapsedTime runtime = new ElapsedTime();
 
     // **********************************************
     // Begin ConceptVuforiaSkyStoneNavigationWebcam
@@ -202,18 +204,16 @@ public class VucamControl {
         // AFTER you hit Init on the Driver Station, use the "options menu" to select "Camera Stream"
         // Tap the preview window to receive a fresh image.
 
-        targetsSkyStone.activate();
-
         // End ConceptVuforiaSkyStoneNavigationWebcam
         // **********************************************
 
     }
 
-    public void setSamplePos() {
+    public void updateTarget() {
         if (debugcode)
             return;
 
-        // default to left if we do not see anything
+        // default to LEFT if we do not see anything
         targetVisible = false;
         Skystone = SkystonePosition.LEFT;
 
@@ -228,13 +228,40 @@ public class VucamControl {
 
             VectorF translation = lastLocation.getTranslation();
             double yposition = translation.get(1);
-            if (yposition / mmPerInch > 0.0) {
+
+            final double RIGHT_CENTER_THRESHOLD_INCHES = 0.0;
+            if (yposition / mmPerInch > RIGHT_CENTER_THRESHOLD_INCHES) {
                 Skystone = SkystonePosition.RIGHT;
             } else {
                 Skystone = SkystonePosition.CENTER;
             }
             targetVisible = true;
         }
+    }
+
+    public void findTarget(double timeoutSEC) {
+        if (debugcode)
+            return;
+
+        // if we already found target, then return
+        if (targetVisible)
+            return;
+
+        double startTime = 0;
+        double elapsedTime = 0;
+        startTime = runtime.seconds();
+        do {
+            updateTarget();
+            elapsedTime = runtime.seconds() - startTime;
+            opmode.sleep(40);
+        } while ( !targetVisible && (elapsedTime < timeoutSEC) && !opmode.isStopRequested());
+    }
+
+    public void Start() {
+        if (debugcode)
+            return;
+
+        targetsSkyStone.activate();
     }
 
     public void Stop() {
@@ -249,14 +276,20 @@ public class VucamControl {
         if (debugcode)
             return;
 
-        if (Skystone == SkystonePosition.INIT)
-            opmode.telemetry.addLine("Initial");
-        else if (Skystone == SkystonePosition.LEFT)
-            opmode.telemetry.addLine("Left");
-        else if (Skystone == SkystonePosition.CENTER)
-            opmode.telemetry.addLine("Center");
-        else if (Skystone == SkystonePosition.RIGHT)
-            opmode.telemetry.addLine("Right");
+        switch (Skystone) {
+            case INIT:
+                opmode.telemetry.addLine("Initial");
+                break;
+            case LEFT:
+                opmode.telemetry.addLine("Left");
+                break;
+            case CENTER:
+                opmode.telemetry.addLine("Center");
+                break;
+            case RIGHT:
+                opmode.telemetry.addLine("Right");
+                break;
+        }
 
         if (targetVisible) {
             VectorF translation = lastLocation.getTranslation();

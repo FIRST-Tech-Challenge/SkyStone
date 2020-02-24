@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Trash;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -6,16 +6,16 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //This part is importing information from other programs
 import org.firstinspires.ftc.teamcode.SubAssembly.Grabber.GrabberControl;
 import org.firstinspires.ftc.teamcode.SubAssembly.DriveTrain.DriveControl;
+import org.firstinspires.ftc.teamcode.SubAssembly.Vucam.VucamControl;
 import org.firstinspires.ftc.teamcode.Utilities.UserControl;
-import org.firstinspires.ftc.teamcode.Trash.ConceptVuforiaSkyStoneNavigationWebcam;
 
 @Autonomous(name = "Autonomous", group = "Auto")
 public class autonomous extends LinearOpMode {
 
     //This gives the control programs shortened names to refer to them in this program
+    VucamControl Vucam = new VucamControl();
     DriveControl Drive = new DriveControl();
     GrabberControl Grabber = new GrabberControl();
-    ConceptVuforiaSkyStoneNavigationWebcam Webcam = new ConceptVuforiaSkyStoneNavigationWebcam();
 
     //State setup
     private void newState(State newState) {
@@ -41,18 +41,6 @@ public class autonomous extends LinearOpMode {
         test
     }
 
-    //This is a list of all the possible skystone positions
-    private enum SkystonePosition {
-        R1,
-        R2,
-        R3,
-        B1,
-        B2,
-        B3,
-    }
-    //This sets the skystone to a default position
-    private SkystonePosition Skystone = SkystonePosition.B1;
-
     //This sets the default starting state
     private State mCurrentState = State.Initial;
 
@@ -71,6 +59,7 @@ public class autonomous extends LinearOpMode {
         User.init(this);
         Drive.init(this);
         Grabber.init(this);
+        Vucam.init(this);
 
         // get user input
         boolean bAnswer;
@@ -79,22 +68,6 @@ public class autonomous extends LinearOpMode {
         //This asks whether you want to delay start or not and whether you are red or blue
         bAnswer = User.getYesNo("Wait?");
         AllianceColor = User.getRedBlue("Alliance Color");
-
-        /*This will use the skystone position determined by vuforia and the
-        alliance color to determine the skystone position*/
-        /*if (Webcam.PS == Webcam.PS.CENTER && AllianceColor == true){
-            Skystone = SkystonePosition.R2;
-        } else if (Webcam.PS == Webcam.PS.LEFT && AllianceColor == true){
-            Skystone = SkystonePosition.R3;
-        } else if (Webcam.PS == Webcam.PS.RIGHT && AllianceColor == true){
-            Skystone = SkystonePosition.R1;
-        } else if (Webcam.PS == Webcam.PS.CENTER && AllianceColor == false){
-            Skystone = SkystonePosition.B2;
-        } else if (Webcam.PS == Webcam.PS.RIGHT && AllianceColor == false){
-            Skystone = SkystonePosition.B3;
-        } else {
-            Skystone = SkystonePosition.B1;
-        }*/
 
         // wait for PLAY button to be pressed on driver station
         telemetry.addLine(">> Press PLAY to start");
@@ -105,6 +78,9 @@ public class autonomous extends LinearOpMode {
         // begin autonomous actions
         telemetry.setAutoClear(false);
         newState(State.Initial);
+
+        // don't start until targets are randomized
+        Vucam.Start();
 
         while (opModeIsActive() && mCurrentState != State.Stop) {
 
@@ -134,22 +110,17 @@ public class autonomous extends LinearOpMode {
                 case GrabSkystone:
                     telemetry.addLine("Grab Skystone");
                     telemetry.update();
-                    if (Skystone == SkystonePosition.R2){
-                        telemetry.addLine("R2");
+                    Vucam.findTarget(1.0);
+                    // MUST STOP vucam or it will mess up next time it is started
+                    Vucam.Stop();
+                    if (Vucam.Skystone == VucamControl.SkystonePosition.LEFT){
+                        telemetry.addLine("Left");
                         Drive.strafeLeftDistance(0.75, 20.32);
-                    } else if (Skystone == SkystonePosition.R3){
-                        telemetry.addLine("R3");
-                        Drive.strafeLeftDistance(0.75, 40.64);
-                    } else if (Skystone == SkystonePosition.B2){
-                        telemetry.addLine("B2");
+                    } else if (Vucam.Skystone == VucamControl.SkystonePosition.CENTER){
+                        telemetry.addLine("Right");
                         Drive.strafeRightDistance(0.75, 20.32);
-                    } else if (Skystone == SkystonePosition.B3){
-                        telemetry.addLine("B3");
-                        Drive.strafeRightDistance(0.75, 40.64);
-                    } else if (Skystone == SkystonePosition.B1){
-                        telemetry.addLine("B1");
                     } else {
-                        telemetry.addLine("R1");
+                        telemetry.addLine("Center");
                     }
                     Grabber.open();
                     Drive.moveForwardDistance(0.5,5);

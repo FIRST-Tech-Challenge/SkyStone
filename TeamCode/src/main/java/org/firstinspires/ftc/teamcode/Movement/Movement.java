@@ -58,7 +58,7 @@ public class Movement {
             double distanceY = lastPoint.y - odometer.y;
             double totalDistance = Math.hypot(distanceX, distanceY);
 
-            if(totalDistance < 10){ // End loop if you are within 5 cm of the last point
+            if(totalDistance < 15){ // End loop if you are within 5 cm of the last point
                 break;
             }
 
@@ -97,7 +97,6 @@ public class Movement {
 
             double xRelVel = MathFunctions.cosine(-h) * xVel - MathFunctions.sine(-h) * yVel;
             double yRelVel = MathFunctions.sine(-h) * xVel + MathFunctions.cosine(-h) * yVel;
-
             drivebase.setRelativeVelocity(xRelVel, yRelVel, hVel);
             drivebase.update();
         }else{
@@ -180,7 +179,7 @@ public class Movement {
 
             setGlobalVelocity(targVX, targVY, hCorrect);
 
-            endCondition = (distance < arrivedThresh) && orient.error < 2;
+            endCondition = (distance < arrivedThresh) && orient.error < 3; //can be changed
 
             doActions(targetPoint);
 
@@ -234,6 +233,7 @@ public class Movement {
         drivebase.freeze();
 
     }
+
 
     private void doActions(RobotPoint point){
         if(useActionHandler){

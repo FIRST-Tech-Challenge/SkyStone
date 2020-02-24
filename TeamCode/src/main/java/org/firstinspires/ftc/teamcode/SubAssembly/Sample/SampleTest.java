@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.SubAssembly.Sample;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.SubAssembly.Sample.SampleTemplate;
  */
 // Assign OpMode type (TeleOp or Autonomous), name, and grouping
 @TeleOp(name = "SubAssembly Test", group = "Test")
+@Disabled
 public class SampleTest extends LinearOpMode {
 
     @Override

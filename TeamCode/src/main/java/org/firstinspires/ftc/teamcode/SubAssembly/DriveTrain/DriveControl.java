@@ -20,14 +20,16 @@ public class DriveControl {
     private final double MAX_SPEED = 0.8;
     private final double GEARING = (2.0 / 3.0);
     private final double ENCODER_LINES = 1120.0;
-    private final double WHEEL_CIRCUMFERENCE_CM = ( 3.1415 * (4 * 2.54));
+    private final double WHEEL_CIRCUMFERENCE_CM = (3.1415 * (4 * 2.54));
     private final double ROBOT_RADIUS_CM = 103.0;
     private final double CONVERT_CM_TO_ENCODER = GEARING * ENCODER_LINES / WHEEL_CIRCUMFERENCE_CM;
     private final double CONVERT_DEG_TO_CM = (360.0 / (2 * 3.1415 * ROBOT_RADIUS_CM));
     private final double RUN_TO_TOLERANCE_CM = 1.0;
-    private final double STRAFE_SCALING = 4.0/3.0;
+    private final double STRAFE_SCALING = 4.0 / 3.0;
     private final double P_GAIN = 10.0;
-    private final double I_GAIN = 5.0;
+    private final double I_GAIN = 10.0;
+    private double P_GAIN_MOTOR_DEFAULT;
+    private double I_GAIN_MOTOR_DEFAULT;
     private ElapsedTime runtime = new ElapsedTime();
 
     // public sensors
@@ -41,10 +43,10 @@ public class DriveControl {
 
         opmode = opMode;
         hwMap = opMode.hardwareMap;
-        FrontLeftM = (DcMotorEx)hwMap.dcMotor.get("leftFrontMotor");
-        FrontRightM = (DcMotorEx)hwMap.dcMotor.get("rightFrontMotor");
-        BackLeftM = (DcMotorEx)hwMap.dcMotor.get("leftRearMotor");
-        BackRightM = (DcMotorEx)hwMap.dcMotor.get("rightRearMotor");
+        FrontLeftM = (DcMotorEx) hwMap.dcMotor.get("leftFrontMotor");
+        FrontRightM = (DcMotorEx) hwMap.dcMotor.get("rightFrontMotor");
+        BackLeftM = (DcMotorEx) hwMap.dcMotor.get("leftRearMotor");
+        BackRightM = (DcMotorEx) hwMap.dcMotor.get("rightRearMotor");
 
         // Set the drive motor direction
         FrontLeftM.setDirection(DcMotor.Direction.FORWARD);
@@ -73,6 +75,8 @@ public class DriveControl {
         // adjust PID gains
         PIDFCoefficients pid;
         pid = FrontLeftM.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        P_GAIN_MOTOR_DEFAULT = pid.p;
+        I_GAIN_MOTOR_DEFAULT = pid.i;
         pid.p = P_GAIN;
         pid.i = I_GAIN;
         FrontLeftM.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pid);
@@ -92,18 +96,14 @@ public class DriveControl {
         IMU.init(opMode);
     }
 
-    public void TelemetryPID() {
+    public void PIDTelemetry() {
         // get the PID coefficients for the RUN_USING_ENCODER modes.
         PIDFCoefficients pid;
         pid = FrontLeftM.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-        opmode.telemetry.addData("FL PID", "%.04f, %.04f, %.0f",pid.p, pid.i, pid.d);
-        opmode.telemetry.addData("FL position", FrontLeftM.getCurrentPosition());
-        opmode.telemetry.addData("FR position", FrontRightM.getCurrentPosition());
-        opmode.telemetry.addData("BL position", BackLeftM.getCurrentPosition());
-        opmode.telemetry.addData("BR position", BackRightM.getCurrentPosition());
+        opmode.telemetry.addData("FL PID", "%.04f, %.04f, %.0f", pid.p, pid.i, pid.d);
     }
 
-    public void IncrementPID(double p, double i, double d) {
+    public void PIDIncrement(double p, double i, double d) {
         final double INC_P = 0.1;
         final double INC_I = 0.1;
         final double INC_D = 0.1;
@@ -111,9 +111,25 @@ public class DriveControl {
         PIDFCoefficients pid;
         pid = FrontLeftM.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
         // change coefficients using methods included with DcMotorEx class.
-        pid.p += p*INC_P;
-        pid.i += i*INC_I;
-        pid.d += d*INC_D;
+        pid.p += p * INC_P;
+        pid.i += i * INC_I;
+        pid.d += d * INC_D;
+        FrontLeftM.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pid);
+        FrontRightM.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pid);
+        BackLeftM.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pid);
+        BackRightM.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pid);
+    }
+
+    public void PIDReset(boolean default_initial) {
+        PIDFCoefficients pid;
+        pid = FrontLeftM.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (default_initial) {
+            pid.p = P_GAIN_MOTOR_DEFAULT;
+            pid.i = I_GAIN_MOTOR_DEFAULT;
+        } else {
+            pid.p = P_GAIN;
+            pid.i = I_GAIN;
+        }
         FrontLeftM.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pid);
         FrontRightM.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pid);
         BackLeftM.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pid);
@@ -302,7 +318,7 @@ public class DriveControl {
             // if 3 or more motors are busy, then we are busy
 //          if ((FrontLeftM.isBusy() ? 1 : 0) + (FrontRightM.isBusy() ? 1 : 0) +
 //              (BackLeftM.isBusy() ? 1 : 0) + (BackRightM.isBusy() ? 1 : 0) >= 3)
-            if ( FrontLeftM.isBusy() || FrontRightM.isBusy() || BackLeftM.isBusy() || BackRightM.isBusy() )
+            if (FrontLeftM.isBusy() || FrontRightM.isBusy() || BackLeftM.isBusy() || BackRightM.isBusy())
                 isBusy = true;
             else
                 isBusy = false;

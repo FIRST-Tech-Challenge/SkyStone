@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Utilities;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 // Assign OpMode type (TeleOp or Autonomous), name, and grouping
 @TeleOp(name = "Gamepad Test", group = "Test")
+@Disabled
 public class GamepadTest extends LinearOpMode {
 
     @Override

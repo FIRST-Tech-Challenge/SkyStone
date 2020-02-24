@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Utilities;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 // Assign OpMode type (TeleOp or Autonomous), name, and grouping
 @TeleOp(name = "User Test", group = "Test")
+@Disabled
 public class UserTest extends LinearOpMode {
 
     UserControl User = new UserControl();

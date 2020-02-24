@@ -8,6 +8,7 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
@@ -60,6 +62,8 @@ public class Robot {
     // Foundation Servos
     private Servo leftFoundation;
     private Servo rightFoundation;
+
+    private Rev2mDistanceSensor intakeStoneDistance;
 
     // Outtake Slide Positions
     public final double OUTTAKE_SLIDE_EXTENDED = 0.15;
@@ -187,6 +191,8 @@ public class Robot {
 
         leftFoundation = getServo("leftFoundation");
         rightFoundation = getServo("rightFoundation");
+
+        intakeStoneDistance = hardwareMap.get(Rev2mDistanceSensor.class, "intakeStoneDistance");
     }
 
     private DcMotor getDcMotor(String name) {
@@ -1084,6 +1090,10 @@ public class Robot {
 
     public BNO055IMU getImu() {
         return imu;
+    }
+
+    public Rev2mDistanceSensor getIntakeStoneDistance() {
+        return intakeStoneDistance;
     }
 
     public void setImu(BNO055IMU imu) {

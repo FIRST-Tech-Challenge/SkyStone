@@ -48,7 +48,7 @@ public class MotionAction {
         if (status != ActionState.COMPLETE) {
             if (actionServo != null) { // If move servo
                 actionServo.setPosition(servoPosition);
-            }else if (actionMotor != null && actionMotor.equals(robot.getOuttakeSpool())) {
+            } else if (actionMotor != null && actionMotor.equals(robot.getOuttakeSpool())) {
                 int spoolPosition = robot.getOuttakeSpool().getCurrentPosition();
                 double spoolPower;
                 if (Math.abs(spoolPosition - Integer.parseInt(motorPosition)) < 25) {
@@ -62,13 +62,13 @@ public class MotionAction {
                 }
                 robot.getOuttakeSpool().setPower(spoolPower);
                 robot.getOuttakeSpool2().setPower(spoolPower);
-            }  else if (actionMotor != null ) {
+            } else if (actionMotor != null) {
                 actionMotor.setPower(motorPower);
                 status = ActionState.COMPLETE;
             } else {
                 throw new NullPointerException("MotionAction must set either motor or servo");
             }
-            if(actionServo != null) {
+            if (actionServo != null) {
                 status = ActionState.COMPLETE;
             }
         }

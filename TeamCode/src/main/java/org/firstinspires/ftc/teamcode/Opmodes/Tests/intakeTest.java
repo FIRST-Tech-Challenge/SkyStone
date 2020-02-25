@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.HardwareSystems.Extrusion;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.teamcode.Utility.RobotHardware;
 import org.firstinspires.ftc.teamcode.Utility.Timer;
 
 @Autonomous(name="Intake Test", group="Testing")
+@Disabled
 public class intakeTest extends LinearOpMode {
 
     // Declare OpMode Members
@@ -51,7 +53,7 @@ public class intakeTest extends LinearOpMode {
         odometer = new OdometerIMU2W();
         drivetrain = new MecanumDrive();
         timer = new Timer(this, odometer);
-        movement = new Movement(this, drivetrain, odometer);
+        movement = new Movement(this, drivetrain, odometer, timer);
         intake = new Intake();
         outtake = new Outtake();
         extrusion = new Extrusion(this);

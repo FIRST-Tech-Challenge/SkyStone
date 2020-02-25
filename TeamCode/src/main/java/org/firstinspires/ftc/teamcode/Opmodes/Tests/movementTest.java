@@ -29,8 +29,7 @@ public class movementTest extends LinearOpMode {
         telemetry.addData("status","running");
         telemetry.update();
 
-        RobotPoint targetPoint = new RobotPoint(40, 40, 0, 0);
-        movement.moveToPointConstants(targetPoint, 0.4, 0.2, 3, 2);
+        movement.pointInDirection(90, 10);
 
         drivetrain.freeze();
 
@@ -42,7 +41,7 @@ public class movementTest extends LinearOpMode {
         odometer = new OdometerIMU2W();
         drivetrain = new MecanumDrive();
         timer = new Timer(this, odometer);
-        movement = new Movement(this, drivetrain, odometer);
+        movement = new Movement(this, drivetrain, odometer, timer);
 
         drivetrain.initialize();
         odometer.initialize();

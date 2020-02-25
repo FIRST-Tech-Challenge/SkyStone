@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Movement.Localization.OdometerIMU2W;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Utility.Timer;
 import java.util.ArrayList;
 
 @Autonomous(name="Pure Pursuit Test", group="Testing")
+@Disabled
 public class purePursuitTest extends LinearOpMode {
 
     // Declare OpMode Members
@@ -54,7 +56,7 @@ public class purePursuitTest extends LinearOpMode {
         odometer = new OdometerIMU2W();
         drivetrain = new MecanumDrive();
         timer = new Timer(this, odometer);
-        movement = new Movement(this, drivetrain, odometer);
+        movement = new Movement(this, drivetrain, odometer, timer);
 
         drivetrain.initialize();
         odometer.initialize();

@@ -35,8 +35,8 @@ public class OdometerIMU2W extends Odometer{
     Odometer measurements can be in whatever units you want, as long as you use the same units for every constant
     */
 
-    private double horizontalOffset = 6.24;
-    private double verticalOffset = -16.1;
+    private double horizontalOffset = -6.24;
+    private double verticalOffset = 16.1;
 
     //Directions without using intake
     private double verticalDirection = -1;

@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Movement.Localization.Odometer;
 import org.firstinspires.ftc.teamcode.Movement.MotionPlanning.PathingAgent;
 import org.firstinspires.ftc.teamcode.Movement.MotionPlanning.RobotPoint;
 import org.firstinspires.ftc.teamcode.Utility.MathFunctions;
+import org.firstinspires.ftc.teamcode.Utility.Timer;
 
 import java.util.ArrayList;
 
@@ -21,17 +22,19 @@ public class Movement {
     private Drivebase drivebase;
     private Odometer odometer;
     private LinearOpMode opMode;
+    private Timer timer;
 
     // External Action Handlers
     private ActionHandler handler;
 
     public boolean useActionHandler = false;
 
-    public Movement(LinearOpMode opMode, Drivebase drivebase, Odometer odometer){
+    public Movement(LinearOpMode opMode, Drivebase drivebase, Odometer odometer, Timer timer){
 
         this.drivebase = drivebase;
         this.odometer = odometer;
         this.opMode = opMode;
+        this.timer = timer;
 
     }
 
@@ -222,7 +225,7 @@ public class Movement {
 
             setGlobalVelocity(targVX, targVY, hCorrect);
 
-            endCondition = (distance < arrivedThresh) && orient.error < 2;
+            endCondition = (distance < arrivedThresh) && orient.error < 1.5;
 
             doActions(targetPoint);
 
@@ -234,13 +237,40 @@ public class Movement {
 
     }
 
+    public void pointInDirection(double targetHeading, double threshold){
+
+        //GatedPid orient = new GatedPid(2, 0.6, 0.3, 0,0, 0, 0.6, 0);
+        Proportional orient = new Proportional(0.25, 0.6);
+
+        double heading, hCorrect;
+
+        do{
+            odometer.update();
+            heading = odometer.heading;
+            orient.update(targetHeading, heading);
+            hCorrect = orient.correction;
+
+            setGlobalVelocity(0, 0, hCorrect);
+
+        }while(Math.abs(orient.error) > threshold);
+
+        drivebase.freeze();
+
+    }
+
+    public void deadReckon(double xVel, double yVel, double hVel, double millis){
+        double endTime = timer.getTimeMillis() + millis;
+        while(opMode.opModeIsActive() && timer.getTimeMillis() < endTime){
+            setGlobalVelocity(xVel, yVel, hVel);
+            odometer.update();
+        }
+        drivebase.freeze();
+    }
 
     private void doActions(RobotPoint point){
         if(useActionHandler){
             handler.doActions(point);
         }
     }
-
-
 
 }

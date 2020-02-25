@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.HardwareSystems.ActionHandlerIntake;
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.teamcode.Utility.Timer;
 import java.util.ArrayList;
 
 @Autonomous(name="Intake Auto", group="Auto")
+@Disabled
 public class intakeBlockAuto extends LinearOpMode {
 
     // Declare OpMode Members
@@ -90,7 +92,7 @@ public class intakeBlockAuto extends LinearOpMode {
         drivetrain = new MecanumDrive();
         odometer = new OdometerKIMU2W();
         timer = new Timer(this, odometer);
-        movement = new Movement(this, drivetrain, odometer);
+        movement = new Movement(this, drivetrain, odometer, timer);
         intake = new Intake();
         outtake = new Outtake();
         extrusion = new Extrusion(this);

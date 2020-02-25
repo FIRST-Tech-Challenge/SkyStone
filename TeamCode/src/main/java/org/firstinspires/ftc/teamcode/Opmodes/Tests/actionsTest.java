@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.HardwareSystems.ActionHandler;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Utility.Timer;
 import java.util.ArrayList;
 
 @Autonomous(name="Action System Test", group="Testing")
+@Disabled
 public class actionsTest extends LinearOpMode {
 
     // Declare OpMode Members
@@ -67,7 +69,7 @@ public class actionsTest extends LinearOpMode {
         odometer = new OdometerIMU2W();
         timer = new Timer(this, odometer);
         autoClaws = new AutoClaws("RED", timer);
-        movement = new Movement(this, drivetrain, odometer);
+        movement = new Movement(this, drivetrain, odometer, timer);
         movement.setActionHandler(handler);
         movement.useActionHandler = true;
 

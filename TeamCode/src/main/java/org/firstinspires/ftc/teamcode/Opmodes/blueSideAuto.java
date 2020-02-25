@@ -85,7 +85,7 @@ public class blueSideAuto extends LinearOpMode {
         timer = new Timer(this, odometer);
         autoClaws = new AutoClaws("BLUE", timer);
         handler = new ActionHandlerClaws(autoClaws);
-        movement = new Movement(this, drivetrain, odometer);
+        movement = new Movement(this, drivetrain, odometer, timer);
         movement.setActionHandler(handler);
         movement.useActionHandler = true;
 

@@ -32,4 +32,8 @@ public class Timer {
         }
     }
 
+    public double getTimeMillis(){
+        return elapsedTime.milliseconds();
+    }
+
 }

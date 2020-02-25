@@ -26,6 +26,7 @@ import com.hfrobots.tnt.corelib.control.NinjaGamePad;
 import com.hfrobots.tnt.corelib.control.OnOffButton;
 import com.hfrobots.tnt.corelib.control.RangeInput;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
+import com.hfrobots.tnt.season1920.CapstoneMechanism;
 import com.hfrobots.tnt.season1920.DeliveryMechanism;
 import com.hfrobots.tnt.season1920.FoundationGripMechanism;
 import com.hfrobots.tnt.season1920.ParkingSticks;
@@ -50,6 +51,8 @@ public class SkystoneMechanismsSelfTest extends LinearOpMode {
 
     private ParkingSticks parkingSticks;
 
+    private CapstoneMechanism capstoneMechanism;
+
     @Override
     public void runOpMode() throws InterruptedException {
         Ticker ticker = createAndroidTicker();
@@ -66,6 +69,9 @@ public class SkystoneMechanismsSelfTest extends LinearOpMode {
 
         AutoOnOffButton dummyButton = new AutoOnOffButton();
 
+        AutoOnOffButton unsafeButton = new AutoOnOffButton();
+        AutoOnOffButton capstoneButton = new AutoOnOffButton();
+
         RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
         deliveryMechanism = new DeliveryMechanism(simplerHardwareMap, telemetry, ticker);
         this.deliveryMechanism.setArmInPostion(new DebouncedButton(armInPostion));
@@ -80,6 +86,10 @@ public class SkystoneMechanismsSelfTest extends LinearOpMode {
         this.foundationGripMechanism = new FoundationGripMechanism(simplerHardwareMap);
         this.skystoneGrabber = new SkystoneGrabber(simplerHardwareMap);
         this.parkingSticks = new ParkingSticks(simplerHardwareMap);
+
+        this.capstoneMechanism = new CapstoneMechanism(simplerHardwareMap, telemetry, ticker);
+        this.capstoneMechanism.setUnsafeButton(unsafeButton);
+        this.capstoneMechanism.setDropButton(new DebouncedButton(capstoneButton));
 
         telemetry.log().add("Press play to begin the mechanism selftest");
         telemetry.log().add("Make sure the area around the mechanisms is clear");
@@ -164,6 +174,29 @@ public class SkystoneMechanismsSelfTest extends LinearOpMode {
         while (!isStopRequested() && !nextStepButton.getRise());
 
         foundationGripMechanism.initPos();
+
+        telemetry.log().clear();
+        telemetry.log().add("Press (a) button to drop capstone");
+        telemetry.update();
+
+        while (!isStopRequested() && !nextStepButton.getRise());
+
+        capstoneMechanism.periodicTask();
+        unsafeButton.buttonOn = true;
+        capstoneButton.buttonOn = true;
+        capstoneMechanism.periodicTask();
+
+        telemetry.log().clear();
+        telemetry.log().add("Press (a) button to hold capstone");
+        telemetry.update();
+
+        while (!isStopRequested() && !nextStepButton.getRise());
+
+        capstoneButton.buttonOn = false;
+        capstoneMechanism.periodicTask();
+        unsafeButton.buttonOn = true;
+        capstoneButton.buttonOn = true;
+        capstoneMechanism.periodicTask();
 
         telemetry.log().clear();
         telemetry.log().add("Press (a) button to stow parking");

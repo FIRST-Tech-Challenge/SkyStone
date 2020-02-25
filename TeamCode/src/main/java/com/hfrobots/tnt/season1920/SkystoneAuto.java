@@ -148,6 +148,7 @@ public class SkystoneAuto extends OpMode {
     @Override
     public void start() {
         super.start();
+        foundationGripper.initPos();
     }
 
     @Override
@@ -224,8 +225,8 @@ public class SkystoneAuto extends OpMode {
         } else if (driverRightBumper.getRise()) {
             initialDelaySeconds += 1;
 
-            if (initialDelaySeconds > 10) {
-                initialDelaySeconds = 10;
+            if (initialDelaySeconds > 25) {
+                initialDelaySeconds = 25;
             }
         }
 
@@ -312,7 +313,7 @@ public class SkystoneAuto extends OpMode {
     }
 
     protected void setupParkFromLeftNear() {
-        setupParkCommon("Park from the left near", 22, 1);
+        setupParkCommon("Park from the left near", 22, 0);
     }
 
     protected void setupParkFromLeftFar() {
@@ -321,7 +322,7 @@ public class SkystoneAuto extends OpMode {
 
     protected void setupParkFromRightNear() {
         // Robot starts against wall, to right of tape line
-        setupParkCommon("Park from the right near", -22, 1);
+        setupParkCommon("Park from the right near", -22, 0);
     }
 
     protected void setupParkFromRightFar() {
@@ -337,7 +338,9 @@ public class SkystoneAuto extends OpMode {
             protected Trajectory createTrajectory() {
                 TrajectoryBuilder trajectoryBuilder = driveBase.trajectoryBuilder();
 
-                trajectoryBuilder.forward(forwardDistance);
+                if (forwardDistance > 0){
+                    trajectoryBuilder.forward(forwardDistance);
+                }
 
                 if (strafeDistance < 0) {
                     trajectoryBuilder.strafeLeft(Math.abs(strafeDistance));

@@ -27,6 +27,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 import lombok.Getter;
 
@@ -145,6 +146,26 @@ public class ChaoticMotor implements DcMotorEx {
     @Override
     public int getTargetPositionTolerance() {
         return actualDcMotor.getTargetPositionTolerance();
+    }
+
+    @Override
+    public double getCurrent(CurrentUnit unit) {
+        return actualDcMotor.getCurrent(unit);
+    }
+
+    @Override
+    public double getCurrentAlert(CurrentUnit unit) {
+        return actualDcMotor.getCurrentAlert(unit);
+    }
+
+    @Override
+    public void setCurrentAlert(double current, CurrentUnit unit) {
+        actualDcMotor.setCurrentAlert(current, unit);
+    }
+
+    @Override
+    public boolean isOverCurrent() {
+        return actualDcMotor.isOverCurrent();
     }
 
     @Override

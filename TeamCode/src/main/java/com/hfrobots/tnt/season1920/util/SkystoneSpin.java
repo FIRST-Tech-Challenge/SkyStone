@@ -21,22 +21,11 @@ package com.hfrobots.tnt.season1920.util;
 
 import android.util.Log;
 
-import com.acmerobotics.roadrunner.quickstart.util.AxesSigns;
-import com.acmerobotics.roadrunner.trajectory.BaseTrajectoryBuilder;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
-import com.google.common.base.Optional;
 import com.google.common.base.Ticker;
-import com.hfrobots.tnt.corelib.Constants;
-import com.hfrobots.tnt.corelib.control.DebouncedButton;
 import com.hfrobots.tnt.corelib.control.DebouncedGamepadButtons;
-import com.hfrobots.tnt.corelib.control.NinjaGamePad;
-import com.hfrobots.tnt.corelib.control.RangeInput;
 import com.hfrobots.tnt.corelib.drive.Turn;
-import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREVOptimized;
-import com.hfrobots.tnt.corelib.drive.mecanum.TrajectoryFollowerState;
+import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREV;
 import com.hfrobots.tnt.corelib.drive.mecanum.TurnState;
-import com.hfrobots.tnt.corelib.state.RunnableState;
 import com.hfrobots.tnt.corelib.state.State;
 import com.hfrobots.tnt.corelib.state.StateMachine;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
@@ -45,7 +34,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.Rotation;
 
 import java.util.concurrent.TimeUnit;
@@ -58,7 +46,7 @@ import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 public class SkystoneSpin extends OpMode {
     private Ticker ticker;
 
-    private RoadRunnerMecanumDriveREVOptimized driveBase;
+    private RoadRunnerMecanumDriveREV driveBase;
 
     private StateMachine stateMachine;
 
@@ -68,7 +56,7 @@ public class SkystoneSpin extends OpMode {
         ticker = createAndroidTicker();
 
         RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
-        driveBase = new RoadRunnerMecanumDriveREVOptimized(
+        driveBase = new RoadRunnerMecanumDriveREV(
                 new SkystoneDriveConstants() {
                     @Override
                     public double getTrackWidth() {

@@ -21,7 +21,7 @@ package com.hfrobots.tnt.season1920.util;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREVOptimized;
+import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREV;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
 import com.hfrobots.tnt.season1920.SkystoneDriveConstants;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -42,7 +42,7 @@ public class SkystoneDrivebaseSelfTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
-        RoadRunnerMecanumDriveREVOptimized drive = new RoadRunnerMecanumDriveREVOptimized(
+        RoadRunnerMecanumDriveREV drive = new RoadRunnerMecanumDriveREV(
                 new SkystoneDriveConstants(), simplerHardwareMap, true);
 
 

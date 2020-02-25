@@ -1,5 +1,6 @@
-/**
- Copyright (c) 2019 HF Robotics (http://www.hfrobots.com)
+/*
+ Copyright (c) 2020 HF Robotics (http://www.hfrobots.com)
+
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
@@ -15,7 +16,7 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
- **/
+ */
 
 package com.hfrobots.tnt.corelib.drive.mecanum;
 
@@ -28,12 +29,14 @@ import com.google.common.base.Optional;
 import com.hfrobots.tnt.corelib.util.LynxModuleUtil;
 import com.hfrobots.tnt.corelib.util.SimplerHardwareMap;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,8 +73,10 @@ public class RoadRunnerMecanumDriveREV extends RoadRunnerMecanumDriveBase {
                                      Optional<AxesSigns> optionalAxesSigns) {
         super(driveConstants);
 
-        if (false) { // We don't need this for tele-op and it can't (yet) be fake for unit tests
-            LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+        LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+
+        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
         if (needImu) {
@@ -152,7 +157,14 @@ public class RoadRunnerMecanumDriveREV extends RoadRunnerMecanumDriveBase {
     @Override
     public double getRawExternalHeading() {
         if (imu != null) {
-            return imu.getAngularOrientation().firstAngle;
+            Orientation orientation = imu.getAngularOrientation();
+
+            double angle = orientation.firstAngle;
+
+            Log.d("RR", "imu-angles:" + orientation.firstAngle + ", " + orientation.secondAngle + ", " + orientation.thirdAngle);
+            Log.d( "RR", "imu axes order: " + orientation.axesOrder + " in " + orientation.angleUnit);
+
+            return angle;
         }
 
         return 0;

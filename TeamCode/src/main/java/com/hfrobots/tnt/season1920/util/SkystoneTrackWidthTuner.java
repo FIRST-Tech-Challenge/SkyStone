@@ -5,7 +5,7 @@ import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.quickstart.drive.DriveConstants;
 import com.acmerobotics.roadrunner.util.Angle;
-import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREVOptimized;
+import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREV;
 import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
 import com.hfrobots.tnt.season1920.SkystoneDriveConstants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -35,7 +35,7 @@ public class SkystoneTrackWidthTuner extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
-        RoadRunnerMecanumDriveREVOptimized drive = new RoadRunnerMecanumDriveREVOptimized(
+        RoadRunnerMecanumDriveREV drive = new RoadRunnerMecanumDriveREV(
                 new SkystoneDriveConstants() {
                     // Need track width of *1* to compute real track width
                     @Override

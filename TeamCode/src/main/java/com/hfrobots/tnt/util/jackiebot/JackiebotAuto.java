@@ -35,7 +35,6 @@ import com.hfrobots.tnt.corelib.control.RangeInput;
 import com.hfrobots.tnt.corelib.drive.Turn;
 import com.hfrobots.tnt.corelib.drive.mecanum.DriveConstants;
 import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREV;
-import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREVOptimized;
 import com.hfrobots.tnt.corelib.drive.mecanum.TrajectoryFollowerState;
 import com.hfrobots.tnt.corelib.drive.mecanum.TurnState;
 import com.hfrobots.tnt.corelib.state.State;
@@ -83,7 +82,7 @@ public class JackiebotAuto extends OpMode {
 
     private Ticker ticker;
 
-    private RoadRunnerMecanumDriveREVOptimized driveBase;
+    private RoadRunnerMecanumDriveREV driveBase;
 
     private StateMachine stateMachine;
 
@@ -125,7 +124,7 @@ public class JackiebotAuto extends OpMode {
         setupDriverControls();
 
         RealSimplerHardwareMap simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
-        driveBase = new RoadRunnerMecanumDriveREVOptimized(new JackieDriveConstants(), simplerHardwareMap, true);
+        driveBase = new RoadRunnerMecanumDriveREV(new JackieDriveConstants(), simplerHardwareMap, true);
 
         stateMachine = new StateMachine(telemetry);
     }

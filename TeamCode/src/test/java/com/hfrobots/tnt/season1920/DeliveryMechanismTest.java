@@ -52,6 +52,8 @@ public class DeliveryMechanismTest {
 
     private FakeServo shoulderServo;
 
+    private FakeServo ejectorServo;
+
     private FakeDigitalChannel deliveryMechLowLimitSwitch;
 
     private OperatorControls controls;
@@ -60,12 +62,16 @@ public class DeliveryMechanismTest {
 
     private DeliveryMechanism deliveryMechanism;
 
+    private CapstoneMechanism capstoneMechanism;
+
+    private FakeServo capstoneServo;
+
     private FakeTicker ticker;
 
     @Before
     public void setUp() {
         ticker = new FakeTicker();
-        ticker.setAutoIncrementStep(5, TimeUnit.SECONDS);
+        ticker.setAutoIncrementStep(1, TimeUnit.SECONDS);
 
         hardwareMap = new FakeHardwareMap();
 
@@ -77,6 +83,8 @@ public class DeliveryMechanismTest {
         wristServo = new FakeServo();
         elbowServo = new FakeServo();
         shoulderServo = new FakeServo();
+        ejectorServo = new FakeServo();
+        capstoneServo = new FakeServo();
 
         deliveryMechLowLimitSwitch = new FakeDigitalChannel();
 
@@ -88,17 +96,22 @@ public class DeliveryMechanismTest {
         hardwareMap.addDevice("wristServo", wristServo);
         hardwareMap.addDevice("elbowServo", elbowServo);
         hardwareMap.addDevice("shoulderServo", shoulderServo);
+        hardwareMap.addDevice("ejectorServo", ejectorServo);
+        hardwareMap.addDevice("capstoneServo", capstoneServo);
 
         hardwareMap.addDevice("deliveryMechLowLimitSwitch", deliveryMechLowLimitSwitch);
+
 
         FakeTelemetry telemetry = new FakeTelemetry();
 
         deliveryMechanism = new DeliveryMechanism(hardwareMap, telemetry, ticker);
+        capstoneMechanism = new CapstoneMechanism(hardwareMap, telemetry, ticker);
 
         gamepad = new FakeNinjaGamePad();
 
         controls = OperatorControls.builder().operatorsGamepad(gamepad)
                 .deliveryMechanism(deliveryMechanism)
+                .capstoneMechanism(capstoneMechanism)
                 .build();
     }
 
@@ -110,7 +123,12 @@ public class DeliveryMechanismTest {
 
         controls.periodicTask();
 
-        Assert.assertEquals(DeliveryMechanism.FINGER_UNGRIP, fingerServo.getPosition(), 0.001);
+        Assert.assertEquals(DeliveryMechanism.FINGER_INIT, fingerServo.getPosition(), 0.001);
+
+        deliveryMechLowLimitSwitch.setState(false);
+        deliveryMechanism.periodicTask();
+
+        deliveryMechanism.ungripblock(); // like tele-op start()
 
         gripButton.setPressed(true);
         controls.periodicTask();
@@ -209,12 +227,15 @@ public class DeliveryMechanismTest {
 
             deliveryMechanism.periodicTask();
 
+            // Get to arm-moving
+            deliveryMechanism.periodicTask();
+
             // Lift is moving upwards
             Assert.assertTrue(liftMotor.getPower() > 0);
             // Finger is (still) gripped
             Assert.assertEquals(DeliveryMechanism.FINGER_GRIP, fingerServo.getPosition(), 0.001);
 
-            Assert.assertEquals(DeliveryMechanism.MoveClearState.class.getSimpleName(),
+            Assert.assertEquals(DeliveryMechanism.ArmMovingState.class.getSimpleName(),
                     deliveryMechanism.getCurrentStateName());
 
             // pretend the motor is running
@@ -398,7 +419,8 @@ public class DeliveryMechanismTest {
 
             assertPlaceStateCommon();
 
-            liftMotor.setCurrentPosistion(DeliveryMechanism.LIFT_CLEAR_SUPERSTRUCTURE_POS + 100);
+            liftMotor.setCurrentPosistion(DeliveryMechanism.LIFT_CLEAR_SUPERSTRUCTURE_POS + 1100);
+            deliveryMechLowLimitSwitch.setState(true); // tricky, logic is inverted
 
             stowButton.setPressed(true);
 
@@ -427,22 +449,25 @@ public class DeliveryMechanismTest {
             while (System.currentTimeMillis() - now < 60000) {
                 deliveryMechanism.periodicTask();
 
-                if (liftMotor.getPower() < 0) {
-                    break; // PID is moving the lift
+                if (liftMotor.getPower() < 0) { // PID is in control
+                    break;
                 }
             }
 
+            ticker.setAutoIncrementStep(0, TimeUnit.MILLISECONDS);
+            deliveryMechanism.periodicTask();
             Assert.assertTrue(liftMotor.getPower() < 0);
 
             deliveryMechanism.periodicTask();
             Assert.assertTrue(liftMotor.getPower() < 0);
 
-            liftMotor.setCurrentPosistion(DeliveryMechanism.LIFT_CLEAR_SUPERSTRUCTURE_POS / 2);
+            // This is effectively zero, for the moment
+            liftMotor.setCurrentPosistion(DeliveryMechanism.LIFT_CLEAR_SUPERSTRUCTURE_POS + 500);
             deliveryMechanism.periodicTask();
             Assert.assertTrue(liftMotor.getPower() < 0);
 
             // reach bottom
-            liftMotor.setCurrentPosistion(DeliveryMechanism.LIFT_MIN_HEIGHT_POS - 1);
+            liftMotor.setCurrentPosistion(DeliveryMechanism.LIFT_MIN_HEIGHT_POS - 135);
             deliveryMechanism.periodicTask();
             Assert.assertEquals(0, liftMotor.getPower(), 0.001);
 

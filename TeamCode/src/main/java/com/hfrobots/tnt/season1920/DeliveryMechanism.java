@@ -34,7 +34,7 @@ import com.hfrobots.tnt.corelib.drive.ServoUtil;
 import com.hfrobots.tnt.corelib.drive.StallDetector;
 import com.hfrobots.tnt.corelib.state.State;
 import com.hfrobots.tnt.corelib.state.StopwatchDelayState;
-import com.hfrobots.tnt.corelib.state.TimeoutSafetyState;
+import com.hfrobots.tnt.corelib.state.StopwatchTimeoutSafetyState;
 import com.hfrobots.tnt.corelib.util.SimplerHardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -51,7 +51,6 @@ import lombok.Setter;
 import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 
 public class DeliveryMechanism {
-
     Servo shoulderServo;
     Servo wristServo;
     Servo fingerServo;
@@ -106,6 +105,7 @@ public class DeliveryMechanism {
     public final static double WRIST_STOW = 1.0;
     boolean wristRotated = false;
 
+    public static final double FINGER_INIT = 0.67;
     public final static double FINGER_GRIP = 0.57; // 0.0;
     public final static double FINGER_UNGRIP = 1.0;
 
@@ -201,7 +201,7 @@ public class DeliveryMechanism {
             telemetry.update();
         }
 
-        fingerServo.setPosition(0.67); // stay within 18"
+        fingerServo.setPosition(FINGER_INIT); // stay within 18"
     }
 
     private boolean shouldUseLowerLimit() {
@@ -289,31 +289,31 @@ public class DeliveryMechanism {
     }
 
     protected void setupStateMachine() {
-        HomingState homingState = new HomingState(telemetry);
+        HomingState homingState = new HomingState(telemetry, ticker);
 
-        StowReturnState stowReturnState = new StowReturnState(telemetry);
+        StowReturnState stowReturnState = new StowReturnState(telemetry, ticker);
 
         stowReturnState.setHomingState(homingState);
 
-        PlaceState placeState = new PlaceState(telemetry, 6000);
+        PlaceState placeState = new PlaceState(telemetry, ticker,6000);
         placeState.setStowReturnState(stowReturnState);
 
-        AtMinState atMinState = new AtMinState(telemetry, 6000);
+        AtMinState atMinState = new AtMinState(telemetry, ticker,6000);
         atMinState.setPlaceState(placeState);
         atMinState.setStowReturnState(stowReturnState);
 
-        AtMaxState atMaxState = new AtMaxState(telemetry, 6000);
+        AtMaxState atMaxState = new AtMaxState(telemetry, ticker,6000);
         atMaxState.setPlaceState(placeState);
         atMaxState.setStowReturnState(stowReturnState);
 
-        ToPlacingDownState toPlacingDownState = new ToPlacingDownState(telemetry,6000);
+        ToPlacingDownState toPlacingDownState = new ToPlacingDownState(telemetry, ticker,6000);
         toPlacingDownState.setAtMinState(atMinState);
         toPlacingDownState.setPlaceState(placeState);
         toPlacingDownState.setStowReturnState(stowReturnState);
 
         atMaxState.setToPlacingDownState(toPlacingDownState);
 
-        ToPlacingUpState toPlacingUpState = new ToPlacingUpState(telemetry, 6000);
+        ToPlacingUpState toPlacingUpState = new ToPlacingUpState(telemetry, ticker,6000);
         toPlacingUpState.setToPlacingDownState(toPlacingDownState);
         toPlacingUpState.setAtMaxState(atMaxState);
         toPlacingUpState.setPlaceState(placeState);
@@ -323,7 +323,7 @@ public class DeliveryMechanism {
 
         toPlacingDownState.setToPlacingUpState(toPlacingUpState);
 
-        ArmMovingState armMovingState = new ArmMovingState(telemetry, 6000);
+        ArmMovingState armMovingState = new ArmMovingState(telemetry, ticker,6000);
         armMovingState.setToPlacingDownState(toPlacingDownState);
         armMovingState.setToPlacingUpState(toPlacingUpState);
         armMovingState.setPlaceState(placeState);
@@ -334,14 +334,14 @@ public class DeliveryMechanism {
         atMaxState.setArmMovingState(armMovingState);
         atMinState.setArmMovingState(armMovingState);
 
-        MoveClearState moveClearState = new MoveClearState(telemetry, 6000);
+        MoveClearState moveClearState = new MoveClearState(telemetry, ticker,6000);
         moveClearState.setArmMovingState(armMovingState);
         homingState.setMoveClearState(moveClearState);
 
-        LowGripState lowGripState = new LowGripState(telemetry, 6000);
+        LowGripState lowGripState = new LowGripState(telemetry, ticker,6000);
         lowGripState.setMoveClearState(moveClearState);
 
-        LoadingState loadingState = new LoadingState(telemetry,6000);
+        LoadingState loadingState = new LoadingState(telemetry,ticker,6000);
         loadingState.setLowGripState(lowGripState);
         lowGripState.setLoadingState(loadingState);
         stowReturnState.setLoadingState(loadingState);
@@ -359,9 +359,9 @@ public class DeliveryMechanism {
 
     List<ReadyCheckable> readyCheckables = Lists.newArrayList();
 
-    abstract class DeliveryMechanismState extends TimeoutSafetyState implements ReadyCheckable {
-        public DeliveryMechanismState(String name, Telemetry telemetry, long safetyTimeoutMillis) {
-            super(name, telemetry, safetyTimeoutMillis);
+    abstract class DeliveryMechanismState extends StopwatchTimeoutSafetyState implements ReadyCheckable {
+        public DeliveryMechanismState(String name, Telemetry telemetry, Ticker ticker, long safetyTimeoutMillis) {
+            super(name, telemetry, ticker, safetyTimeoutMillis);
 
             readyCheckables.add(this);
         }
@@ -379,8 +379,9 @@ public class DeliveryMechanism {
         private boolean initialized = false;
 
         public LoadingState(Telemetry telemetry,
+                            Ticker ticker,
                             long safetyTimeoutMillis) {
-            super("Loading State", telemetry, safetyTimeoutMillis);
+            super("Loading State", telemetry, ticker, safetyTimeoutMillis);
         }
 
         public void checkReady() {
@@ -439,8 +440,8 @@ public class DeliveryMechanism {
         private LoadingState loadingState;
 
 
-        public LowGripState(Telemetry telemetry, long safetyTimeoutMillis) {
-            super("Low grip state", telemetry, safetyTimeoutMillis);
+        public LowGripState(Telemetry telemetry, Ticker ticker, long safetyTimeoutMillis) {
+            super("Low grip state", telemetry, ticker, safetyTimeoutMillis);
         }
 
         public void checkReady() {
@@ -505,8 +506,9 @@ public class DeliveryMechanism {
         private ArmMovingState armMovingState;
 
         public MoveClearState(Telemetry telemetry,
+                              Ticker ticker,
                               long safetyTimeoutMillis) {
-            super("Move clear state", telemetry, safetyTimeoutMillis);
+            super("Move clear state", telemetry, ticker, safetyTimeoutMillis);
         }
 
         public void checkReady() {
@@ -562,8 +564,9 @@ public class DeliveryMechanism {
         private AtMaxState atMaxState;
 
         public ArmMovingState(Telemetry telemetry,
+                              Ticker ticker,
                               long safetyTimeoutMillis) {
-            super("Arm Moving state", telemetry, safetyTimeoutMillis);
+            super("Arm Moving state", telemetry, ticker, safetyTimeoutMillis);
         }
 
         public void checkReady() {
@@ -643,8 +646,9 @@ public class DeliveryMechanism {
         private ToPlacingUpState toPlacingUpState;
 
         public ToPlacingDownState(Telemetry telemetry,
+                                  Ticker ticker,
                                   long safetyTimeoutMillis) {
-            super("to placing down state", telemetry, safetyTimeoutMillis);
+            super("to placing down state", telemetry, ticker, safetyTimeoutMillis);
         }
 
         public void checkReady() {
@@ -702,8 +706,9 @@ public class DeliveryMechanism {
         private ToPlacingDownState toPlacingDownState;
 
         public ToPlacingUpState(Telemetry telemetry,
+                                Ticker ticker,
                                 long safetyTimeoutMillis) {
-            super("To placing up state", telemetry, safetyTimeoutMillis);
+            super("To placing up state", telemetry, ticker, safetyTimeoutMillis);
 
         }
 
@@ -762,8 +767,9 @@ public class DeliveryMechanism {
         private  ArmMovingState armMovingState;
 
         public AtMaxState(Telemetry telemetry,
+                          Ticker ticker,
                           long safetyTimeoutMillis) {
-            super("at max state", telemetry, safetyTimeoutMillis);
+            super("at max state", telemetry, ticker, safetyTimeoutMillis);
 
         }
 
@@ -834,9 +840,10 @@ public class DeliveryMechanism {
         private PlaceState placeState;
 
         public AtMinState(Telemetry telemetry,
+                          Ticker ticker,
                           long safetyTimeoutMillis
                           ) {
-            super("At Min", telemetry, safetyTimeoutMillis);
+            super("At Min", telemetry, ticker, safetyTimeoutMillis);
 
         }
 
@@ -880,8 +887,9 @@ public class DeliveryMechanism {
         private ArmMovingState armMovingState;
 
         public PlaceState(Telemetry telemetry,
+                          Ticker ticker,
                           long safetyTimeoutMillis) {
-            super("place state", telemetry, safetyTimeoutMillis);
+            super("place state", telemetry, ticker, safetyTimeoutMillis);
         }
 
         public void checkReady() {
@@ -925,8 +933,8 @@ public class DeliveryMechanism {
 
         private StallDetector stallDetector;
 
-        public StowReturnState(Telemetry telemetry) {
-            super("stow return state", telemetry, TimeUnit.SECONDS.toMillis(3));
+        public StowReturnState(Telemetry telemetry, Ticker ticker) {
+            super("stow return state", telemetry, ticker, TimeUnit.SECONDS.toMillis(3));
 
         }
 
@@ -1069,8 +1077,8 @@ public class DeliveryMechanism {
         private MoveClearState moveClearState;
 
 
-        public HomingState(Telemetry telemetry) {
-            super("Homing", telemetry, TimeUnit.SECONDS.toMillis(10));
+        public HomingState(Telemetry telemetry, Ticker ticker) {
+            super("Homing", telemetry, ticker, TimeUnit.SECONDS.toMillis(10));
 
         }
 
@@ -1162,13 +1170,13 @@ public class DeliveryMechanism {
 
         StopwatchDelayState waitForShoulderState = new StopwatchDelayState("Wait for shoulder", telemetry, ticker,1, TimeUnit.SECONDS);
 
-        StowShoulderState stowShoulderState = new StowShoulderState(waitForShoulderState, telemetry, 60000);
+        StowShoulderState stowShoulderState = new StowShoulderState(waitForShoulderState, telemetry, ticker,60000);
 
         // waitForWristState.setNextState(stowShoulderState);
 
         StopwatchDelayState waitForFingerState = new StopwatchDelayState("Wait for finger", telemetry,  ticker, 250, TimeUnit.MILLISECONDS);
 
-        FingerUngripState fingerUngripState = new FingerUngripState(waitForFingerState, telemetry, 60000);
+        FingerUngripState fingerUngripState = new FingerUngripState(waitForFingerState, telemetry, ticker,60000);
 
         waitForShoulderState.setNextState(fingerUngripState);
 
@@ -1181,8 +1189,9 @@ public class DeliveryMechanism {
         private StopwatchDelayState waitForWristState;
 
         public StowWristState(StopwatchDelayState waitForWristState, Telemetry telemetry,
+                              Ticker ticker,
                               long safetyTimeoutMillis) {
-            super("stow wrist", telemetry, safetyTimeoutMillis);
+            super("stow wrist", telemetry, ticker, safetyTimeoutMillis);
             this.waitForWristState = waitForWristState;
         }
 
@@ -1210,8 +1219,8 @@ public class DeliveryMechanism {
         private StopwatchDelayState waitForShoulderState;
 
         public StowShoulderState(StopwatchDelayState waitForShoulderState, Telemetry telemetry,
-                                 long safetyTimeoutMillis) {
-            super("stow shoulder", telemetry, safetyTimeoutMillis);
+                                 Ticker ticker, long safetyTimeoutMillis) {
+            super("stow shoulder", telemetry, ticker, safetyTimeoutMillis);
             this.waitForShoulderState = waitForShoulderState;
         }
 
@@ -1239,8 +1248,8 @@ public class DeliveryMechanism {
         private StopwatchDelayState waitForFingerState;
 
         public FingerUngripState(StopwatchDelayState waitForFingerState, Telemetry telemetry,
-                                 long safetyTimeoutMillis) {
-            super("ungrip finger", telemetry, safetyTimeoutMillis);
+                                 Ticker ticker, long safetyTimeoutMillis) {
+            super("ungrip finger", telemetry, ticker, safetyTimeoutMillis);
             this.waitForFingerState = waitForFingerState;
         }
 

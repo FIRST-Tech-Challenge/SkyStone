@@ -208,6 +208,16 @@ public class StateMachineTest extends TestCase {
         }
 
         @Override
+        public void speak(String text) {
+
+        }
+
+        @Override
+        public void speak(String text, String languageCode, String countryCode) {
+
+        }
+
+        @Override
         public boolean update() {
             return false;
         }

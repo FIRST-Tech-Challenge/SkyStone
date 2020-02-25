@@ -27,8 +27,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.openftc.revextensions2.ExpansionHubMotor;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +71,6 @@ public class ChaosSimplerHardwareMap extends RealSimplerHardwareMap {
             return null;
         }
 
-        // Fixme: Should be able to send in a ChaoticMotor to an ExpansionHubMotor for REVOptimized!
         if (classOrInterface.isAssignableFrom(DcMotorEx.class)) {
 
             final ChaoticMotor chaoticMotor = getOrCreateChaoticMotor(deviceName, (DcMotorEx) originalDevice);

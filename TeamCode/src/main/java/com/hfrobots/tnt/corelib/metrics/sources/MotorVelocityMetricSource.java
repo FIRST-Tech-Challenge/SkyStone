@@ -3,14 +3,14 @@ package com.hfrobots.tnt.corelib.metrics.sources;
 import com.hfrobots.tnt.corelib.metrics.GaugeMetricSource;
 import com.hfrobots.tnt.corelib.metrics.MetricsSampler;
 import com.hfrobots.tnt.util.NamedDeviceMap;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
 @EqualsAndHashCode
 public class MotorVelocityMetricSource implements GaugeMetricSource {
-    private final DcMotor motor;
+    private final DcMotorEx motor;
 
     private final String sampleName;
 
@@ -18,7 +18,7 @@ public class MotorVelocityMetricSource implements GaugeMetricSource {
 
     private long lastValueTimestamp;
 
-    public MotorVelocityMetricSource(@NonNull final NamedDeviceMap.NamedDevice<DcMotor> namedMotor) {
+    public MotorVelocityMetricSource(@NonNull final NamedDeviceMap.NamedDevice<DcMotorEx> namedMotor) {
         this.motor = namedMotor.getDevice();
 
         sampleName = String.format("dcm_vel_%s", namedMotor.getName());

@@ -1,5 +1,6 @@
-/**
- Copyright (c) 2019 HF Robotics (http://www.hfrobots.com)
+/*
+ Copyright (c) 2020 HF Robotics (http://www.hfrobots.com)
+
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
@@ -15,7 +16,7 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
- **/
+ */
 
 package com.hfrobots.tnt.fakes.drive;
 
@@ -28,6 +29,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Rotation;
 
 public class FakeExtendedDcMotor implements ExtendedDcMotor, DcMotorEx {
@@ -99,6 +101,26 @@ public class FakeExtendedDcMotor implements ExtendedDcMotor, DcMotorEx {
     @Override
     public int getTargetPositionTolerance() {
         return 0;
+    }
+
+    @Override
+    public double getCurrent(CurrentUnit unit) {
+        return 0;
+    }
+
+    @Override
+    public double getCurrentAlert(CurrentUnit unit) {
+        return 0;
+    }
+
+    @Override
+    public void setCurrentAlert(double current, CurrentUnit unit) {
+
+    }
+
+    @Override
+    public boolean isOverCurrent() {
+        return false;
     }
 
     // FIXME LMM

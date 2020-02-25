@@ -1,21 +1,22 @@
 package com.hfrobots.tnt.corelib.metrics.sources;
 
 import com.hfrobots.tnt.corelib.metrics.GaugeMetricSource;
+import com.qualcomm.hardware.lynx.LynxModule;
 
-import org.openftc.revextensions2.ExpansionHubEx;
+import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
 public class Voltage12VMetricSource implements GaugeMetricSource {
 
-    private final ExpansionHubEx expansionHubEx;
+    private final LynxModule lynxModule;
 
     private final String name;
 
-    public Voltage12VMetricSource(ExpansionHubEx expansionHubEx) {
-        this.expansionHubEx = expansionHubEx;
-        int moduleAddress = expansionHubEx.getStandardModule().getModuleAddress();
+    public Voltage12VMetricSource(LynxModule lynxModule) {
+        this.lynxModule = lynxModule;
+        int moduleAddress = lynxModule.getModuleAddress();
 
         name = String.format("hub_%d_12V", moduleAddress);
     }
@@ -27,7 +28,6 @@ public class Voltage12VMetricSource implements GaugeMetricSource {
 
     @Override
     public double getValue() {
-        // FIXME: There's a value you can use here from the expansionHubEx member variable
-        return expansionHubEx.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS);
+        return lynxModule.getInputVoltage(VoltageUnit.VOLTS);
     }
 }

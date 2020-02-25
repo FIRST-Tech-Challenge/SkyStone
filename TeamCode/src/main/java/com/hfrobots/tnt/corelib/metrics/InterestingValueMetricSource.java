@@ -19,8 +19,6 @@
 
 package com.hfrobots.tnt.corelib.metrics;
 
-import lombok.Builder;
-
 /**
  * An adapter for GaugeMetricSources that always sends the requested "interesting"
  * values, otherwise samples

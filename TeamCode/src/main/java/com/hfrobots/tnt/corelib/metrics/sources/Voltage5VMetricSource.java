@@ -20,21 +20,22 @@
 package com.hfrobots.tnt.corelib.metrics.sources;
 
 import com.hfrobots.tnt.corelib.metrics.GaugeMetricSource;
+import com.qualcomm.hardware.lynx.LynxModule;
 
-import org.openftc.revextensions2.ExpansionHubEx;
+import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
 public class Voltage5VMetricSource implements GaugeMetricSource {
 
-    private final ExpansionHubEx expansionHubEx;
+    private final LynxModule lynxModule;
 
     private final String name;
 
-    public Voltage5VMetricSource(ExpansionHubEx expansionHubEx) {
-        this.expansionHubEx = expansionHubEx;
-        int moduleAddress = expansionHubEx.getStandardModule().getModuleAddress();
+    public Voltage5VMetricSource(LynxModule lynxModule) {
+        this.lynxModule = lynxModule;
+        int moduleAddress = lynxModule.getModuleAddress();
 
         name = String.format("hub_%d_5V", moduleAddress);
     }
@@ -46,6 +47,6 @@ public class Voltage5VMetricSource implements GaugeMetricSource {
 
     @Override
     public double getValue() {
-        return expansionHubEx.read5vMonitor(ExpansionHubEx.VoltageUnits.VOLTS);
+        return lynxModule.getAuxiliaryVoltage(VoltageUnit.VOLTS);
     }
 }

@@ -23,6 +23,8 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DigitalChannelController;
 
 public class FakeDigitalChannel implements DigitalChannel {
+    boolean state = true;
+
     @Override
     public Mode getMode() {
         return null;
@@ -36,12 +38,12 @@ public class FakeDigitalChannel implements DigitalChannel {
     // IMPLEMENT ME
     @Override
     public boolean getState() {
-        return false;
+        return state;
     }
 
     @Override
     public void setState(boolean state) {
-
+        this.state = state;
     }
 
     @Override

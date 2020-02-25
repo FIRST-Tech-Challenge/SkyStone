@@ -20,7 +20,6 @@
 package com.hfrobots.tnt.corelib.metrics.sources;
 
 import com.hfrobots.tnt.corelib.control.OnOffButton;
-import com.hfrobots.tnt.corelib.control.RangeInput;
 import com.hfrobots.tnt.corelib.metrics.GaugeMetricSource;
 
 import lombok.EqualsAndHashCode;

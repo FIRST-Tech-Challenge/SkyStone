@@ -35,14 +35,13 @@ import com.hfrobots.tnt.corelib.metrics.sources.ServoMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.Voltage12VMetricSource;
 import com.hfrobots.tnt.corelib.metrics.sources.Voltage5VMetricSource;
 import com.hfrobots.tnt.util.NamedDeviceMap;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.timgroup.statsd.NonBlockingStatsDClient;
-
-import org.openftc.revextensions2.ExpansionHubEx;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -61,13 +60,13 @@ public class StatsDMetricSampler implements MetricsSampler {
 
     private final NamedDeviceMap namedDeviceMap;
 
-    private final List<ExpansionHubEx> expansionHubExes;
+    private final List<LynxModule> expansionHubs;
 
     public StatsDMetricSampler(HardwareMap hardwareMap, NinjaGamePad driverControls, NinjaGamePad operatorControls) {
         this.hardwareMap = hardwareMap;
         this.namedDeviceMap = new NamedDeviceMap(hardwareMap);
 
-        expansionHubExes = hardwareMap.getAll(ExpansionHubEx.class);
+        expansionHubs = hardwareMap.getAll(LynxModule.class);
 
         addAllByHardwareMap();
 
@@ -113,7 +112,6 @@ public class StatsDMetricSampler implements MetricsSampler {
 
     private void addAllByHardwareMap() {
         addDcMotors();
-        addDcMotorCurrents();
         addVoltages();
         addDigitalChannels();
         addServos();
@@ -162,28 +160,22 @@ public class StatsDMetricSampler implements MetricsSampler {
     }
 
     private void addDcMotors() {
-        List<NamedDeviceMap.NamedDevice<DcMotor>> allMotors = namedDeviceMap.getAll(DcMotor.class);
+        List<NamedDeviceMap.NamedDevice<DcMotorEx>> allMotors = namedDeviceMap.getAll(DcMotorEx.class);
 
-        for (NamedDeviceMap.NamedDevice<DcMotor> namedMotor : allMotors) {
+        for (NamedDeviceMap.NamedDevice<DcMotorEx> namedMotor : allMotors) {
             GaugeMetricSource metricSource = new DcMotorPowerMetricSource(namedMotor);
             addSource(toInterestingValues(metricSource));
 
             metricSource = new MotorVelocityMetricSource(namedMotor);
             addSource(toInterestingValues(metricSource));
-        }
-    }
 
-    private void addDcMotorCurrents() {
-        for (ExpansionHubEx hub : expansionHubExes) {
-            for (int port = 0; port < 4; port++) {
-                GaugeMetricSource metricSource = new DcMotorCurrentMetricSource(hub, port);
-                addSource(toInterestingValues(metricSource));
-            }
+            metricSource = new DcMotorCurrentMetricSource(namedMotor);
+            addSource(toInterestingValues(metricSource));
         }
     }
 
     private void addVoltages() {
-        for (ExpansionHubEx hub : expansionHubExes) {
+        for (LynxModule hub : expansionHubs) {
             GaugeMetricSource metricSource = new Voltage5VMetricSource(hub);
             addSource(metricSource);
 

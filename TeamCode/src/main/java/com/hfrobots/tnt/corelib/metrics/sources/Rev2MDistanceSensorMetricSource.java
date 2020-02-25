@@ -22,7 +22,6 @@ package com.hfrobots.tnt.corelib.metrics.sources;
 import com.hfrobots.tnt.corelib.metrics.GaugeMetricSource;
 import com.hfrobots.tnt.util.NamedDeviceMap;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 

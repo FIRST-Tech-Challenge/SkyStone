@@ -20,25 +20,23 @@
 package com.hfrobots.tnt.corelib.metrics.sources;
 
 import com.hfrobots.tnt.corelib.metrics.GaugeMetricSource;
+import com.hfrobots.tnt.util.NamedDeviceMap;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.openftc.revextensions2.ExpansionHubEx;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
 public class DcMotorCurrentMetricSource implements GaugeMetricSource {
-    private final ExpansionHubEx expansionHubEx;
-
-    private final int motorPort;
+    private final DcMotorEx dcMotorEx;
 
     private final String name;
 
-    public DcMotorCurrentMetricSource(ExpansionHubEx expansionHubEx, int motorPort) {
-        this.expansionHubEx = expansionHubEx;
-        this.motorPort = motorPort;
-        int moduleAddress = expansionHubEx.getStandardModule().getModuleAddress();
+    public DcMotorCurrentMetricSource(NamedDeviceMap.NamedDevice<DcMotorEx> namedMotor) {
+        this.dcMotorEx = namedMotor.getDevice();
 
-        name = String.format("hub_%d_dcm_curr_%d", moduleAddress, motorPort);
+        name = String.format("dcm_curr_%s", namedMotor.getName());
 
     }
 
@@ -49,6 +47,6 @@ public class DcMotorCurrentMetricSource implements GaugeMetricSource {
 
     @Override
     public double getValue() {
-        return expansionHubEx.getMotorCurrentDraw(ExpansionHubEx.CurrentDrawUnits.AMPS, motorPort);
+        return dcMotorEx.getCurrent(CurrentUnit.AMPS);
     }
 }

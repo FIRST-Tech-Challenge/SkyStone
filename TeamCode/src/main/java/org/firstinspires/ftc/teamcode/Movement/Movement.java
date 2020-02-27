@@ -44,7 +44,7 @@ public class Movement {
 
     public void followPath(ArrayList<RobotPoint> path, double radius){
 
-        Proportional orient = new Proportional(0.035, 0.26);
+        Proportional orient = new Proportional(0.031, 0.26);
         RobotPoint lastPoint = path.get(path.size()-1); //Last point in the ArrayList
 
         while(opMode.opModeIsActive()){
@@ -153,14 +153,14 @@ public class Movement {
 
     public void moveToPointPD(RobotPoint targetPoint, double switchThresh, double arrivedThresh) {
 
-        GatedPid orient = new GatedPid(10, 0.3,0.009,0,0.023,0, 0.4, 0.05);
+        GatedPid orient = new GatedPid(10, 0.3,0.0085,0,0.023,0, 0.4, 0.05);
 
         double xDist, yDist, distance, heading;
         double targSpeed, scale;
         double targVX, targVY, hCorrect;
         boolean endCondition;
 
-        GatedPid speedFinder = new GatedPid(switchThresh, 0.8, 0.018, 0, 0.05, 0, 0.8,0.2);
+        GatedPid speedFinder = new GatedPid(switchThresh, 0.8, 0.016, 0, 0.05, 0, 0.8,0.2);
 
         do {
 
@@ -196,14 +196,14 @@ public class Movement {
 
     public void moveToPointPD2(RobotPoint targetPoint,double switchThresh, double arrivedThresh) {
 
-        GatedPid orient = new GatedPid(10, 0.3,0.009,0,0.023,0, 0.4, 0.05);
+        GatedPid orient = new GatedPid(10, 0.3,0.0085,0,0.023,0, 0.4, 0.05);
 
         double xDist, yDist, distance, heading;
         double targSpeed, scale;
         double targVX, targVY, hCorrect;
         boolean endCondition;
 
-        GatedPid speedFinder = new GatedPid(switchThresh, 1.25, 0.026, 0, 0.06, 0, 1.25,0.1);
+        GatedPid speedFinder = new GatedPid(switchThresh, 1.25, 0.0245, 0, 0.06, 0, 1.25,0.1);
 
         do {
 

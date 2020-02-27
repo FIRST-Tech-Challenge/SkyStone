@@ -447,7 +447,7 @@ public class teleOp extends LinearOpMode {
 
             if (gamepad1.left_bumper) {
                 foundationClampLeft.setPosition(.190);
-                foundationClampRight.setPosition(.96);
+                foundationClampRight.setPosition(.81);
             } else {
                 foundationClampLeft.setPosition(0.745);
                 foundationClampRight.setPosition(0.26);
@@ -458,8 +458,8 @@ public class teleOp extends LinearOpMode {
                 autoFlipperRight.setPosition(0.0); //flipper down
                 autoFlipperLeft.setPosition(0.036); //put arm fully down
             } else {
-                autoFlipperRight.setPosition(0.467); //flipper up
-                autoFlipperLeft.setPosition(0.467);
+                autoFlipperRight.setPosition(0.4); //flipper up
+                autoFlipperLeft.setPosition(0.196);
             }
             if (gamepad1.y) {
                 autoGrabberRight.setPosition(0.0); //grabbers open

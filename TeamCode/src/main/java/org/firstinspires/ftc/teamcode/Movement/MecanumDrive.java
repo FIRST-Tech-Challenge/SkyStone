@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Movement;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
@@ -7,7 +8,11 @@ import org.firstinspires.ftc.teamcode.Utility.RobotHardware;
 
 public class MecanumDrive extends Drivebase {
 
-    public MecanumDrive(){}
+    private LinearOpMode opMode;
+
+    public MecanumDrive(LinearOpMode opMode){
+        this.opMode = opMode;
+    }
 
     @Override
     public void initialize(){
@@ -24,12 +29,12 @@ public class MecanumDrive extends Drivebase {
 
     @Override
     public void update(){
-
-        RobotHardware.rightFront.setPower(rf);
-        RobotHardware.leftFront.setPower(lf);
-        RobotHardware.leftBack.setPower(lb);
-        RobotHardware.rightBack.setPower(rb);
-
+        if(opMode.opModeIsActive()){
+            RobotHardware.rightFront.setPower(rf);
+            RobotHardware.leftFront.setPower(lf);
+            RobotHardware.leftBack.setPower(lb);
+            RobotHardware.rightBack.setPower(rb);
+        }
     }
 
     public void setRelativeVelocity(double velX, double velY, double velHeading){

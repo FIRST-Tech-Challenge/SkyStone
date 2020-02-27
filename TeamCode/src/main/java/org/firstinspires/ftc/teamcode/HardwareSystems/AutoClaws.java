@@ -42,6 +42,16 @@ public class AutoClaws {
         }
     }
 
+    public void firstPrime(){
+        if(side.equals("RED")){
+            RobotHardware.autoFlipperRight.setPosition(0.5);
+            RobotHardware.autoGrabberRight.setPosition(0.5);
+        }else{
+            RobotHardware.autoFlipperLeft.setPosition(0.59);
+            RobotHardware.autoGrabberLeft.setPosition(0.68);
+        }
+    }
+
     public void grabBlock(){
         if(side.equals("RED")){
             RobotHardware.autoFlipperRight.setPosition(0.99);
@@ -67,18 +77,30 @@ public class AutoClaws {
             timer.waitMillis(100);
         }
     }
-
-
     public void depositBlock(){
         if(side.equals("RED")){
             RobotHardware.autoGrabberRight.setPosition(0.575);
-            timer.waitMillis(50);
             RobotHardware.autoFlipperRight.setPosition(0.6);
             timer.waitMillis(250);
             RobotHardware.autoFlipperRight.setPosition(0.482);
         }else{
             RobotHardware.autoGrabberLeft.setPosition(0.55);
-            timer.waitMillis(50);
+            RobotHardware.autoFlipperLeft.setPosition(0.825);
+            timer.waitMillis(250);
+            RobotHardware.autoFlipperLeft.setPosition(0.402);
+        }
+    }
+
+    public void depositBlockThrow(){
+        if(side.equals("RED")){
+            RobotHardware.autoGrabberRight.setPosition(0.575);
+            timer.waitMillis(70);
+            RobotHardware.autoFlipperRight.setPosition(0.6);
+            timer.waitMillis(250);
+            RobotHardware.autoFlipperRight.setPosition(0.482);
+        }else{
+            RobotHardware.autoGrabberLeft.setPosition(0.55);
+            timer.waitMillis(70);
             RobotHardware.autoFlipperLeft.setPosition(0.825);
             timer.waitMillis(250);
             RobotHardware.autoFlipperLeft.setPosition(0.402);

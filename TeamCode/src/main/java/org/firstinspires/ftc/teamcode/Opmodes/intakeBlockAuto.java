@@ -89,7 +89,7 @@ public class intakeBlockAuto extends LinearOpMode {
     private void initialize(){
         RobotHardware.hardwareMap(hardwareMap);
 
-        drivetrain = new MecanumDrive();
+        drivetrain = new MecanumDrive(this);
         odometer = new OdometerKIMU2W();
         timer = new Timer(this, odometer);
         movement = new Movement(this, drivetrain, odometer, timer);

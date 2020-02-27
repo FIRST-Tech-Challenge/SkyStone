@@ -65,7 +65,7 @@ public class actionsTest extends LinearOpMode {
     private void initialize(){
         RobotHardware.hardwareMap(hardwareMap);
 
-        drivetrain = new MecanumDrive();
+        drivetrain = new MecanumDrive(this);
         odometer = new OdometerIMU2W();
         timer = new Timer(this, odometer);
         autoClaws = new AutoClaws("RED", timer);

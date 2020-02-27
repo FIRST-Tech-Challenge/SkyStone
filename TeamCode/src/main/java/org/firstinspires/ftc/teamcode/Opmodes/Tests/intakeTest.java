@@ -51,7 +51,7 @@ public class intakeTest extends LinearOpMode {
         RobotHardware.hardwareMap(hardwareMap);
 
         odometer = new OdometerIMU2W();
-        drivetrain = new MecanumDrive();
+        drivetrain = new MecanumDrive(this);
         timer = new Timer(this, odometer);
         movement = new Movement(this, drivetrain, odometer, timer);
         intake = new Intake();

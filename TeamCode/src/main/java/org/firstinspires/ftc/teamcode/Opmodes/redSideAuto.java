@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.CustomCV.RedPipeline;
 import org.firstinspires.ftc.teamcode.HardwareSystems.ActionHandler;
 import org.firstinspires.ftc.teamcode.HardwareSystems.ActionHandlerClaws;
 import org.firstinspires.ftc.teamcode.HardwareSystems.AutoClaws;
@@ -13,6 +14,9 @@ import org.firstinspires.ftc.teamcode.Movement.MotionPlanning.RobotPoint;
 import org.firstinspires.ftc.teamcode.Movement.Movement;
 import org.firstinspires.ftc.teamcode.Utility.RobotHardware;
 import org.firstinspires.ftc.teamcode.Utility.Timer;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
 
@@ -25,8 +29,10 @@ public class redSideAuto extends LinearOpMode {
     private MecanumDrive drivetrain;
     private Movement movement;
     private AutoClaws autoClaws;
+    private RedPipeline pipeline;
+    private OpenCvCamera phoneCam;
 
-
+    private int skyPosition;
     private ActionHandlerClaws handler;
 
     @Override
@@ -37,6 +43,8 @@ public class redSideAuto extends LinearOpMode {
         odometer.startTracking(0, 0, 0);
         telemetry.addData("status","running");
         telemetry.update();
+
+        scanSkystone();
 
         // Initialization of Paths
         ArrayList<RobotPoint> pickupBlockOne = new ArrayList<>();
@@ -77,7 +85,7 @@ public class redSideAuto extends LinearOpMode {
         dropoffOne.add(new RobotPoint(-46,74.5,-90,1.0)); // at block
         dropoffOne.add(new RobotPoint(-60,70,-90,1.0));
         dropoffOne.add(new RobotPoint(-86, 65, -90, 1.0));
-        dropoffOne.add(new RobotPoint(-115, 60, -90, 1.0));
+        dropoffOne.add(new RobotPoint(-115, 61, -90, 1.0));
         dropoffOne.add(new RobotPoint(-156, 65, -90, 1.0));
         dropoffOne.add(new RobotPoint(-175, 73, -90, 1.0)); // at foundation
         dropoffOne.add(new RobotPoint(-236, 79, -90, 1.0)); // at foundation
@@ -87,7 +95,7 @@ public class redSideAuto extends LinearOpMode {
         dropoffTwo.add(new RobotPoint(-45,72,-90,1.0)); // at block
         dropoffTwo.add(new RobotPoint(-60,70,-90,1.0));
         dropoffTwo.add(new RobotPoint(-86, 65, -90, 1.0));
-        dropoffTwo.add(new RobotPoint(-115, 62, -90, 1.0));
+        dropoffTwo.add(new RobotPoint(-115, 63, -90, 1.0));
         dropoffTwo.add(new RobotPoint(-156, 67, -90, 1.0));
         dropoffTwo.add(new RobotPoint(-175, 73, -90, 1.0)); // at foundation
         dropoffTwo.add(new RobotPoint(-234, 79, -90, 1.0)); // at foundation
@@ -96,7 +104,7 @@ public class redSideAuto extends LinearOpMode {
         dropoffThree.add(new RobotPoint(-5,74.5,-90,1.0)); // at block
         dropoffThree.add(new RobotPoint(-30,68,-90,1.0)); // at block
         dropoffThree.add(new RobotPoint(-61, 65, -90, 1.0));
-        dropoffThree.add(new RobotPoint(-115, 62, -90, 1.0));
+        dropoffThree.add(new RobotPoint(-115, 63, -90, 1.0));
         dropoffThree.add(new RobotPoint(-156, 67, -90, 1.0));
         dropoffThree.add(new RobotPoint(-165, 73, -90, 1.0)); // at foundation
         dropoffThree.add(new RobotPoint(-220, 79, -90, 1.0)); // at foundation
@@ -105,7 +113,7 @@ public class redSideAuto extends LinearOpMode {
         dropoffFour.add(new RobotPoint(18,74.5,-90,1.0)); // at block
         dropoffFour.add(new RobotPoint(-30,68,-90,1.0)); // at block
         dropoffFour.add(new RobotPoint(-61, 65, -90, 1.0));
-        dropoffFour.add(new RobotPoint(-115, 62, -90, 1.0));
+        dropoffFour.add(new RobotPoint(-115, 63, -90, 1.0));
         dropoffFour.add(new RobotPoint(-156, 67, -90, 1.0));
         dropoffFour.add(new RobotPoint(-165, 73, -90, 1.0)); // at foundation
         dropoffFour.add(new RobotPoint(-220, 79, -90, 1.0)); // at foundation
@@ -114,71 +122,146 @@ public class redSideAuto extends LinearOpMode {
         dropoffFive.add(new RobotPoint(38,74.5,-90,1.0)); // at block
         dropoffFive.add(new RobotPoint(-46,68,-90,1.0)); // at block
         dropoffFive.add(new RobotPoint(-61, 65, -90, 1.0));
-        dropoffFive.add(new RobotPoint(-115, 62, -90, 1.0));
+        dropoffFive.add(new RobotPoint(-115, 63, -90, 1.0));
         dropoffFive.add(new RobotPoint(-156, 67, -90, 1.0));
         dropoffFive.add(new RobotPoint(-155, 73, -90, 1.0)); // at foundation
-        dropoffFive.add(new RobotPoint(-210, 77, -90, 1.0)); // at foundation
+        dropoffFive.add(new RobotPoint(-220, 77, -90, 1.0)); // at foundation
 
         ArrayList<RobotPoint> dropoffSix = new ArrayList<>();
         dropoffSix.add(new RobotPoint(56,74.5,-90,1.0)); // at block
         dropoffSix.add(new RobotPoint(-46,68,-90,1.0)); // at block
         dropoffSix.add(new RobotPoint(-61, 65, -90, 1.0));
-        dropoffSix.add(new RobotPoint(-115, 60, -90, 1.0));
+        dropoffSix.add(new RobotPoint(-115, 61, -90, 1.0));
         dropoffSix.add(new RobotPoint(-156, 65, -90, 1.0));
         dropoffSix.add(new RobotPoint(-155, 73, -90, 1.0)); // at foundation
-        dropoffSix.add(new RobotPoint(-210, 77, -90, 1.0)); // at foundation
+        dropoffSix.add(new RobotPoint(-220, 77, -90, 1.0)); // at foundation
 
         ArrayList<RobotPoint> park = new ArrayList<>();
-        park.add(new RobotPoint(-230,40,-90,1.0)); // at block
-        park.add(new RobotPoint(-200,70,-90,0.5)); // at block
-
-
+        park.add(new RobotPoint(-230,40,-90,0.4)); // at block
+        park.add(new RobotPoint(-200,70,-90,0.4)); // at block
 
         // Actual running of routine
-        autoClaws.prime();
-        movement.moveToPointPD(new RobotPoint(56, 74, -90, 0.1), 100, 1.5);
-        autoClaws.grabBlock();
-        autoClaws.storeBlock();
-        movement.followPath(dropoffSix,15);
-        autoClaws.depositBlock();
-        movement.followPath(pickupBlockOne,16);
-        autoClaws.prime();
-        movement.moveToPointPD2(new RobotPoint(-46, 78, -90, 0.1), 50, 1);
-        autoClaws.grabBlock();
-        autoClaws.storeBlock();
-        movement.followPath(dropoffOne, 15);
-        autoClaws.depositBlock();
-        movement.followPath(pickupBlockTwo,16);
-        autoClaws.prime();
-        movement.moveToPointPD2(new RobotPoint(-25, 79.5, -90, 0.1), 50, 1);
-        autoClaws.grabBlock();
-        autoClaws.storeBlock();
-        movement.followPath(dropoffTwo,15);
-        autoClaws.depositBlock();
-        movement.followPath(pickupBlockThree,16);
-        autoClaws.prime();
-        movement.moveToPointPD2(new RobotPoint(-5, 81.5, -90, 0.1), 50, 1);
-        autoClaws.grabBlock();
-        autoClaws.storeBlock();
-        movement.followPath(dropoffThree,15);
-        autoClaws.depositBlock();
-        autoClaws.initialize();
+        if (skyPosition == 0){//closest wall
+            autoClaws.firstPrime();
+            movement.moveToPointPD(new RobotPoint(56, 73, -90, 0.1), 100, 1.5);
+            autoClaws.grabBlock();
+            autoClaws.storeBlock();
+            movement.followPath(dropoffSix,15);
+            autoClaws.depositBlockThrow();
+            movement.followPath(pickupBlockThree, 16);
+            autoClaws.prime();
+            movement.moveToPointPD(new RobotPoint(-5, 77, -90, 0.1), 50, 1.5);
+            autoClaws.grabBlock();
+            autoClaws.storeBlock();
+            movement.followPath(dropoffThree,16);
+            autoClaws.depositBlockThrow();
+            movement.followPath(pickupBlockOne,16);
+            autoClaws.prime();
+            movement.moveToPointPD(new RobotPoint(-46, 78, -90, 0.1), 50, 1.5);
+            autoClaws.grabBlock();
+            autoClaws.storeBlock();
+            movement.followPath(dropoffOne,15);
+            autoClaws.depositBlock();
+            movement.followPath(pickupBlockTwo,16);
+            autoClaws.prime();
+            movement.moveToPointPD(new RobotPoint(-28, 80.25, -90, 0.1), 50, 1.5);
+            autoClaws.grabBlock();
+            autoClaws.storeBlock();
+            movement.followPath(dropoffTwo,15);
+            autoClaws.depositBlock();
+
+
+        } if(skyPosition == 1 ){//middle
+            autoClaws.firstPrime();
+            movement.moveToPointPD(new RobotPoint(38, 73, -90, 0.1), 100, 1.5);
+            autoClaws.grabBlock();
+            autoClaws.storeBlock();
+            movement.followPath(dropoffFive,15);
+            autoClaws.depositBlockThrow();
+            movement.followPath(pickupBlockTwo,16);
+            autoClaws.prime();
+            movement.moveToPointPD(new RobotPoint(-28, 77, -90, 0.1), 50, 1.5);
+            autoClaws.grabBlock();
+            autoClaws.storeBlock();
+            movement.followPath(dropoffTwo,15);
+            autoClaws.depositBlockThrow();
+            movement.followPath(pickupBlockOne,16);
+            autoClaws.prime();
+            movement.moveToPointPD(new RobotPoint(-48, 78, -90, 0.1), 50, 1.5);
+            autoClaws.grabBlock();
+            autoClaws.storeBlock();
+            movement.followPath(dropoffOne,15);
+            autoClaws.depositBlock();
+            movement.followPath(pickupBlockThree,16);
+            autoClaws.prime();
+            movement.moveToPointPD(new RobotPoint(-8, 80.25, -90, 0.1), 50, 1.5);
+            autoClaws.grabBlock();
+            autoClaws.storeBlock();
+            movement.followPath(dropoffThree,15);
+            autoClaws.depositBlock();
+
+
+
+
+
+
+        }if(skyPosition == 2){//furthest from wall
+            autoClaws.firstPrime();
+            movement.moveToPointPD(new RobotPoint(18,73, -90, 0.1), 100, 1.5);
+            autoClaws.grabBlock();
+            autoClaws.storeBlock();
+            movement.followPath(dropoffFour,15);
+            autoClaws.depositBlockThrow();
+            movement.followPath(pickupBlockOne,16);
+            autoClaws.prime();
+            movement.moveToPointPD(new RobotPoint(-48, 77, -90, 0.1), 50, 1.5);
+            autoClaws.grabBlock();
+            autoClaws.storeBlock();
+            movement.followPath(dropoffTwo,15);
+            autoClaws.depositBlockThrow();
+            movement.followPath(pickupBlockTwo,16);
+            autoClaws.prime();
+            movement.moveToPointPD(new RobotPoint(-28, 78, -90, 0.1), 50, 1.5);
+            autoClaws.grabBlock();
+            autoClaws.storeBlock();
+            movement.followPath(dropoffTwo,15);
+            autoClaws.depositBlock();
+            movement.followPath(pickupBlockThree,15);
+            autoClaws.prime();
+            movement.moveToPointPD(new RobotPoint(-8, 80.25, -90, 0.1), 50, 1.5);
+            autoClaws.grabBlock();
+            autoClaws.storeBlock();
+            movement.followPath(dropoffThree,15);
+            autoClaws.depositBlock();
+
+
+
+
+
+        }
+
+
+
+
         movement.pointInDirection(-180, 15);
-        movement.deadReckon(0, 0.7, 0, 425);
+        movement.deadReckon(0, 0.7, 0, 465);
         clampFoundation();
-        movement.deadReckon(0.2, -0.7, 0.6, 1300);
+        movement.deadReckon(0.2, -0.7, 0.6, 1450);
         movement.deadReckon(-0.3, -0.4, 0.8, 1100);
         releaseFoundation();
         movement.followPath(park,15);
         movement.moveToPointPD2(new RobotPoint(-97, 67, -90, 0.1), 50, 1.5);
-
-
-
-
-
-
         //movement.followPath(pickupBlockOne, 30);
         //movement.moveToPointPD(new RobotPoint(0, 0, 90, 0.1), 100, 1.5);
+
+    }
+
+    private void scanSkystone(){
+        skyPosition = pipeline.getRedPosition();
+
+        if(skyPosition == 404) {
+            scanSkystone();
+        }
     }
 
     private void clampFoundation(){
@@ -195,8 +278,16 @@ public class redSideAuto extends LinearOpMode {
 
     private void initialize(){
         RobotHardware.hardwareMap(hardwareMap);
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
-        drivetrain = new MecanumDrive();
+        phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        phoneCam.openCameraDevice();
+
+        pipeline = new RedPipeline();
+        phoneCam.setPipeline(pipeline);
+        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+
+        drivetrain = new MecanumDrive(this);
         odometer = new OdometerKIMU2W();
         timer = new Timer(this, odometer);
         autoClaws = new AutoClaws("BLUE", timer);

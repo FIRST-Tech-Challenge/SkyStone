@@ -45,7 +45,10 @@ public class DelayState extends State {
             return nextState;
         }
 
-        telemetry.addData("04", "Delay: %s %d of %d ms", name, elapsedMs, thresholdTimeMs);
+        if (telemetry != null) {
+            telemetry.addData("04", "Delay: %s %d of %d ms", name, elapsedMs, thresholdTimeMs);
+        }
+
         return this;
     }
 }

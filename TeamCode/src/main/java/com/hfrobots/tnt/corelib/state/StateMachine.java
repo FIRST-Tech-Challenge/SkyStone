@@ -190,8 +190,11 @@ public class StateMachine {
                     isStateMachinePaused = true;
                 }
             }
-            telemetry.addData("00", String.format("%s%s state %s", areWeDebugging ? "[DEBUG]" : "",
-                    isStateMachinePaused ? "||" : ">", currentState.getName()));
+
+            if (telemetry != null) {
+                telemetry.addData("00", String.format("%s%s state %s", areWeDebugging ? "[DEBUG]" : "",
+                        isStateMachinePaused ? "||" : ">", currentState.getName()));
+            }
         } catch (Throwable t) {
             // Better logging than the FTC SDK provides :(
             Log.e(LOG_TAG, "Exception during state machine", t);

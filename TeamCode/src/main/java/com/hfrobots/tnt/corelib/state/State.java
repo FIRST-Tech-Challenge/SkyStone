@@ -59,7 +59,10 @@ public abstract class State {
     }
 
     protected void debugMsg(String message) {
-        telemetry.addData("01-State", message);
+        if (telemetry != null) {
+            telemetry.addData("01-State", message);
+        }
+
         Log.d("TNT State", message);
     }
 

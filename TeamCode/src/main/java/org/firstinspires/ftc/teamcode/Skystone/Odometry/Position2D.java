@@ -56,7 +56,7 @@ class NewThread extends AsyncTask<Void, Boolean, Boolean> {
 //                Log.d("Distance", Long.toString(SystemClock.elapsedRealtime() - startTime));
                 }
 
-                if (isStopIntake && SystemClock.elapsedRealtime() - stopIntakeTime >= 500) {
+                if (isStopIntake && SystemClock.elapsedRealtime() - stopIntakeTime >= 750) {
                     robot.getIntakeLeft().setPower(0);
                     robot.getIntakeRight().setPower(0);
                     isStopIntake = false;

@@ -24,8 +24,8 @@ public class RedFront extends AutoBase {
         // Positions assuming center Skystone
         double firstSkystoneY = -7;
         double secondSkyStoneY = -14;
-        double thirdStoneY = -26;
-        double thirdStoneX = 44;
+        double thirdStoneY = -26.5;
+        double thirdStoneX = 40;
         double anglelock = 30;
         double angleLockThird = 55;
         double thirdStoneXPath = 33;
@@ -51,16 +51,16 @@ public class RedFront extends AutoBase {
             firstSkystoneY = -15.5;
             secondSkyStoneY = -22;
             anglelock = 30;
-            thirdStoneX = 58;
+            thirdStoneX = 55;
             thirdStoneY = -24;
-            angleLockThird = 40;
-            thirdStoneXPath = 27;
+            angleLockThird = 35;
+            thirdStoneXPath = 24;
         } else if (skystoneLocation == Vision.Location.RIGHT) {
             firstSkystoneY = 10;
-            secondSkyStoneY = -6;
+            secondSkyStoneY = -5.25;
             anglelock = 30;
-            thirdStoneX = 47;
-            thirdStoneY = -20.25;
+            thirdStoneX = 44.5;
+            thirdStoneY = -19;
             foundationTimeKill = 4250;
         }
 
@@ -73,11 +73,11 @@ public class RedFront extends AutoBase {
         double[][] toFoundation = {
                 toFirstStone[toFirstStone.length - 1],
                 {33, firstSkystoneY + 2},
-                {30, 17},
-                {28, 20},
-                {28, 30},
-                {26, 43},
-                {23, 55},
+                {31, 17},
+                {29, 20},
+                {29, 30},
+                {27, 43},
+                {24, 55},
                 {22, 60},
                 {22, 64},
                 {22, 66},
@@ -99,31 +99,31 @@ public class RedFront extends AutoBase {
 
         double[][] toSecondStone = {
                 {toReleaseFoundation[toReleaseFoundation.length - 1][0], toReleaseFoundation[toReleaseFoundation.length - 1][1], -10, 0},
-                {24, 60},
-                {26, 29},
+                {23, 60},
+                {24, 29},
                 {27, secondSkyStoneY + 5},
                 {47, secondSkyStoneY},
-                {43, secondSkyStoneY - 4.5}};
+                {43, secondSkyStoneY - 4}};
         ArrayList<Action> toSecondStoneActions = new ArrayList<Action>();
         toSecondStoneActions.add(new Action(ActionType.START_INTAKE, new Point(20, -10), robot));
 
         double[][] toDepositSecondStone = {
                 toSecondStone[toSecondStone.length - 1],
-                {29, secondSkyStoneY + 14},
-                {28, 29},
-                {27, 47},
-                {27, 50},
-                {28, 74}};
+                {28, secondSkyStoneY + 14},
+                {27, 29},
+                {26, 47},
+                {26, 50},
+                {26, 78}};
         ArrayList<Action> toDepositSecondStoneActions = new ArrayList<Action>();
-        toDepositSecondStoneActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(25, 5), robot, 400));
-        toDepositSecondStoneActions.add(new Action(ActionType.STOP_INTAKE, new Point(23, -7), robot));
+        toDepositSecondStoneActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(28, 10), robot, 350));
+        toDepositSecondStoneActions.add(new Action(ActionType.STOP_INTAKE, new Point(25, -5), robot));
 
         double[][] toThirdStone = {
                 toDepositSecondStone[toDepositSecondStone.length - 1],
                 {27, 45},
                 {27, 40},
-                {28, 30},
-                {28, 15},
+                {26, 30},
+                {26, 15},
                 {thirdStoneXPath, 10},
                 {thirdStoneXPath + 4, 8},
                 {thirdStoneX, thirdStoneY + 6},
@@ -134,7 +134,7 @@ public class RedFront extends AutoBase {
 
         double[][] toDepositThirdStone = {
                 toThirdStone[toThirdStone.length - 1],
-                {26, -5},
+                {25, 0},
                 {25, 5},
                 {25, 15},
                 {25, 20},
@@ -143,15 +143,15 @@ public class RedFront extends AutoBase {
                 {25, 45},
                 {25, 55},
                 {25, 65},
-                {27, 76}};
+                {25, 78}};
         ArrayList<Action> toParkAfterThirdStoneActions = new ArrayList<Action>();
-        toParkAfterThirdStoneActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(24, -5), robot, 450));
+        toParkAfterThirdStoneActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(28, 10), robot, 350));
         toParkAfterThirdStoneActions.add(new Action(ActionType.STOP_INTAKE, new Point(toThirdStone[toThirdStone.length - 1][0] - 15, toThirdStone[toThirdStone.length - 1][1] + 15), robot));
 
         double[][] toPark = {
                 {toDepositThirdStone[toDepositThirdStone.length - 1][0], toDepositThirdStone[toDepositThirdStone.length - 1][1], 0, -10},
-                {22, 55},
-                {22, 34}};
+                {23, 55},
+                {23, 36}};
         ArrayList<Action> toParkActions = new ArrayList<Action>();
         toParkActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE, new Point(25, 74), robot, 0));
 
@@ -170,7 +170,7 @@ public class RedFront extends AutoBase {
         robot.dumpPoints("" + startTime, "2");
 
         robot.splineMove(toReleaseFoundation, 1, 1, 1, 5, 0, Math.toRadians(270), 12,
-                toReleaseFoundationActions, true, 2500);
+                toReleaseFoundationActions, true, 2250);
         robot.foundationMovers(false);
 
         robot.getLinearOpMode().sleep(150); // Allow foundation movers to deploy
@@ -183,7 +183,7 @@ public class RedFront extends AutoBase {
 
         robot.dumpPoints("" + startTime, "4");
 
-        robot.splineMove(toDepositSecondStone, 1, 1, 0.5, 35, Math.toRadians(180), Math.toRadians(270), 80,
+        robot.splineMove(toDepositSecondStone, 1, 1, 0.4, 35, Math.toRadians(180), Math.toRadians(270), 90,
                 toDepositSecondStoneActions, true, 4000, true, new Point(20, 5));
 
         robot.getBackClamp().setPosition(robot.BACKCLAMP_RELEASED);
@@ -198,7 +198,7 @@ public class RedFront extends AutoBase {
 
         robot.dumpPoints("" + startTime, "6");
 
-        robot.splineMove(toDepositThirdStone, 1, 1, .5, 35, Math.toRadians(180), Math.toRadians(270), 80, toParkAfterThirdStoneActions, true, 4000, true, new Point(20, 5));
+        robot.splineMove(toDepositThirdStone, 1, 1, .4, 35, Math.toRadians(180), Math.toRadians(270), 85, toParkAfterThirdStoneActions, true, 4250, true, new Point(20, 5));
 
         robot.getBackClamp().setPosition(robot.BACKCLAMP_RELEASED);
         robot.getFrontClamp().setPosition(robot.FRONTCLAMP_RELEASED);

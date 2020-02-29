@@ -16,7 +16,12 @@ public class BackSideBlueFoundationAuto extends AutoBase {
         waitForStart();
 
         position2D.startOdometry();
+        robot.intake(true);
 
+        while(opModeIsActive() ){
+
+        }
+        stop();
         double[][] toFoundation = {
                 {0, 0},
                 {-15, 8},

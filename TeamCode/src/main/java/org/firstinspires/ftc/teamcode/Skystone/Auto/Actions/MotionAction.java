@@ -56,7 +56,7 @@ public class MotionAction {
                     status = ActionState.COMPLETE;
 
                 } else if (spoolPosition < Integer.parseInt(motorPosition)) {
-                    spoolPower = 0.7;
+                    spoolPower = 0.8;
                 } else {
                     spoolPower = -0.4;
                 }

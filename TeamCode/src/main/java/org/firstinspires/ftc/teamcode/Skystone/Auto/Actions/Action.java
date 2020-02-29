@@ -127,16 +127,15 @@ public class Action {
     }
 
     private void generateDropStoneAndRetractOuttakeActions() {
-        motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, liftHeight, 0, robot));
+        motionActions.add(new MotionAction(robot.getBackClamp(), robot.BACKCLAMP_RELEASED, 0, robot));
+        motionActions.add(new MotionAction(robot.getFrontClamp(), robot.FRONTCLAMP_RELEASED, 0, robot));
 
-        motionActions.add(new MotionAction(robot.getBackClamp(), robot.BACKCLAMP_RELEASED, 200, robot));
-        motionActions.add(new MotionAction(robot.getFrontClamp(), robot.FRONTCLAMP_RELEASED, 200, robot));
+        motionActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_RETRACTED, 250, robot));
 
-        motionActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_RETRACTED, 750, robot));
+        motionActions.add(new MotionAction(robot.getIntakePusher(), robot.PUSHER_RETRACTED, 0, robot));
 
-        motionActions.add(new MotionAction(robot.getIntakePusher(), robot.PUSHER_RETRACTED, 750, robot));
-
-        motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, 0, 1000, robot));
+        motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, 0, 250, robot));
+        motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, 0, 1500, robot));
 
     }
 

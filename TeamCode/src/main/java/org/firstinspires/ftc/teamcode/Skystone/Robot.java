@@ -63,7 +63,7 @@ public class Robot {
     private Servo leftFoundation;
     private Servo rightFoundation;
 
-    private Rev2mDistanceSensor intakeStoneDistance;
+    private DistanceSensor intakeStoneDistance;
 
     // Outtake Slide Positions
     public final double OUTTAKE_SLIDE_EXTENDED = 0.15;
@@ -192,7 +192,8 @@ public class Robot {
         leftFoundation = getServo("leftFoundation");
         rightFoundation = getServo("rightFoundation");
 
-        intakeStoneDistance = hardwareMap.get(Rev2mDistanceSensor.class, "intakeStoneDistance");
+        intakeStoneDistance = hardwareMap.get(DistanceSensor.class, "intakeStoneDistance");
+
     }
 
     private DcMotor getDcMotor(String name) {
@@ -1092,7 +1093,7 @@ public class Robot {
         return imu;
     }
 
-    public Rev2mDistanceSensor getIntakeStoneDistance() {
+    public DistanceSensor getIntakeStoneDistance() {
         return intakeStoneDistance;
     }
 

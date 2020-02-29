@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.Skystone.Odometry;
 
 import android.os.AsyncTask;
+import android.os.SystemClock;
+import android.util.Log;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
 
@@ -34,6 +37,8 @@ class NewThread extends AsyncTask<Void, Boolean, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... params) {
+        boolean isStopIntake = false;
+        long stopIntakeTime = 0;
         while (robot.getLinearOpMode().opModeIsActive()) {
             o.runOdometry(robot);
             newPoint.x = o.worldX;
@@ -41,9 +46,29 @@ class NewThread extends AsyncTask<Void, Boolean, Boolean> {
             robot.setRobotPos(newPoint);
             robot.setAnglePos(o.worldAngle);
 
-            if (robot.isDebug()) {
-//                robot.addOdometryPoints(newPoint.x, newPoint.y);
+            if(robot.getIntakeLeft().getPower() != 0 && !isStopIntake) {
+//                long startTime = SystemClock.elapsedRealtime();
+                if (robot.getIntakeStoneDistance().getDistance(DistanceUnit.CM) < 20) {
+                    isStopIntake = true;
+                    stopIntakeTime = SystemClock.elapsedRealtime();
+                }
+//                Log.d("Distance", Long.toString(SystemClock.elapsedRealtime() - startTime));
             }
+
+            if(isStopIntake && SystemClock.elapsedRealtime()- stopIntakeTime >= 250){
+                if(robot.getIntakeStoneDistance().getDistance(DistanceUnit.CM) < 20){
+                    robot.intake(false);
+                    isStopIntake = false;
+                }else{
+                    robot.getIntakeLeft().setPower(0);
+                    robot.getIntakeRight().setPower(0);
+                    isStopIntake = false;
+                }
+            }
+
+//            if (robot.isDebug()) {
+////                robot.addOdometryPoints(newPoint.x, newPoint.y);
+//            }
         }
         return true;
     }

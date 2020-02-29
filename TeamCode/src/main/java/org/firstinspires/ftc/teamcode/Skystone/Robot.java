@@ -123,6 +123,7 @@ public class Robot {
     private double turnMovement;
 
     private boolean isDebug = false;
+    private boolean isAutoStopIntake;
 
     private StringBuilder odometryAllData = new StringBuilder();
     private StringBuilder odometryPoints = new StringBuilder();
@@ -1261,5 +1262,13 @@ public class Robot {
 
     public boolean isDebug() {
         return isDebug;
+    }
+
+    public void setAutoStopIntake(boolean isAutoStopIntake){
+        this.isAutoStopIntake = isAutoStopIntake;
+    }
+
+    public boolean isAutoStopIntake(){
+        return isAutoStopIntake;
     }
 }

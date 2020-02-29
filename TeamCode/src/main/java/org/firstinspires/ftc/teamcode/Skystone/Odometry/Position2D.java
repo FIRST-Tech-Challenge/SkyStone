@@ -46,20 +46,17 @@ class NewThread extends AsyncTask<Void, Boolean, Boolean> {
             robot.setRobotPos(newPoint);
             robot.setAnglePos(o.worldAngle);
 
-            if(robot.getIntakeLeft().getPower() != 0 && !isStopIntake) {
+            if(robot.isAutoStopIntake()) {
+                if (robot.getIntakeLeft().getPower() != 0 && !isStopIntake) {
 //                long startTime = SystemClock.elapsedRealtime();
-                if (robot.getIntakeStoneDistance().getDistance(DistanceUnit.CM) < 20) {
-                    isStopIntake = true;
-                    stopIntakeTime = SystemClock.elapsedRealtime();
-                }
+                    if (robot.getIntakeStoneDistance().getDistance(DistanceUnit.CM) < 40) {
+                        isStopIntake = true;
+                        stopIntakeTime = SystemClock.elapsedRealtime();
+                    }
 //                Log.d("Distance", Long.toString(SystemClock.elapsedRealtime() - startTime));
-            }
+                }
 
-            if(isStopIntake && SystemClock.elapsedRealtime()- stopIntakeTime >= 250){
-                if(robot.getIntakeStoneDistance().getDistance(DistanceUnit.CM) < 20){
-                    robot.intake(false);
-                    isStopIntake = false;
-                }else{
+                if (isStopIntake && SystemClock.elapsedRealtime() - stopIntakeTime >= 500) {
                     robot.getIntakeLeft().setPower(0);
                     robot.getIntakeRight().setPower(0);
                     isStopIntake = false;

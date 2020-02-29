@@ -16,6 +16,7 @@ public class AutoBase extends LinearOpMode {
     public void initLogic() {
         //Init's robot
         robot = new Robot(this.hardwareMap, this.telemetry, this);
+        robot.setAutoStopIntake(true);
         vision = new Vision(this);
 
         robot.driveMotorsBreakZeroBehavior();

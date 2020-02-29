@@ -357,22 +357,21 @@ public class MainTeleop extends LinearOpMode {
     private boolean stoneInIntake = false;
 
     private void intakeLogic() {
-        if (Math.abs(gamepad2.left_stick_y) <= 0.25 && Math.abs(gamepad2.right_stick_y) >= 0.1) {
             intakeLeftPower = gamepad2.right_stick_y;
             intakeRightPower = gamepad2.right_stick_y;
 
             if (isIntakeMode) {
+                robot.setAutoStopIntake(true);
                 robot.getBackClamp().setPosition(robot.BACKCLAMP_CLAMPED);
                 robot.getFrontClamp().setPosition(robot.FRONTCLAMP_CLAMPED);
                 robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
 
-                if (stoneInIntake) {
-                    if (robot.getIntakeStoneDistance().getDistance(DistanceUnit.CM) > 25) {
-                        stoneInIntake = false;
-                    }
-                } else if (robot.getIntakeStoneDistance().getDistance(DistanceUnit.CM) < 15) {
+                if (Double.isNaN(robot.getIntakeStoneDistance().getDistance(DistanceUnit.CM))) {
+                    stoneInIntake = false;
+                }else if (robot.getIntakeStoneDistance().getDistance(DistanceUnit.CM) < 40) {
                     stoneInIntake = true;
                 }
+                telemetry.addLine("distance " + robot.getIntakeStoneDistance().getDistance(DistanceUnit.CM));
 
                 if (stoneInIntake) {
                     if (intakeLeftPower > 0) {
@@ -383,13 +382,10 @@ public class MainTeleop extends LinearOpMode {
                     }
                 }
             } else {
+                robot.setAutoStopIntake(false);
                 robot.getBackClamp().setPosition(robot.BACKCLAMP_CLAMPED);
                 robot.getFrontClamp().setPosition(robot.FRONTCLAMP_RELEASED);
             }
-        } else {
-            intakeLeftPower = 0;
-            intakeRightPower = 0;
-        }
 
         robot.getIntakeLeft().setPower(intakeLeftPower);
         robot.getIntakeRight().setPower(intakeRightPower);

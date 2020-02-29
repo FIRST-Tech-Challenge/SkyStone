@@ -91,6 +91,7 @@ public class TestBot extends Bot {
         // webCamNavigator.init();
         skystoneFinder.init();
         colorFinder.init();
+        tapeGun.init();
     }
 
 }

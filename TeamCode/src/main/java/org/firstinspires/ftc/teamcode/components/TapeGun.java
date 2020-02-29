@@ -75,6 +75,7 @@ public class TapeGun extends BotComponent {
     public void suckTape(){
         tapeGun.setPower(-1);
     }
+    public void stopTape() {tapeGun.setPower(0);}
 
 
 

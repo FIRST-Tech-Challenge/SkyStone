@@ -35,9 +35,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.bots.TestBot;
 import org.firstinspires.ftc.teamcode.components.DriveTrain;
+import org.firstinspires.ftc.teamcode.components.TapeGun;
 
 
-@TeleOp(name="Game_TeleOp", group="game")
+@TeleOp(name="tapeGunMan", group="game")
 public class TapeTele extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -64,6 +65,7 @@ public class TapeTele extends LinearOpMode {
         robot.grapple.init();
         robot.ramp.init();
         robot.intake.init();
+        robot.tapeGun.init();
 
         robot.logger.logInfo("runOpMode", "===== [ Start TeleOp ]");
         runtime.reset();
@@ -187,6 +189,9 @@ public class TapeTele extends LinearOpMode {
             }
             if(gamepad1.b){
                 robot.tapeGun.suckTape();
+            }
+            else{
+                robot.tapeGun.stopTape();
             }
 
             // Show the elapsed game time.

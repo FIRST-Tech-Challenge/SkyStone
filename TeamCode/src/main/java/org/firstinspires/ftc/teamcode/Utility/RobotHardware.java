@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Utility;
 
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -10,23 +11,23 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class RobotHardware {
 
     //Drive Motors
-    public static DcMotor rightFront, leftFront, leftBack, rightBack; //Drive Motor Objects
+    public DcMotor rightFront, leftFront, leftBack, rightBack; //Drive Motor Objects
     //IMU
-    public static BNO055IMU imu;
+    public BNO055IMU imu;
     //Intake Motors
-    public static DcMotor intakeLeft, intakeRight;
+    public DcMotor intakeLeft, intakeRight;
     //Foundation Clamps
-    public static Servo foundationClampLeft, foundationClampRight;
+    public Servo foundationClampLeft, foundationClampRight;
     //Auto Block Arms
-    public static Servo autoFlipperLeft, autoFlipperRight, autoGrabberLeft, autoGrabberRight;
+    public Servo autoFlipperLeft, autoFlipperRight, autoGrabberLeft, autoGrabberRight;
     //Lift Motors
-    public static DcMotor liftRight, liftLeft;
+    public DcMotor liftRight, liftLeft;
     //Block Clamp
-    public static Servo blockGrabberFront, blockGrabberBack;
+    public Servo blockGrabberFront, blockGrabberBack;
     //Outtake Flipper
-    public static Servo flipperServoLeft, flipperServoRight;
+    public Servo flipperServoLeft, flipperServoRight;
 
-    public static void hardwareMap(HardwareMap hardwareMap) {
+    public void hardwareMap(HardwareMap hardwareMap) {
 
         //Drive-train
         rightFront = hardwareMap.dcMotor.get("driveFrontRight");
@@ -38,6 +39,14 @@ public class RobotHardware {
         intakeRight = hardwareMap.dcMotor.get("intakeRight");
         //IMU
         imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters Params = new BNO055IMU.Parameters();
+        Params.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        Params.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        Params.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opMode
+        Params.loggingEnabled      = true;
+        Params.loggingTag          = "IMU";
+        Params.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        imu.initialize(Params);
         //Auto arms
         autoFlipperLeft = hardwareMap.servo.get("autoFlipperLeft");
         autoFlipperRight = hardwareMap.servo.get("autoFlipperRight");
@@ -58,7 +67,7 @@ public class RobotHardware {
 
     }
 
-    public static void testHardware(){
+    public void testHardware(){
         rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);

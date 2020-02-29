@@ -178,6 +178,7 @@ public class Movement {
 
             speedFinder.update(0, distance);
             orient.update(targetPoint.heading, heading);
+
             hCorrect = orient.correction;
 
             setGlobalVelocity(targVX, targVY, hCorrect);
@@ -221,7 +222,9 @@ public class Movement {
 
             speedFinder.update(0, distance);
             orient.update(targetPoint.heading, heading);
+
             hCorrect = orient.correction;
+
 
             setGlobalVelocity(targVX, targVY, hCorrect);
 
@@ -252,7 +255,7 @@ public class Movement {
 
             setGlobalVelocity(0, 0, hCorrect);
 
-        }while(Math.abs(orient.error) > threshold);
+        }while(Math.abs(orient.error) > threshold && opMode.opModeIsActive());
 
         drivebase.freeze();
 
@@ -268,8 +271,10 @@ public class Movement {
     }
 
     private void doActions(RobotPoint point){
-        if(useActionHandler){
-            handler.doActions(point);
+        if(opMode.opModeIsActive()){
+            if(useActionHandler){
+                handler.doActions(point);
+            }
         }
     }
 

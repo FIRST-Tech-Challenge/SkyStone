@@ -21,6 +21,7 @@ import java.util.ArrayList;
 public class actionsTest extends LinearOpMode {
 
     // Declare OpMode Members
+    private RobotHardware hardware = new RobotHardware();
     private Timer timer;
     private OdometerIMU2W odometer;
     private MecanumDrive drivetrain;
@@ -63,12 +64,12 @@ public class actionsTest extends LinearOpMode {
     }
 
     private void initialize(){
-        RobotHardware.hardwareMap(hardwareMap);
+        hardware.hardwareMap(hardwareMap);
 
-        drivetrain = new MecanumDrive(this);
-        odometer = new OdometerIMU2W();
+        drivetrain = new MecanumDrive(this, hardware);
+        odometer = new OdometerIMU2W(this, hardware);
         timer = new Timer(this, odometer);
-        autoClaws = new AutoClaws("RED", timer);
+        autoClaws = new AutoClaws(hardware, "RED", timer);
         movement = new Movement(this, drivetrain, odometer, timer);
         movement.setActionHandler(handler);
         movement.useActionHandler = true;

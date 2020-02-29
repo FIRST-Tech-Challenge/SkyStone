@@ -23,6 +23,7 @@ import java.util.ArrayList;
 public class intakeBlockAuto extends LinearOpMode {
 
     // Declare OpMode Members
+    private RobotHardware hardware = new RobotHardware();
     private OdometerKIMU2W odometer;
     private Timer timer;
     private MecanumDrive drivetrain;
@@ -87,15 +88,15 @@ public class intakeBlockAuto extends LinearOpMode {
     }
 
     private void initialize(){
-        RobotHardware.hardwareMap(hardwareMap);
+        hardware.hardwareMap(hardwareMap);
 
-        drivetrain = new MecanumDrive(this);
-        odometer = new OdometerKIMU2W();
+        drivetrain = new MecanumDrive(this, hardware);
+        odometer = new OdometerKIMU2W(this, hardware);
         timer = new Timer(this, odometer);
         movement = new Movement(this, drivetrain, odometer, timer);
-        intake = new Intake();
-        outtake = new Outtake();
-        extrusion = new Extrusion(this);
+        intake = new Intake(this, hardware);
+        outtake = new Outtake(this, hardware);
+        extrusion = new Extrusion(this, hardware);
         handler = new ActionHandlerIntake(intake, outtake, extrusion);
         //movement.useActionHandler = true;
         movement.setActionHandler(handler);
@@ -123,9 +124,7 @@ public class intakeBlockAuto extends LinearOpMode {
         deliverPath.add(new RobotPoint(196, 42, 150, 0.5, 10));//This point is the final point, threshold
         RobotPoint deliverPathGoal = new RobotPoint(198, 48, 180, 0.5,0);
         deliverPath.add(deliverPathGoal); //Extension of the path to keep the robot moving, the eventual goal of the movement
-*/
 
-                /*
         deliverPath.add(new RobotPoint(30, 76, 20, 0.7, 8));
         deliverPath.add(new RobotPoint(41, 50, 70, 0.7, 8));
         deliverPath.add(new RobotPoint(65, 47, 90, 0.7, 8));
@@ -134,5 +133,4 @@ public class intakeBlockAuto extends LinearOpMode {
         deliverPath.add(new RobotPoint(205, 53, 180, 0.7, 8));
         RobotPoint deliverPathGoal = new RobotPoint(205, 53, 180, 0.5,0);
         deliverPath.add(deliverPathGoal);
-
-         */
+*/

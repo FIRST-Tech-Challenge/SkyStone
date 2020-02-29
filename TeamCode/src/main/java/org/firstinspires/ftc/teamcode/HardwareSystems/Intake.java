@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.HardwareSystems;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
@@ -7,12 +8,18 @@ import org.firstinspires.ftc.teamcode.Utility.RobotHardware;
 
 public class Intake {
 
-    public Intake(){}
+    private LinearOpMode opMode;
+    private RobotHardware hardware;
+
+    public Intake(LinearOpMode opMode, RobotHardware hardware){
+        this.hardware = hardware;
+        this.opMode = opMode;
+    }
 
     public void initialize(){
 
-        RobotHardware.intakeLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        RobotHardware.intakeRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        hardware.intakeLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        hardware.intakeRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         /* This messed up odometer so not doing it
         RobotHardware.intakeLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         RobotHardware.intakeRight.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -23,8 +30,8 @@ public class Intake {
 
     public void setPower(double power){ //Setting a positive power should intake
 
-        RobotHardware.intakeRight.setPower(power);
-        RobotHardware.intakeLeft.setPower(-power);//Since not reversed up there
+        hardware.intakeRight.setPower(power);
+        hardware.intakeLeft.setPower(-power);//Since not reversed up there
 
     }
 }

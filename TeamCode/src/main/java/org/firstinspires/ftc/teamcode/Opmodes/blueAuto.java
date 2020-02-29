@@ -20,10 +20,11 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
 
-@Autonomous(name="Red Auto", group="Auto")
-public class redSideAuto extends LinearOpMode {
+@Autonomous(name="Full Blue Auto", group="Auto")
+public class blueAuto extends LinearOpMode {
 
     // Declare OpMode Members
+    private RobotHardware hardware = new RobotHardware();
     private Timer timer;
     private OdometerKIMU2W odometer;
     private MecanumDrive drivetrain;
@@ -200,11 +201,6 @@ public class redSideAuto extends LinearOpMode {
             movement.followPath(dropoffThree,15);
             autoClaws.depositBlock();
 
-
-
-
-
-
         }if(skyPosition == 2){//furthest from wall
             autoClaws.firstPrime();
             movement.moveToPointPD(new RobotPoint(18,73, -90, 0.1), 100, 1.5);
@@ -234,20 +230,13 @@ public class redSideAuto extends LinearOpMode {
             movement.followPath(dropoffThree,15);
             autoClaws.depositBlock();
 
-
-
-
-
         }
 
-
-
-
         movement.pointInDirection(-180, 15);
-        movement.deadReckon(0, 0.7, 0, 465);
+        movement.deadReckon(0, 0.9, 0, 400);
         clampFoundation();
-        movement.deadReckon(0.2, -0.7, 0.6, 1450);
-        movement.deadReckon(-0.3, -0.4, 0.8, 1100);
+        movement.deadReckon(0.2, -0.7, 0.6, 1350);
+        movement.deadReckon(-0.3, -0.4, 0.8, 9500);
         releaseFoundation();
         movement.followPath(park,15);
         movement.moveToPointPD2(new RobotPoint(-97, 67, -90, 0.1), 50, 1.5);
@@ -265,19 +254,19 @@ public class redSideAuto extends LinearOpMode {
     }
 
     private void clampFoundation(){
-        RobotHardware.foundationClampLeft.setPosition(0.19);
-        RobotHardware.foundationClampRight.setPosition(0.96);
+        hardware.foundationClampLeft.setPosition(0.19);
+        hardware.foundationClampRight.setPosition(0.96);
         timer.waitMillis(100);
     }
 
     private void releaseFoundation(){
-        RobotHardware.foundationClampLeft.setPosition(0.745);
-        RobotHardware.foundationClampRight.setPosition(0.26);
+        hardware.foundationClampLeft.setPosition(0.745);
+        hardware.foundationClampRight.setPosition(0.26);
         timer.waitMillis(100);
     }
 
     private void initialize(){
-        RobotHardware.hardwareMap(hardwareMap);
+        hardware.hardwareMap(hardwareMap);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
         phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
@@ -287,17 +276,17 @@ public class redSideAuto extends LinearOpMode {
         phoneCam.setPipeline(pipeline);
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
 
-        drivetrain = new MecanumDrive(this);
-        odometer = new OdometerKIMU2W();
+        drivetrain = new MecanumDrive(this, hardware);
+        odometer = new OdometerKIMU2W(this, hardware);
         timer = new Timer(this, odometer);
-        autoClaws = new AutoClaws("BLUE", timer);
+        autoClaws = new AutoClaws(hardware, "BLUE", timer);
         handler = new ActionHandlerClaws(autoClaws);
         movement = new Movement(this, drivetrain, odometer, timer);
         movement.setActionHandler(handler);
         movement.useActionHandler = true;
 
-        RobotHardware.foundationClampLeft.setPosition(0.745);
-        RobotHardware.foundationClampRight.setPosition(0.26);
+        hardware.foundationClampLeft.setPosition(0.745);
+        hardware.foundationClampRight.setPosition(0.26);
 
         autoClaws.initialize();
         drivetrain.initialize();

@@ -62,6 +62,7 @@ public class teleOp extends LinearOpMode {
 
     private  int dropoffCounter = 0;
     private int dropoffslidePosition = 0;
+    private int slideSafetyCount = 0;
 
     private void initialize() {
         // Initialize all objects declared above
@@ -176,6 +177,7 @@ public class teleOp extends LinearOpMode {
             liftAverage = -(liftLeft.getCurrentPosition() + liftRight.getCurrentPosition()) / 2;
             if (!leftLiftLimitSwitch.getState() || !rightLiftLimitSwitch.getState()) {
                 liftAtBottom = true;
+                slideSafetyCount = 0;
             }else{
                 liftAtBottom = false;
             }
@@ -191,8 +193,15 @@ public class teleOp extends LinearOpMode {
             if(gamepad2.dpad_left || gamepad2.dpad_right){
                 liftState = "freefall";
             }
-            if(gamepad2.a){
-                liftState = "retracting";
+            if(gamepad2.a && slideSafetyCount>200){
+                if(slideSafetyCount<100){
+                    liftState = "retracting";
+
+                }
+                else{
+                    liftState = "resting";
+
+                }
             }
             if(gamepad2.right_bumper){
                 liftState = "droppingOff";
@@ -266,7 +275,7 @@ public class teleOp extends LinearOpMode {
             }
             if (liftState.equals("droppingOff")){//this is the auto dropoff sequence state
                 if(dropoffCounter ==0){
-                    dropoffslidePosition = liftAverage + 250; //(2/5/20 edit), changed from +100 to +175 to make lift go higher on dropoff sequence
+                    dropoffslidePosition = liftAverage + 300; //(2/5/20 edit), changed from +100 to +175 to make lift go higher on dropoff sequence
                 }
                 dropoffCounter = dropoffCounter + 1; //increment dropoff counter - this keeps track of time.
 
@@ -282,7 +291,7 @@ public class teleOp extends LinearOpMode {
                     grabberState = 0; //sets the grabbers to rear closed, front open state
 
                 }
-                if (dropoffCounter > 30 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
+                if (dropoffCounter > 34 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
                     lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos
                     grabberState = 0; //sets the grabbers to rear closed, front open state
                     dropoffCounter = 0; //sequence is over, so reset counter variable
@@ -299,16 +308,16 @@ public class teleOp extends LinearOpMode {
                     grabberState = 3;
                 }
 
-                if (dropoffslidePosition > liftAverage && liftAverage < liftMax && dropoffCounter > 10){ //(2/5/2020 edit) - pauses for a bit (dropoff counter > 3) before powering slides
+                if (dropoffslidePosition > liftAverage && liftAverage < liftMax && dropoffCounter > 20){ //(2/5/2020 edit) - pauses for a bit (dropoff counter > 3) before powering slides
                     liftLeft.setPower(-.7);
                     liftRight.setPower(-.7);
                 }
-                if (dropoffCounter > 25 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
+                if (dropoffCounter > 48 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
                     lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos
                     grabberState = 0; //sets the grabbers to rear closed, front open state
 
                 }
-                if (dropoffCounter > 40 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
+                if (dropoffCounter > 62& (dropoffslidePosition - liftAverage) <50){ //after 12 loops, the flipper servos will start moving into the robot.
                     lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos
                     grabberState = 0; //sets the grabbers to rear closed, front open state
                     dropoffCounter = 0; //sequence is over, so reset counter variable
@@ -324,6 +333,7 @@ public class teleOp extends LinearOpMode {
                 }
                 if ( liftAverage < 200) {
                     liftLowerTimer = liftLowerTimer + 1;
+                    slideSafetyCount = slideSafetyCount + 1;
                     if (liftLowerTimer < 2) {
                         lastPressedFlipper = 0; //(2/5/2020 edit) set servo positions. This loop only runs twice or so
                         grabberState = 0; //
@@ -396,7 +406,6 @@ public class teleOp extends LinearOpMode {
            }
 */
 
-
             if (grabberState == 0 && !gamepad1.x) {
                 blockGrabberFront.setPosition(0.35);
                 blockGrabberBack.setPosition(0.7);
@@ -412,7 +421,13 @@ public class teleOp extends LinearOpMode {
             if (grabberState == 3 || gamepad1.x) {
                 blockGrabberFront.setPosition(0.9); //note: for gobilda servos, increase turns servo Clockwise
                 blockGrabberBack.setPosition(0.9);//Clockwise: viewing from infront servo, track direction of arm
+
             }
+            if (grabberState == 3 || gamepad1.x) {
+                blockGrabberFront.setPosition(0.9); //note: for gobilda servos, increase turns servo Clockwise
+                blockGrabberBack.setPosition(0.9);//Clockwise: viewing from infront servo, track direction of arm
+            }
+
 
             //BLOCK FLIPPER=====================================================================================
 
@@ -427,12 +442,14 @@ public class teleOp extends LinearOpMode {
                 flipperServoLeft.setPosition(0.25);//.31
                 flipperServoRight.setPosition(0.75);//.69
             } else if (lastPressedFlipper == 1) {
-                flipperServoLeft.setPosition(0.87);//.89
-                flipperServoRight.setPosition(0.13);//.11
+                flipperServoLeft.setPosition(0.90);//.89
+                flipperServoRight.setPosition(0.10);//.11
             } else if (lastPressedFlipper == 2) { //middle position. Lift Code sets the variable to 2.
                 flipperServoLeft.setPosition(0.35);//.89
                 flipperServoRight.setPosition(0.65);//.11
             }
+
+
 
 
             //INTAKE ===========================================================================================

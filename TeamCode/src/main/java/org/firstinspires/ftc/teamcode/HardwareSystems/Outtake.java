@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode.HardwareSystems;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Utility.RobotHardware;
 
 public class Outtake {
+
+    private LinearOpMode opMode;
+    private RobotHardware hardware;
 
     // Servo values for flipper
     private double flippedRight = 0.16, flippedLeft = 0.84; //Should sum to 1 at all times
@@ -11,6 +15,11 @@ public class Outtake {
     // Servo values for clamp
     private double clampedFront = 0.7, clampedBack = 0.7;
     private double droppedFront = 0.35, droppedBack = 0.35;
+
+    public Outtake(LinearOpMode opMode, RobotHardware hardware){
+        this.opMode = opMode;
+        this.hardware = hardware;
+    }
 
     public void initialize(){
         setGripperState("Receive");
@@ -37,19 +46,19 @@ public class Outtake {
             back = clampedBack;
         }
 
-        RobotHardware.blockGrabberFront.setPosition(front);
-        RobotHardware.blockGrabberBack.setPosition(back);
+        hardware.blockGrabberFront.setPosition(front);
+        hardware.blockGrabberBack.setPosition(back);
 
     }
 
 
     public void setFlipperState(String state){
         if(state.equals("Receive")){
-            RobotHardware.flipperServoRight.setPosition(insideRight);
-            RobotHardware.flipperServoLeft.setPosition(insideLeft);
+            hardware.flipperServoRight.setPosition(insideRight);
+            hardware.flipperServoLeft.setPosition(insideLeft);
         }else if(state.equals("Outside")){
-            RobotHardware.flipperServoRight.setPosition(flippedRight);
-            RobotHardware.flipperServoLeft.setPosition(flippedLeft);
+            hardware.flipperServoRight.setPosition(flippedRight);
+            hardware.flipperServoLeft.setPosition(flippedLeft);
         }
     }
 
@@ -61,8 +70,8 @@ public class Outtake {
             position = insideRight;
         }
 
-        RobotHardware.flipperServoRight.setPosition(position);
-        RobotHardware.flipperServoLeft.setPosition(1 - position);
+        hardware.flipperServoRight.setPosition(position);
+        hardware.flipperServoLeft.setPosition(1 - position);
 
     }
 
@@ -73,8 +82,8 @@ public class Outtake {
             position = droppedBack;
         }
 
-        RobotHardware.blockGrabberFront.setPosition(position);
-        RobotHardware.blockGrabberBack.setPosition(position);
+        hardware.blockGrabberFront.setPosition(position);
+        hardware.blockGrabberBack.setPosition(position);
 
     }
 

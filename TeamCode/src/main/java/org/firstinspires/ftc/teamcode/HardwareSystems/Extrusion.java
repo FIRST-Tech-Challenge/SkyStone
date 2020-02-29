@@ -15,6 +15,7 @@ The direction of the motors must be such that a positive power causes the encode
 public class Extrusion {
 
     private LinearOpMode opMode;
+    private RobotHardware hardware;
 
     private int liftMax = 99999;
     private int liftCurrent = 0;
@@ -24,23 +25,24 @@ public class Extrusion {
     private double weight = 0.2; //F term of the virtual PIDF controller for this lift
     private Pid controller;
 
-    public Extrusion(LinearOpMode opMode){
+    public Extrusion(LinearOpMode opMode, RobotHardware hardware){
         this.opMode = opMode;
+        this.hardware = hardware;
     }
 
     public void initialize(){
         //Set Run Mode
-        RobotHardware.liftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RobotHardware.liftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hardware.liftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hardware.liftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //Reversing the motors so they don't fight and move in the right direction
-        RobotHardware.liftRight.setDirection(DcMotor.Direction.FORWARD);
-        RobotHardware.liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        hardware.liftRight.setDirection(DcMotor.Direction.FORWARD);
+        hardware.liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         //Set them to brake
-        RobotHardware.liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        RobotHardware.liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hardware.liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hardware.liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //Reset the encoders
-        RobotHardware.liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        RobotHardware.liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hardware.liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hardware.liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         controller = new Pid(0.06, 0.001, 0.01, 50, 0.5, 0);
 
@@ -62,14 +64,14 @@ public class Extrusion {
     }
 
     public void update(){
-        liftCurrent = (RobotHardware.liftLeft.getCurrentPosition() + RobotHardware.liftRight.getCurrentPosition())/2;
+        liftCurrent = (hardware.liftLeft.getCurrentPosition() + hardware.liftRight.getCurrentPosition())/2;
         controller.update(liftTarget, liftCurrent);
         setPower(controller.correction + weight);
     }
 
     public void setPower(double power){
-        RobotHardware.liftRight.setPower(power);
-        RobotHardware.liftLeft.setPower(power);
+        hardware.liftRight.setPower(power);
+        hardware.liftLeft.setPower(power);
     }
 
 }

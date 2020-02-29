@@ -51,11 +51,11 @@ public class Odometer3W extends Odometer{
     private double[] totalRelativeMovement = {0, 0};
     private double[] totalPositionChange = {0, 0};
 
-    public Odometer3W(){
+    public Odometer3W(RobotHardware hardware){
 
-        this.leftVerticalEncoder = RobotHardware.leftBack;
-        this.rightVerticalEncoder = RobotHardware.rightFront;
-        this.horizontalEncoder = RobotHardware.rightBack;
+        this.leftVerticalEncoder = hardware.leftBack;
+        this.rightVerticalEncoder = hardware.rightFront;
+        this.horizontalEncoder = hardware.rightBack;
 
     }
 

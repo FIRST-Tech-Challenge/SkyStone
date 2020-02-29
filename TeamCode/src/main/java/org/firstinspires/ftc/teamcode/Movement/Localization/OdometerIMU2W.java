@@ -9,9 +9,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class OdometerIMU2W extends Odometer{
+
+    private LinearOpMode opMode;
 
     /* Top-Down View of The Bottom of a Robot
 
@@ -60,11 +63,12 @@ public class OdometerIMU2W extends Odometer{
     private double[] totalRelativeMovement = {0, 0};
     private double[] totalPositionChange = {0, 0};
 
-    public OdometerIMU2W(){
+    public OdometerIMU2W(LinearOpMode opMode, RobotHardware hardware){
 
-        this.verticalEncoder = RobotHardware.intakeLeft;
-        this.horizontalEncoder = RobotHardware.intakeRight;
-        this.imu = RobotHardware.imu;
+        this.opMode = opMode;
+        this.verticalEncoder = hardware.intakeLeft;
+        this.horizontalEncoder = hardware.intakeRight;
+        this.imu = hardware.imu;
 
     }
 
@@ -77,74 +81,67 @@ public class OdometerIMU2W extends Odometer{
         lastVertical = 0;
         lastHorizontal = 0;
 
-        BNO055IMU.Parameters Params = new BNO055IMU.Parameters();
-        Params.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        Params.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        Params.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opMode
-        Params.loggingEnabled      = true;
-        Params.loggingTag          = "IMU";
-        Params.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        imu.initialize(Params);
-
         ticksToDistance = wheelRadius*2*Math.PI/ticksPerRevolution*gearRatio;
+
     }
 
     @Override
     public void update(){
 
-        vertical = verticalEncoder.getCurrentPosition() * ticksToDistance * verticalDirection;
-        horizontal = horizontalEncoder.getCurrentPosition() * ticksToDistance * horizontalDirection;
+        if(opMode.opModeIsActive()){
+            vertical = verticalEncoder.getCurrentPosition() * ticksToDistance * verticalDirection;
+            horizontal = horizontalEncoder.getCurrentPosition() * ticksToDistance * horizontalDirection;
 
-        verticalChange = vertical - lastVertical;
-        horizontalChange = horizontal - lastHorizontal;
+            verticalChange = vertical - lastVertical;
+            horizontalChange = horizontal - lastHorizontal;
 
-        headingImu = getImuHeading();
+            headingImu = getImuHeading();
 
-        headingChange = headingImu - lastHeadingImu;
+            headingChange = headingImu - lastHeadingImu;
 
-        if (headingChange < -3){ // For example 355 to 2 degrees
-            headingChange = 2*Math.PI + headingChange;
-        }else if (headingChange > 3) { // For example 2 to 355 degrees
-            headingChange = -2*Math.PI + headingChange;
+            if (headingChange < -3){ // For example 355 to 2 degrees
+                headingChange = 2*Math.PI + headingChange;
+            }else if (headingChange > 3) { // For example 2 to 355 degrees
+                headingChange = -2*Math.PI + headingChange;
+            }
+
+            headingRadians += headingChange;
+
+            // Calculating the position-change-vector from vertical encoder
+            verticallAdjust = verticalOffset * headingChange;
+            verticalExtra = verticalChange - verticallAdjust;
+
+            positionChangeVertical[1] = Math.cos(headingChange) * verticalExtra;
+            positionChangeVertical[0] = Math.sin(headingChange) * verticalExtra;
+
+            //Calculating the position-change-vector from horizontal encoder
+            horizontalAdjust = horizontalOffset * headingChange;
+            horizontalExtra = horizontalChange - horizontalAdjust;
+
+            positionChangeHorizontal[0] = Math.cos(headingChange) * horizontalExtra;
+            positionChangeHorizontal[1] = Math.sin(headingChange) * horizontalExtra;
+
+            //Add the two vectors together
+            totalRelativeMovement[0] = positionChangeVertical[0] + positionChangeHorizontal[0];
+            totalRelativeMovement[1] = positionChangeVertical[1] + positionChangeHorizontal[1];
+
+            //Rotate the vector
+            totalPositionChange[0] = totalRelativeMovement[0] * Math.cos(lastHeadingRadians) - totalRelativeMovement[1] * Math.sin(lastHeadingRadians);
+            totalPositionChange[1] = totalRelativeMovement[0] * Math.sin(lastHeadingRadians) + totalRelativeMovement[1] * Math.cos(lastHeadingRadians);
+
+            x = lastX + totalPositionChange[0];
+            y = lastY + totalPositionChange[1];
+
+            lastX = x;
+            lastY = y;
+            lastHeadingRadians = headingRadians;
+            lastHeadingImu = headingImu;
+
+            lastVertical = vertical;
+            lastHorizontal = horizontal;
+
+            heading = Math.toDegrees(headingRadians);
         }
-
-        headingRadians += headingChange;
-
-        // Calculating the position-change-vector from vertical encoder
-        verticallAdjust = verticalOffset * headingChange;
-        verticalExtra = verticalChange - verticallAdjust;
-
-        positionChangeVertical[1] = Math.cos(headingChange) * verticalExtra;
-        positionChangeVertical[0] = Math.sin(headingChange) * verticalExtra;
-
-        //Calculating the position-change-vector from horizontal encoder
-        horizontalAdjust = horizontalOffset * headingChange;
-        horizontalExtra = horizontalChange - horizontalAdjust;
-
-        positionChangeHorizontal[0] = Math.cos(headingChange) * horizontalExtra;
-        positionChangeHorizontal[1] = Math.sin(headingChange) * horizontalExtra;
-
-        //Add the two vectors together
-        totalRelativeMovement[0] = positionChangeVertical[0] + positionChangeHorizontal[0];
-        totalRelativeMovement[1] = positionChangeVertical[1] + positionChangeHorizontal[1];
-
-        //Rotate the vector
-        totalPositionChange[0] = totalRelativeMovement[0] * Math.cos(lastHeadingRadians) - totalRelativeMovement[1] * Math.sin(lastHeadingRadians);
-        totalPositionChange[1] = totalRelativeMovement[0] * Math.sin(lastHeadingRadians) + totalRelativeMovement[1] * Math.cos(lastHeadingRadians);
-
-        x = lastX + totalPositionChange[0];
-        y = lastY + totalPositionChange[1];
-
-        lastX = x;
-        lastY = y;
-        lastHeadingRadians = headingRadians;
-        lastHeadingImu = headingImu;
-
-        lastVertical = vertical;
-        lastHorizontal = horizontal;
-
-        heading = Math.toDegrees(headingRadians);
-
     }
 
     // Utility Methods

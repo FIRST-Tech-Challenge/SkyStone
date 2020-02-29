@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Utility.Timer;
 public class driveBaseTest extends LinearOpMode {
 
     // Declare OpMode Members
+    private RobotHardware hardware = new RobotHardware();
     private OdometerIMU2W odometer;
     private MecanumDrive drivetrain;
     private Movement movement;
@@ -44,10 +45,10 @@ public class driveBaseTest extends LinearOpMode {
     }
 
     private void initialize(){
-        RobotHardware.hardwareMap(hardwareMap);
+        hardware.hardwareMap(hardwareMap);
 
-        odometer = new OdometerIMU2W();
-        drivetrain = new MecanumDrive(this);
+        odometer = new OdometerIMU2W(this, hardware);
+        drivetrain = new MecanumDrive(this, hardware);
         timer = new Timer(this, odometer);
         movement = new Movement(this, drivetrain, odometer, timer);
         drivetrain.initialize();

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public class purePursuitTest extends LinearOpMode {
 
     // Declare OpMode Members
+    private RobotHardware hardware = new RobotHardware();
     private OdometerIMU2W odometer;
     private MecanumDrive drivetrain;
     private Movement movement;
@@ -51,10 +52,10 @@ public class purePursuitTest extends LinearOpMode {
     }
 
     private void initialize(){
-        RobotHardware.hardwareMap(hardwareMap);
+        hardware.hardwareMap(hardwareMap);
 
-        odometer = new OdometerIMU2W();
-        drivetrain = new MecanumDrive(this);
+        odometer = new OdometerIMU2W(this, hardware);
+        drivetrain = new MecanumDrive(this, hardware);
         timer = new Timer(this, odometer);
         movement = new Movement(this, drivetrain, odometer, timer);
 

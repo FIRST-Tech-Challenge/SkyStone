@@ -25,6 +25,7 @@ public class MainTeleop extends LinearOpMode {
     private boolean isTogglingG2A = false;
     private boolean isTogglingG2B = false;
     private boolean isTogglingG2X = false;
+    private boolean isCapped = false;
 
     private double fLPower;
     private double fRPower;
@@ -60,7 +61,6 @@ public class MainTeleop extends LinearOpMode {
     private double spoolPower;
 
     private boolean isOverridingSlideFloor = false;
-    private double spoolOffset = 0;
 
     private boolean motionExecuted;
 
@@ -177,8 +177,6 @@ public class MainTeleop extends LinearOpMode {
             }
         }
 
-        // auto stack on git
-
         //override mode
         if (gamepad2.left_stick_y != 0) {
             isMovingSpoolToPosition = false;
@@ -285,8 +283,6 @@ public class MainTeleop extends LinearOpMode {
         robot.allWheelDrive(fLPower, fRPower, bLPower, bRPower);
     }
 
-    boolean isCapped = false;
-
     private void capstoneLogic() {
         if (gamepad2.right_trigger != 0 && !toggleCap) {
             isCapped = true;
@@ -371,7 +367,6 @@ public class MainTeleop extends LinearOpMode {
                 }else if (robot.getIntakeStoneDistance().getDistance(DistanceUnit.CM) < 40) {
                     stoneInIntake = true;
                 }
-                telemetry.addLine("distance " + robot.getIntakeStoneDistance().getDistance(DistanceUnit.CM));
 
                 if (stoneInIntake) {
                     if (intakeLeftPower > 0) {

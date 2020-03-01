@@ -16,16 +16,11 @@ public class BackSideBlueFoundationAuto extends AutoBase {
         waitForStart();
 
         position2D.startOdometry();
-        robot.intake(true);
 
-        while(opModeIsActive() ){
-
-        }
-        stop();
         double[][] toFoundation = {
                 {0, 0},
                 {-15, 8},
-                {-32, 10}
+                {-34, 10}
         };
         ArrayList<Action> toFoundationActions = new ArrayList<>();
         toFoundationActions.add(new Action(ActionType.EXTEND_FOUNDATION, robot, true));
@@ -37,11 +32,11 @@ public class BackSideBlueFoundationAuto extends AutoBase {
         };
         ArrayList<Action> toDepositFoundationActions = new ArrayList<>();
 
-        robot.splineMove(toFoundation, 1, 1, .4, 20, Math.toRadians(180), Math.toRadians(0), 20, toFoundationActions, true, 1250);
+        robot.splineMove(toFoundation, 1, 1, .4, 20, Math.toRadians(180), Math.toRadians(0), 20, toFoundationActions, true, 1500);
 
         robot.foundationMovers(true);
 
-        sleep(750);
+        sleep(250);
 
         robot.splineMove(toDepositFoundation, 1, 1, .7, 20, 0, Math.toRadians(270), 20, toDepositFoundationActions, true, 3000);
 

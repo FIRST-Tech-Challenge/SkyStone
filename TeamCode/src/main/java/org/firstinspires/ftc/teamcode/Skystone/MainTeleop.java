@@ -294,7 +294,7 @@ public class MainTeleop extends LinearOpMode {
             robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
             long startTime = SystemClock.elapsedRealtime();
 
-            while (SystemClock.elapsedRealtime() - startTime <= 350) {
+            while (SystemClock.elapsedRealtime() - startTime <= 500) {
                 robotModeLogic();
 
                 slowDriveLogic();
@@ -309,7 +309,7 @@ public class MainTeleop extends LinearOpMode {
             startTime = SystemClock.elapsedRealtime();
             robot.getFrontClamp().setPosition(robot.FRONTCLAMP_ACTIVATECAPSTONE);
 
-            while (SystemClock.elapsedRealtime() - startTime <= 350) {
+            while (SystemClock.elapsedRealtime() - startTime <= 500) {
                 robotModeLogic();
 
                 slowDriveLogic();
@@ -381,7 +381,7 @@ public class MainTeleop extends LinearOpMode {
                         intakeRightPower = 0;
                     }
                 }
-            } else {
+            } else if(intakeRightPower != 0 && intakeLeftPower != 0) {
                 robot.setAutoStopIntake(false);
                 robot.getBackClamp().setPosition(robot.BACKCLAMP_CLAMPED);
                 robot.getFrontClamp().setPosition(robot.FRONTCLAMP_RELEASED);

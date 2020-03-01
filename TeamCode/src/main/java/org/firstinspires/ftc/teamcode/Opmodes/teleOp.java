@@ -362,12 +362,12 @@ public class teleOp extends LinearOpMode {
                     liftLeft.setPower(-.7);
                     liftRight.setPower(-.7);
                 }
-                if (dropoffCounter > 20 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
+                if (dropoffCounter > 28 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
                     lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos
                     grabberState = 0; //sets the grabbers to rear closed, front open state
 
                 }
-                if (dropoffCounter > 34 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
+                if (dropoffCounter > 42 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
                     lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos
                     grabberState = 0; //sets the grabbers to rear closed, front open state
                     dropoffCounter = 0; //sequence is over, so reset counter variable
@@ -403,8 +403,8 @@ public class teleOp extends LinearOpMode {
             if (liftState.equals("retracting")){
                 dropoffCounter = 0;//(2/13/2020 change)
                 if (liftAverage > 200) {
-                    liftRight.setPower(0.8);
-                    liftLeft.setPower(0.8);
+                    liftRight.setPower(0.9);
+                    liftLeft.setPower(0.9);
                     liftLowerTimer = 0;
                 }
                 if ( liftAverage < 200) {
@@ -416,8 +416,8 @@ public class teleOp extends LinearOpMode {
                         liftRight.setPower(-.075); //this is really agressive. IDK if its necessary. Also may be dangerous for motors, battery, fuse, and string breaking. IDK.
                         liftLeft.setPower(-.075);
                     } else {
-                        liftRight.setPower(0.3);
-                        liftLeft.setPower(0.3);
+                        liftRight.setPower(0.4);
+                        liftLeft.setPower(0.4);
                     }
                 }
                 if (liftAtBottom == true){ //set motors to zero after hitting the bottom (2/3/2020 update)
@@ -450,7 +450,8 @@ public class teleOp extends LinearOpMode {
                 if(gamepad2.dpad_left && liftAverage < liftMax){ //raise lift
                     liftLeft.setPower(-.6 + miles1);
                     liftRight.setPower(-.6 + miles1);//typo (2/3/2020 update)
-                }else if (gamepad2.dpad_right && !liftState.equals("resting")){ //lower lift, unless it's fully lowered
+                }
+                else if (gamepad2.dpad_right && !liftState.equals("resting")){ //lower lift, unless it's fully lowered
                     liftLeft.setPower(.4 + miles1);
                     liftRight.setPower(.4 + miles1);//typo (2/3/2020 update)
                 }
@@ -518,8 +519,8 @@ public class teleOp extends LinearOpMode {
                 flipperServoLeft.setPosition(0.25);//.31
                 flipperServoRight.setPosition(0.75);//.69
             } else if (lastPressedFlipper == 1) {
-                flipperServoLeft.setPosition(0.90);//.89
-                flipperServoRight.setPosition(0.10);//.11
+                flipperServoLeft.setPosition(0.85);//.89
+                flipperServoRight.setPosition(0.15);//.11
             } else if (lastPressedFlipper == 2) { //middle position. Lift Code sets the variable to 2.
                 flipperServoLeft.setPosition(0.35);//.89
                 flipperServoRight.setPosition(0.65);//.11
@@ -551,19 +552,30 @@ public class teleOp extends LinearOpMode {
                 autoFlipperRight.setPosition(0.0); //flipper down
                 autoFlipperLeft.setPosition(0.036); //put arm fully down
             } else {
-                autoFlipperRight.setPosition(0.4); //flipper up
-                autoFlipperLeft.setPosition(0.196);
+                autoFlipperRight.setPosition(0.3469); //flipper up
+                autoFlipperLeft.setPosition(0.2189);
             }
             if (gamepad1.y) {
                 autoGrabberRight.setPosition(0.0); //grabbers open
                 autoGrabberLeft.setPosition(0.64);
             } else {
-                autoGrabberRight.setPosition(0.286); //grabbers closed
-                autoGrabberLeft.setPosition(0.281); //grabbers closed
+                autoGrabberRight.setPosition(0.927); //grabbers closed
+                autoGrabberLeft.setPosition(0.269); //grabbers closed
             }
 
             //CAPSTONE==========================================================================
 /*
+if(side.equals("RED")){
+            hardware.autoFlipperRight.setPosition(0.251);
+            hardware.autoGrabberRight.setPosition(1);
+        }else if(side.equals("BLUE")){
+            hardware.autoFlipperLeft.setPosition(0.29);
+            hardware.autoGrabberLeft.setPosition(0.2);
+        }
+    }
+
+
+
          if (gamepad1.right_trigger > 0.2) {
              capstone.setPosition(.25); //capstone down
          } else {

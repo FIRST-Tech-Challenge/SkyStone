@@ -151,21 +151,21 @@ public class blueAuto extends LinearOpMode {
             autoClaws.depositBlockThrow();
             movement.followPath(pickupBlockThree, 16);
             autoClaws.prime();
-            movement.moveToPointPD(new RobotPoint(-5, 77, -90, 0.1), 50, 1.5);
+            movement.moveToPointPD(new RobotPoint(-5, 76, -90, 0.1), 50, 1.5);
             autoClaws.grabBlock();
             autoClaws.storeBlock();
             movement.followPath(dropoffThree,16);
             autoClaws.depositBlockThrow();
             movement.followPath(pickupBlockOne,16);
             autoClaws.prime();
-            movement.moveToPointPD(new RobotPoint(-46, 78, -90, 0.1), 50, 1.5);
+            movement.moveToPointPD(new RobotPoint(-46, 77, -90, 0.1), 50, 1.5);
             autoClaws.grabBlock();
             autoClaws.storeBlock();
             movement.followPath(dropoffOne,15);
             autoClaws.depositBlock();
             movement.followPath(pickupBlockTwo,16);
             autoClaws.prime();
-            movement.moveToPointPD(new RobotPoint(-28, 80.25, -90, 0.1), 50, 1.5);
+            movement.moveToPointPD(new RobotPoint(-28, 79, -90, 0.1), 50, 1.5);
             autoClaws.grabBlock();
             autoClaws.storeBlock();
             movement.followPath(dropoffTwo,15);
@@ -181,21 +181,21 @@ public class blueAuto extends LinearOpMode {
             autoClaws.depositBlockThrow();
             movement.followPath(pickupBlockTwo,16);
             autoClaws.prime();
-            movement.moveToPointPD(new RobotPoint(-28, 77, -90, 0.1), 50, 1.5);
+            movement.moveToPointPD(new RobotPoint(-28, 76, -90, 0.1), 50, 1.5);
             autoClaws.grabBlock();
             autoClaws.storeBlock();
             movement.followPath(dropoffTwo,15);
             autoClaws.depositBlockThrow();
             movement.followPath(pickupBlockOne,16);
             autoClaws.prime();
-            movement.moveToPointPD(new RobotPoint(-48, 78, -90, 0.1), 50, 1.5);
+            movement.moveToPointPD(new RobotPoint(-48, 77, -90, 0.1), 50, 1.5);
             autoClaws.grabBlock();
             autoClaws.storeBlock();
             movement.followPath(dropoffOne,15);
             autoClaws.depositBlock();
             movement.followPath(pickupBlockThree,16);
             autoClaws.prime();
-            movement.moveToPointPD(new RobotPoint(-8, 80.25, -90, 0.1), 50, 1.5);
+            movement.moveToPointPD(new RobotPoint(-8, 79, -90, 0.1), 50, 1.5);
             autoClaws.grabBlock();
             autoClaws.storeBlock();
             movement.followPath(dropoffThree,15);
@@ -210,21 +210,21 @@ public class blueAuto extends LinearOpMode {
             autoClaws.depositBlockThrow();
             movement.followPath(pickupBlockOne,16);
             autoClaws.prime();
-            movement.moveToPointPD(new RobotPoint(-48, 77, -90, 0.1), 50, 1.5);
+            movement.moveToPointPD(new RobotPoint(-48, 76, -90, 0.1), 50, 1.5);
             autoClaws.grabBlock();
             autoClaws.storeBlock();
             movement.followPath(dropoffTwo,15);
             autoClaws.depositBlockThrow();
             movement.followPath(pickupBlockTwo,16);
             autoClaws.prime();
-            movement.moveToPointPD(new RobotPoint(-28, 78, -90, 0.1), 50, 1.5);
+            movement.moveToPointPD(new RobotPoint(-28, 77, -90, 0.1), 50, 1.5);
             autoClaws.grabBlock();
             autoClaws.storeBlock();
             movement.followPath(dropoffTwo,15);
             autoClaws.depositBlock();
             movement.followPath(pickupBlockThree,15);
             autoClaws.prime();
-            movement.moveToPointPD(new RobotPoint(-8, 80.25, -90, 0.1), 50, 1.5);
+            movement.moveToPointPD(new RobotPoint(-8, 79, -90, 0.1), 50, 1.5);
             autoClaws.grabBlock();
             autoClaws.storeBlock();
             movement.followPath(dropoffThree,15);
@@ -233,10 +233,10 @@ public class blueAuto extends LinearOpMode {
         }
 
         movement.pointInDirection(-180, 15);
-        movement.deadReckon(0, 0.9, 0, 400);
+        movement.deadReckon(0, 0.9, 0, 475);
         clampFoundation();
-        movement.deadReckon(0.2, -0.7, 0.6, 1350);
-        movement.deadReckon(-0.3, -0.4, 0.8, 9500);
+        movement.deadReckon(0.2, -0.7, 0.6, 1550);
+        movement.deadReckon(-0.3, -0.4, 0.8, 1500);
         releaseFoundation();
         movement.followPath(park,15);
         movement.moveToPointPD2(new RobotPoint(-97, 67, -90, 0.1), 50, 1.5);
@@ -254,8 +254,8 @@ public class blueAuto extends LinearOpMode {
     }
 
     private void clampFoundation(){
-        hardware.foundationClampLeft.setPosition(0.19);
-        hardware.foundationClampRight.setPosition(0.96);
+        hardware.foundationClampLeft.setPosition(.20);
+        hardware.foundationClampRight.setPosition(.80);
         timer.waitMillis(100);
     }
 

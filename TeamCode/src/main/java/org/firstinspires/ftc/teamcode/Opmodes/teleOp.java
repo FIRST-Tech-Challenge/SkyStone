@@ -54,6 +54,7 @@ public class teleOp extends LinearOpMode {
     private int blocklevel = 0; //first level corresponds to second block. 0th level is first block.
 
     private boolean dpadUpPressed = false;
+    private boolean dpadDownPressed = false;
 
     private boolean liftAtBottom = true;
     private int grabberState = 0;
@@ -63,6 +64,10 @@ public class teleOp extends LinearOpMode {
     private  int dropoffCounter = 0;
     private int dropoffslidePosition = 0;
     private int slideSafetyCount = 0;
+
+    private int lastEncoderHeight = 0;
+    private int stackHeight = 0;
+    private int encoderDifference = 0;
 
     private void initialize() {
         // Initialize all objects declared above
@@ -187,14 +192,14 @@ public class teleOp extends LinearOpMode {
                 blocklevel = 0;
                 milesHoldHeight = 0;
             }
-            if(gamepad2.dpad_up || gamepad2.dpad_down){
+            if(gamepad2.dpad_up || gamepad2.dpad_down||gamepad2.right_trigger>0.2){
                 liftState = "holdingTarget";
             }
             if(gamepad2.dpad_left || gamepad2.dpad_right){
                 liftState = "freefall";
             }
             if(gamepad2.a && slideSafetyCount>200){
-                if(slideSafetyCount<100){
+                if(slideSafetyCount<200){
                     liftState = "retracting";
 
                 }
@@ -225,26 +230,96 @@ public class teleOp extends LinearOpMode {
             }
             if (liftState.equals("holdingTarget")){
                 dropoffCounter = 0; //(2/13/2020 change)
-                if (gamepad2.dpad_up) {
-                    dpadUpPressed = true;
-                }
-                if (!gamepad2.dpad_up && dpadUpPressed) { //code handles the user-input
 
+                if (gamepad2.right_trigger > 0.2){
 
-
-
+                    stackHeight = 0;
+                    encoderDifference = Math.abs(lastEncoderHeight - 185);
+                    if (encoderDifference > Math.abs(lastEncoderHeight - 420)){
+                        stackHeight = 1;
+                        encoderDifference = Math.abs(lastEncoderHeight - 420);
+                    }
+                    if (encoderDifference > Math.abs(lastEncoderHeight - 655)){
+                        stackHeight = 2;
+                        encoderDifference = Math.abs(lastEncoderHeight - 655);
+                    }
+                    if (encoderDifference > Math.abs(lastEncoderHeight - 871)){
+                        stackHeight = 3;
+                        encoderDifference = Math.abs(lastEncoderHeight - 871);
+                    }
+                    if (encoderDifference > Math.abs(lastEncoderHeight - 1067)){
+                        stackHeight = 4;
+                        encoderDifference = Math.abs(lastEncoderHeight - 1067);
+                    }
+                    if (encoderDifference > Math.abs(lastEncoderHeight - 1261)){
+                        stackHeight = 5;
+                        encoderDifference = Math.abs(lastEncoderHeight - 1261);
+                    }
+                    if (encoderDifference > Math.abs(lastEncoderHeight - 1465)){
+                        stackHeight = 6;
+                        encoderDifference = Math.abs(lastEncoderHeight - 1465);
+                    }
+                    if (encoderDifference > Math.abs(lastEncoderHeight - 1690)){
+                        stackHeight = 7;
+                        encoderDifference = Math.abs(lastEncoderHeight - 1690);
+                    }
+                    if (encoderDifference > Math.abs(lastEncoderHeight - 1900)){
+                        stackHeight = 8;
+                        encoderDifference = Math.abs(lastEncoderHeight - 1900);
+                    }
+                    if (encoderDifference > Math.abs(lastEncoderHeight - 2110)){
+                        stackHeight = 9;
+                        encoderDifference = Math.abs(lastEncoderHeight - 2110);
+                    }
+                    if (encoderDifference > Math.abs(lastEncoderHeight - 2300)){
+                        stackHeight = 10;
+                        encoderDifference = Math.abs(lastEncoderHeight - 2300);
+                    }
+                    if (encoderDifference > Math.abs(lastEncoderHeight - 2510)){
+                        stackHeight = 11;
+                        encoderDifference = Math.abs(lastEncoderHeight - 2510);
+                    }
+                    blocklevel = stackHeight + 1;
                     if (blocklevel == 0) { liftGoal = 185; }
-                    if (blocklevel == 1) { liftGoal =420; }
+                    if (blocklevel == 1) { liftGoal = 420; }
                     if (blocklevel == 2) { liftGoal = 655; }
                     if (blocklevel == 3) { liftGoal = 871; }
                     if (blocklevel == 4) { liftGoal = 1067; }
                     if (blocklevel == 5) { liftGoal = 1261; }
                     if (blocklevel == 6) { liftGoal = 1465; } // if (blocklevel == 7){liftGoal = liftGoal + }  if (blocklevel == 8){liftGoal = liftGoal + }
                     if (blocklevel == 7) { liftGoal = 1690; }
-                    if (blocklevel == 8) { liftGoal = 1900; }
-                    if (blocklevel == 9) { liftGoal = 2110; }
+                    if (blocklevel == 8) { liftGoal = 1880; }
+                    if (blocklevel == 9) { liftGoal = 2090; }
+                    if (blocklevel == 10) { liftGoal = 2300; }
+                    if (blocklevel == 11) { liftGoal = 2510; }
+                    if (blocklevel == 12) { liftGoal = 2720; }
+
+                }
+                if (gamepad2.dpad_up) {
+                    dpadUpPressed = true;
+                }
+                if (gamepad2.dpad_down) {
+                    dpadDownPressed = true;
+                }
+                if (!gamepad2.dpad_down && dpadDownPressed) {
+                    dpadDownPressed = false;
+                    //Dpad Down code
+                    liftGoal = liftGoal - 40;
+                }
+                if (!gamepad2.dpad_up && dpadUpPressed) { //code handles the user-input
 
 
+                    if (blocklevel == 0) { liftGoal = 185; }
+                    if (blocklevel == 1) { liftGoal = 420; }
+                    if (blocklevel == 2) { liftGoal = 655; }
+                    if (blocklevel == 3) { liftGoal = 871; }
+                    if (blocklevel == 4) { liftGoal = 1067; }
+                    if (blocklevel == 5) { liftGoal = 1261; }
+                    if (blocklevel == 6) { liftGoal = 1465; } // if (blocklevel == 7){liftGoal = liftGoal + }  if (blocklevel == 8){liftGoal = liftGoal + }
+                    if (blocklevel == 7) { liftGoal = 1690; }
+                    if (blocklevel == 8) { liftGoal = 1880; }
+                    if (blocklevel == 9) { liftGoal = 2090; }
+                    if (blocklevel == 10) { liftGoal = 2300; }
 
 
                     blocklevel = blocklevel + 1;
@@ -276,6 +351,7 @@ public class teleOp extends LinearOpMode {
             if (liftState.equals("droppingOff")){//this is the auto dropoff sequence state
                 if(dropoffCounter ==0){
                     dropoffslidePosition = liftAverage + 300; //(2/5/20 edit), changed from +100 to +175 to make lift go higher on dropoff sequence
+                    lastEncoderHeight = liftAverage + 100; //this is approxmiating the level of the last block's liftGoal
                 }
                 dropoffCounter = dropoffCounter + 1; //increment dropoff counter - this keeps track of time.
 
@@ -312,12 +388,12 @@ public class teleOp extends LinearOpMode {
                     liftLeft.setPower(-.7);
                     liftRight.setPower(-.7);
                 }
-                if (dropoffCounter > 48 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
+                if (dropoffCounter > 60 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
                     lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos
                     grabberState = 0; //sets the grabbers to rear closed, front open state
 
                 }
-                if (dropoffCounter > 62& (dropoffslidePosition - liftAverage) <50){ //after 12 loops, the flipper servos will start moving into the robot.
+                if (dropoffCounter > 75 && (dropoffslidePosition - liftAverage) <50){ //after 12 loops, the flipper servos will start moving into the robot.
                     lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos
                     grabberState = 0; //sets the grabbers to rear closed, front open state
                     dropoffCounter = 0; //sequence is over, so reset counter variable
@@ -327,8 +403,8 @@ public class teleOp extends LinearOpMode {
             if (liftState.equals("retracting")){
                 dropoffCounter = 0;//(2/13/2020 change)
                 if (liftAverage > 200) {
-                    liftRight.setPower(0.7);
-                    liftLeft.setPower(0.7);
+                    liftRight.setPower(0.8);
+                    liftLeft.setPower(0.8);
                     liftLowerTimer = 0;
                 }
                 if ( liftAverage < 200) {
@@ -340,8 +416,8 @@ public class teleOp extends LinearOpMode {
                         liftRight.setPower(-.075); //this is really agressive. IDK if its necessary. Also may be dangerous for motors, battery, fuse, and string breaking. IDK.
                         liftLeft.setPower(-.075);
                     } else {
-                        liftRight.setPower(0.2);
-                        liftLeft.setPower(0.2);
+                        liftRight.setPower(0.3);
+                        liftLeft.setPower(0.3);
                     }
                 }
                 if (liftAtBottom == true){ //set motors to zero after hitting the bottom (2/3/2020 update)

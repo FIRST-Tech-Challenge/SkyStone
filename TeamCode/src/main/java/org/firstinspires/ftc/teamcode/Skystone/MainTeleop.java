@@ -90,7 +90,6 @@ public class MainTeleop extends LinearOpMode {
             foundationMoveLogic();
             intakeLogic();
 
-
             if (!isIntakeMode) {
                 telemetry.addLine("CURRENT ROBOT MODE: NORMAL");
                 outtakeLogic();
@@ -110,7 +109,6 @@ public class MainTeleop extends LinearOpMode {
                 telemetry.addLine("target:" + spoolTargetPosition);
                 telemetry.addLine("lastDropPosition:" + lastDropPosition);
                 telemetry.addLine("index:" + indexPosition);
-
 
                 telemetry.addLine("spoolPower: " + spoolPower);
                 telemetry.addLine("isMovingSpoolToPosition: " + isMovingSpoolToPosition);
@@ -192,7 +190,6 @@ public class MainTeleop extends LinearOpMode {
 
             spoolPower = .125;
         }
-
 
         if (spoolPosition >= 4200) {
             if (spoolPower == 0) {
@@ -472,6 +469,8 @@ public class MainTeleop extends LinearOpMode {
 
     private void foundationMoveLogic() {
         if (gamepad1.a) {
+            robot.foundationMovers(true);
+
             robot.setDrivetrainMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             robot.setDrivetrainMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 

@@ -73,7 +73,7 @@ public class Robot {
     public final double FRONTCLAMP_ACTIVATECAPSTONE = 0;
     public final double FRONTCLAMP_CLAMPED = .52;
     public final double FRONTCLAMP_RELEASED = .08;
-    public final double BACKCLAMP_CLAMPED = .21;
+    public final double BACKCLAMP_CLAMPED = .18;
     public final double BACKCLAMP_RELEASED = .635;
 
     // Outtake Pusher Positions

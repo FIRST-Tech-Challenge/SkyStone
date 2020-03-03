@@ -26,12 +26,13 @@ import com.google.common.base.Ticker;
 import com.google.common.collect.ImmutableSet;
 import com.hfrobots.tnt.corelib.chaosninja.ChaosConfigSaver;
 import com.hfrobots.tnt.corelib.chaosninja.ChaosController;
-import com.hfrobots.tnt.corelib.chaosninja.ChaosSimplerHardwareMap;
 import com.hfrobots.tnt.corelib.control.ChaosNinjaLandingState;
 import com.hfrobots.tnt.corelib.control.KonamiCode;
 import com.hfrobots.tnt.corelib.control.NinjaGamePad;
 import com.hfrobots.tnt.corelib.drive.mecanum.RoadRunnerMecanumDriveREV;
 import com.hfrobots.tnt.corelib.metrics.StatsDMetricSampler;
+import com.hfrobots.tnt.corelib.util.RealSimplerHardwareMap;
+import com.hfrobots.tnt.corelib.util.SimplerHardwareMap;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -68,7 +69,7 @@ public class SkystoneTeleop extends OpMode {
     private NinjaGamePad driversGamepad;
     private NinjaGamePad operatorsGamepad;
 
-    private ChaosSimplerHardwareMap simplerHardwareMap;
+    private SimplerHardwareMap simplerHardwareMap;
 
     protected SkystoneGrabber skystoneGrabber;
 
@@ -80,7 +81,7 @@ public class SkystoneTeleop extends OpMode {
     public void init() {
         ticker = createAndroidTicker();
 
-        simplerHardwareMap = new ChaosSimplerHardwareMap(this.hardwareMap);
+        simplerHardwareMap = new RealSimplerHardwareMap(this.hardwareMap);
         driveBase = new RoadRunnerMecanumDriveREV(new SkystoneDriveConstants(), simplerHardwareMap, false);
         kinematics = new OpenLoopMecanumKinematics(driveBase);
 
@@ -148,44 +149,56 @@ public class SkystoneTeleop extends OpMode {
         }
     }
 
-    private void handleChaos() {
-        if (false) { // DISABLED FOR LEAGUE QUALIFIER
-            // TODO/FIXME Get more of this out of the op-mode to make it more reusable
-            Context appContext = hardwareMap.appContext;
+    private void configureChaosNinja(Set<String> drivebaseMotors,
+                                     Set<Set<String>> mechanismMotors,
+                                     Set<String> servos) {
+        // TODO/FIXME Get more of this out of the op-mode to make it more reusable
+        Context appContext = hardwareMap.appContext;
 
-            ChaosConfigSaver.Config chaosConfig = new ChaosConfigSaver(appContext)
-                    .getSavedOrNewConfiguration(chaosNinja);
+        ChaosConfigSaver.Config chaosConfig = new ChaosConfigSaver(appContext)
+                .getSavedOrNewConfiguration(chaosNinja);
 
-            if (chaosConfig.useChaosController) {
-                if (chaosConfig.metricsActivated) {
-                    setupMetricsSampler();
+        if (chaosConfig.applyConfiguration) {
+            if (chaosConfig.metricsActivated) {
+                setupMetricsSampler();
 
-                } else {
-                    Log.i(LOG_TAG, "No metrics requested, not enabling");
+            } else {
+                Log.i(LOG_TAG, "No metrics requested, not enabling");
 
-                    metricSampler = null;
-                }
-
-                if (chaosConfig.challengeLevel > 0) {
-                    Set<String> intakeMotors = ImmutableSet.of("leftIntakeMotor", "rightIntakeMotor");
-
-                    Set<String> liftMotor = ImmutableSet.of("liftMotor");
-
-                    Set<String> servos = ImmutableSet.of("fingerServo");
-
-                    chaosController = new ChaosController(
-                            chaosNinja.getChallengeLevel(),
-                            ImmutableSet.of(
-                                    "leftFrontDriveMotor",
-                                    "rightFrontDriveMotor",
-                                    "leftRearDriveMotor",
-                                    "rightRearDriveMotor"),
-                            ImmutableSet.of(intakeMotors, liftMotor),
-                            servos,
-                            ticker,
-                            simplerHardwareMap, telemetry);
-                }
+                metricSampler = null;
             }
+
+            if (chaosConfig.challengeLevel > 0) {
+                chaosController = new ChaosController(
+                        chaosConfig,
+                        drivebaseMotors,
+                        mechanismMotors,
+                        servos,
+                        ticker,
+                        simplerHardwareMap, telemetry);
+            } else {
+                chaosController = null; // normal mode
+            }
+        }
+    }
+
+    private void handleChaos() {
+        if (true) {
+            Set<String> intakeMotors = ImmutableSet.of("leftIntakeMotor", "rightIntakeMotor");
+
+            Set<String> liftMotor = ImmutableSet.of("liftMotor");
+
+            Set<String> servos = ImmutableSet.of("fingerServo",
+                    "ejectorServo", "parkingStick0", "parkingStick1",
+                    "capstoneServo");
+
+            configureChaosNinja(ImmutableSet.of(
+                    "leftFrontDriveMotor",
+                    "rightFrontDriveMotor",
+                    "leftRearDriveMotor",
+                    "rightRearDriveMotor"),
+                    ImmutableSet.of(intakeMotors, liftMotor),
+                    servos);
         }
     }
 

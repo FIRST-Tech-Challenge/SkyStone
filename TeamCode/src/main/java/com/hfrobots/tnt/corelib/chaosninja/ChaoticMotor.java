@@ -29,6 +29,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 
 public class ChaoticMotor implements DcMotorEx {
@@ -45,6 +46,7 @@ public class ChaoticMotor implements DcMotorEx {
 
     private ZeroPowerBehavior actualZeroPowerBehavior;
 
+    @Getter(AccessLevel.PACKAGE)
     private final DcMotorEx actualDcMotor;
 
     public ChaoticMotor(DcMotorEx actualDcMotor) {

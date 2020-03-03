@@ -23,6 +23,9 @@ package com.hfrobots.tnt.corelib.chaosninja;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+
 public class ChaoticServo implements Servo {
 
     public double actualPosition;
@@ -35,6 +38,7 @@ public class ChaoticServo implements Servo {
 
     private ServoFailureMode failureMode = ServoFailureMode.HEALTHY;
 
+    @Getter(AccessLevel.PACKAGE)
     private final Servo actualServo;
 
     public ChaoticServo(final Servo actualServo) {

@@ -30,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NonNull;
 
 import static com.hfrobots.tnt.corelib.Constants.LOG_TAG;
 
@@ -49,7 +48,7 @@ public class ChaosConfigSaver {
     @AllArgsConstructor
     @Builder
     public static class Config {
-        public final boolean useChaosController;
+        public final boolean applyConfiguration;
         public final int challengeLevel;
         public final boolean metricsActivated;
     }
@@ -67,7 +66,7 @@ public class ChaosConfigSaver {
                 return Config.builder()
                         .challengeLevel(savedChallengeLevel)
                         .metricsActivated(savedMetricsActivated)
-                        .useChaosController(false).build();
+                        .applyConfiguration(false).build();
             } else {
                 Log.d(LOG_TAG, "Saved chaos config exists, but has expired");
             }
@@ -99,23 +98,32 @@ public class ChaosConfigSaver {
 
             Log.d(LOG_TAG, "Chaos - saved config, no new config, welcome to recurring chaos!");
             useChaosController = true;
-        } else if (chaosNinja != null && savedConfig != null) {
+        } else if (savedConfig != null) {
+            // Restore saved values
+            metricsActivated = savedConfig.metricsActivated;
+            challengeLevel = savedConfig.challengeLevel;
+
+            useChaosController = true;
+
             // If chaosNinja (via konami) exists, compare, set values, and update saved prefs
             // if necessary
 
-            metricsActivated = chaosNinja.isMetricsActivated();
-            challengeLevel = chaosNinja.getChallengeLevel();
-            useChaosController = true;
+            if (chaosNinja.isSomethingChanged()) {
+                boolean chaosConfigHasChangedFromSaved = false;
 
-            boolean chaosConfigHasChangedFromSaved = false;
+                if (chaosNinja.isMetricsActivated() != savedConfig.metricsActivated) {
+                    metricsActivated = chaosNinja.isMetricsActivated();
+                    chaosConfigHasChangedFromSaved = true;
+                }
 
-            if (metricsActivated != savedConfig.metricsActivated
-                    || challengeLevel != savedConfig.challengeLevel) {
-                chaosConfigHasChangedFromSaved = true;
-            }
+                if (chaosNinja.getChallengeLevel() != savedConfig.challengeLevel) {
+                    challengeLevel = chaosNinja.getChallengeLevel();
+                    chaosConfigHasChangedFromSaved = true;
+                }
 
-            if (chaosConfigHasChangedFromSaved) {
-                saveChaosPrefs(false, metricsActivated, challengeLevel);
+                if (chaosConfigHasChangedFromSaved) {
+                    saveChaosPrefs(false, metricsActivated, challengeLevel);
+                }
             }
 
             Log.d(LOG_TAG, "Chaos - saved config, and new config, welcome to merged chaos!");
@@ -132,7 +140,7 @@ public class ChaosConfigSaver {
             Log.d(LOG_TAG, "Chaos - no saved config, and new config, welcome to new chaos!");
         }
 
-        return Config.builder().useChaosController(useChaosController)
+        return Config.builder().applyConfiguration(useChaosController)
                 .metricsActivated(metricsActivated)
                 .challengeLevel(challengeLevel).build();
     }

@@ -36,6 +36,9 @@ public class ChaosNinjaLandingState extends State {
     private final DebouncedButton dPadDown;
 
     @Getter
+    private boolean somethingChanged = false;
+
+    @Getter
     private int challengeLevel;
 
     @Getter
@@ -47,6 +50,8 @@ public class ChaosNinjaLandingState extends State {
         telemetry.addData("02", "challengeLevel: " + challengeLevel);
 
         if (leftBumper.getRise()) {
+            somethingChanged = true;
+
             if (metricsActivated) {
                 metricsActivated = false;
             } else {
@@ -55,12 +60,16 @@ public class ChaosNinjaLandingState extends State {
         }
 
         if (dPadUp.getRise()) {
+            somethingChanged = true;
+
             if (challengeLevel < 3) {
                 challengeLevel++;
             }
         }
 
         if (dPadDown.getRise()) {
+            somethingChanged = true;
+
             if (challengeLevel > 0) {
                 challengeLevel--;
             }

@@ -36,7 +36,7 @@ public class KonamiCode {
                       @NonNull State whenCodeValidState,
                       @NonNull Ticker ticker,
                       @NonNull Telemetry telemetry) {
-        stateMachine = new StateMachine(telemetry);
+        stateMachine = new StateMachine(null /* hide the konami code from telemetry */);
 
         DebouncedButton upButton = new DebouncedButton(gamePad.getDpadUp());
         DebouncedButton downButton = new DebouncedButton(gamePad.getDpadDown());

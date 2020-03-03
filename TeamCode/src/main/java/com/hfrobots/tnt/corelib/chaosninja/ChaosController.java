@@ -65,14 +65,14 @@ public class ChaosController {
 
     private String whatHasChaosNinjaDone;
 
-    public ChaosController(final int challengeLevel,
+    public ChaosController(final ChaosConfigSaver.Config chaosConfig,
                            @NonNull final Set<String> driveMotorNames,
                            @NonNull final Set<Set<String>> mechanismMotorGroups,
-                           @NonNull final Set<String> servoNamesToFail,
+                           @NonNull final Set<String> servosToFail,
                            final Ticker ticker,
-                           final ChaosSimplerHardwareMap hardwareMap,
+                           final SimplerHardwareMap hardwareMap,
                            final Telemetry telemetry) {
-        this.challengeLevel = challengeLevel;
+        this.challengeLevel = chaosConfig.challengeLevel;
         this.driveMotorNames = driveMotorNames;
         this.mechanismMotorGroups = mechanismMotorGroups;
         this.servosToFail = servosToFail;
@@ -137,8 +137,6 @@ public class ChaosController {
             lag();
         }
 
-        telemetry.addData("04", "[CN!] cl: " + challengeLevel + " sf: " + shouldFail);
-
         /*Level 0
             Metrics only
           Level 1
@@ -191,19 +189,16 @@ public class ChaosController {
             // eatTheBattery();
             // slowOneDrivebaseMotor();
             // killOneServo();
-
-            killOneDrivebaseMotor();
+            //killOneDrivebaseMotor();
         }
 
-        if (failed) {
-            if (whatHasChaosNinjaDone != null) {
-                telemetry.addData("05", "Chaos Ninja!\n" + whatHasChaosNinjaDone);
-            }
-        }
+        telemetry.addData("[CN]", "cl: " + challengeLevel
+                + " sf: " + (shouldFail ? "1 " : "0 ")
+                + (whatHasChaosNinjaDone != null ? whatHasChaosNinjaDone : ""));
     }
 
     private void eatTheBattery() {
-        whatHasChaosNinjaDone = "Battery eater has eaten your battery!";
+        whatHasChaosNinjaDone = "I ate your battery!";
 
         List<DcMotorEx> allMotors = hardwareMap.getAll(DcMotorEx.class);
 
@@ -219,10 +214,12 @@ public class ChaosController {
         if (!servosToFail.isEmpty()) {
             String servoNameToFail = pickRandom(servosToFail);
 
-            ChaoticServo servoToFail = (ChaoticServo)hardwareMap.get(Servo.class, servoNameToFail);
+            Servo mightBeChaoticServo = hardwareMap.get(Servo.class, servoNameToFail);
 
-            if (servoToFail != null) {
-                whatHasChaosNinjaDone = "mmmmmmmmvvv chaos has microwaved your servo"; // FIXME!
+            if (mightBeChaoticServo != null && mightBeChaoticServo instanceof ChaoticServo) {
+                ChaoticServo servoToFail = (ChaoticServo) hardwareMap.get(Servo.class, servoNameToFail);
+
+                whatHasChaosNinjaDone = "I microwaved your servo"; // FIXME!
                 // FIXME: Log it too!
 
                 servoToFail.setFailureMode(ChaoticServo.ServoFailureMode.DEAD);
@@ -232,13 +229,13 @@ public class ChaosController {
 
     private void killOneDrivebaseMotor() {
 
-        whatHasChaosNinjaDone = "the new who done it mystery : the murdered motor by Chaos"; // FIXME!
+        whatHasChaosNinjaDone = "I murdered a motor"; // FIXME!
         // FIXME: Log it too!
         failOneRandomMotor(driveMotorNames, ChaoticMotor.MotorFailureMode.DEAD);
     }
 
     private void slowOneDrivebaseMotor() {
-        whatHasChaosNinjaDone = "maybe your motor needs sleep... or coffee - Chaos"; // FIXME!
+        whatHasChaosNinjaDone = "motor needs sleep... or coffee"; // FIXME!
         // FIXME: Log it too!
         failOneRandomMotor(driveMotorNames, ChaoticMotor.MotorFailureMode.SLOW);
     }

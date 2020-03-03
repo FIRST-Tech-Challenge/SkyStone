@@ -202,6 +202,7 @@ public class DeliveryMechanism {
         }
 
         fingerServo.setPosition(FINGER_INIT); // stay within 18"
+        telemetry.clear();
     }
 
     private boolean shouldUseLowerLimit() {

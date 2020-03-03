@@ -331,8 +331,8 @@ public class JackiebotAuto extends OpMode {
                 telemetry, driveBase, ticker, TimeUnit.SECONDS.toMillis(20 * 1000)) {
             @Override
             protected Trajectory createTrajectory() {
-                return driveBase.trajectoryBuilder().lineTo(TntPose2d.toVector2d(0, 28), new ConstantInterpolator(0))
-                        .lineTo(TntPose2d.toVector2d(-20, 28), new ConstantInterpolator(0))
+                return driveBase.trajectoryBuilder().lineToConstantHeading(TntPose2d.toVector2d(0, 28))
+                        .lineToConstantHeading(TntPose2d.toVector2d(-20, 28))
                         .build();
             }
         };

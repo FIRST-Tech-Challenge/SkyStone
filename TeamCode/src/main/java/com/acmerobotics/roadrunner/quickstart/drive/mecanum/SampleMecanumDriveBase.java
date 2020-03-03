@@ -75,6 +75,18 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         return new TrajectoryBuilder(getPoseEstimate(), constraints);
     }
 
+    public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
+        return new TrajectoryBuilder(startPose, constraints);
+    }
+
+    public TrajectoryBuilder trajectoryBuilder(Pose2d startPose, boolean reversed) {
+        return new TrajectoryBuilder(startPose, reversed, constraints);
+    }
+
+    public TrajectoryBuilder trajectoryBuilder(Pose2d startPose, double startHeading) {
+        return new TrajectoryBuilder(startPose, startHeading, constraints);
+    }
+
     public void turn(double angle) {
         double heading = getPoseEstimate().getHeading();
         turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(

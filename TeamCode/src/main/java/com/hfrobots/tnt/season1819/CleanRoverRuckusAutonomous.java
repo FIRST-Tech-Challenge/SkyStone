@@ -400,8 +400,8 @@ public class CleanRoverRuckusAutonomous extends RoverRuckusHardware {
         // --------------------------------------------------------------
 
         Trajectory toWallThenDepotTrajectory = new TrajectoryBuilder(TntPose2d.toPose2d(0, 0, 0), mecanumConstraints) // Always starting from 0, 0, 0
-                .lineTo(TntPose2d.toVector2d(-12, 0), new ConstantInterpolator(0)) // strafe
-                .lineTo(TntPose2d.toVector2d(-5 - 1, -49.4), new ConstantInterpolator(0)).build(); // to crater
+                .lineToConstantHeading(TntPose2d.toVector2d(-12, 0)) // strafe
+                .lineToConstantHeading(TntPose2d.toVector2d(-5 - 1, -49.4)).build(); // to crater
 
         TrajectoryFollowerState toWallThenDepotState = new TrajectoryFollowerState(
                 "To wall, then depot",
@@ -433,8 +433,7 @@ public class CleanRoverRuckusAutonomous extends RoverRuckusHardware {
 
         Trajectory toCraterTrajectory = new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints) // Always starting from 0, 0, 0
-                .lineTo(TntPose2d.toVector2d(-8 + 2, 62.3 + 3 + 3),
-                        new ConstantInterpolator(0)).build(); // Always a constant interpolator to hold heading
+                .lineToConstantHeading(TntPose2d.toVector2d(-8 + 2, 62.3 + 3 + 3)).build(); // Always a constant interpolator to hold heading
 
         TrajectoryFollowerState toCraterState = new TrajectoryFollowerState(
                 "To crater",
@@ -528,8 +527,8 @@ public class CleanRoverRuckusAutonomous extends RoverRuckusHardware {
         // --------------------------------------------------------------
 
         Trajectory toWallThenDepotTrajectory = new TrajectoryBuilder(TntPose2d.toPose2d(0, 0, 0), mecanumConstraints) // Always starting from 0, 0, 0
-                .lineTo(TntPose2d.toVector2d(12, 0), new ConstantInterpolator(0)) // strafe
-                .lineTo(TntPose2d.toVector2d(5, -49.4), new ConstantInterpolator(0)).build(); // to depot
+                .lineToConstantHeading(TntPose2d.toVector2d(12, 0)) // strafe
+                .lineToConstantHeading(TntPose2d.toVector2d(5, -49.4)).build(); // to depot
 
         TrajectoryFollowerState toWallThenDepotState = new TrajectoryFollowerState(
                 "To wall, then depot",
@@ -561,8 +560,7 @@ public class CleanRoverRuckusAutonomous extends RoverRuckusHardware {
 
         Trajectory toCraterTrajectory = new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints) // Always starting from 0, 0, 0
-                .lineTo(TntPose2d.toVector2d(8 - 2, 62.3 + 3 + 3),
-                        new ConstantInterpolator(0)).build(); // Always a constant interpolator to hold heading
+                .lineToConstantHeading(TntPose2d.toVector2d(8 - 2, 62.3 + 3 + 3)).build(); // Always a constant interpolator to hold heading
 
         TrajectoryFollowerState toCraterState = new TrajectoryFollowerState(
                 "To crater",
@@ -595,12 +593,12 @@ public class CleanRoverRuckusAutonomous extends RoverRuckusHardware {
     private NewMineralTrajectoryState.MineralTrajectorySegments createSampleLeftThenAlignWithWallTrajectory(double turnToStrafeInDegrees) {
         Trajectory pastGoldMineral = new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints) // Always starting from 0, 0, 0
-                .lineTo(TntPose2d.toVector2d(0, 8.0 - 10 + THROUGH_MINERAL_DISTANCE), new ConstantInterpolator(0)) // get to mineral
+                .lineToConstantHeading(TntPose2d.toVector2d(0, 8.0 - 10 + THROUGH_MINERAL_DISTANCE)) // get to mineral
                 .build();
 
         Trajectory throughGoldMineral = new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints)
-                .lineTo(TntPose2d.toVector2d(0, - (THROUGH_MINERAL_DISTANCE + 2)), new ConstantInterpolator(0)) // FIXME M3 Changes
+                .lineToConstantHeading(TntPose2d.toVector2d(0, - (THROUGH_MINERAL_DISTANCE + 2))) // FIXME M3 Changes
                 .build();
 
         // Really should be this, but later:
@@ -609,7 +607,7 @@ public class CleanRoverRuckusAutonomous extends RoverRuckusHardware {
 
         Trajectory toTurnAndStrafe  = new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints)
-                .lineTo(TntPose2d.toVector2d(0, 22 + THROUGH_MINERAL_DISTANCE + 2), new ConstantInterpolator(0))
+                .lineToConstantHeading(TntPose2d.toVector2d(0, 22 + THROUGH_MINERAL_DISTANCE + 2))
                 //.turnTo(Math.toRadians(turnToStrafeInDegrees))
                 .build();
 
@@ -620,13 +618,13 @@ public class CleanRoverRuckusAutonomous extends RoverRuckusHardware {
     private NewMineralTrajectoryState.MineralTrajectorySegments createSampleCenterThenAlignWithWallTrajectory(double turnToStrafeInDegrees) {
         Trajectory pastGoldMineral =  new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints) // Always starting from 0, 0, 0
-                .lineTo(TntPose2d.toVector2d(0, -3 - 15.5 /* FIXME: how far and in what direction do we drive? */), new ConstantInterpolator(0)) // get to mineral
+                .lineToConstantHeading(TntPose2d.toVector2d(0, -3 - 15.5 /* FIXME: how far and in what direction do we drive? */)) // get to mineral
 
                 .build();
 
         Trajectory throughGoldMineral = new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints)
-                .lineTo(TntPose2d.toVector2d(0, THROUGH_MINERAL_DISTANCE), new ConstantInterpolator(0))
+                .lineToConstantHeading(TntPose2d.toVector2d(0, THROUGH_MINERAL_DISTANCE))
                 .build();
 
         // Really should be this, but later:
@@ -635,7 +633,7 @@ public class CleanRoverRuckusAutonomous extends RoverRuckusHardware {
 
         Trajectory toTurnAndStrafe  = new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints)
-                .lineTo(TntPose2d.toVector2d(0, 38.5), new ConstantInterpolator(0))
+                .lineToConstantHeading(TntPose2d.toVector2d(0, 38.5))
                 //.turnTo(Math.toRadians(turnToStrafeInDegrees))
                 .build();
 
@@ -646,12 +644,12 @@ public class CleanRoverRuckusAutonomous extends RoverRuckusHardware {
     private NewMineralTrajectoryState.MineralTrajectorySegments createSampleRightThenAlignWithWallTrajectory(double turnToStrafeInDegrees) {
         Trajectory pastGoldMineral = new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints) // Always starting from 0, 0, 0
-                .lineTo(TntPose2d.toVector2d(0, -35), new ConstantInterpolator(0)) // get to mineral
+                .lineToConstantHeading(TntPose2d.toVector2d(0, -35)) // get to mineral
                 .build();
 
         Trajectory throughGoldMineral = new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints)
-                .lineTo(TntPose2d.toVector2d(0, THROUGH_MINERAL_DISTANCE), new ConstantInterpolator(0)) // FIXME M3 Changes
+                .lineToConstantHeading(TntPose2d.toVector2d(0, THROUGH_MINERAL_DISTANCE)) // FIXME M3 Changes
                 .build();
 
         // Really should be this, but later:
@@ -660,7 +658,7 @@ public class CleanRoverRuckusAutonomous extends RoverRuckusHardware {
 
         Trajectory toTurnAndStrafe  = new TrajectoryBuilder(
                 TntPose2d.toPose2d(0, 0, 0), mecanumConstraints)
-                .lineTo(TntPose2d.toVector2d(0, 54.5), new ConstantInterpolator(0))
+                .lineToConstantHeading(TntPose2d.toVector2d(0, 54.5))
                 //.turnTo(Math.toRadians(turnToStrafeInDegrees))
                 .build();
 

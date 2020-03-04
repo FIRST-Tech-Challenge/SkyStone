@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Movement.Localization.OdometerIMU2W;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Utility.RobotHardware;
 import org.firstinspires.ftc.teamcode.Utility.Timer;
 
 @Autonomous(name="Odometer Test", group="Testing")
+@Disabled
 public class odometerTest extends LinearOpMode {
 
     // Declare OpMode Members

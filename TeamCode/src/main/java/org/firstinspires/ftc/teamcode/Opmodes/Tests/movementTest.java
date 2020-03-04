@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Movement.Localization.OdometerIMU2W;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Utility.Timer;
 import java.util.ArrayList;
 
 @Autonomous(name="Movement Test", group="Testing")
+
 public class movementTest extends LinearOpMode {
 
     // Declare OpMode Members
@@ -30,7 +32,13 @@ public class movementTest extends LinearOpMode {
         telemetry.addData("status","running");
         telemetry.update();
 
-        movement.pointInDirection(90, 10);
+     //   movement.pointInDirection(90, 10);
+        movement.deadReckon(0,-0.5,0,1000);
+        timer.waitMillis(2000);
+        movement.deadReckon(0,0.5,0.5,1000);
+        timer.waitMillis(2000);
+        movement.deadReckon(0.5,0.5,0,1000);
+
 
         drivetrain.freeze();
 

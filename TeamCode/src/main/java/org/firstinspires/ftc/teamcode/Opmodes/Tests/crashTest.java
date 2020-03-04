@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Opmodes.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.HardwareSystems.ActionHandler;
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.teamcode.Utility.Timer;
 import java.util.ArrayList;
 
 @Autonomous(name="Stuck In Stop Test", group="Testing")
+@Disabled
 public class crashTest extends LinearOpMode {
 
     // Declare OpMode Members

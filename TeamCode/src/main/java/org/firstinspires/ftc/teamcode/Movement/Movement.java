@@ -151,16 +151,17 @@ public class Movement {
 
     }
 
+
     public void moveToPointPD(RobotPoint targetPoint, double switchThresh, double arrivedThresh) {
 
-        GatedPid orient = new GatedPid(10, 0.3,0.0085,0,0.023,0, 0.4, 0.05);
+        GatedPid orient = new GatedPid(10, 0.3,0.009,0,0.023,0, 0.4, 0.05);
 
         double xDist, yDist, distance, heading;
         double targSpeed, scale;
         double targVX, targVY, hCorrect;
         boolean endCondition;
 
-        GatedPid speedFinder = new GatedPid(switchThresh, 0.8, 0.016, 0, 0.05, 0, 0.8,0.2);
+        GatedPid speedFinder = new GatedPid(switchThresh, 0.8, 0.018, 0, 0.05, 0, 0.8,0.2);
 
         do {
 
@@ -243,7 +244,7 @@ public class Movement {
     public void pointInDirection(double targetHeading, double threshold){
 
         //GatedPid orient = new GatedPid(2, 0.6, 0.3, 0,0, 0, 0.6, 0);
-        Proportional orient = new Proportional(0.25, 0.6);
+        Proportional orient = new Proportional(0.2, 0.6);
 
         double heading, hCorrect;
 

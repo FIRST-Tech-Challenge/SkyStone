@@ -329,11 +329,11 @@ public class teleOp extends LinearOpMode {
                     }
                     dpadUpPressed = false;
                 }
-                if (liftGoal - liftAverage > 100 ) { //code handles the robot (sets motor powers for lift)
+                if (liftGoal - liftAverage > 75 ) { //code handles the robot (sets motor powers for lift)
                     liftRight.setPower(-1.0);
                     liftLeft.setPower(-1.0);
                 }
-                else if (liftGoal - liftAverage > 15 && liftGoal - liftAverage < 100 ) {
+                else if (liftGoal - liftAverage > 15 && liftGoal - liftAverage < 75 ) {
                     liftRight.setPower(-0.2);
                     liftLeft.setPower(-0.2);
                 }
@@ -348,7 +348,9 @@ public class teleOp extends LinearOpMode {
 
 
             }
-            if (liftState.equals("droppingOff")){//this is the auto dropoff sequence state
+
+
+            if (liftState.equals("droppingOff") && liftAverage <=400){//this is the auto dropoff sequence state
                 if(dropoffCounter ==0){
                     dropoffslidePosition = liftAverage + 300; //(2/5/20 edit), changed from +100 to +175 to make lift go higher on dropoff sequence
                     lastEncoderHeight = liftAverage + 100; //this is approxmiating the level of the last block's liftGoal
@@ -359,21 +361,106 @@ public class teleOp extends LinearOpMode {
                     grabberState = 1;
                 }
                 if (dropoffslidePosition > liftAverage && liftAverage < liftMax && dropoffCounter > 10){ //(2/5/2020 edit) - pauses for a bit (dropoff counter > 3) before powering slides
-                    liftLeft.setPower(-.7);
-                    liftRight.setPower(-.7);
+                    liftLeft.setPower(-.8);
+                    liftRight.setPower(-.8);
                 }
-                if (dropoffCounter > 28 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
+                if (dropoffCounter >20 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
                     lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos
                     grabberState = 0; //sets the grabbers to rear closed, front open state
 
                 }
-                if (dropoffCounter > 42 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
+                if (dropoffCounter > 26 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
                     lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos
                     grabberState = 0; //sets the grabbers to rear closed, front open state
                     dropoffCounter = 0; //sequence is over, so reset counter variable
                     liftState = "retracting"; //pass the robot over to the 'retracting' code for A-reset
                 }
             }
+
+
+            if (liftState.equals("droppingOff") && liftAverage > 400 && liftAverage <=800){//this is the auto dropoff sequence state
+                if(dropoffCounter ==0){
+                    dropoffslidePosition = liftAverage + 300; //(2/5/20 edit), changed from +100 to +175 to make lift go higher on dropoff sequence
+                    lastEncoderHeight = liftAverage + 100; //this is approxmiating the level of the last block's liftGoal
+                }
+                dropoffCounter = dropoffCounter + 1; //increment dropoff counter - this keeps track of time.
+
+                if(dropoffCounter < 3) { //first loop of code, open the servo and find a target slide height
+                    grabberState = 1;
+                }
+                if (dropoffslidePosition > liftAverage && liftAverage < liftMax && dropoffCounter > 10){ //(2/5/2020 edit) - pauses for a bit (dropoff counter > 3) before powering slides
+                    liftLeft.setPower(-.8);
+                    liftRight.setPower(-.8);
+                }
+                if (dropoffCounter >20 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
+                    lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos
+                    grabberState = 0; //sets the grabbers to rear closed, front open state
+
+                }
+                if (dropoffCounter > 26 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
+                    lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos
+                    grabberState = 0; //sets the grabbers to rear closed, front open state
+                    dropoffCounter = 0; //sequence is over, so reset counter variable
+                    liftState = "retracting"; //pass the robot over to the 'retracting' code for A-reset
+                }
+            }
+
+            if (liftState.equals("droppingOff") && liftAverage > 800 && liftAverage <=1400){//this is the auto dropoff sequence state
+                if(dropoffCounter ==0){
+                    dropoffslidePosition = liftAverage + 300; //(2/5/20 edit), changed from +100 to +175 to make lift go higher on dropoff sequence
+                    lastEncoderHeight = liftAverage + 100; //this is approxmiating the level of the last block's liftGoal
+                }
+                dropoffCounter = dropoffCounter + 1; //increment dropoff counter - this keeps track of time.
+
+                if(dropoffCounter < 3) { //first loop of code, open the servo and find a target slide height
+                    grabberState = 1;
+                }
+                if (dropoffslidePosition > liftAverage && liftAverage < liftMax && dropoffCounter > 10){ //(2/5/2020 edit) - pauses for a bit (dropoff counter > 3) before powering slides
+                    liftLeft.setPower(-.9);
+                    liftRight.setPower(-.9);
+                }
+                if (dropoffCounter > 24 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
+                    lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos
+                    grabberState = 0; //sets the grabbers to rear closed, front open state
+
+                }
+                if (dropoffCounter > 30 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
+                    lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos
+                    grabberState = 0; //sets the grabbers to rear closed, front open state
+                    dropoffCounter = 0; //sequence is over, so reset counter variable
+                    liftState = "retracting"; //pass the robot over to the 'retracting' code for A-reset
+                }
+            }
+
+            if (liftState.equals("droppingOff") && liftAverage > 1400){//this is the auto dropoff sequence state
+                if(dropoffCounter ==0){
+                    dropoffslidePosition = liftAverage + 300; //(2/5/20 edit), changed from +100 to +175 to make lift go higher on dropoff sequence
+                    lastEncoderHeight = liftAverage + 100; //this is approxmiating the level of the last block's liftGoal
+                }
+                dropoffCounter = dropoffCounter + 1; //increment dropoff counter - this keeps track of time.
+
+                if(dropoffCounter < 3) { //first loop of code, open the servo and find a target slide height
+                    grabberState = 1;
+                }
+                if (dropoffslidePosition > liftAverage && liftAverage < liftMax && dropoffCounter > 10){ //(2/5/2020 edit) - pauses for a bit (dropoff counter > 3) before powering slides
+                    liftLeft.setPower(-1.0);
+                    liftRight.setPower(-1.0);
+                }
+                if (dropoffCounter > 34 && (dropoffslidePosition - liftAverage) < 50 && liftAverage < liftMax){ //after 12 loops, the flipper servos will start moving into the robot.
+                    lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos
+                    grabberState = 0; //sets the grabbers to rear closed, front open state
+                    liftLeft.setPower(-1.0);
+                    liftRight.setPower(-1.0);
+
+                }
+                if (dropoffCounter > 48 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
+                    lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos
+                    grabberState = 0; //sets the grabbers to rear closed, front open state
+                    dropoffCounter = 0; //sequence is over, so reset counter variable
+                    liftState = "retracting"; //pass the robot over to the 'retracting' code for A-reset
+                }
+            }
+
             if (liftState.equals("capstoneDroppingOff")){//this is the auto dropoff sequence state
                 if(dropoffCounter ==0){
                     dropoffslidePosition = liftAverage + 300; //(2/5/20 edit), changed from +100 to +175 to make lift go higher on dropoff sequence
@@ -385,8 +472,8 @@ public class teleOp extends LinearOpMode {
                 }
 
                 if (dropoffslidePosition > liftAverage && liftAverage < liftMax && dropoffCounter > 20){ //(2/5/2020 edit) - pauses for a bit (dropoff counter > 3) before powering slides
-                    liftLeft.setPower(-.7);
-                    liftRight.setPower(-.7);
+                    liftLeft.setPower(-.9);
+                    liftRight.setPower(-.9);
                 }
                 if (dropoffCounter > 60 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
                     lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos

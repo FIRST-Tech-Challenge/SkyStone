@@ -12,6 +12,8 @@ public class ActionHandlerClaws extends ActionHandler{
 
     @Override
     public void doActions(RobotPoint point){
-        claws.setPositions(point.clampPosition, point.hookPosition);
+   //     claws.setPositions(point.clampPosition, point.hookPosition);
     }
 }
+
+

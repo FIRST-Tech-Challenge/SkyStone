@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.CustomCV.MainPipeline;
 import org.firstinspires.ftc.teamcode.CustomCV.RedPipeline;
 import org.firstinspires.ftc.teamcode.HardwareSystems.ActionHandler;
 import org.firstinspires.ftc.teamcode.HardwareSystems.ActionHandlerClaws;
@@ -30,9 +31,10 @@ public class redAuto extends LinearOpMode {
     private MecanumDrive drivetrain;
     private Movement movement;
     private AutoClaws autoClaws;
-    private RedPipeline pipeline;
+    private MainPipeline pipeline;
     private OpenCvCamera phoneCam;
 
+    private int dropOff;
     private int skyPosition;
     private ActionHandlerClaws handler;
 
@@ -48,124 +50,110 @@ public class redAuto extends LinearOpMode {
         scanSkystone();
 
         // Initialization of Paths
-        ArrayList<RobotPoint> pickupBlockOne = new ArrayList<>();
-        pickupBlockOne.add(new RobotPoint(237, 74, 90, 1.0)); // at foundation
-        pickupBlockOne.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
-        pickupBlockOne.add(new RobotPoint(156, 63, 90, 1.0));
-        pickupBlockOne.add(new RobotPoint(115, 63, 90, 1.0));
-        pickupBlockOne.add(new RobotPoint(86, 70, 90, 1.0)); // at blo
 
-        ArrayList<RobotPoint> pickupBlockTwo = new ArrayList<>();
-        pickupBlockTwo.add(new RobotPoint(237, 74, 90, 1.0)); // at foundation
-        pickupBlockTwo.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
-        pickupBlockTwo.add(new RobotPoint(156, 63, 90, 1.0));
-        pickupBlockTwo.add(new RobotPoint(115, 63, 90, 1.0));
-        pickupBlockTwo.add(new RobotPoint(86, 68, 90, 1.0));
-        pickupBlockTwo.add(new RobotPoint(66, 70, 90, 1.0)); // at block
-
-        ArrayList<RobotPoint> pickupBlockThree = new ArrayList<>();
-        pickupBlockThree.add(new RobotPoint(237, 74, 90, 1.0)); // at foundation
-        pickupBlockThree.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
-        pickupBlockThree.add(new RobotPoint(156, 63, 90, 1.0));
-        pickupBlockThree.add(new RobotPoint(115, 63, 90, 1.0));
-        pickupBlockThree.add(new RobotPoint(86, 68, 90, 1.0));
-        pickupBlockThree.add(new RobotPoint(66, 70, 90, 1.0)); // at block
-        pickupBlockThree.add(new RobotPoint(46, 70, 90, 1.0)); // at block
-
-        ArrayList<RobotPoint> pickupBlockFour = new ArrayList<>();
-        pickupBlockFour.add(new RobotPoint(237, 74, 90, 1.0)); // at foundation
-        pickupBlockFour.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
-        pickupBlockFour.add(new RobotPoint(156, 63, 90, 1.0));
-        pickupBlockFour.add(new RobotPoint(115, 63, 90, 1.0));
-        pickupBlockFour.add(new RobotPoint(86, 68, 90, 1.0));
-        pickupBlockFour.add(new RobotPoint(66, 68, 90, 1.0)); // at block
-        pickupBlockFour.add(new RobotPoint(46, 70, 90, 1.0)); // at block
-        pickupBlockFour.add(new RobotPoint(26, 72, 90, 1.0)); // at block
-
-        ArrayList<RobotPoint> dropoffOne = new ArrayList<>();
-        dropoffOne.add(new RobotPoint(46,74.5,90,1.0)); // at block
-        dropoffOne.add(new RobotPoint(60,70,90,1.0));
-        dropoffOne.add(new RobotPoint(86, 65, 90, 1.0));
-        dropoffOne.add(new RobotPoint(115, 61, 90, 1.0));
-        dropoffOne.add(new RobotPoint(156, 65, 90, 1.0));
-        dropoffOne.add(new RobotPoint(175, 73, 90, 1.0)); // at foundation
-        dropoffOne.add(new RobotPoint(236, 79, 90, 1.0)); // at foundation
-
-        ArrayList<RobotPoint> dropoffTwo = new ArrayList<>();
-        dropoffTwo.add(new RobotPoint(25,74.5,90,1.0)); // at block
-        dropoffTwo.add(new RobotPoint(45,72,90,1.0)); // at block
-        dropoffTwo.add(new RobotPoint(60,70,90,1.0));
-        dropoffTwo.add(new RobotPoint(86, 65, 90, 1.0));
-        dropoffTwo.add(new RobotPoint(115, 63, 90, 1.0));
-        dropoffTwo.add(new RobotPoint(156, 67, 90, 1.0));
-        dropoffTwo.add(new RobotPoint(175, 73, 90, 1.0)); // at foundation
-        dropoffTwo.add(new RobotPoint(234, 79, 90, 1.0)); // at foundation
-
-        ArrayList<RobotPoint> dropoffThree = new ArrayList<>();
-        dropoffThree.add(new RobotPoint(5,74.5,90,1.0)); // at block
-        dropoffThree.add(new RobotPoint(30,68,90,1.0)); // at block
-        dropoffThree.add(new RobotPoint(61, 65, 90, 1.0));
-        dropoffThree.add(new RobotPoint(115, 63, 90, 1.0));
-        dropoffThree.add(new RobotPoint(156, 67, 90, 1.0));
-        dropoffThree.add(new RobotPoint(165, 73, 90, 1.0)); // at foundation
-        dropoffThree.add(new RobotPoint(220, 79, 90, 1.0)); // at foundation
-
-        ArrayList<RobotPoint> dropoffFour = new ArrayList<>();
-        dropoffFour.add(new RobotPoint(-18,74.5,90,1.0)); // at block
-        dropoffFour.add(new RobotPoint(30,68,90,1.0)); // at block
-        dropoffFour.add(new RobotPoint(61, 65, 90, 1.0));
-        dropoffFour.add(new RobotPoint(115, 63, 90, 1.0));
-        dropoffFour.add(new RobotPoint(156, 67, 90, 1.0));
-        dropoffFour.add(new RobotPoint(165, 73, 90, 1.0)); // at foundation
-        dropoffFour.add(new RobotPoint(220, 79, 90, 1.0)); // at foundation
-
-        ArrayList<RobotPoint> dropoffFive = new ArrayList<>();
-        dropoffFive.add(new RobotPoint(-38,74.5,90,1.0)); // at block
-        dropoffFive.add(new RobotPoint(46,68,90,1.0)); // at block
-        dropoffFive.add(new RobotPoint(61, 65, 90, 1.0));
-        dropoffFive.add(new RobotPoint(115, 63, 90, 1.0));
-        dropoffFive.add(new RobotPoint(156, 67, 90, 1.0));
-        dropoffFive.add(new RobotPoint(155, 73, 90, 1.0)); // at foundation
-        dropoffFive.add(new RobotPoint(220, 77, 90, 1.0)); // at foundation
-
-        ArrayList<RobotPoint> dropoffSix = new ArrayList<>();
-        dropoffSix.add(new RobotPoint(-56,74.5,90,1.0)); // at block
-        dropoffSix.add(new RobotPoint(46,68,90,1.0)); // at block
-        dropoffSix.add(new RobotPoint(61, 65, 90, 1.0));
-        dropoffSix.add(new RobotPoint(115, 61, 90, 1.0));
-        dropoffSix.add(new RobotPoint(156, 65, 90, 1.0));
-        dropoffSix.add(new RobotPoint(155, 73, 90, 1.0)); // at foundation
-        dropoffSix.add(new RobotPoint(220, 77, 90, 1.0)); // at foundation
 
         ArrayList<RobotPoint> park = new ArrayList<>();
         park.add(new RobotPoint(230,40,90,0.4)); // at block
         park.add(new RobotPoint(200,70,90,0.4)); // at block
 
+        skyPosition = 0;
         // Actual running of routine
         if (skyPosition == 0){//closest wall
+            ArrayList<RobotPoint> pickupBlockOne = new ArrayList<>();
+            pickupBlockOne.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            //  pickupBlockOne.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
+            // pickupBlockOne.add(new RobotPoint(156, 63, 90, 1.0));
+            pickupBlockOne.add(new RobotPoint(100, 63, 90, 1.0));
+            pickupBlockOne.add(new RobotPoint(86, 70, 90, 1.0)); // at blo
+
+            ArrayList<RobotPoint> pickupBlockTwo = new ArrayList<>();
+            pickupBlockTwo.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            // pickupBlockTwo.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
+            // pickupBlockTwo.add(new RobotPoint(156, 63, 90, 1.0));
+            pickupBlockTwo.add(new RobotPoint(100, 63, 90, 1.0));
+            //  pickupBlockTwo.add(new RobotPoint(86, 68, 90, 1.0));
+            pickupBlockTwo.add(new RobotPoint(66, 70, 90, 1.0)); // at block
+
+            ArrayList<RobotPoint> pickupBlockThree = new ArrayList<>();
+            pickupBlockThree.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            //  pickupBlockThree.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
+            //  pickupBlockThree.add(new RobotPoint(156, 63, 90, 1.0));
+            pickupBlockThree.add(new RobotPoint(100, 63, 90, 1.0));
+            //  pickupBlockThree.add(new RobotPoint(86, 68, 90, 1.0));
+            //   pickupBlockThree.add(new RobotPoint(66, 70, 90, 1.0)); // at block
+            pickupBlockThree.add(new RobotPoint(46, 70, 90, 1.0)); // at block
+
+            ArrayList<RobotPoint> pickupBlockFour = new ArrayList<>();
+            pickupBlockFour.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            // pickupBlockFour.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
+            // pickupBlockFour.add(new RobotPoint(156, 63, 90, 1.0));
+            pickupBlockFour.add(new RobotPoint(100, 63, 90, 1.0));
+            // pickupBlockFour.add(new RobotPoint(86, 68, 90, 1.0));
+            //  pickupBlockFour.add(new RobotPoint(66, 68, 90, 1.0)); // at block
+            //  pickupBlockFour.add(new RobotPoint(46, 70, 90, 1.0)); // at block
+            pickupBlockFour.add(new RobotPoint(26, 70, 90, 1.0)); // at block
+
+            ArrayList<RobotPoint> dropoffOne = new ArrayList<>();
+            dropoffOne.add(new RobotPoint(46,74.5,90,1.0)); // at block
+            // dropoffOne.add(new RobotPoint(60,70,90,1.0));
+            // dropoffOne.add(new RobotPoint(86, 65, 90, 1.0));
+            dropoffOne.add(new RobotPoint(100, 61, 90, 1.0));
+            // dropoffOne.add(new RobotPoint(156, 65, 90, 1.0));
+            //  dropoffOne.add(new RobotPoint(175, 73, 90, 1.0)); // at foundation
+            dropoffOne.add(new RobotPoint(218, 84, 90, 1.0)); // at foundation
+
+            ArrayList<RobotPoint> dropoffTwo = new ArrayList<>();
+            dropoffTwo.add(new RobotPoint(26,74.5,90,1.0)); // at block
+            // dropoffTwo.add(new RobotPoint(45,72,90,1.0)); // at block
+            // dropoffTwo.add(new RobotPoint(60,70,90,1.0));
+            // dropoffTwo.add(new RobotPoint(86, 65, 90, 1.0));
+            dropoffTwo.add(new RobotPoint(100, 63, 90, 1.0));
+            // dropoffTwo.add(new RobotPoint(156, 67, 90, 1.0));
+            //  dropoffTwo.add(new RobotPoint(175, 73, 90, 1.0)); // at foundation
+            dropoffTwo.add(new RobotPoint(223, 84, 90, 1.0)); // at foundation
+
+            ArrayList<RobotPoint> dropoffThree = new ArrayList<>();
+            dropoffThree.add(new RobotPoint(5,74.5,90,1.0)); // at block
+            //  dropoffThree.add(new RobotPoint(30,68,90,1.0)); // at block
+            //  dropoffThree.add(new RobotPoint(61, 65, 90, 1.0));
+            dropoffThree.add(new RobotPoint(100, 63, 90, 1.0));
+            //  dropoffThree.add(new RobotPoint(156, 67, 90, 1.0));
+            //  dropoffThree.add(new RobotPoint(165, 73, 90, 1.0)); // at foundation
+            dropoffThree.add(new RobotPoint(229, 84, 90, 1.0)); // at foundation
+
+            ArrayList<RobotPoint> dropoffSix = new ArrayList<>();
+            dropoffSix.add(new RobotPoint(-56,74.5,90,1.0)); // at block
+            //  dropoffSix.add(new RobotPoint(46,68,90,1.0)); // at block
+            // dropoffSix.add(new RobotPoint(61, 65, 90, 1.0));
+            dropoffSix.add(new RobotPoint(100, 61, 90, 1.0));
+            //   dropoffSix.add(new RobotPoint(156, 65, 90, 1.0));
+            //   dropoffSix.add(new RobotPoint(155, 73, 90, 1.0)); // at foundation
+            dropoffSix.add(new RobotPoint(238, 84, 90, 1.0)); // at foundation
+
+
             autoClaws.firstPrime();
-            movement.moveToPointPD(new RobotPoint(-56, 73, 90, 0.1), 100, 1.5);
+            movement.moveToPointPD(new RobotPoint(-58, 73, 90, 0.1), 100, 1.5);
             autoClaws.grabBlock();
             autoClaws.storeBlock();
             movement.followPath(dropoffSix,15);
             autoClaws.depositBlockThrow();
             movement.followPath(pickupBlockThree, 16);
             autoClaws.prime();
-            movement.moveToPointPD(new RobotPoint(5, 76, 90, 0.1), 50, 1.5);
+            movement.moveToPointPD(new RobotPoint(8, 77, 90, 0.1), 50, 1.5);
             autoClaws.grabBlock();
             autoClaws.storeBlock();
             movement.followPath(dropoffThree,16);
             autoClaws.depositBlockThrow();
             movement.followPath(pickupBlockOne,16);
             autoClaws.prime();
-            movement.moveToPointPD(new RobotPoint(46, 77, 90, 0.1), 50, 1.5);
+            movement.moveToPointPD(new RobotPoint(46, 80, 90, 0.1), 50, 1.5);
             autoClaws.grabBlock();
             autoClaws.storeBlock();
             movement.followPath(dropoffOne,15);
             autoClaws.depositBlock();
             movement.followPath(pickupBlockTwo,16);
             autoClaws.prime();
-            movement.moveToPointPD(new RobotPoint(28, 79, 90, 0.1), 50, 1.5);
+            movement.moveToPointPD(new RobotPoint(28, 81, 90, 0.1), 50, 1.5);
             autoClaws.grabBlock();
             autoClaws.storeBlock();
             movement.followPath(dropoffTwo,15);
@@ -173,6 +161,94 @@ public class redAuto extends LinearOpMode {
 
 
         } if(skyPosition == 1 ){//middle
+            ArrayList<RobotPoint> pickupBlockOne = new ArrayList<>();
+            pickupBlockOne.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            //  pickupBlockOne.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
+            // pickupBlockOne.add(new RobotPoint(156, 63, 90, 1.0));
+            pickupBlockOne.add(new RobotPoint(100, 63, 90, 1.0));
+            pickupBlockOne.add(new RobotPoint(86, 70, 90, 1.0)); // at blo
+
+            ArrayList<RobotPoint> pickupBlockTwo = new ArrayList<>();
+            pickupBlockTwo.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            // pickupBlockTwo.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
+            // pickupBlockTwo.add(new RobotPoint(156, 63, 90, 1.0));
+            pickupBlockTwo.add(new RobotPoint(100, 63, 90, 1.0));
+            //  pickupBlockTwo.add(new RobotPoint(86, 68, 90, 1.0));
+            pickupBlockTwo.add(new RobotPoint(66, 70, 90, 1.0)); // at block
+
+            ArrayList<RobotPoint> pickupBlockThree = new ArrayList<>();
+            pickupBlockThree.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            //  pickupBlockThree.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
+            //  pickupBlockThree.add(new RobotPoint(156, 63, 90, 1.0));
+            pickupBlockThree.add(new RobotPoint(100, 63, 90, 1.0));
+            //  pickupBlockThree.add(new RobotPoint(86, 68, 90, 1.0));
+            //   pickupBlockThree.add(new RobotPoint(66, 70, 90, 1.0)); // at block
+            pickupBlockThree.add(new RobotPoint(46, 70, 90, 1.0)); // at block
+
+            ArrayList<RobotPoint> pickupBlockFour = new ArrayList<>();
+            pickupBlockFour.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            // pickupBlockFour.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
+            // pickupBlockFour.add(new RobotPoint(156, 63, 90, 1.0));
+            pickupBlockFour.add(new RobotPoint(100, 63, 90, 1.0));
+            // pickupBlockFour.add(new RobotPoint(86, 68, 90, 1.0));
+            //  pickupBlockFour.add(new RobotPoint(66, 68, 90, 1.0)); // at block
+            //  pickupBlockFour.add(new RobotPoint(46, 70, 90, 1.0)); // at block
+            pickupBlockFour.add(new RobotPoint(26, 70, 90, 1.0)); // at block
+
+            ArrayList<RobotPoint> dropoffOne = new ArrayList<>();
+            dropoffOne.add(new RobotPoint(46,74.5,90,1.0)); // at block
+            // dropoffOne.add(new RobotPoint(60,70,90,1.0));
+            // dropoffOne.add(new RobotPoint(86, 65, 90, 1.0));
+            dropoffOne.add(new RobotPoint(100, 61, 90, 1.0));
+            // dropoffOne.add(new RobotPoint(156, 65, 90, 1.0));
+            //  dropoffOne.add(new RobotPoint(175, 73, 90, 1.0)); // at foundation
+            dropoffOne.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+
+            ArrayList<RobotPoint> dropoffTwo = new ArrayList<>();
+            dropoffTwo.add(new RobotPoint(26,74.5,90,1.0)); // at block
+            // dropoffTwo.add(new RobotPoint(45,72,90,1.0)); // at block
+            // dropoffTwo.add(new RobotPoint(60,70,90,1.0));
+            // dropoffTwo.add(new RobotPoint(86, 65, 90, 1.0));
+            dropoffTwo.add(new RobotPoint(100, 63, 90, 1.0));
+            // dropoffTwo.add(new RobotPoint(156, 67, 90, 1.0));
+            //  dropoffTwo.add(new RobotPoint(175, 73, 90, 1.0)); // at foundation
+            dropoffTwo.add(new RobotPoint(223, 84, 90, 1.0)); // at foundation
+
+            ArrayList<RobotPoint> dropoffThree = new ArrayList<>();
+            dropoffThree.add(new RobotPoint(5,74.5,90,1.0)); // at block
+            //  dropoffThree.add(new RobotPoint(30,68,90,1.0)); // at block
+            //  dropoffThree.add(new RobotPoint(61, 65, 90, 1.0));
+            dropoffThree.add(new RobotPoint(100, 63, 90, 1.0));
+            //  dropoffThree.add(new RobotPoint(156, 67, 90, 1.0));
+            //  dropoffThree.add(new RobotPoint(165, 73, 90, 1.0)); // at foundation
+            dropoffThree.add(new RobotPoint(223, 84, 90, 1.0)); // at foundation
+
+            ArrayList<RobotPoint> dropoffFour = new ArrayList<>();
+            dropoffFour.add(new RobotPoint(-18,74.5,90,1.0)); // at block
+            // dropoffFour.add(new RobotPoint(30,68,90,1.0)); // at block
+            // dropoffFour.add(new RobotPoint(61, 65, 90, 1.0));
+            dropoffFour.add(new RobotPoint(100, 63, 90, 1.0));
+            //  dropoffFour.add(new RobotPoint(156, 67, 90, 1.0));
+            //  dropoffFour.add(new RobotPoint(165, 73, 90, 1.0)); // at foundation
+            dropoffFour.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+
+            ArrayList<RobotPoint> dropoffFive = new ArrayList<>();
+            dropoffFive.add(new RobotPoint(-38,74.5,90,1.0)); // at block
+            // dropoffFive.add(new RobotPoint(46,68,90,1.0)); // at block
+            //  dropoffFive.add(new RobotPoint(61, 65, 90, 1.0));
+            dropoffFive.add(new RobotPoint(100, 63, 90, 1.0));
+            // dropoffFive.add(new RobotPoint(156, 67, 90, 1.0));
+            //  dropoffFive.add(new RobotPoint(155, 73, 90, 1.0)); // at foundation
+            dropoffFive.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+
+            ArrayList<RobotPoint> dropoffSix = new ArrayList<>();
+            dropoffSix.add(new RobotPoint(-56,74.5,90,1.0)); // at block
+            //  dropoffSix.add(new RobotPoint(46,68,90,1.0)); // at block
+            // dropoffSix.add(new RobotPoint(61, 65, 90, 1.0));
+            dropoffSix.add(new RobotPoint(100, 61, 90, 1.0));
+            //   dropoffSix.add(new RobotPoint(156, 65, 90, 1.0));
+            //   dropoffSix.add(new RobotPoint(155, 73, 90, 1.0)); // at foundation
+            dropoffSix.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
             autoClaws.firstPrime();
             movement.moveToPointPD(new RobotPoint(-38, 73, 90, 0.1), 100, 1.5);
             autoClaws.grabBlock();
@@ -202,6 +278,94 @@ public class redAuto extends LinearOpMode {
             autoClaws.depositBlock();
 
         }if(skyPosition == 2){//furthest from wall
+            ArrayList<RobotPoint> pickupBlockOne = new ArrayList<>();
+            pickupBlockOne.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            //  pickupBlockOne.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
+            // pickupBlockOne.add(new RobotPoint(156, 63, 90, 1.0));
+            pickupBlockOne.add(new RobotPoint(100, 63, 90, 1.0));
+            pickupBlockOne.add(new RobotPoint(86, 70, 90, 1.0)); // at blo
+
+            ArrayList<RobotPoint> pickupBlockTwo = new ArrayList<>();
+            pickupBlockTwo.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            // pickupBlockTwo.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
+            // pickupBlockTwo.add(new RobotPoint(156, 63, 90, 1.0));
+            pickupBlockTwo.add(new RobotPoint(100, 63, 90, 1.0));
+            //  pickupBlockTwo.add(new RobotPoint(86, 68, 90, 1.0));
+            pickupBlockTwo.add(new RobotPoint(66, 70, 90, 1.0)); // at block
+
+            ArrayList<RobotPoint> pickupBlockThree = new ArrayList<>();
+            pickupBlockThree.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            //  pickupBlockThree.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
+            //  pickupBlockThree.add(new RobotPoint(156, 63, 90, 1.0));
+            pickupBlockThree.add(new RobotPoint(100, 63, 90, 1.0));
+            //  pickupBlockThree.add(new RobotPoint(86, 68, 90, 1.0));
+            //   pickupBlockThree.add(new RobotPoint(66, 70, 90, 1.0)); // at block
+            pickupBlockThree.add(new RobotPoint(46, 70, 90, 1.0)); // at block
+
+            ArrayList<RobotPoint> pickupBlockFour = new ArrayList<>();
+            pickupBlockFour.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            // pickupBlockFour.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
+            // pickupBlockFour.add(new RobotPoint(156, 63, 90, 1.0));
+            pickupBlockFour.add(new RobotPoint(100, 63, 90, 1.0));
+            // pickupBlockFour.add(new RobotPoint(86, 68, 90, 1.0));
+            //  pickupBlockFour.add(new RobotPoint(66, 68, 90, 1.0)); // at block
+            //  pickupBlockFour.add(new RobotPoint(46, 70, 90, 1.0)); // at block
+            pickupBlockFour.add(new RobotPoint(26, 70, 90, 1.0)); // at block
+
+            ArrayList<RobotPoint> dropoffOne = new ArrayList<>();
+            dropoffOne.add(new RobotPoint(46,74.5,90,1.0)); // at block
+            // dropoffOne.add(new RobotPoint(60,70,90,1.0));
+            // dropoffOne.add(new RobotPoint(86, 65, 90, 1.0));
+            dropoffOne.add(new RobotPoint(100, 61, 90, 1.0));
+            // dropoffOne.add(new RobotPoint(156, 65, 90, 1.0));
+            //  dropoffOne.add(new RobotPoint(175, 73, 90, 1.0)); // at foundation
+            dropoffOne.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+
+            ArrayList<RobotPoint> dropoffTwo = new ArrayList<>();
+            dropoffTwo.add(new RobotPoint(26,74.5,90,1.0)); // at block
+            // dropoffTwo.add(new RobotPoint(45,72,90,1.0)); // at block
+            // dropoffTwo.add(new RobotPoint(60,70,90,1.0));
+            // dropoffTwo.add(new RobotPoint(86, 65, 90, 1.0));
+            dropoffTwo.add(new RobotPoint(100, 63, 90, 1.0));
+            // dropoffTwo.add(new RobotPoint(156, 67, 90, 1.0));
+            //  dropoffTwo.add(new RobotPoint(175, 73, 90, 1.0)); // at foundation
+            dropoffTwo.add(new RobotPoint(223, 84, 90, 1.0)); // at foundation
+
+            ArrayList<RobotPoint> dropoffThree = new ArrayList<>();
+            dropoffThree.add(new RobotPoint(5,74.5,90,1.0)); // at block
+            //  dropoffThree.add(new RobotPoint(30,68,90,1.0)); // at block
+            //  dropoffThree.add(new RobotPoint(61, 65, 90, 1.0));
+            dropoffThree.add(new RobotPoint(100, 63, 90, 1.0));
+            //  dropoffThree.add(new RobotPoint(156, 67, 90, 1.0));
+            //  dropoffThree.add(new RobotPoint(165, 73, 90, 1.0)); // at foundation
+            dropoffThree.add(new RobotPoint(223, 84, 90, 1.0)); // at foundation
+
+            ArrayList<RobotPoint> dropoffFour = new ArrayList<>();
+            dropoffFour.add(new RobotPoint(-18,74.5,90,1.0)); // at block
+            // dropoffFour.add(new RobotPoint(30,68,90,1.0)); // at block
+            // dropoffFour.add(new RobotPoint(61, 65, 90, 1.0));
+            dropoffFour.add(new RobotPoint(100, 63, 90, 1.0));
+            //  dropoffFour.add(new RobotPoint(156, 67, 90, 1.0));
+            //  dropoffFour.add(new RobotPoint(165, 73, 90, 1.0)); // at foundation
+            dropoffFour.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+
+            ArrayList<RobotPoint> dropoffFive = new ArrayList<>();
+            dropoffFive.add(new RobotPoint(-38,74.5,90,1.0)); // at block
+            // dropoffFive.add(new RobotPoint(46,68,90,1.0)); // at block
+            //  dropoffFive.add(new RobotPoint(61, 65, 90, 1.0));
+            dropoffFive.add(new RobotPoint(100, 63, 90, 1.0));
+            // dropoffFive.add(new RobotPoint(156, 67, 90, 1.0));
+            //  dropoffFive.add(new RobotPoint(155, 73, 90, 1.0)); // at foundation
+            dropoffFive.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+
+            ArrayList<RobotPoint> dropoffSix = new ArrayList<>();
+            dropoffSix.add(new RobotPoint(-56,74.5,90,1.0)); // at block
+            //  dropoffSix.add(new RobotPoint(46,68,90,1.0)); // at block
+            // dropoffSix.add(new RobotPoint(61, 65, 90, 1.0));
+            dropoffSix.add(new RobotPoint(100, 61, 90, 1.0));
+            //   dropoffSix.add(new RobotPoint(156, 65, 90, 1.0));
+            //   dropoffSix.add(new RobotPoint(155, 73, 90, 1.0)); // at foundation
+            dropoffSix.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
             autoClaws.firstPrime();
             movement.moveToPointPD(new RobotPoint(-18,73, 90, 0.1), 100, 1.5);
             autoClaws.grabBlock();
@@ -231,22 +395,23 @@ public class redAuto extends LinearOpMode {
             autoClaws.depositBlock();
 
         }
+        autoClaws.initialize();
 
-        movement.pointInDirection(180, 15);
-        movement.deadReckon(0, 0.9, 0, 475);
+        movement.pointInDirection(160, 5);
+        movement.deadReckon(0, 0.6, 0, 650);
         clampFoundation();
-        movement.deadReckon(0.2, -0.7, -0.6, 1550);
-        movement.deadReckon(0.3, -0.4, -0.8, 1500);
+       // movement.deadReckon(-0.2, -0.7, -0.6, 1550);
+       // movement.deadReckon(0.2, -0.9, -0.5, 1500);
         releaseFoundation();
-        movement.followPath(park,15);
-        movement.moveToPointPD2(new RobotPoint(97, 67, -90, 0.1), 50, 1.5);
+       // movement.followPath(park,15);
+        movement.moveToPointPD2(new RobotPoint(97, 60, 90, 0.1), 60, 3);
         //movement.followPath(pickupBlockOne, 30);
         //movement.moveToPointPD(new RobotPoint(0, 0, 90, 0.1), 100, 1.5);
 
     }
 
     private void scanSkystone(){
-        skyPosition = pipeline.getRedPosition();
+        skyPosition = pipeline.getSkystonePosition();
 
         if(skyPosition == 404) {
             scanSkystone();
@@ -256,7 +421,7 @@ public class redAuto extends LinearOpMode {
     private void clampFoundation(){
         hardware.foundationClampLeft.setPosition(.20);
         hardware.foundationClampRight.setPosition(.80);
-        timer.waitMillis(100);
+        timer.waitMillis(200);
     }
 
     private void releaseFoundation(){
@@ -272,7 +437,7 @@ public class redAuto extends LinearOpMode {
         phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();
 
-        pipeline = new RedPipeline();
+        pipeline = new MainPipeline();
         phoneCam.setPipeline(pipeline);
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
 

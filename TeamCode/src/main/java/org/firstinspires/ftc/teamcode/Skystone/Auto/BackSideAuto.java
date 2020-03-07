@@ -31,14 +31,14 @@ public class BackSideAuto extends AutoBase {
         position2D.startOdometry();
 
         sleep(250);
-        sleep((int) waitTime);
+        sleep((int) Math.abs(waitTime));
 
         double[][] toPark = {
                 {0, 0},
                 {12, -.5}};
         ArrayList<Action> toParkActions = new ArrayList<>();
 
-        robot.splineMove(toPark, 1, 1, 1, 0, 0, 0, 24, toParkActions, true, 5000);
+        robot.splineMove(toPark, 0.85, 1, 0.5, 3, 0, 0, 24, toParkActions, true, 5000);
 
         sleep(500);
     }

@@ -577,9 +577,9 @@ public class Robot {
                     isStuck = false;
                 }
 
-                Log.d("Stuck", isStuck + "");
-                telemetry.addLine("Stuck:" + isStuck);
-                telemetry.update();
+//                Log.d("Stuck", isStuck + "");
+//                telemetry.addLine("Stuck:" + isStuck);
+//                telemetry.update();
 
                 if (isStuck) {
                     brakeRobot();

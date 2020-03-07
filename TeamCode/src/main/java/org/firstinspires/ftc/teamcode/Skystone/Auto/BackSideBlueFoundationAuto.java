@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Action;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Enums.ActionType;
+import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 
 import java.util.ArrayList;
 
@@ -23,7 +24,7 @@ public class BackSideBlueFoundationAuto extends AutoBase {
                 {-34, 10}
         };
         ArrayList<Action> toFoundationActions = new ArrayList<>();
-        toFoundationActions.add(new Action(ActionType.EXTEND_FOUNDATION, robot, true));
+        toFoundationActions.add(new Action(ActionType.EXTEND_FOUNDATION, new Point(-15,8),robot));
 
         double[][] toDepositFoundation = {
                 toFoundation[toFoundation.length - 1],

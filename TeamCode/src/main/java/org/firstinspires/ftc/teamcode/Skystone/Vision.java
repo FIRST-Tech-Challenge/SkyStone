@@ -69,28 +69,21 @@ public class Vision {
         return sum / (width * height);
     }
 
-    public void captureFrameToFile() {
-        vuforia.getFrameOnce(Continuation.create(ThreadPool.getDefault(), new Consumer<Frame>() {
-            @Override
-            public void accept(Frame frame) {
-                Bitmap bitmap = vuforia.convertFrameToBitmap(frame);
-
-                if (bitmap != null) {
-                    File file = new File(captureDirectory, String.format(Locale.getDefault(), "VuforiaFrame-%d.png", captureCounter++));
-                    try {
-                        FileOutputStream outputStream = new FileOutputStream(file);
-                        try {
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-                        } finally {
-                            outputStream.close();
-                            Log.d("Vision", "captured %s" + file.getAbsolutePath());
-                        }
-                    } catch (IOException e) {
-                        RobotLog.ee("TAG", e, "exception in captureFrameToFile()");
-                    }
+    public void captureFrameToFile(Bitmap bitmap) {
+        if (bitmap != null) {
+            File file = new File(captureDirectory, String.format(Locale.getDefault(), "VuforiaFrame-%d.png", captureCounter++));
+            try {
+                FileOutputStream outputStream = new FileOutputStream(file);
+                try {
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                } finally {
+                    outputStream.close();
+                    Log.d("Vision", "captured %s" + file.getAbsolutePath());
                 }
+            } catch (IOException e) {
+                RobotLog.ee("TAG", e, "exception in captureFrameToFile()");
             }
-        }));
+        }
     }
 
     public void updateBitmapWithBoundingBoxes(Bitmap bitmap, int x, int y, int width, int height) {
@@ -142,7 +135,7 @@ public class Vision {
 
                         if (!isRed) {
                             startX = 210;
-                            startY = 245;
+                            startY = 325;
                         } else {
                             startX = 344;
                             startY = 320;
@@ -154,6 +147,7 @@ public class Vision {
                             right.averageRedGreen = calcAverageYellow(bitmap, startX + width * 2 + gap * 2, startY, width, height);
 
                             Log.d("Vision", "Left " + left.averageRedGreen + " Center: " + center.averageRedGreen + " Right: " + right.averageRedGreen);
+                            linearOpMode.telemetry.addLine("Left " + left.averageRedGreen + " Center: " + center.averageRedGreen + " Right: " + right.averageRedGreen);
 
                             detections.add(left);
                             detections.add(center);
@@ -182,6 +176,7 @@ public class Vision {
                 resultAvaliable.block();
             }
 
+
             Log.d("Vision", "Size " + resultLocation.size());
 
             if (resultLocation.size() > 0) {
@@ -194,7 +189,6 @@ public class Vision {
                 return resultLocation.get(0);
             }
         }
-
         return Location.UNKNOWN;
     }
 

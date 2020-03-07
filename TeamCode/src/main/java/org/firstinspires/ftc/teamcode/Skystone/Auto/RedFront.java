@@ -53,7 +53,7 @@ public class RedFront extends AutoBase {
             anglelock = 30;
             thirdStoneX = 58;
             thirdStoneY = -27;
-            angleLockThird = 30;
+            angleLockThird = 35;
             thirdStoneXPath = 24;
         } else if (skystoneLocation == Vision.Location.RIGHT) {
             firstSkystoneY = 10;
@@ -143,9 +143,9 @@ public class RedFront extends AutoBase {
                 {25, 45},
                 {25, 55},
                 {25, 65},
-                {25, 78}};
+                {25, 76}};
         ArrayList<Action> toParkAfterThirdStoneActions = new ArrayList<Action>();
-        toParkAfterThirdStoneActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(28, 8), robot, 375));
+        toParkAfterThirdStoneActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(25, 5), robot, 375));
         toParkAfterThirdStoneActions.add(new Action(ActionType.STOP_INTAKE, new Point(toThirdStone[toThirdStone.length - 1][0] - 15, toThirdStone[toThirdStone.length - 1][1] + 15), robot));
 
         double[][] toPark = {
@@ -198,7 +198,7 @@ public class RedFront extends AutoBase {
 
         robot.dumpPoints("" + startTime, "6");
 
-        robot.splineMove(toDepositThirdStone, 1, 1, .4, 35, Math.toRadians(180), Math.toRadians(270), 90, toParkAfterThirdStoneActions, true, 4500, true, new Point(20, 5));
+        robot.splineMove(toDepositThirdStone, 1, 1, .4, 35, Math.toRadians(180), Math.toRadians(270), 90, toParkAfterThirdStoneActions, true, 5000, true, new Point(20, 5));
 
         robot.getBackClamp().setPosition(robot.BACKCLAMP_RELEASED);
         robot.getFrontClamp().setPosition(robot.FRONTCLAMP_RELEASED);
@@ -207,7 +207,7 @@ public class RedFront extends AutoBase {
 
         robot.dumpPoints("" + startTime, "7");
 
-        robot.splineMove(toPark, .65, 1, 0.4, 10, 0, Math.toRadians(270), 35, toParkActions, true, 3000);
+        robot.splineMove(toPark, .65, 1, 0.4, 10, 0, Math.toRadians(270), 35, toParkActions, true, 5000);
 
         robot.dumpPoints("" + startTime, "8");
 

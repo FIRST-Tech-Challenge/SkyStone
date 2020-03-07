@@ -99,7 +99,7 @@ public class Robot {
     public final long DELAY_CLAMP_ON_CLAMP = 700;
 
     // Constants for spool encoder positions
-    public final int[] spoolHeights = {150, 400, 763, 1075, 1420, 1764, 2097, 2446, 2778, 3135, 3470, 3825};
+    public final int[] spoolHeights = {150, 400, 763, 1075, 1420, 1764, 2097, 2446, 2778, 3135, 3500, 3825};
 
     //robots position
     private Point robotPos = new Point();
@@ -571,15 +571,11 @@ public class Robot {
 
             // Test to see if the robot is stuck, every second
             if((currentTime - lastPosTime) >= 1000){
-                if(followIndex != pathPoints.length-1 && (Math.hypot(lastPos.x-robotPos.x, lastPos.y - robotPos.y)) < 3){
+                if(followIndex != pathPoints.length-1 && (Math.hypot(lastPos.x-robotPos.x, lastPos.y - robotPos.y)) < 1.5){
                     isStuck = true;
                 }else{
                     isStuck = false;
                 }
-
-//                Log.d("Stuck", isStuck + "");
-//                telemetry.addLine("Stuck:" + isStuck);
-//                telemetry.update();
 
                 if (isStuck) {
                     brakeRobot();
@@ -589,7 +585,6 @@ public class Robot {
                 lastPos.x = robotPos.x;
                 lastPos.y = robotPos.y;
                 lastPosTime = currentTime;
-
             }
 
             if (distanceToEnd < 1 && Math.abs(Math.toDegrees(posAngle) - Math.toDegrees(angleLockRadians)) < 5 && isFinishedAllActions) {

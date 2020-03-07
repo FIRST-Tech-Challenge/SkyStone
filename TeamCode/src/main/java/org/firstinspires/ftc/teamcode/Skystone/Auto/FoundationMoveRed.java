@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Skystone.Auto;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Action;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Enums.ActionType;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 
 import java.util.ArrayList;
 
+@Disabled
 @Autonomous(name = "FoundationMoveRed2", group = "LinearOpMode")
 public class FoundationMoveRed extends AutoBase {
     @Override

@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "RedFrontAS", group = "LinearOpmode")
+@Autonomous(name = "RedFront", group = "LinearOpmode")
 public class RedFront extends AutoBase {
     @Override
     public void runOpMode() {

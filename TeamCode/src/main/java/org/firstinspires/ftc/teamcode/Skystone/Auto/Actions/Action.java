@@ -137,6 +137,8 @@ public class Action {
 
         motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, 0, 250, robot));
         motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, 0, 1500, robot));
+        motionActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_RETRACTED, 250, robot));
+
 
     }
 

@@ -65,7 +65,7 @@ public class Robot {
     private DistanceSensor intakeStoneDistance;
 
     // Outtake Slide Positions
-    public final double OUTTAKE_SLIDE_EXTENDED = 0.15;
+    public final double OUTTAKE_SLIDE_EXTENDED = 0.09;
     public final double OUTTAKE_SLIDE_RETRACTED = 0.85;
 //    public final double OUTTAKE_SLIDE_PARTIAL_EXTEND = 0.27; // First peg .27, second peg .121
 

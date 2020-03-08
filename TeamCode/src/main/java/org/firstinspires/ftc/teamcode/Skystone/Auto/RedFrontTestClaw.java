@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Skystone.Auto;
 import android.os.SystemClock;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Action;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Enums.ActionType;
@@ -12,9 +11,8 @@ import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
 import java.util.ArrayList;
 
-@Disabled
-@Autonomous(name = "RedFront", group = "LinearOpmode")
-public class RedFront extends AutoBase {
+@Autonomous(name = "RedFrontTestClaw", group = "LinearOpmode")
+public class RedFrontTestClaw extends AutoBase {
     @Override
     public void runOpMode() {
         long startTime;
@@ -96,7 +94,7 @@ public class RedFront extends AutoBase {
                 {12, 66},
         };
         ArrayList<Action> toReleaseFoundationActions = new ArrayList<Action>();
-        toReleaseFoundationActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE, new Point(22, 73), robot, 0));
+        toReleaseFoundationActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE_FRONT_CLAW_REMAIN, new Point(22, 73), robot, 0));
         toReleaseFoundationActions.add(new Action(ActionType.RELEASE_FOUNDATION, robot, true));
 
         double[][] toSecondStone = {
@@ -131,7 +129,7 @@ public class RedFront extends AutoBase {
                 {thirdStoneX, thirdStoneY + 6},
                 {thirdStoneX, thirdStoneY}};
         ArrayList<Action> toThirdStoneActions = new ArrayList<Action>();
-        toThirdStoneActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE, new Point(25, 71), robot, 0));
+        toThirdStoneActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE_FRONT_CLAW_REMAIN, new Point(25, 71), robot, 0));
         toThirdStoneActions.add(new Action(ActionType.START_INTAKE, new Point(25, 0), robot));
 
         double[][] toDepositThirdStone = {
@@ -155,7 +153,7 @@ public class RedFront extends AutoBase {
                 {25, 55},
                 {25, 36}};
         ArrayList<Action> toParkActions = new ArrayList<Action>();
-        toParkActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE, new Point(25, 74), robot, 0));
+        toParkActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE_FRONT_CLAW_REMAIN, new Point(25, 74), robot, 0));
 
         robot.splineMove(toFirstStone, 0.65, 0.5, 0.55, 35, 0, Math.toRadians(0), 0,
                 toFirstStoneActions, true, 2500);
@@ -189,7 +187,6 @@ public class RedFront extends AutoBase {
                 toDepositSecondStoneActions, true, 4500, true, new Point(20, 5));
 
         robot.getBackClamp().setPosition(robot.BACKCLAMP_RELEASED);
-        robot.getFrontClamp().setPosition(robot.FRONTCLAMP_RELEASED);
 
         robot.getLinearOpMode().sleep(250); // Wait to finish releasing foundation
 
@@ -203,7 +200,6 @@ public class RedFront extends AutoBase {
         robot.splineMove(toDepositThirdStone, 1, 1, .4, 35, Math.toRadians(180), Math.toRadians(270), 90, toParkAfterThirdStoneActions, true, 5000, true, new Point(20, 5));
 
         robot.getBackClamp().setPosition(robot.BACKCLAMP_RELEASED);
-        robot.getFrontClamp().setPosition(robot.FRONTCLAMP_RELEASED);
 
         robot.getLinearOpMode().sleep(250); // Wait to finish releasing foundation
 

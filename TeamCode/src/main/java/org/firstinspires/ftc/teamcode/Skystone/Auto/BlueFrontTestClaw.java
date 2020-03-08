@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Skystone.Auto;
 import android.os.SystemClock;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Action;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.Enums.ActionType;
@@ -12,9 +11,8 @@ import org.firstinspires.ftc.teamcode.Skystone.Vision;
 
 import java.util.ArrayList;
 
-@Disabled
-@Autonomous(name = "BlueFront", group = "LinearOpmode")
-public class BlueFront extends AutoBase {
+@Autonomous(name = "BlueFrontTestClaw", group = "LinearOpmode")
+public class BlueFrontTestClaw extends AutoBase {
     @Override
     public void runOpMode() {
         long startTime;
@@ -99,7 +97,7 @@ public class BlueFront extends AutoBase {
                 {19, -66},
         };
         ArrayList<Action> toReleaseFoundationActions = new ArrayList<Action>();
-        toReleaseFoundationActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE, new Point(33, -73), robot, 0));
+        toReleaseFoundationActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE_FRONT_CLAW_REMAIN, new Point(33, -73), robot, 0));
         toReleaseFoundationActions.add(new Action(ActionType.RELEASE_FOUNDATION, robot, true));
 
         double[][] toSecondStone = {
@@ -134,7 +132,7 @@ public class BlueFront extends AutoBase {
                 {thirdStoneX, thirdStoneY - 10},
                 {thirdStoneX, thirdStoneY}};
         ArrayList<Action> toThirdStoneActions = new ArrayList<Action>();
-        toThirdStoneActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE, new Point(38, -69), robot, 0));
+        toThirdStoneActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE_FRONT_CLAW_REMAIN, new Point(38, -69), robot, 0));
         toThirdStoneActions.add(new Action(ActionType.START_INTAKE, new Point(43, 0), robot));
 
         double[][] toDepositThirdStone = {
@@ -158,7 +156,7 @@ public class BlueFront extends AutoBase {
                 {42, -55},
                 {42, -35}};
         ArrayList<Action> toParkActions = new ArrayList<Action>();
-        toParkActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE, new Point(35, -74), robot, 0));
+        toParkActions.add(new Action(ActionType.DROPSTONE_AND_RETRACT_OUTTAKE_FRONT_CLAW_REMAIN, new Point(35, -74), robot, 0));
 
         robot.splineMove(toFirstStone, 0.65, 0.5, .7, 35, 0, Math.toRadians(0), 0,
                 toFirstStoneActions, true, 2250);
@@ -192,7 +190,6 @@ public class BlueFront extends AutoBase {
                 toDepositSecondStoneActions, true, 4500, true, new Point(35, mecanumPoint));
 
         robot.getBackClamp().setPosition(robot.BACKCLAMP_RELEASED);
-        robot.getFrontClamp().setPosition(robot.FRONTCLAMP_RELEASED);
 
         robot.getLinearOpMode().sleep(250); // Wait to finish releasing foundation
 
@@ -206,7 +203,6 @@ public class BlueFront extends AutoBase {
         robot.splineMove(toDepositThirdStone, 1, 1, .4, 35, Math.toRadians(180), Math.toRadians(90), 95, toParkAfterThirdStoneActions, true, 4500, true, new Point(41, mecanumPoint + 10));
 
         robot.getBackClamp().setPosition(robot.BACKCLAMP_RELEASED);
-        robot.getFrontClamp().setPosition(robot.FRONTCLAMP_RELEASED);
 
         robot.getLinearOpMode().sleep(250); // Wait to finish releasing foundation
 

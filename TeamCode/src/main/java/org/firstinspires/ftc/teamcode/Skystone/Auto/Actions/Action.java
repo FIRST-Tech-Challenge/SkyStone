@@ -109,6 +109,8 @@ public class Action {
             generateStartIntakeActions();
         } else if (actionType == ActionType.STOP_INTAKE) {
             generateStopIntakeActions();
+        } else if (actionType == ActionType.DROPSTONE_AND_RETRACT_OUTTAKE_FRONT_CLAW_REMAIN) {
+            generateDropStoneAndRetractOuttakeFrontClawRemainActions();
         }
     }
 
@@ -138,8 +140,20 @@ public class Action {
         motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, 0, 250, robot));
         motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, 0, 1500, robot));
         motionActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_RETRACTED, 250, robot));
+    }
 
+    private void generateDropStoneAndRetractOuttakeFrontClawRemainActions() {
+        motionActions.add(new MotionAction(robot.getBackClamp(), robot.BACKCLAMP_RELEASED, 0, robot));
 
+        motionActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_RETRACTED, 250, robot));
+
+        motionActions.add(new MotionAction(robot.getIntakePusher(), robot.PUSHER_RETRACTED, 0, robot));
+
+        motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, 0, 250, robot));
+        motionActions.add(new MotionAction(robot.getOuttakeSpool(), 0, 0, 1500, robot));
+        motionActions.add(new MotionAction(robot.getOuttakeExtender(), robot.OUTTAKE_SLIDE_RETRACTED, 250, robot));
+
+        motionActions.add(new MotionAction(robot.getFrontClamp(), robot.FRONTCLAMP_RELEASED, 1500, robot));
     }
 
     private void generateExtendFoundationActions() {

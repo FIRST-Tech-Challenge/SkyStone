@@ -282,12 +282,15 @@ public class MainTeleop extends LinearOpMode {
 
     private void capstoneLogic() {
         if (gamepad2.right_trigger != 0 && !toggleCap) {
+            robot.getIntakeLeft().setPower(1);
+            robot.getIntakeRight().setPower(1);
+
             isCapped = true;
             toggleCap = true;
             robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
             long startTime = SystemClock.elapsedRealtime();
 
-            while (SystemClock.elapsedRealtime() - startTime <= 500) {
+            while (SystemClock.elapsedRealtime() - startTime <= 1000) {
                 robotModeLogic();
 
                 slowDriveLogic();
@@ -298,6 +301,8 @@ public class MainTeleop extends LinearOpMode {
                 spoolLogic();
                 intakeLogic();
             }
+            robot.getIntakeLeft().setPower(0);
+            robot.getIntakeRight().setPower(0);
 
             startTime = SystemClock.elapsedRealtime();
             robot.getFrontClamp().setPosition(robot.FRONTCLAMP_ACTIVATECAPSTONE);

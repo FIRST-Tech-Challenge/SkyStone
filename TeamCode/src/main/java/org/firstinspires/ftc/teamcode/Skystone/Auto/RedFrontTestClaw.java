@@ -49,7 +49,7 @@ public class RedFrontTestClaw extends AutoBase {
         // Change Skystone positions if detected left or right
         if (skystoneLocation == Vision.Location.LEFT) {
             firstSkystoneY = -15.5;
-            secondSkyStoneY = -21;
+            secondSkyStoneY = -18;
             anglelock = 30;
             thirdStoneX = 58;
             thirdStoneY = -27;
@@ -100,7 +100,7 @@ public class RedFrontTestClaw extends AutoBase {
         double[][] toSecondStone = {
                 {toReleaseFoundation[toReleaseFoundation.length - 1][0], toReleaseFoundation[toReleaseFoundation.length - 1][1], -10, 0},
                 {22, 64},
-                {25, 29},
+                {24, 29},
                 {29, secondSkyStoneY + 5},
                 {47, secondSkyStoneY},
                 {43, secondSkyStoneY - 6}};
@@ -120,10 +120,10 @@ public class RedFrontTestClaw extends AutoBase {
 
         double[][] toThirdStone = {
                 toDepositSecondStone[toDepositSecondStone.length - 1],
-                {27, 45},
-                {27, 40},
-                {26, 30},
-                {26, 15},
+                {25, 45},
+                {25, 40},
+                {25, 30},
+                {25, 15},
                 {thirdStoneXPath, 10},
                 {thirdStoneXPath + 4, 8},
                 {thirdStoneX, thirdStoneY + 6},

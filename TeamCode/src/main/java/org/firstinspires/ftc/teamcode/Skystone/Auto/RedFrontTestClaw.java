@@ -26,7 +26,7 @@ public class RedFrontTestClaw extends AutoBase {
         double secondSkyStoneY = -12;
         double thirdStoneY = -26.5;
         double thirdStoneX = 44;
-        double anglelock = 30;
+        double anglelock = 20;
         double angleLockThird = 45;
         double thirdStoneXPath = 38;
         long foundationTimeKill = 4500;
@@ -49,7 +49,7 @@ public class RedFrontTestClaw extends AutoBase {
         // Change Skystone positions if detected left or right
         if (skystoneLocation == Vision.Location.LEFT) {
             firstSkystoneY = -15.5;
-            secondSkyStoneY = -18;
+            secondSkyStoneY = -18.5;
             anglelock = 30;
             thirdStoneX = 58;
             thirdStoneY = -27;
@@ -57,8 +57,8 @@ public class RedFrontTestClaw extends AutoBase {
             thirdStoneXPath = 24;
         } else if (skystoneLocation == Vision.Location.RIGHT) {
             firstSkystoneY = 10;
-            secondSkyStoneY = -5.25;
-            anglelock = 30;
+            secondSkyStoneY = -6.25;
+            anglelock = 20;
             thirdStoneX = 44.5;
             thirdStoneY = -19;
             foundationTimeKill = 4250;
@@ -73,15 +73,15 @@ public class RedFrontTestClaw extends AutoBase {
         double[][] toFoundation = {
                 toFirstStone[toFirstStone.length - 1],
                 {32, firstSkystoneY + 2},
-                {30, 17},
-                {29, 20},
-                {29, 30},
-                {27, 43},
-                {24, 55},
-                {22, 60},
-                {22, 64},
-                {22, 66},
-                {24, 71},
+                {28, 17},
+                {28, 20},
+                {26, 30},
+                {26, 43},
+                {23, 55},
+                {21, 60},
+                {21, 64},
+                {21, 66},
+                {22, 71},
                 {36, 81}};
         ArrayList<Action> toFoundationActions = new ArrayList<Action>();
         toFoundationActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(25, 15), robot, 50));
@@ -103,7 +103,7 @@ public class RedFrontTestClaw extends AutoBase {
                 {24, 29},
                 {29, secondSkyStoneY + 5},
                 {47, secondSkyStoneY},
-                {43, secondSkyStoneY - 6}};
+                {43, secondSkyStoneY - 8}};
         ArrayList<Action> toSecondStoneActions = new ArrayList<Action>();
         toSecondStoneActions.add(new Action(ActionType.START_INTAKE, new Point(20, -10), robot));
 
@@ -134,14 +134,14 @@ public class RedFrontTestClaw extends AutoBase {
 
         double[][] toDepositThirdStone = {
                 toThirdStone[toThirdStone.length - 1],
-                {24, 0},
-                {24, 5},
-                {24, 15},
-                {24, 20},
-                {24, 29},
-                {25, 35},
-                {25, 45},
-                {25, 55},
+                {22, 0},
+                {22, 5},
+                {22, 15},
+                {22, 20},
+                {22, 29},
+                {23, 35},
+                {23, 45},
+                {23, 55},
                 {25, 65},
                 {25, 76}};
         ArrayList<Action> toParkAfterThirdStoneActions = new ArrayList<Action>();
@@ -160,12 +160,12 @@ public class RedFrontTestClaw extends AutoBase {
 
         robot.dumpPoints("" + startTime, "1");
 
-        robot.splineMove(toFoundation, 1, 1, 0.55, 15, Math.toRadians(180), Math.toRadians(180), 30,
+        robot.splineMove(toFoundation, 1, 1, 0.35, 15, Math.toRadians(180), Math.toRadians(180), 30,
                 toFoundationActions, true, foundationTimeKill, true, new Point(20, 5));
-
+        robot.brakeRobot();
         robot.foundationMovers(true);
 
-        robot.getLinearOpMode().sleep(150); // Allow foundation movers to deploy
+        robot.getLinearOpMode().sleep(250); // Allow foundation movers to deploy
 
         robot.dumpPoints("" + startTime, "2");
 
@@ -178,8 +178,8 @@ public class RedFrontTestClaw extends AutoBase {
 
 //        robot.getLinearOpMode().sleep(150); // Wait to finish releasing foundation
 
-        robot.splineMove(toSecondStone, 1, 1, 1, 1, 0, Math.toRadians(290), anglelock,
-                toSecondStoneActions, true, 5500);
+        robot.splineMove(toSecondStone, 1, 1, 0.7, 5, 0, Math.toRadians(290), anglelock,
+                toSecondStoneActions, true, 6000);
 
         robot.dumpPoints("" + startTime, "4");
 
@@ -192,7 +192,7 @@ public class RedFrontTestClaw extends AutoBase {
 
         robot.dumpPoints("" + startTime, "5");
 
-        robot.splineMove(toThirdStone, 1, 1, 0.75, 20, 0, Math.toRadians(270), angleLockThird,
+        robot.splineMove(toThirdStone, 1, 1, 0.75, 20, 0, Math.toRadians(280), angleLockThird,
                 toThirdStoneActions, true, 4500);
 
         robot.dumpPoints("" + startTime, "6");

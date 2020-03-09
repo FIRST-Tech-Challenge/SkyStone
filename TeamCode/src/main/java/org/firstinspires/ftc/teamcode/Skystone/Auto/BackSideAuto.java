@@ -38,7 +38,7 @@ public class BackSideAuto extends AutoBase {
                 {12, -.5}};
         ArrayList<Action> toParkActions = new ArrayList<>();
 
-        robot.splineMove(toPark, 0.85, 1, 0.5, 3, 0, 0, 24, toParkActions, true, 5000);
+        robot.splineMove(toPark, 0.7, 1, 0.45, 3, 0, 0, 24, toParkActions, true, 5000);
 
         sleep(500);
     }

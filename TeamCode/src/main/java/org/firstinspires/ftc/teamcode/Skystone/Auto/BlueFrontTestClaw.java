@@ -22,10 +22,10 @@ public class BlueFrontTestClaw extends AutoBase {
         startTime = SystemClock.elapsedRealtime();
 
         // Positions assuming center Skystone
-        double firstSkystoneY = 3;
-        double secondSkyStoneY = 16;
+        double firstSkystoneY = 1;
+        double secondSkyStoneY = 10;
         double thirdStoneY = 25;
-        double thirdStoneX = 57;
+        double thirdStoneX = 59;
         double anglelock = 27;
         double angleLockThird = 55;
         double thirdStoneXPath = 50;
@@ -50,9 +50,9 @@ public class BlueFrontTestClaw extends AutoBase {
         // Change Skystone positions if detected left or right
         if (skystoneLocation == Vision.Location.LEFT) {
             firstSkystoneY = -7;
-            secondSkyStoneY = 3.5;
+            secondSkyStoneY = 2;
             anglelock = 30;
-            thirdStoneX = 56;
+            thirdStoneX = 57;
             thirdStoneY = 16;
             angleLockThird = 70;
             thirdStoneXPath = 54;
@@ -75,11 +75,11 @@ public class BlueFrontTestClaw extends AutoBase {
 
         double[][] toFoundation = {
                 toFirstStone[toFirstStone.length - 1],
-                {35, firstSkystoneY - 2},
-                {32, -17},
-                {31, -20},
-                {31, -30},
-                {29, -43},
+                {33, firstSkystoneY - 2},
+                {30, -17},
+                {29, -20},
+                {29, -30},
+                {27, -43},
                 {27, -55},
                 {27, -60},
                 {27, -64},
@@ -102,31 +102,31 @@ public class BlueFrontTestClaw extends AutoBase {
 
         double[][] toSecondStone = {
                 {toReleaseFoundation[toReleaseFoundation.length - 1][0], toReleaseFoundation[toReleaseFoundation.length - 1][1], -10, 0},
-                {27, -60},
-                {31, -29},
-                {31, secondSkyStoneY-15},
-                {53, secondSkyStoneY},
-                {51, secondSkyStoneY + 2.5}};
+                {24, -60},
+                {27, -29},
+                {29, secondSkyStoneY-15},
+                {51, secondSkyStoneY},
+                {48, secondSkyStoneY + 2.5}};
         ArrayList<Action> toSecondStoneActions = new ArrayList<Action>();
         toSecondStoneActions.add(new Action(ActionType.START_INTAKE, new Point(35, 0), robot));
 
         double[][] toDepositSecondStone = {
                 toSecondStone[toSecondStone.length - 1],
-                {37, secondSkyStoneY - 10},
-                {37, -29},
-                {37, -47},
-                {37, -50},
-                {37, -78}};
+                {35, secondSkyStoneY - 10},
+                {35, -29},
+                {35, -47},
+                {35, -50},
+                {35, -78}};
         ArrayList<Action> toDepositSecondStoneActions = new ArrayList<Action>();
-        toDepositSecondStoneActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(35, -5), robot, 375));
+        toDepositSecondStoneActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(35, -10), robot, 375));
         toDepositSecondStoneActions.add(new Action(ActionType.STOP_INTAKE, new Point(35, 0), robot));
 
         double[][] toThirdStone = {
                 toDepositSecondStone[toDepositSecondStone.length - 1],
-                {38, -45},
-                {39, -40},
-                {40, -30},
-                {48, -15},
+                {36, -45},
+                {37, -40},
+                {38, -30},
+                {46, -15},
                 {thirdStoneXPath, 5},
                 {thirdStoneXPath + 9, 0},
                 {thirdStoneX, thirdStoneY - 10},
@@ -137,16 +137,16 @@ public class BlueFrontTestClaw extends AutoBase {
 
         double[][] toDepositThirdStone = {
                 toThirdStone[toThirdStone.length - 1],
-                {40, 5},
-                {40, -5},
-                {40, -15},
-                {40, -20},
-                {40, -29},
-                {40, -35},
-                {40, -45},
-                {40, -55},
-                {40, -65},
-                {40, -80}};
+                {37, 5},
+                {37, -5},
+                {37, -15},
+                {37, -20},
+                {37, -29},
+                {37, -35},
+                {37, -45},
+                {37, -55},
+                {37, -65},
+                {37, -80}};
         ArrayList<Action> toParkAfterThirdStoneActions = new ArrayList<Action>();
         toParkAfterThirdStoneActions.add(new Action(ActionType.EXTEND_OUTTAKE, new Point(40, -8), robot, 375));
         toParkAfterThirdStoneActions.add(new Action(ActionType.STOP_INTAKE, new Point(toThirdStone[toThirdStone.length - 1][0] - 15, toThirdStone[toThirdStone.length - 1][1] - 15), robot));
@@ -165,10 +165,11 @@ public class BlueFrontTestClaw extends AutoBase {
 
         robot.splineMove(toFoundation, 1, 1, 0.3, 30, Math.toRadians(180), Math.toRadians(180), 25,
                 toFoundationActions, true, foundation, true, new Point(20, 0));
+        robot.brakeRobot();
 
         robot.foundationMovers(true);
 
-        robot.getLinearOpMode().sleep(150); // Allow foundation movers to deploy
+        robot.getLinearOpMode().sleep(250); // Allow foundation movers to deploy
 
         robot.dumpPoints("" + startTime, "2");
 

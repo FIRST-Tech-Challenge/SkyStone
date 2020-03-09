@@ -460,7 +460,7 @@ public class Robot {
 
         Point[] data2 = new Point[data.length];
 
-        for (int i = 0; i < data.length; i++) {
+        for (int i = 0; i < data.length && linearOpMode.opModeIsActive(); i++) {
             data2[i] = new Point(data[i][0], data[i][1]);
         }
 
@@ -488,7 +488,7 @@ public class Robot {
 
             posAngle = MathFunctions.angleWrap(anglePos + 2 * Math.PI);
 
-            for (int p = pathPoints.length - 1; p >= 0; p--) {
+            for (int p = pathPoints.length - 1; p >= 0 && linearOpMode.opModeIsActive(); p--) {
                 if (Math.hypot(robotPos.x - pathPoints[p].x, robotPos.y - pathPoints[p].y) < 10) {
                     followIndex = p;
                     break;
@@ -550,7 +550,7 @@ public class Robot {
             boolean isFinishedAllActions = true;
             if (actions.size() != 0) {
                 currentTime = SystemClock.elapsedRealtime();
-                for (int i = 0; i < actions.size(); i++) {
+                for (int i = 0; i < actions.size() && linearOpMode.opModeIsActive(); i++) {
                     Action action = actions.get(i);
 
                     Point actionPoint = action.getActionPoint();

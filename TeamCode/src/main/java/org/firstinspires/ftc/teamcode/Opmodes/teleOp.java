@@ -187,7 +187,7 @@ public class teleOp extends LinearOpMode {
                 liftAtBottom = false;
             }
             //STATE PICKER: choose which section of code to run depending on what is pressed for this game tick.
-            if(liftAtBottom && dropoffCounter == 0){
+            if(liftAtBottom && dropoffCounter == 0 && blocklevel == 0){
                 liftState = "resting";
                 blocklevel = 0;
                 milesHoldHeight = 0;
@@ -198,16 +198,10 @@ public class teleOp extends LinearOpMode {
             if(gamepad2.dpad_left || gamepad2.dpad_right){
                 liftState = "freefall";
             }
-            if(gamepad2.a && slideSafetyCount>200){
-                if(slideSafetyCount<200){
-                    liftState = "retracting";
-
+            if(gamepad2.a){
+               liftState = "retracting";
                 }
-                else{
-                    liftState = "resting";
 
-                }
-            }
             if(gamepad2.right_bumper){
                 liftState = "droppingOff";
             }
@@ -280,19 +274,19 @@ public class teleOp extends LinearOpMode {
                         encoderDifference = Math.abs(lastEncoderHeight - 2510);
                     }
                     blocklevel = stackHeight + 1;
-                    if (blocklevel == 0) { liftGoal = 185; }
-                    if (blocklevel == 1) { liftGoal = 420; }
-                    if (blocklevel == 2) { liftGoal = 655; }
-                    if (blocklevel == 3) { liftGoal = 871; }
-                    if (blocklevel == 4) { liftGoal = 1067; }
-                    if (blocklevel == 5) { liftGoal = 1261; }
-                    if (blocklevel == 6) { liftGoal = 1465; } // if (blocklevel == 7){liftGoal = liftGoal + }  if (blocklevel == 8){liftGoal = liftGoal + }
-                    if (blocklevel == 7) { liftGoal = 1690; }
-                    if (blocklevel == 8) { liftGoal = 1880; }
-                    if (blocklevel == 9) { liftGoal = 2090; }
-                    if (blocklevel == 10) { liftGoal = 2300; }
-                    if (blocklevel == 11) { liftGoal = 2510; }
-                    if (blocklevel == 12) { liftGoal = 2720; }
+                    if (blocklevel == 0) { liftGoal = 230; }
+                    if (blocklevel == 1) { liftGoal = 480; }
+                    if (blocklevel == 2) { liftGoal = 790; }
+                    if (blocklevel == 3) { liftGoal = 910; }
+                    if (blocklevel == 4) { liftGoal = 1100; }
+                    if (blocklevel == 5) { liftGoal = 1300; }
+                    if (blocklevel == 6) { liftGoal = 1500; } // if (blocklevel == 7){liftGoal = liftGoal + }  if (blocklevel == 8){liftGoal = liftGoal + }
+                    if (blocklevel == 7) { liftGoal = 1740; }
+                    if (blocklevel == 8) { liftGoal = 1925; }
+                    if (blocklevel == 9) { liftGoal = 2140; }
+                    if (blocklevel == 10) { liftGoal = 2350; }
+                    if (blocklevel == 11) { liftGoal = 2560; }
+                    if (blocklevel == 12) { liftGoal = 2790; }
 
                 }
                 if (gamepad2.dpad_up) {
@@ -304,7 +298,7 @@ public class teleOp extends LinearOpMode {
                 if (!gamepad2.dpad_down && dpadDownPressed) {
                     dpadDownPressed = false;
                     //Dpad Down code
-                    liftGoal = liftGoal - 40;
+                    liftGoal = liftGoal - 70;
                 }
                 if (!gamepad2.dpad_up && dpadUpPressed) { //code handles the user-input
 
@@ -353,7 +347,7 @@ public class teleOp extends LinearOpMode {
             if (liftState.equals("droppingOff") && liftAverage <=400){//this is the auto dropoff sequence state
                 if(dropoffCounter ==0){
                     dropoffslidePosition = liftAverage + 300; //(2/5/20 edit), changed from +100 to +175 to make lift go higher on dropoff sequence
-                    lastEncoderHeight = liftAverage + 100; //this is approxmiating the level of the last block's liftGoal
+                    lastEncoderHeight = liftAverage + 140; //this is approxmiating the level of the last block's liftGoal
                 }
                 dropoffCounter = dropoffCounter + 1; //increment dropoff counter - this keeps track of time.
 
@@ -405,7 +399,7 @@ public class teleOp extends LinearOpMode {
                 }
             }
 
-            if (liftState.equals("droppingOff") && liftAverage > 800 && liftAverage <=1400){//this is the auto dropoff sequence state
+            if (liftState.equals("droppingOff") && liftAverage > 800 && liftAverage <=1600){//this is the auto dropoff sequence state
                 if(dropoffCounter ==0){
                     dropoffslidePosition = liftAverage + 300; //(2/5/20 edit), changed from +100 to +175 to make lift go higher on dropoff sequence
                     lastEncoderHeight = liftAverage + 100; //this is approxmiating the level of the last block's liftGoal
@@ -419,7 +413,7 @@ public class teleOp extends LinearOpMode {
                     liftLeft.setPower(-.9);
                     liftRight.setPower(-.9);
                 }
-                if (dropoffCounter > 24 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
+                if (dropoffCounter > 20 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
                     lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos
                     grabberState = 0; //sets the grabbers to rear closed, front open state
 
@@ -432,7 +426,7 @@ public class teleOp extends LinearOpMode {
                 }
             }
 
-            if (liftState.equals("droppingOff") && liftAverage > 1400){//this is the auto dropoff sequence state
+            if (liftState.equals("droppingOff") && liftAverage > 1600){//this is the auto dropoff sequence state
                 if(dropoffCounter ==0){
                     dropoffslidePosition = liftAverage + 300; //(2/5/20 edit), changed from +100 to +175 to make lift go higher on dropoff sequence
                     lastEncoderHeight = liftAverage + 100; //this is approxmiating the level of the last block's liftGoal
@@ -453,7 +447,7 @@ public class teleOp extends LinearOpMode {
                     liftRight.setPower(-1.0);
 
                 }
-                if (dropoffCounter > 48 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
+                if (dropoffCounter > 43 && (dropoffslidePosition - liftAverage) < 50){ //after 12 loops, the flipper servos will start moving into the robot.
                     lastPressedFlipper = 0; //changes flipper variable so the flipper is set to inside chassis pos
                     grabberState = 0; //sets the grabbers to rear closed, front open state
                     dropoffCounter = 0; //sequence is over, so reset counter variable
@@ -606,8 +600,8 @@ public class teleOp extends LinearOpMode {
                 flipperServoLeft.setPosition(0.25);//.31
                 flipperServoRight.setPosition(0.75);//.69
             } else if (lastPressedFlipper == 1) {
-                flipperServoLeft.setPosition(0.85);//.89
-                flipperServoRight.setPosition(0.15);//.11
+                flipperServoLeft.setPosition(0.89);//.89
+                flipperServoRight.setPosition(0.11);//.11
             } else if (lastPressedFlipper == 2) { //middle position. Lift Code sets the variable to 2.
                 flipperServoLeft.setPosition(0.35);//.89
                 flipperServoRight.setPosition(0.65);//.11

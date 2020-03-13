@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Utility.RobotHardware;
 import org.firstinspires.ftc.teamcode.Utility.Timer;
 
 @Autonomous(name="Odometer Test", group="Testing")
-@Disabled
+
 public class odometerTest extends LinearOpMode {
 
     // Declare OpMode Members

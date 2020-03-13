@@ -31,6 +31,7 @@ public class redAuto extends LinearOpMode {
     private MecanumDrive drivetrain;
     private Movement movement;
     private AutoClaws autoClaws;
+    // Vision
     private MainPipeline pipeline;
     private OpenCvCamera phoneCam;
 
@@ -49,16 +50,16 @@ public class redAuto extends LinearOpMode {
 
         scanSkystone();
 
-        // Initialization of Paths
-
-
         ArrayList<RobotPoint> park = new ArrayList<>();
         park.add(new RobotPoint(230,40,90,0.4)); // at block
         park.add(new RobotPoint(200,70,90,0.4)); // at block
 
-        skyPosition = 0;
-        // Actual running of routine
-        if (skyPosition == 0){//closest wall
+
+
+ //       skyPosition = 0;
+        if (skyPosition == 2){//closest wall
+
+            // Initializing Paths
             ArrayList<RobotPoint> pickupBlockOne = new ArrayList<>();
             pickupBlockOne.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
             //  pickupBlockOne.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
@@ -100,7 +101,7 @@ public class redAuto extends LinearOpMode {
             dropoffOne.add(new RobotPoint(100, 61, 90, 1.0));
             // dropoffOne.add(new RobotPoint(156, 65, 90, 1.0));
             //  dropoffOne.add(new RobotPoint(175, 73, 90, 1.0)); // at foundation
-            dropoffOne.add(new RobotPoint(218, 84, 90, 1.0)); // at foundation
+            dropoffOne.add(new RobotPoint(208, 85, 90, 1.0)); // at foundation
 
             ArrayList<RobotPoint> dropoffTwo = new ArrayList<>();
             dropoffTwo.add(new RobotPoint(26,74.5,90,1.0)); // at block
@@ -110,7 +111,7 @@ public class redAuto extends LinearOpMode {
             dropoffTwo.add(new RobotPoint(100, 63, 90, 1.0));
             // dropoffTwo.add(new RobotPoint(156, 67, 90, 1.0));
             //  dropoffTwo.add(new RobotPoint(175, 73, 90, 1.0)); // at foundation
-            dropoffTwo.add(new RobotPoint(223, 84, 90, 1.0)); // at foundation
+            dropoffTwo.add(new RobotPoint(220, 85, 90, 1.0)); // at foundation
 
             ArrayList<RobotPoint> dropoffThree = new ArrayList<>();
             dropoffThree.add(new RobotPoint(5,74.5,90,1.0)); // at block
@@ -119,7 +120,7 @@ public class redAuto extends LinearOpMode {
             dropoffThree.add(new RobotPoint(100, 63, 90, 1.0));
             //  dropoffThree.add(new RobotPoint(156, 67, 90, 1.0));
             //  dropoffThree.add(new RobotPoint(165, 73, 90, 1.0)); // at foundation
-            dropoffThree.add(new RobotPoint(229, 84, 90, 1.0)); // at foundation
+            dropoffThree.add(new RobotPoint(230, 85, 90, 1.0)); // at foundation
 
             ArrayList<RobotPoint> dropoffSix = new ArrayList<>();
             dropoffSix.add(new RobotPoint(-56,74.5,90,1.0)); // at block
@@ -128,22 +129,22 @@ public class redAuto extends LinearOpMode {
             dropoffSix.add(new RobotPoint(100, 61, 90, 1.0));
             //   dropoffSix.add(new RobotPoint(156, 65, 90, 1.0));
             //   dropoffSix.add(new RobotPoint(155, 73, 90, 1.0)); // at foundation
-            dropoffSix.add(new RobotPoint(238, 84, 90, 1.0)); // at foundation
+            dropoffSix.add(new RobotPoint(236, 85, 90, 1.0)); // at foundation
 
-
+            // Running Actual Routine
             autoClaws.firstPrime();
             movement.moveToPointPD(new RobotPoint(-58, 73, 90, 0.1), 100, 1.5);
-            autoClaws.grabBlock();
+            autoClaws.grabBlockFirst();
             autoClaws.storeBlock();
             movement.followPath(dropoffSix,15);
-            autoClaws.depositBlockThrow();
+            autoClaws.firstDepositBlock();
             movement.followPath(pickupBlockThree, 16);
             autoClaws.prime();
             movement.moveToPointPD(new RobotPoint(8, 77, 90, 0.1), 50, 1.5);
             autoClaws.grabBlock();
             autoClaws.storeBlock();
             movement.followPath(dropoffThree,16);
-            autoClaws.depositBlockThrow();
+            autoClaws.depositBlock();
             movement.followPath(pickupBlockOne,16);
             autoClaws.prime();
             movement.moveToPointPD(new RobotPoint(46, 80, 90, 0.1), 50, 1.5);
@@ -161,6 +162,8 @@ public class redAuto extends LinearOpMode {
 
 
         } if(skyPosition == 1 ){//middle
+
+            // Initializing Paths
             ArrayList<RobotPoint> pickupBlockOne = new ArrayList<>();
             pickupBlockOne.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
             //  pickupBlockOne.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
@@ -202,7 +205,7 @@ public class redAuto extends LinearOpMode {
             dropoffOne.add(new RobotPoint(100, 61, 90, 1.0));
             // dropoffOne.add(new RobotPoint(156, 65, 90, 1.0));
             //  dropoffOne.add(new RobotPoint(175, 73, 90, 1.0)); // at foundation
-            dropoffOne.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            dropoffOne.add(new RobotPoint(208, 85, 90, 1.0)); // at foundation
 
             ArrayList<RobotPoint> dropoffTwo = new ArrayList<>();
             dropoffTwo.add(new RobotPoint(26,74.5,90,1.0)); // at block
@@ -212,7 +215,7 @@ public class redAuto extends LinearOpMode {
             dropoffTwo.add(new RobotPoint(100, 63, 90, 1.0));
             // dropoffTwo.add(new RobotPoint(156, 67, 90, 1.0));
             //  dropoffTwo.add(new RobotPoint(175, 73, 90, 1.0)); // at foundation
-            dropoffTwo.add(new RobotPoint(223, 84, 90, 1.0)); // at foundation
+            dropoffTwo.add(new RobotPoint(230, 85, 90, 1.0)); // at foundation
 
             ArrayList<RobotPoint> dropoffThree = new ArrayList<>();
             dropoffThree.add(new RobotPoint(5,74.5,90,1.0)); // at block
@@ -221,7 +224,7 @@ public class redAuto extends LinearOpMode {
             dropoffThree.add(new RobotPoint(100, 63, 90, 1.0));
             //  dropoffThree.add(new RobotPoint(156, 67, 90, 1.0));
             //  dropoffThree.add(new RobotPoint(165, 73, 90, 1.0)); // at foundation
-            dropoffThree.add(new RobotPoint(223, 84, 90, 1.0)); // at foundation
+            dropoffThree.add(new RobotPoint(220, 85, 90, 1.0)); // at foundation
 
             ArrayList<RobotPoint> dropoffFour = new ArrayList<>();
             dropoffFour.add(new RobotPoint(-18,74.5,90,1.0)); // at block
@@ -230,7 +233,7 @@ public class redAuto extends LinearOpMode {
             dropoffFour.add(new RobotPoint(100, 63, 90, 1.0));
             //  dropoffFour.add(new RobotPoint(156, 67, 90, 1.0));
             //  dropoffFour.add(new RobotPoint(165, 73, 90, 1.0)); // at foundation
-            dropoffFour.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            dropoffFour.add(new RobotPoint(236, 85, 90, 1.0)); // at foundation
 
             ArrayList<RobotPoint> dropoffFive = new ArrayList<>();
             dropoffFive.add(new RobotPoint(-38,74.5,90,1.0)); // at block
@@ -239,8 +242,7 @@ public class redAuto extends LinearOpMode {
             dropoffFive.add(new RobotPoint(100, 63, 90, 1.0));
             // dropoffFive.add(new RobotPoint(156, 67, 90, 1.0));
             //  dropoffFive.add(new RobotPoint(155, 73, 90, 1.0)); // at foundation
-            dropoffFive.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
-
+            dropoffFive.add(new RobotPoint(236, 85, 90, 1.0)); // at foundation
             ArrayList<RobotPoint> dropoffSix = new ArrayList<>();
             dropoffSix.add(new RobotPoint(-56,74.5,90,1.0)); // at block
             //  dropoffSix.add(new RobotPoint(46,68,90,1.0)); // at block
@@ -248,20 +250,22 @@ public class redAuto extends LinearOpMode {
             dropoffSix.add(new RobotPoint(100, 61, 90, 1.0));
             //   dropoffSix.add(new RobotPoint(156, 65, 90, 1.0));
             //   dropoffSix.add(new RobotPoint(155, 73, 90, 1.0)); // at foundation
-            dropoffSix.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            dropoffSix.add(new RobotPoint(236, 85, 90, 1.0)); // at foundation
+
+            // Running Actual Routine
             autoClaws.firstPrime();
             movement.moveToPointPD(new RobotPoint(-38, 73, 90, 0.1), 100, 1.5);
-            autoClaws.grabBlock();
+            autoClaws.grabBlockFirst();
             autoClaws.storeBlock();
             movement.followPath(dropoffFive,15);
-            autoClaws.depositBlockThrow();
+            autoClaws.firstDepositBlock();
             movement.followPath(pickupBlockTwo,16);
             autoClaws.prime();
             movement.moveToPointPD(new RobotPoint(28, 76, 90, 0.1), 50, 1.5);
             autoClaws.grabBlock();
             autoClaws.storeBlock();
             movement.followPath(dropoffTwo,15);
-            autoClaws.depositBlockThrow();
+            autoClaws.depositBlock();
             movement.followPath(pickupBlockOne,16);
             autoClaws.prime();
             movement.moveToPointPD(new RobotPoint(48, 77, 90, 0.1), 50, 1.5);
@@ -277,7 +281,9 @@ public class redAuto extends LinearOpMode {
             movement.followPath(dropoffThree,15);
             autoClaws.depositBlock();
 
-        }if(skyPosition == 2){//furthest from wall
+        }if(skyPosition == 0){//furthest from wall
+
+            // Initializing Paths
             ArrayList<RobotPoint> pickupBlockOne = new ArrayList<>();
             pickupBlockOne.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
             //  pickupBlockOne.add(new RobotPoint(175, 69, 90, 1.0)); // at foundation
@@ -319,7 +325,7 @@ public class redAuto extends LinearOpMode {
             dropoffOne.add(new RobotPoint(100, 61, 90, 1.0));
             // dropoffOne.add(new RobotPoint(156, 65, 90, 1.0));
             //  dropoffOne.add(new RobotPoint(175, 73, 90, 1.0)); // at foundation
-            dropoffOne.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            dropoffOne.add(new RobotPoint(230, 85, 90, 1.0)); // at foundation
 
             ArrayList<RobotPoint> dropoffTwo = new ArrayList<>();
             dropoffTwo.add(new RobotPoint(26,74.5,90,1.0)); // at block
@@ -329,7 +335,7 @@ public class redAuto extends LinearOpMode {
             dropoffTwo.add(new RobotPoint(100, 63, 90, 1.0));
             // dropoffTwo.add(new RobotPoint(156, 67, 90, 1.0));
             //  dropoffTwo.add(new RobotPoint(175, 73, 90, 1.0)); // at foundation
-            dropoffTwo.add(new RobotPoint(223, 84, 90, 1.0)); // at foundation
+            dropoffTwo.add(new RobotPoint(208, 85, 90, 1.0)); // at foundation
 
             ArrayList<RobotPoint> dropoffThree = new ArrayList<>();
             dropoffThree.add(new RobotPoint(5,74.5,90,1.0)); // at block
@@ -338,7 +344,7 @@ public class redAuto extends LinearOpMode {
             dropoffThree.add(new RobotPoint(100, 63, 90, 1.0));
             //  dropoffThree.add(new RobotPoint(156, 67, 90, 1.0));
             //  dropoffThree.add(new RobotPoint(165, 73, 90, 1.0)); // at foundation
-            dropoffThree.add(new RobotPoint(223, 84, 90, 1.0)); // at foundation
+            dropoffThree.add(new RobotPoint(220, 85, 90, 1.0)); // at foundation
 
             ArrayList<RobotPoint> dropoffFour = new ArrayList<>();
             dropoffFour.add(new RobotPoint(-18,74.5,90,1.0)); // at block
@@ -346,8 +352,8 @@ public class redAuto extends LinearOpMode {
             // dropoffFour.add(new RobotPoint(61, 65, 90, 1.0));
             dropoffFour.add(new RobotPoint(100, 63, 90, 1.0));
             //  dropoffFour.add(new RobotPoint(156, 67, 90, 1.0));
-            //  dropoffFour.add(new RobotPoint(165, 73, 90, 1.0)); // at foundation
-            dropoffFour.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            //  dropoffFour.add(new RobotPoint65, 73, 90, 1.0)); // at foundation
+            dropoffFour.add(new RobotPoint(236, 85, 90, 1.0)); // at foundation
 
             ArrayList<RobotPoint> dropoffFive = new ArrayList<>();
             dropoffFive.add(new RobotPoint(-38,74.5,90,1.0)); // at block
@@ -356,7 +362,7 @@ public class redAuto extends LinearOpMode {
             dropoffFive.add(new RobotPoint(100, 63, 90, 1.0));
             // dropoffFive.add(new RobotPoint(156, 67, 90, 1.0));
             //  dropoffFive.add(new RobotPoint(155, 73, 90, 1.0)); // at foundation
-            dropoffFive.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            dropoffFive.add(new RobotPoint(236, 85, 90, 1.0)); // at foundation
 
             ArrayList<RobotPoint> dropoffSix = new ArrayList<>();
             dropoffSix.add(new RobotPoint(-56,74.5,90,1.0)); // at block
@@ -365,20 +371,22 @@ public class redAuto extends LinearOpMode {
             dropoffSix.add(new RobotPoint(100, 61, 90, 1.0));
             //   dropoffSix.add(new RobotPoint(156, 65, 90, 1.0));
             //   dropoffSix.add(new RobotPoint(155, 73, 90, 1.0)); // at foundation
-            dropoffSix.add(new RobotPoint(236, 84, 90, 1.0)); // at foundation
+            dropoffSix.add(new RobotPoint(236, 85, 90, 1.0)); // at foundation
+
+            // Running Actual Routine
             autoClaws.firstPrime();
-            movement.moveToPointPD(new RobotPoint(-18,73, 90, 0.1), 100, 1.5);
-            autoClaws.grabBlock();
+            movement.moveToPointPD2(new RobotPoint(-18,74, 90, 0.1), 100, 1.5);
+            autoClaws.grabBlockFirst();
             autoClaws.storeBlock();
             movement.followPath(dropoffFour,15);
-            autoClaws.depositBlockThrow();
+            autoClaws.firstDepositBlock();
             movement.followPath(pickupBlockOne,16);
             autoClaws.prime();
             movement.moveToPointPD(new RobotPoint(48, 76, 90, 0.1), 50, 1.5);
             autoClaws.grabBlock();
             autoClaws.storeBlock();
             movement.followPath(dropoffTwo,15);
-            autoClaws.depositBlockThrow();
+            autoClaws.depositBlock();
             movement.followPath(pickupBlockTwo,16);
             autoClaws.prime();
             movement.moveToPointPD(new RobotPoint(28, 77, 90, 0.1), 50, 1.5);
@@ -397,30 +405,31 @@ public class redAuto extends LinearOpMode {
         }
         autoClaws.initialize();
 
+        // Foundation Moving
         movement.pointInDirection(160, 5);
-        movement.deadReckon(0, 0.6, 0, 650);
+        movement.deadReckon(0, 0.4, 0, 575);
         clampFoundation();
-       // movement.deadReckon(-0.2, -0.7, -0.6, 1550);
-       // movement.deadReckon(0.2, -0.9, -0.5, 1500);
+        movement.moveToPointConstants(new RobotPoint(205, 35, 80, 0), 0.6, 0.5, 15, 20);
+      //  movement.moveToPointConstants(new RobotPoint(234, 8, 92, 0), 0.5, 0.5, 0, 45);
+        movement.pointInDirection2(90, 20);
+        movement.deadReckon(0.8,0,0,300);
         releaseFoundation();
-       // movement.followPath(park,15);
-        movement.moveToPointPD2(new RobotPoint(97, 60, 90, 0.1), 60, 3);
-        //movement.followPath(pickupBlockOne, 30);
-        //movement.moveToPointPD(new RobotPoint(0, 0, 90, 0.1), 100, 1.5);
+
+        // Park
+        //movement.followPath(park,15);
+        movement.moveToPointPD(new RobotPoint(200, 62, 90, 0), 50, 10);
+        movement.moveToPointPD(new RobotPoint(105, 69, 90, 0), 60, 3);
 
     }
 
     private void scanSkystone(){
         skyPosition = pipeline.getSkystonePosition();
-
-        if(skyPosition == 404) {
-            scanSkystone();
-        }
+        phoneCam.stopStreaming();
     }
 
     private void clampFoundation(){
-        hardware.foundationClampLeft.setPosition(.20);
-        hardware.foundationClampRight.setPosition(.80);
+        hardware.foundationClampLeft.setPosition(.30);
+        hardware.foundationClampRight.setPosition(.68);
         timer.waitMillis(200);
     }
 
@@ -432,6 +441,8 @@ public class redAuto extends LinearOpMode {
 
     private void initialize(){
         hardware.hardwareMap(hardwareMap);
+
+        // CV
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
         phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
@@ -441,6 +452,7 @@ public class redAuto extends LinearOpMode {
         phoneCam.setPipeline(pipeline);
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
 
+        // Subsystem Classes
         drivetrain = new MecanumDrive(this, hardware);
         odometer = new OdometerKIMU2W(this, hardware);
         timer = new Timer(this, odometer);
@@ -461,22 +473,4 @@ public class redAuto extends LinearOpMode {
         telemetry.update();
     }
 }
-
-/*
- RobotPoint point1 = new RobotPoint( -38, 74, 90, 0.9);
-        movement.moveToPointConstants(point1, 0.8, 0.11, 20, 3);
-        autoClaws.grabBlock();
-
-        ArrayList<RobotPoint> delivery = new ArrayList<>();
-        RobotPoint point2 = new RobotPoint(0, 0, 90, 0.9);
-        RobotPoint point3 = new RobotPoint(97, 57, 90, 0.9);
-        point3.setHookActions(0.482, 0.985);
-        RobotPoint point4 = new RobotPoint(215, 80, 90, 0.9);
-        point4.setHookActions(0.482, 0.985);
-        delivery.add(point2);
-        delivery.add(point3);
-        delivery.add(point4);
-        movement.followPath(delivery, 40);
-        movement.moveToPointConstants(point4, 0.8, 0.3, 15, 4);
-        autoClaws.depositBlock();
-*/
+//asdf;ljkdf;lkjasdf;klj electronics duster. ;laksdjf;ljkasdf;lkjsoembodonce told me eht eo wlr d w asong aoll me i i in tht the shaptotol tool in h t e hs eh shewas lojgjgking gi gnng ogg gunnny afinger and a thun in the shape of an l on the forehe hea dajd;alkdjf;alkjf;aldkjf;alksdjfwelltheyearsstartcomiingandtheywontstopcinadf;lkjasd;lkjasdf;lkjasd;flkjasd;flkjas;dlfkja;slkfjuuuuuruuruuruuruuuuuurrrurururuururuujjjjtjjjjjyjjjyjjtjjjruduutiiiykfkkfkfkfkfkfkfkfkfkkfkfkfkffkfkfkkfkfkkfkfkfkkfkkkkkkfkfkfkkkkkfkkkkfkkfkkfkkfkkkkkrjrjjtjtjtmjjmrfmkrfmkrfmkrfmkrfmkmkfrmkrfmkrfmkrfmkrfmkfrmkfrmmkmfrmrkfmkfrrmkrfrmkmkfmkrmkfrmkfrmkrmkrfmmkfrmkmkfrmkmkmkmkfrmkmkfrkmmfrkmkrkmkrmkmkmkmkmfrkmfkmkmfrmkrf

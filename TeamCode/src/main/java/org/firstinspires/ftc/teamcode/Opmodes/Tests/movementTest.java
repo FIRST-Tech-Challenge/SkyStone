@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Movement.Movement;
 import org.firstinspires.ftc.teamcode.Utility.RobotHardware;
 import org.firstinspires.ftc.teamcode.Utility.Timer;
 import java.util.ArrayList;
-
+@Disabled
 @Autonomous(name="Movement Test", group="Testing")
 
 public class movementTest extends LinearOpMode {

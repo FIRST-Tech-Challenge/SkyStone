@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.CustomCV.RedPipeline;
@@ -19,9 +20,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
-
-@Autonomous(name="Full Blue Auto", group="Auto")
-public class blueAuto extends LinearOpMode {
+@Disabled
+@Autonomous(name="parth", group="Auto")
+public class parth extends LinearOpMode {
 
     // Declare OpMode Members
     private RobotHardware hardware = new RobotHardware();
@@ -154,8 +155,8 @@ public class blueAuto extends LinearOpMode {
 */
 
         ArrayList<RobotPoint> park = new ArrayList<>();
-        park.add(new RobotPoint(-195, 65, -90, 1.0)); // at block
-        park.add(new RobotPoint(-120, 67, -90, 1.0)); // at block
+        park.add(new RobotPoint(-195, 65, -90, 0.8)); // at block
+        park.add(new RobotPoint(-120, 67, -90, 0.8)); // at block
         // Actual running of routine
         if (skyPosition == 0) {//closest wall
 
@@ -333,7 +334,7 @@ public class blueAuto extends LinearOpMode {
             dropoffTwo.add(new RobotPoint(-100, 56, -90, 1.0));
             //dropoffOne.add(new RobotPoint(-156, 62, -90, 1.0));
             //dropoffTwo.add(new RobotPoint(-175, 73, -90, 1.0)); // at foundation
-            dropoffTwo.add(new RobotPoint(-225, 79, -90, 1.0)); // at foundation
+            dropoffTwo.add(new RobotPoint(-228, 79, -90, 1.0)); // at foundation
 
             ArrayList<RobotPoint> dropoffThree = new ArrayList<>();
             dropoffThree.add(new RobotPoint(-5, 74.5, -90, 1.0)); // at block
@@ -342,7 +343,7 @@ public class blueAuto extends LinearOpMode {
             dropoffThree.add(new RobotPoint(-100, 56, -90, 1.0));
             //dropoffOne.add(new RobotPoint(-156, 62, -90, 1.0));
             //dropoffThree.add(new RobotPoint(-165, 73, -90, 1.0)); // at foundation
-            dropoffThree.add(new RobotPoint(-220, 79, -90, 1.0)); // at foundation
+            dropoffThree.add(new RobotPoint(-218, 79, -90, 1.0)); // at foundation
 
             ArrayList<RobotPoint> dropoffFour = new ArrayList<>();
             dropoffFour.add(new RobotPoint(18, 74.5, -90, 1.0)); // at block
@@ -360,7 +361,7 @@ public class blueAuto extends LinearOpMode {
             dropoffFive.add(new RobotPoint(-100, 56, -90, 1.0));
             //dropoffOne.add(new RobotPoint(-156, 62, -90, 1.0));
             //dropoffFive.add(new RobotPoint(-155, 73, -90, 1.0)); // at foundation
-            dropoffFive.add(new RobotPoint(-236, 78, -90, 1.0)); // at foundation
+            dropoffFive.add(new RobotPoint(-241, 78, -90, 1.0)); // at foundation
 
             ArrayList<RobotPoint> dropoffSix = new ArrayList<>();
             dropoffSix.add(new RobotPoint(56, 74.5, -90, 1.0)); // at block
@@ -537,7 +538,7 @@ public class blueAuto extends LinearOpMode {
         // Park
         movement.followPath(park,15);
         timer.waitMillis(10000);
-       // movement.moveToPointPD(new RobotPoint(-195, 65, -90, 0), 50, 25);
+        // movement.moveToPointPD(new RobotPoint(-195, 65, -90, 0), 50, 25);
         //movement.moveToPointPD(new RobotPoint(-105, 67, -90, 0), 60, 3);
     }
 

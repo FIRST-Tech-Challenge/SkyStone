@@ -85,17 +85,20 @@ public class OpenCVSwitchingExample extends LinearOpMode
      * to get data from the pipeline to your OpMode.
      */
     static class StageSwitchingPipeline extends OpenCvPipeline
-    {  // Mat yCbCrChan0Mat = new Mat();
-//        Mat yCbCrChan1Mat = new Mat();
-//        Mat yCbCrChan2Mat = new Mat();
+    {   Mat yCbCrChan0Mat = new Mat();
+        Mat yCbCrChan1Mat = new Mat();
+        Mat yCbCrChan2Mat = new Mat();
         Mat thresholdMat = new Mat();
         Mat contoursOnFrameMat = new Mat();
         List<MatOfPoint> contoursList = new ArrayList<>();
         int numContoursFound;
 
         enum Stage
-        {   THRESHOLD,
-            //CONTOURS_OVERLAYED_ON_FRAME,
+        {   YCbCr_CHAN0,
+            YCbCr_CHAN1,
+            YCbCr_CHAN2,
+            THRESHOLD,
+//            CONTOURS_OVERLAYED_ON_FRAME,
             RAW_IMAGE,
         }
 
@@ -132,18 +135,18 @@ public class OpenCVSwitchingExample extends LinearOpMode
              * This pipeline finds the contours of yellow blobs such as the Gold Mineral
              * from the Rover Ruckus game.
              */
-//            Imgproc.cvtColor(input, yCbCrChan0Mat, Imgproc.COLOR_RGB2YCrCb);  //
+            Imgproc.cvtColor(input, yCbCrChan0Mat, Imgproc.COLOR_RGB2HSV);  //
 //            Core.extractChannel(yCbCrChan0Mat, yCbCrChan0Mat, 0); // extracts a channel of a thing
 //            Imgproc.threshold(yCbCrChan0Mat, thresholdMat, 200, 255, Imgproc.THRESH_BINARY_INV); // seperates out regions of an image between intensity of pixels
-//
-//            Imgproc.cvtColor(input, yCbCrChan1Mat, Imgproc.COLOR_RGB2YCrCb);  //
-//            Core.extractChannel(yCbCrChan1Mat, yCbCrChan1Mat, 1); // extracts a channel of a thing
-//            Imgproc.threshold(yCbCrChan1Mat, thresholdMat, 200, 255, Imgproc.THRESH_BINARY_INV); // seperates out regions of an image between intensity of pixels
-//
-//            Imgproc.cvtColor(input, yCbCrChan2Mat, Imgproc.COLOR_RGB2YCrCb);  //
-//            Core.extractChannel(yCbCrChan2Mat, yCbCrChan2Mat, 2); // extracts a channel of a thing
-//            Imgproc.threshold(yCbCrChan2Mat, thresholdMat, 200, 255, Imgproc.THRESH_BINARY_INV); // seperates out regions of an image between intensity of pixels
-//
+
+            Imgproc.cvtColor(input, yCbCrChan1Mat, Imgproc.COLOR_RGB2YCrCb);  //
+            Core.extractChannel(yCbCrChan1Mat, yCbCrChan1Mat, 1); // extracts a channel of a thing
+            Imgproc.threshold(yCbCrChan1Mat, thresholdMat, 200, 255, Imgproc.THRESH_BINARY_INV); // seperates out regions of an image between intensity of pixels
+
+            Imgproc.cvtColor(input, yCbCrChan2Mat, Imgproc.COLOR_RGB2YCrCb);  //
+            Core.extractChannel(yCbCrChan2Mat, yCbCrChan2Mat, 2); // extracts a channel of a thing
+            Imgproc.threshold(yCbCrChan2Mat, thresholdMat, 200, 255, Imgproc.THRESH_BINARY_INV); // seperates out regions of an image between intensity of pixels
+
 
             Imgproc.threshold(thresholdMat,thresholdMat, 200, 255, Imgproc.THRESH_BINARY_INV); // seperates out regions of an image between intensity of pixels
 
@@ -154,16 +157,16 @@ public class OpenCVSwitchingExample extends LinearOpMode
 
             switch (stageToRenderToViewport)
            {
-//                case YCbCr_CHAN0: {
-//                    return  yCbCrChan0Mat;
-//                }
-//                case YCbCr_CHAN1:{
-//                    return yCbCrChan1Mat;
-//                }
-//                case YCbCr_CHAN2:
-//                {
-//                    return yCbCrChan2Mat;
-//                }
+                case YCbCr_CHAN0: {
+                    return  yCbCrChan0Mat;
+                }
+                case YCbCr_CHAN1:{
+                    return yCbCrChan1Mat;
+                }
+                case YCbCr_CHAN2:
+                {
+                    return yCbCrChan2Mat;
+                }
 
                 case THRESHOLD:
                 {

@@ -6,42 +6,31 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Skystone.Position2D;
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
+import org.firstinspires.ftc.teamcode.Skystone.ThreadLoop;
 
-@Disabled
 @TeleOp
-public class dumpOdometryAllData extends LinearOpMode {
+public class TestOdo extends LinearOpMode {
     Robot robot;
-    Position2D position2D;
 
     @Override
     public void runOpMode() {
         initLogic();
+        ThreadLoop t = new ThreadLoop(robot,robot.linearOpMode);
 
         waitForStart();
-
-        telemetry.addLine("Press A to log data and end program.");
-        telemetry.update();
-
-        long startTime = SystemClock.elapsedRealtime();
-
-        position2D.startOdometry();
+        t.run();
 
         while (opModeIsActive()) {
-            if (gamepad1.a) {
-                break;
-            }
+            telemetry.addLine("x: " + robot.odometryModule.worldX);
+            telemetry.addLine("y: " + robot.odometryModule.worldY);
+            telemetry.addLine("ang: " + Math.toDegrees(robot.odometryModule.worldAngle));
         }
 
-        robot.writeToFile("" + startTime, "allData.txt", robot.getOdometryAllData());
-
-        sleep(1000);
+        t.terminate();
     }
 
     private void initLogic() {
         robot = new Robot(hardwareMap, telemetry, this);
-
-        position2D = new Position2D(robot);
     }
 }

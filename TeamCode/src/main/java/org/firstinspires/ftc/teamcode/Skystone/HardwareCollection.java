@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Skystone;
 
+import android.os.SystemClock;
+
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -38,6 +40,8 @@ public class HardwareCollection {
 
     public LynxModule revHub1;
     public LynxModule revHub2;
+
+    public long currTime;
 
 
     public HardwareCollection(HardwareMap hwMap){
@@ -108,6 +112,10 @@ public class HardwareCollection {
 
     public void refreshData2(){
         revHub2.getBulkData();
+    }
+
+    public void updateTime(){
+        currTime = SystemClock.elapsedRealtime();
     }
 
     private DcMotor getDcMotor(String name) {

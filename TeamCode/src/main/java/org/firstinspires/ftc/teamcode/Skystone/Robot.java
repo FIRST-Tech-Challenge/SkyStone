@@ -87,6 +87,7 @@ public class Robot {
     public void update(){
         // put all sensors on rev 2
         hardwareCollection.refreshData2();
+        hardwareCollection.updateTime();
 
         // update all modules
         odometryModule.update(this, hardwareCollection);

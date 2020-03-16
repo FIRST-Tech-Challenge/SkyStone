@@ -28,8 +28,6 @@ public class PathModule {
     private double followPointX;
     private double followPointY;
 
-
-
     public PathModule(){
         isFollowingPath = false;
         data = new double[][]{{0,0},{0,0}};

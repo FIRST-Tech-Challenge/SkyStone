@@ -1,4 +1,7 @@
+
 package org.firstinspires.ftc.teamcode.robots;
+
+
 
 import android.graphics.Paint;
 import android.hardware.Sensor;
@@ -212,6 +215,24 @@ public class Joules  {
         BackRight.setPower(0);
     }
 
+
+
+    public void FoundationTowerMove() {
+        DriveBackward(0.5);
+        RC.l.sleep(200);
+        Stop();
+
+        FoundationDrop();
+        RC.l.sleep(2000);
+        Stop();
+
+        DaffyUp();
+        RC.l.sleep(2000);
+        Stop();
+    }
+
+
+
     public long getSeconds(double Voltage, int Seconds){
         return (long)((Seconds-((50*Voltage)-600)));
     }
@@ -221,7 +242,7 @@ public class Joules  {
         Capstone.setPosition(0.5);
     }
     public void CapUp(){
-        Capstone.setPosition(0.05);
+        Capstone.setPosition(1);
     }
 
 
@@ -247,6 +268,8 @@ public class Joules  {
 
 
     public void ScissorLiftIn(){ScissorLift.setPosition(ScissorLift.getPosition() - 0.005);}
+
+
 
 
 

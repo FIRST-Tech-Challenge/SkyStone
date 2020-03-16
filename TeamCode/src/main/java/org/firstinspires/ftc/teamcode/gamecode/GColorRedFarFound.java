@@ -21,7 +21,7 @@ public class GColorRedFarFound extends AutoOpMode {
         waitForStart();
 
 
-        int RedFoundVal = 32; //May have to change this value. the red colour sensor is already set to be programmed in Joulestest
+        int RedFoundVal = 50; //May have to change this value. the red colour sensor is already set to be programmed in Joulestest
         telemetry.addData("Status", "initialized");
         joules.FoundationDrop();
         joules.DaffyUp();

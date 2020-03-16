@@ -15,7 +15,7 @@ public class JoulesTeleOp extends TeleOpMode {
     @Override
     public void initialize() {
         joules = new Joules();
-        joules.CapDown();
+        joules.CapUp();
         joules.TapeMeasurePush();
         joules.FoundationDrop();
         telemetry.addData("Status", "Initialized");
@@ -85,6 +85,12 @@ public class JoulesTeleOp extends TeleOpMode {
 
         }
 
+        if (joy1.buttonA()){
+            joules.FoundationTowerMove();
+            telemetry.addData("task", "failed successfully");
+
+        }
+
 
         if (joy2.leftTrigger()) {
             joules.DaffyGrab();
@@ -101,6 +107,8 @@ public class JoulesTeleOp extends TeleOpMode {
         else {
             joules.DaffyStop();
         }
+
+
 
         if (joy2.buttonLeft()) {
             if (a == 0) {

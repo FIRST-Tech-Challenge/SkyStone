@@ -78,7 +78,7 @@ public class GColorBlClFound extends AutoOpMode {
         sleep(100);
 
         joules.StrafeLeft(0.3);
-        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 800));
+        sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1000));
         joules.Stop();
 
         joules.FoundationDrop();

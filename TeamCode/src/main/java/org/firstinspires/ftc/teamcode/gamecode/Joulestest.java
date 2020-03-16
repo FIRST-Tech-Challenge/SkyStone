@@ -21,7 +21,7 @@ public class Joulestest extends AutoOpMode {
         int i = 1;
 
         telemetry.addData("Status", "initialized");
-        colorSensor = hardwareMap.colorSensor.get("colour");
+        colorSensor = hardwareMap.colorSensor.get("colourRight");
         //colorSensorDown = hardwareMap.colorSensor.get("ColourDown");
         //StoneDist = hardwareMap.get(DistanceSensor.class, "Distance");
 //        joules.ScissorLift.setPosition(0.2);

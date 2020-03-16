@@ -21,21 +21,17 @@
 
 package org.firstinspires.ftc.teamcode.gamecode;
 
-import android.provider.ContactsContract;
-import android.service.notification.NotificationListenerService;
-
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
-import com.vuforia.Rectangle;
-import org.opencv.core.Point;
-import org.firstinspires.ftc.teamcode.opmodesupport.AutoOpMode;
 
+import org.firstinspires.ftc.teamcode.opmodesupport.AutoOpMode;
+import org.firstinspires.ftc.teamcode.robots.Joules;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.Range;
-import org.opencv.core.Rect;
+import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -43,9 +39,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
-import org.firstinspires.ftc.teamcode.robots.Joules;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +50,7 @@ import java.util.List;
  */
 @Autonomous
 
-public class OpenCVPixelVal extends AutoOpMode
+public class ZJustStoneRedPark extends AutoOpMode
 {
     OpenCvCamera phoneCam;
     StageSwitchingPipeline stageSwitchingPipeline;
@@ -77,6 +71,39 @@ public class OpenCVPixelVal extends AutoOpMode
         phoneCam.setPipeline(stageSwitchingPipeline);
         phoneCam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
         int state = 0;
+        ColorSensor colorSensorLeft;
+        ColorSensor colorSensorRight;
+        ColorSensor colorSensordown;
+
+        DistanceSensor DistanceSensorLeft;
+        DistanceSensor DistanceSensorRight;
+
+        ExpansionHub2_VoltageSensor =  hardwareMap.voltageSensor.get("Expansion Hub 2");
+
+        colorSensorLeft = hardwareMap.colorSensor.get("colourLeft");
+
+        colorSensorRight = hardwareMap.colorSensor.get("colourRight");
+
+        colorSensordown = hardwareMap.colorSensor.get("colourDown");
+
+        telemetry.addData("Mean RectOneRed", stageSwitchingPipeline.getRectOneRed());
+        telemetry.addData("Mean RectTwoGreen", stageSwitchingPipeline.getRectTwoGreen());
+        telemetry.addData("Mean RectTwoGreen", stageSwitchingPipeline.getRectThreeBlue());
+
+        telemetry.addData("Status", "initialized");
+
+        if (stageSwitchingPipeline.getRectTwoGreen() <80){
+            telemetry.addData("Skystone", "Center");
+
+        }
+        if ( stageSwitchingPipeline.getRectOneRed() < stageSwitchingPipeline.getRectThreeBlue()) {
+            telemetry.addData("Skystone", "Left");
+        } else if ( stageSwitchingPipeline.getRectThreeBlue() < stageSwitchingPipeline.getRectTwoGreen()) {
+            telemetry.addData("Skystone", "Right");
+
+        }
+        int bluetapeval = 37;
+
         waitForStart();
 
 
@@ -100,15 +127,54 @@ public class OpenCVPixelVal extends AutoOpMode
                 }
                 if ( stageSwitchingPipeline.getRectOneRed() < stageSwitchingPipeline.getRectThreeBlue()) {
                     telemetry.addData("Skystone", "Left");
-                    joules.StrafeLeft(0.2);
+                    joules.StrafeLeft(0.3);
                 } else if ( stageSwitchingPipeline.getRectThreeBlue() < stageSwitchingPipeline.getRectTwoGreen()) {
                     telemetry.addData("Skystone", "Right");
-                    joules.StrafeRight(0.2);
+                    joules.StrafeRight(0.3);
 
                 }
             }
             if (opModeIsActive() && state ==1){
                 telemetry.addData("yee", "haw");
+                joules.DaffyUp();
+                sleep( 2000);
+                joules.DaffyStop();
+
+                joules.DriveForward(0.4);
+                sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 2000));
+                joules.Stop();
+
+                joules.DriveForward(0.2);
+                sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 600));
+                joules.Stop();
+
+                joules.DaffyGrab();
+                sleep(2000);
+
+                joules.SlidesUp();
+                sleep(100);
+                joules.SlidesStop();
+
+                joules.DriveBackward(0.3);
+                sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1200));
+                joules.Stop();
+
+                joules.StrafeRight(0.5);
+                sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 4000));
+                joules.Stop();
+
+                joules.DaffyUp();
+                sleep(1000);
+
+                joules.StrafeLeft(0.5);
+                sleep(1300);
+                joules.Stop();
+
+                state =2;
+            }
+            if (state ==2 && opModeIsActive()){
+                telemetry.addData("State", "2");
+                joules.Stop();
             }
         }
 

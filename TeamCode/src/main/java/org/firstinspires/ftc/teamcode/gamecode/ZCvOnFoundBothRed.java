@@ -21,21 +21,17 @@
 
 package org.firstinspires.ftc.teamcode.gamecode;
 
-import android.provider.ContactsContract;
-import android.service.notification.NotificationListenerService;
-
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
-import com.vuforia.Rectangle;
-import org.opencv.core.Point;
-import org.firstinspires.ftc.teamcode.opmodesupport.AutoOpMode;
 
+import org.firstinspires.ftc.teamcode.opmodesupport.AutoOpMode;
+import org.firstinspires.ftc.teamcode.robots.Joules;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.Range;
-import org.opencv.core.Rect;
+import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -43,9 +39,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
-import org.firstinspires.ftc.teamcode.robots.Joules;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,11 +50,12 @@ import java.util.List;
  */
 @Autonomous
 
-public class OpenCVPixelVal extends AutoOpMode
+public class ZCvOnFoundBothRed extends AutoOpMode
 {
     OpenCvCamera phoneCam;
     StageSwitchingPipeline stageSwitchingPipeline;
     Joules joules = new Joules();
+
     private VoltageSensor ExpansionHub2_VoltageSensor;
     public void runOp() throws InterruptedException {
         /**
@@ -77,6 +72,23 @@ public class OpenCVPixelVal extends AutoOpMode
         phoneCam.setPipeline(stageSwitchingPipeline);
         phoneCam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
         int state = 0;
+        ColorSensor colorSensorLeft;
+        ColorSensor colorSensorRight;
+        ColorSensor colorSensordown;
+
+        DistanceSensor DistanceSensorLeft;
+        DistanceSensor DistanceSensorRight;
+
+        ExpansionHub2_VoltageSensor =  hardwareMap.voltageSensor.get("Expansion Hub 2");
+
+        colorSensorLeft = hardwareMap.colorSensor.get("colourLeft");
+
+        colorSensorRight = hardwareMap.colorSensor.get("colourRight");
+
+        colorSensordown = hardwareMap.colorSensor.get("colourDown");
+        telemetry.addData("Status", "initialized");
+
+        int redtapeval = 45;
         waitForStart();
 
 
@@ -100,15 +112,95 @@ public class OpenCVPixelVal extends AutoOpMode
                 }
                 if ( stageSwitchingPipeline.getRectOneRed() < stageSwitchingPipeline.getRectThreeBlue()) {
                     telemetry.addData("Skystone", "Left");
-                    joules.StrafeLeft(0.2);
+                    joules.StrafeLeft(0.4);
                 } else if ( stageSwitchingPipeline.getRectThreeBlue() < stageSwitchingPipeline.getRectTwoGreen()) {
                     telemetry.addData("Skystone", "Right");
-                    joules.StrafeRight(0.2);
+                    joules.StrafeRight(0.4);
 
                 }
             }
             if (opModeIsActive() && state ==1){
-                telemetry.addData("yee", "haw");
+                joules.DaffyUp();
+                sleep( 2000);
+                joules.DaffyStop();
+
+                joules.DriveForward(0.4);
+                sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 850));
+                joules.Stop();
+
+                joules.DriveForward(0.2);
+                sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 800));
+                joules.Stop();
+
+                joules.DaffyGrab();
+                sleep(2000);
+
+                joules.SlidesUp();
+                sleep(100);
+                joules.SlidesStop();
+
+                joules.DriveBackward(0.3);
+                sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 600));
+                joules.StrafeRight(0.5);
+                sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 2000));
+                joules.Stop();
+
+
+                joules.SlidesUp();
+                sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(),800));
+                joules.SlidesStop();
+
+
+                joules.StrafeRight(0.3);
+                sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1000));
+                joules.Stop();
+                sleep(500);
+
+                clearTimer(1);
+                while (opModeIsActive() && getSeconds(1) < 2000 && colorSensorLeft.red() < redtapeval) {
+                    joules.DriveForward(0.1);
+                    telemetry.addData("Seconds", getSeconds(1));
+                    telemetry.addData("blue", colorSensorLeft.red());
+                }
+                joules.Stop();
+
+                joules.SlidesDown();
+                joules.FoundationGrab();
+                sleep(100);
+                joules.SlidesStop();
+                sleep(1500);
+
+                joules.DriveBackward(0.5);
+                sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 600));
+                joules.Stop();
+
+                joules.StrafeLeft(0.3);
+                sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 600));
+                joules.Stop();
+
+                joules.TurnLeft(0.5);
+                sleep(750);
+                joules.Stop();
+
+                joules.DriveForward(0.5);
+                sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 900));
+                joules.Stop();
+
+                joules.FoundationDrop();
+                sleep(2000);
+
+                joules.DaffyUp();
+                sleep(1000);
+                joules.Stop();
+
+                joules.DriveBackward(0.3);
+                sleep(joules.getSeconds(ExpansionHub2_VoltageSensor.getVoltage(), 1200));
+                joules.Stop();
+                state = 2;
+
+            }
+            if (opModeIsActive() && state ==2){
+                joules.Stop();
             }
         }
 

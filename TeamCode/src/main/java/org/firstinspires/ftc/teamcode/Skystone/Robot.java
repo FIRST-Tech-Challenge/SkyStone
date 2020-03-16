@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.Skystone.Modules.DriveModule;
 import org.firstinspires.ftc.teamcode.Skystone.Modules.FoundationMoverModule;
 import org.firstinspires.ftc.teamcode.Skystone.Modules.IntakeModule;
 import org.firstinspires.ftc.teamcode.Skystone.Modules.OdometryModule;
+import org.firstinspires.ftc.teamcode.Skystone.Modules.OuttakeModule;
 import org.firstinspires.ftc.teamcode.Skystone.Modules.PathModule;
 import org.firstinspires.ftc.teamcode.Skystone.Modules.SpoolModule;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CatmullRomSplineUtils;
@@ -42,7 +43,7 @@ public class Robot {
     public OdometryModule odometryModule;
     public DriveModule driveModule;
     public IntakeModule intakeModule;
-    public SpoolModule spoolModule;
+    public OuttakeModule outtakeModule;
     public PathModule pathModule;
     public FoundationMoverModule foundationMoverModule;
 
@@ -78,7 +79,7 @@ public class Robot {
         odometryModule = new OdometryModule();
         driveModule = new DriveModule();
         intakeModule = new IntakeModule();
-        spoolModule = new SpoolModule();
+        outtakeModule = new OuttakeModule();
         pathModule = new PathModule();
         foundationMoverModule = new FoundationMoverModule();
     }
@@ -92,7 +93,6 @@ public class Robot {
         pathModule.update(this);
         driveModule.update(this, hardwareCollection);
         intakeModule.update(hardwareCollection);
-        spoolModule.update(hardwareCollection);
         foundationMoverModule.update(hardwareCollection);
     }
 

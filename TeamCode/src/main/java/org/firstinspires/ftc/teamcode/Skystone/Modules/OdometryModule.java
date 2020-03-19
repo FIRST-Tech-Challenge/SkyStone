@@ -23,6 +23,8 @@ public class OdometryModule {
     private final double MOVE_SCALE_FACTOR = 0.004110264;
     private final double TURN_SCALE_FACTOR = 0.5/LEFT_RIGHT_ENCODER_DISTANCE_FROM_CENTER;
 
+    public StringBuilder odometryData;
+
     public OdometryModule(){
         oldLeftPod = 0.0;
         oldRightPod = 0.0;
@@ -31,9 +33,26 @@ public class OdometryModule {
         worldX = 0.0;
         worldY = 0.0;
         worldAngle = 0.0;
+
+        odometryData = new StringBuilder();
+        odometryData.append("worldX worldY worldAngle oldLeftPod oldRightPod");
+        odometryData.append("\n");
     }
 
     public synchronized void update(Robot robot, HardwareCollection hardwareCollection) {
+
+        if (robot.isDebug){
+            odometryData.append(worldX);
+            odometryData.append(" ");
+            odometryData.append(worldY);
+            odometryData.append(" ");
+            odometryData.append(worldAngle);
+            odometryData.append(" ");
+            odometryData.append(oldLeftPod);
+            odometryData.append(" ");
+            odometryData.append(oldRightPod);
+            odometryData.append("\n");
+        }
 
         lastStartTime = startTime;
         startTime = SystemClock.elapsedRealtime();

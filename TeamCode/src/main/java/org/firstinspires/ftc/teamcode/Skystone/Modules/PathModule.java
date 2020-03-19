@@ -2,8 +2,7 @@ package org.firstinspires.ftc.teamcode.Skystone.Modules;
 
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.Skystone.HardwareCollection;
-import org.firstinspires.ftc.teamcode.Skystone.MathFunctions;
+import org.firstinspires.ftc.teamcode.Skystone.Accessories.MathFunctions;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CatmullRomSplineUtils;
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
@@ -27,10 +26,25 @@ public class PathModule {
     private double robotAngle;
     private double followPointX;
     private double followPointY;
+    private int tripNum;
+
+    public StringBuilder pathData;
 
     public PathModule(){
         isFollowingPath = false;
         data = new double[][]{{0,0},{0,0}};
+        moveSpeed = 0.0;
+        turnSpeed = 0.0;
+        optimalAngle = 0.0;
+
+        followPointX = 0.0;
+        followPointY = 0.0;
+
+        tripNum = 0;
+
+        pathData = new StringBuilder();
+        pathData.append("tripNum isFollowingPath moveSpeed turnSpeed optimalAngle followPointX followPointY");
+        pathData.append("\n");
     }
 
     public void runPath(double[][] data, double moveSpeed, double turnSpeed, double optimalAngle){
@@ -42,6 +56,24 @@ public class PathModule {
     }
 
     public synchronized void update(Robot robot){
+
+        if (robot.isDebug){
+            pathData.append(tripNum);
+            pathData.append(" ");
+            pathData.append(isFollowingPath);
+            pathData.append(" ");
+            pathData.append(moveSpeed);
+            pathData.append(" ");
+            pathData.append(turnSpeed);
+            pathData.append(" ");
+            pathData.append(optimalAngle);
+            pathData.append(" ");
+            pathData.append(followPointX);
+            pathData.append(" ");
+            pathData.append(followPointY);
+            pathData.append("\n");
+        }
+
         if (isFollowingPath){
 
             // if data has changed then generate new pathpoints

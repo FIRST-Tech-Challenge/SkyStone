@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Skystone;
+package org.firstinspires.ftc.teamcode.Skystone.Accessories;
 
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 

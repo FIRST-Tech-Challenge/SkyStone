@@ -12,14 +12,24 @@ public class DriveModule {
     public double turnMovement;
     public boolean isSlowDrive;
 
+    private double fLeftPower;
+    private double fRightPower;
+    private double bLeftPower;
+    private double bRightPower;
+
     private HardwareCollection hardwareCollection;
     private Robot robot;
+
+    public StringBuilder driveData;
 
     public DriveModule(){
         xMovement = 0.0;
         yMovement = 0.0;
         turnMovement = 0.0;
         isSlowDrive = false;
+
+        driveData = new StringBuilder();
+        driveData.append("xMovement yMovement turnMovement isSlowDrive fLeftPower fRightPower bLeftPower bRightPower");
     }
 
     public synchronized void update(Robot robot, HardwareCollection hardwareCollection){
@@ -27,10 +37,24 @@ public class DriveModule {
         this.hardwareCollection = hardwareCollection;
         this.robot = robot;
 
-        double fLeftPower;
-        double fRightPower;
-        double bLeftPower;
-        double bRightPower;
+        if (robot.isDebug){
+            driveData.append(xMovement);
+            driveData.append("\n");
+            driveData.append(yMovement);
+            driveData.append("\n");
+            driveData.append(turnMovement);
+            driveData.append("\n");
+            driveData.append(isSlowDrive);
+            driveData.append("\n");
+            driveData.append(fLeftPower);
+            driveData.append("\n");
+            driveData.append(fRightPower);
+            driveData.append("\n");
+            driveData.append(bLeftPower);
+            driveData.append("\n");
+            driveData.append(bRightPower);
+            driveData.append("\n");
+        }
 
         // this is applyMove
 

@@ -12,13 +12,28 @@ public class IntakeModule {
 
     public boolean isIntakeMode;
 
+    public StringBuilder intakeData;
+
     public IntakeModule(){
         intakeLeftPower = 0.0;
         intakeRightPower = 0.0;
         isIntakeMode = false;
+
+        intakeData = new StringBuilder();
+        intakeData.append("intakeLeftPower intakeRightPower isIntakeMode");
     }
 
-    public synchronized void update(HardwareCollection hardwareCollection){
+    public synchronized void update(Robot robot, HardwareCollection hardwareCollection){
+
+        if (robot.isDebug){
+            intakeData.append(intakeLeftPower);
+            intakeData.append(" ");
+            intakeData.append(intakeRightPower);
+            intakeData.append(" ");
+            intakeData.append(isIntakeMode);
+            intakeData.append("\n");
+
+        }
 
         if (isIntakeMode){
 

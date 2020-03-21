@@ -1,11 +1,10 @@
-package org.firstinspires.ftc.teamcode.Skystone.Modules;
+package org.firstinspires.ftc.teamcode.FTC2021.Modules;
 
 import android.os.SystemClock;
 
-import org.firstinspires.ftc.teamcode.Skystone.HardwareCollection;
-import org.firstinspires.ftc.teamcode.Skystone.Robot;
+import org.firstinspires.ftc.teamcode.FTC2021.HardwareCollection;
+import org.firstinspires.ftc.teamcode.FTC2021.Robot;
 
-@Deprecated
 public class OdometryModule {
 
     private long startTime;

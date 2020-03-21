@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.Skystone.Modules;
+package org.firstinspires.ftc.teamcode.FTC2021.Modules;
 
-import org.firstinspires.ftc.teamcode.Skystone.HardwareCollection;
-import org.firstinspires.ftc.teamcode.Skystone.Robot;
+import org.firstinspires.ftc.teamcode.FTC2021.HardwareCollection;
+import org.firstinspires.ftc.teamcode.FTC2021.Robot;
 
-import static org.firstinspires.ftc.teamcode.Skystone.Constants.*;
+import static org.firstinspires.ftc.teamcode.FTC2021.Constants.OUTTAKE_SLIDE_EXTENDED;
+import static org.firstinspires.ftc.teamcode.FTC2021.Constants.OUTTAKE_SLIDE_RETRACTED;
 
-@Deprecated
 public class ClawModule {
 
     public boolean extended;

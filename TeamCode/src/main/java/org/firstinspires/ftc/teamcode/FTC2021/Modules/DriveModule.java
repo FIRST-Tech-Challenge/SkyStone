@@ -1,11 +1,10 @@
-package org.firstinspires.ftc.teamcode.Skystone.Modules;
+package org.firstinspires.ftc.teamcode.FTC2021.Modules;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Skystone.HardwareCollection;
-import org.firstinspires.ftc.teamcode.Skystone.Robot;
+import org.firstinspires.ftc.teamcode.FTC2021.HardwareCollection;
+import org.firstinspires.ftc.teamcode.FTC2021.Robot;
 
-@Deprecated
 public class DriveModule {
 
     public double xMovement;

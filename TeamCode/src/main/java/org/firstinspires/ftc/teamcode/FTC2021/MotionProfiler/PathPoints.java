@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.Skystone.MotionProfiler;
+package org.firstinspires.ftc.teamcode.FTC2021.MotionProfiler;
 
 import java.util.Vector;
 
-@Deprecated
 public class PathPoints {
     public Vector<CurvePoint> targetPoints = new Vector<>();
     private final double moveSpeed = 1;

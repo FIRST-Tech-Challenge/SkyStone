@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Skystone;
+package org.firstinspires.ftc.teamcode.FTC2021;
 
 import android.os.SystemClock;
 
@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Deprecated
 public class HardwareCollection {
     //Drive Motors
     public DcMotor fLeft;

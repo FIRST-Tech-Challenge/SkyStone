@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode.Skystone.MotionProfiler;
+package org.firstinspires.ftc.teamcode.FTC2021.MotionProfiler;
 
-@Deprecated
 public class Point {
     public double x;
     public double y;

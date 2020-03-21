@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode.Skystone.MotionProfiler;
+package org.firstinspires.ftc.teamcode.FTC2021.MotionProfiler;
 
-@Deprecated
 public class CatmullRomSplineGenerator {
     private double p0, p1, p2, p3;
 
@@ -16,7 +15,6 @@ public class CatmullRomSplineGenerator {
     }
 }
 
-@Deprecated
 class CatmullRomSpline2D {
     private CatmullRomSplineGenerator splineXVals, splineYVals;
 

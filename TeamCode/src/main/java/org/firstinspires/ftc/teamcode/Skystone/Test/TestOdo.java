@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
 import org.firstinspires.ftc.teamcode.Skystone.ThreadLoop;
 
+@Deprecated
 @TeleOp
 public class TestOdo extends LinearOpMode {
     Robot robot;

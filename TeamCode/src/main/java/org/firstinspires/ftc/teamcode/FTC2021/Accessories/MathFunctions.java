@@ -1,13 +1,12 @@
-package org.firstinspires.ftc.teamcode.Skystone.Accessories;
+package org.firstinspires.ftc.teamcode.FTC2021.Accessories;
 
-import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
+import org.firstinspires.ftc.teamcode.FTC2021.MotionProfiler.Point;
 
 import java.util.ArrayList;
 import java.util.Vector;
 
-import static java.lang.Math.*;
+import static java.lang.Math.pow;
 
-@Deprecated
 public class MathFunctions {
 
     public static double angleWrap(double angle) {
@@ -159,7 +158,7 @@ public class MathFunctions {
         for (int i = 0; i < v.size(); i++) {
             sum += pow(v.get(i), 2);
         }
-        return java.lang.Math.sqrt(sum);
+        return Math.sqrt(sum);
     }
 
     public static double[][] matrixMultiplication(double[][] a, double[][] b) {

@@ -1,15 +1,14 @@
-package org.firstinspires.ftc.teamcode.Skystone.Modules;
+package org.firstinspires.ftc.teamcode.FTC2021.Modules;
 
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.Skystone.Accessories.MathFunctions;
-import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.CatmullRomSplineUtils;
-import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
-import org.firstinspires.ftc.teamcode.Skystone.Robot;
+import org.firstinspires.ftc.teamcode.FTC2021.Accessories.MathFunctions;
+import org.firstinspires.ftc.teamcode.FTC2021.MotionProfiler.CatmullRomSplineUtils;
+import org.firstinspires.ftc.teamcode.FTC2021.MotionProfiler.Point;
+import org.firstinspires.ftc.teamcode.FTC2021.Robot;
 
 import java.util.Arrays;
 
-@Deprecated
 public class PathModule {
 
     // make sure no null object reference from these variables

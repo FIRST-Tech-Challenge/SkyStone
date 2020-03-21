@@ -1,12 +1,13 @@
-package org.firstinspires.ftc.teamcode.Skystone.Modules;
+package org.firstinspires.ftc.teamcode.FTC2021.Modules;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Skystone.HardwareCollection;
-import org.firstinspires.ftc.teamcode.Skystone.Robot;
+import org.firstinspires.ftc.teamcode.FTC2021.HardwareCollection;
+import org.firstinspires.ftc.teamcode.FTC2021.Robot;
 
-import static org.firstinspires.ftc.teamcode.Skystone.Constants.*;
+import static org.firstinspires.ftc.teamcode.FTC2021.Constants.BACKCLAMP_CLAMPED;
+import static org.firstinspires.ftc.teamcode.FTC2021.Constants.FRONTCLAMP_CLAMPED;
+import static org.firstinspires.ftc.teamcode.FTC2021.Constants.PUSHER_PUSHED;
 
-@Deprecated
 public class IntakeModule {
     public double intakeLeftPower;
     public double intakeRightPower;
@@ -15,7 +16,7 @@ public class IntakeModule {
 
     public StringBuilder intakeData;
 
-    public IntakeModule(){
+    public IntakeModule() {
         intakeLeftPower = 0.0;
         intakeRightPower = 0.0;
         isIntakeMode = false;
@@ -24,9 +25,9 @@ public class IntakeModule {
         intakeData.append("intakeLeftPower intakeRightPower isIntakeMode");
     }
 
-    public synchronized void update(Robot robot, HardwareCollection hardwareCollection){
+    public synchronized void update(Robot robot, HardwareCollection hardwareCollection) {
 
-        if (robot.isDebug){
+        if (robot.isDebug) {
             intakeData.append(intakeLeftPower);
             intakeData.append(" ");
             intakeData.append(intakeRightPower);
@@ -36,7 +37,7 @@ public class IntakeModule {
 
         }
 
-        if (isIntakeMode){
+        if (isIntakeMode) {
 
             // TODO change this to outtakeModule
             hardwareCollection.backClamp.setPosition(BACKCLAMP_CLAMPED);

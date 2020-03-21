@@ -1,28 +1,27 @@
-package org.firstinspires.ftc.teamcode.Skystone.Accessories;
+package org.firstinspires.ftc.teamcode.FTC2021.Accessories;
 
 import android.util.Log;
 
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
-import org.firstinspires.ftc.teamcode.Skystone.Robot;
+import org.firstinspires.ftc.teamcode.FTC2021.Robot;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-@Deprecated
 public class DataDump {
     public static void dump(Robot robot, String directoryName){
-//        writeToFile("" + directoryName, "odometryModule.txt", robot.odometryModule.odometryData.toString());
-//        writeToFile("" + directoryName, "pathModule.txt", robot.pathModule.pathData.toString());
-//        writeToFile("" + directoryName, "driveModule.txt", robot.driveModule.driveData.toString());
-//        writeToFile("" + directoryName, "intakeModule.txt", robot.intakeModule.intakeData.toString());
-//        writeToFile("" + directoryName, "linkageModule.txt", robot.outtakeModule.linkageModule.linkageData.toString());
-//        writeToFile("" + directoryName, "clawModule.txt", robot.outtakeModule.clawModule.clawData.toString());
-//        writeToFile("" + directoryName, "spoolModule.txt", robot.outtakeModule.spoolModule.spoolData.toString());
-//        writeToFile("" + directoryName, "foundationMoverModule.txt", robot.foundationMoverModule.foundationMoverData.toString());
+        writeToFile("" + directoryName, "odometryModule.txt", robot.odometryModule.odometryData.toString());
+        writeToFile("" + directoryName, "pathModule.txt", robot.pathModule.pathData.toString());
+        writeToFile("" + directoryName, "driveModule.txt", robot.driveModule.driveData.toString());
+        writeToFile("" + directoryName, "intakeModule.txt", robot.intakeModule.intakeData.toString());
+        writeToFile("" + directoryName, "linkageModule.txt", robot.outtakeModule.linkageModule.linkageData.toString());
+        writeToFile("" + directoryName, "clawModule.txt", robot.outtakeModule.clawModule.clawData.toString());
+        writeToFile("" + directoryName, "spoolModule.txt", robot.outtakeModule.spoolModule.spoolData.toString());
+        writeToFile("" + directoryName, "foundationMoverModule.txt", robot.foundationMoverModule.foundationMoverData.toString());
     }
 
     private static void writeToFile(String directoryName, String fileName, String data) {

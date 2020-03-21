@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.Skystone.MotionProfiler;
+package org.firstinspires.ftc.teamcode.FTC2021.MotionProfiler;
 
-import org.firstinspires.ftc.teamcode.Skystone.Robot;
+import org.firstinspires.ftc.teamcode.FTC2021.Robot;
 
-@Deprecated
 public class CatmullRomSplineUtils {
     public static Point[] subdividePoints(Point[] points, int subdivisions, Robot robot) {
         assert points != null;

@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.DutchFTCCore.SubSystems.MovementSubSystem;
 
 @TeleOp( name = "TestOpmode")
 public class TestOpMode extends OpMode {
+    float eenGetal;
     Robot bot;
 
     @Override

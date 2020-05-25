@@ -45,41 +45,26 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name="Basic: Linear OpMode for 1019-2020 Season", group="Linear Opmode")
 //@Disabled
 public class Cleopatra12820TeleOp extends LinearOpMode {
-    double clawOffset = 0;                       // Servo mid position
-    double servoOffset = 0;
-    public static final double CLAW_SPEED = 0.02; // sets rate to move claw servo
-    public static final double SERV_SPEED = 0.02; // sets rate to move claw servo
+
+
     // public static final double INCREMENT=0.01;     // amount to slew servo each CYCLE_MS cycle
     public static final int CYCLE_MS = 50;     // period of each cycle
     public static final double MID_SERVO = 0.5;
-    public static final double ARM_UP_POWER    =  0.45 ;
-     public static final double ARM_DOWN_POWER  = -0.45 ;
-     public static final double ELBOW_UP_POWER    =  0.45 ;
-     public static final double ELBOW_DOWN_POWER  = -0.45 ;
+
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     double position = MID_SERVO;// Start at halfway position
-    DcMotor intakeMotorRight = null;
-    DcMotor intakeMotorLeft = null;
+
     DcMotor backMotorLeft = null;
     DcMotor backMotorRight = null;
     DcMotor frontMotorLeft = null;
     DcMotor frontMotorRight = null;
     DcMotor armElbow = null;
     DcMotor armWrist = null;
-    //Servo intakeServoRight = null;
-    //Servo intakeServoLeft = null;
     Servo claw = null;
-    Servo rotator = null;
+    Servo gripperLeft=null;
+    Servo gripperRight=null;
 
-
-    public void setIntakeServoLeft(Servo intakeServoLeft) {
-        intakeServoLeft.setPosition(MID_SERVO);
-    }
-
-    public void setIntakeServoRightt(Servo intakeServoRight) {
-        intakeServoRight.setPosition(MID_SERVO);
-    }
 
     @Override
     public void runOpMode() {
@@ -94,50 +79,49 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
             step (using the FTC Robot Controller app on the phone).*/
 
 
-        intakeMotorLeft = hardwareMap.get(DcMotor.class, "intakeMotorLeft");
-        intakeMotorRight = hardwareMap.get(DcMotor.class, "intakeMotorRight");
+
         backMotorLeft = hardwareMap.get(DcMotor.class, "backMotorLeft");
         backMotorRight = hardwareMap.get(DcMotor.class, "backMotorRight");
         frontMotorLeft = hardwareMap.get(DcMotor.class, "frontMotorLeft");
         frontMotorRight = hardwareMap.get(DcMotor.class, "frontMotorRight");
         armElbow = hardwareMap.get(DcMotor.class, "armElbow");
         armWrist = hardwareMap.get(DcMotor.class, "armWrist");
-        //intakeServoRight = hardwareMap.get(Servo.class, "intakeServoRight");
-        //intakeServoLeft = hardwareMap.get(Servo.class, "intakeServoLeft");
+
         claw = hardwareMap.get(Servo.class, "claw");
-        rotator = hardwareMap.get(Servo.class, "rotator");
+        gripperLeft = hardwareMap.get(Servo.class, "gripperLeft");
+        gripperRight = hardwareMap.get(Servo.class, "gripperRight");
+
+
+
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         armElbow.setDirection(DcMotor.Direction.FORWARD);
         armWrist.setDirection(DcMotor.Direction.REVERSE);
-        intakeMotorLeft.setDirection(DcMotor.Direction.REVERSE);
-        intakeMotorRight.setDirection(DcMotor.Direction.FORWARD);
+
         backMotorLeft.setDirection(DcMotor.Direction.FORWARD);
         backMotorRight.setDirection(DcMotor.Direction.REVERSE);
-        frontMotorLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontMotorLeft.setDirection(DcMotor.Direction.REVERSE);     //I CHANGED THIS ONE ALSO
         frontMotorRight.setDirection(DcMotor.Direction.FORWARD);   //THIS IS THE ONE I CHANGED
-        //intakeServoLeft.setDirection(Servo.Direction.REVERSE);
-        //intakeServoRight.setDirection(Servo.Direction.FORWARD);
+
         claw.setDirection(Servo.Direction.FORWARD);
-        rotator.setDirection(Servo.Direction.FORWARD);
-        //intakeServoRight.setPosition(0);
-        //intakeServoLeft.setPosition(0);
+        gripperRight.setDirection(Servo.Direction.FORWARD);
+        gripperLeft.setDirection(Servo.Direction.REVERSE);
+
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-        //setIntakeServoLeft(intakeServoLeft);
-        //setIntakeServoRightt(intakeServoRight);
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
             // Setup a variable for each drive wheel to save power level for telemetry
-            double intakeLeftPower;
-            double intakeRightPower;
+
             double Speed = -gamepad1.left_stick_y;
             double Turn = gamepad1.left_stick_x;
             double Strafe = gamepad1.right_stick_x;
-            //double MAX_SPEED = 1.0;
+
 
             //telemetry.addData("Right Servo position", intakeServoRight.getPosition());
             //telemetry.update();
@@ -155,22 +139,6 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
 
             armWrist.setPower(armWristPower);
             armElbow.setPower(armElbowPower);
-
-
-
-            /*Sets the servo positions to their "home" position when the Teleop stage begins
-            intakeServoRight.setPosition(0.5);
-            intakeServoLeft.setPosition(0.5);
-            claw.setPosition(0.5);
-            rotator.setPosition(0.5);*/
-
-            if (gamepad2.left_trigger > 0) {
-                intakeLeftPower = Range.clip(gamepad2.left_trigger, -1.0, 1.0); //swaps between the two programed "extremes" on the servo
-                intakeRightPower = Range.clip(gamepad2.left_trigger, -1.0, 1.0);
-            } else {
-                intakeLeftPower = Range.clip(-gamepad2.right_trigger, -1.0, 1.0);
-                intakeRightPower = Range.clip(-gamepad2.right_trigger, -1.0, 1.0);
-            }
             frontMotorLeft.setPower(numFl);
             if (backMotorLeft != null)
                 backMotorLeft.setPower(numBl);
@@ -179,21 +147,7 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
             if (backMotorRight != null)
                 backMotorRight.setPower(numBr);
 
-            intakeMotorLeft.setPower(intakeLeftPower);
-            intakeMotorRight.setPower(intakeRightPower);
 
-            /*Intake Servos
-            if (gamepad2.x) {
-                servoOffset += SERV_SPEED;
-                servoOffset = Range.clip(servoOffset, -0.5, 0.5);
-                intakeServoRight.setPosition(MID_SERVO + servoOffset);}
-                intakeServoLeft.setPosition(MID_SERVO + servoOffset);
-                if (gamepad2.y) {
-                    servoOffset -= SERV_SPEED;
-                    servoOffset = Range.clip(servoOffset, -0.5, 0.5);
-                    intakeServoRight.setPosition(MID_SERVO + servoOffset);
-                    intakeServoLeft.setPosition(MID_SERVO + servoOffset);
-                }*/
 
                 //Use gamepad2 left & right Bumpers to open and close the claw
                 if (gamepad2.right_bumper) {
@@ -202,13 +156,13 @@ public class Cleopatra12820TeleOp extends LinearOpMode {
                     claw.setPosition(1);
                 }
 
+                if(gamepad2.x){
+                    gripperRight.setPosition(-1);
+                    gripperLeft.setPosition(-1);
+                }else if(gamepad2.y){
+                    gripperRight.setPosition(1);
+                    gripperLeft.setPosition(1);
 
-                //Rotator.
-                if (gamepad2.a) {
-                    rotator.setPosition(1);
-                }
-                if (gamepad2.b) {
-                    rotator.setPosition(-1);
                 }
                 sleep(CYCLE_MS);
                 idle();

@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -82,11 +83,17 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * is explained below.
  */
 
-@TeleOp(name="Vuforia Navtri1", group ="Concept")
-// @Disabled
-public class VuforiaSkyStoneNavigationWebcam12820 extends LinearOpMode {
 
-    // IMPORTANT: If you are using a USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
+@TeleOp(name="SKYSTONE Vuforia Nav", group ="Concept")
+@Disabled
+public class VuforiaSkyStoneNavigation12820 extends LinearOpMode {
+
+    // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
+    // 1) Camera Source.  Valid choices are:  BACK (behind screen) or FRONT (selfie side)
+    // 2) Phone Orientation. Choices are: PHONE_IS_PORTRAIT = true (portrait) or PHONE_IS_PORTRAIT = false (landscape)
+    //
+    // NOTE: If you are running on a CONTROL HUB, with only one USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
+    //
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false  ;
 
@@ -103,7 +110,7 @@ public class VuforiaSkyStoneNavigationWebcam12820 extends LinearOpMode {
      * and paste it in to your code on the next line, between the double quotes.
      */
     private static final String VUFORIA_KEY =
-            " AZ7AcNj/////AAABmdKSAUs6jUbsp930wtIqmTIRxjvnBoJicMSGMSRBRbhQXiAWgOguLnfnmd4VY/dCrYjng3gsv1I5Ay+eqb/l35mf6A2IuMtk67j2418iymTvTLGolY0+WhbIGrOwoF8GEjnqqn0fGDSZQGJbrpIKvNvDyj87SiV7cqDvtpyKzU8IqmlPzxSq8S5+opn6ai7Rl3w6P/uDSIThMYNi9Eb/BelfNf/OjToOO5JXqx4muxjz8wJbGSIC++GYHjoPPn+oPSEvHEKaLMIy43JsTMC1lilc8XK2JBnUjQf+b7rmphbz8kMwI6Kr6rv/ubUkvwIor2lBKw7SPeGIawSWBoVdVncDgyUylbWBmh5RHIx1g2nX";
+            " AZ7AcNj/////AAABmdKSAUs6jUbsp930wtIqmTIRxjvnBoJicMSGMSRBRbhQXiAWgOguLnfnmd4VY/dCrYjng3gsv1I5Ay+eqb/l35mf6A2IuMtk67j2418iymTvTLGolY0+WhbIGrOwoF8GEjnqqn0fGDSZQGJbrpIKvNvDyj87SiV7cqDvtpyKzU8IqmlPzxSq8S5+opn6ai7Rl3w6P/uDSIThMYNi9Eb/BelfNf/OjToOO5JXqx4muxjz8wJbGSIC++GYHjoPPn+oPSEvHEKaLMIy43JsTMC1lilc8XK2JBnUjQf+b7rmphbz8kMwI6Kr6rv/ubUkvwIor2lBKw7SPeGIawSWBoVdVncDgyUylbWBmh5RHIx1g2nX ";
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
@@ -127,24 +134,12 @@ public class VuforiaSkyStoneNavigationWebcam12820 extends LinearOpMode {
     // Class Members
     private OpenGLMatrix lastLocation = null;
     private VuforiaLocalizer vuforia = null;
-
-    /**
-     * This is the webcam we are to use. As with other hardware devices such as motors and
-     * servos, this device is identified using the robot configuration tool in the FTC application.
-     */
-    WebcamName webcamName = null;
-
     private boolean targetVisible = false;
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
 
     @Override public void runOpMode() {
-        /*
-         * Retrieve the camera we are to use.
-         */
-        webcamName = hardwareMap.get(WebcamName.class, "Webcam");
-
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          * We can pass Vuforia the handle to a camera preview resource (on the RC phone);
@@ -156,11 +151,7 @@ public class VuforiaSkyStoneNavigationWebcam12820 extends LinearOpMode {
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-
-        /**
-         * We also indicate which camera on the RC we wish to use.
-         */
-        parameters.cameraName = webcamName;
+        parameters.cameraDirection   = CAMERA_CHOICE;
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -197,7 +188,7 @@ public class VuforiaSkyStoneNavigationWebcam12820 extends LinearOpMode {
         rear2.setName("Rear Perimeter 2");
 
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
-        List<VuforiaTrackable> allTrackables = new ArrayList<>();
+        List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(targetsSkyStone);
 
         /**
@@ -303,13 +294,13 @@ public class VuforiaSkyStoneNavigationWebcam12820 extends LinearOpMode {
 
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
+        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
         final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
         final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
-                    .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
-                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
         /**  Let all the trackable listeners know where the phone is.  */
         for (VuforiaTrackable trackable : allTrackables) {

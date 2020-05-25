@@ -91,7 +91,7 @@ public class ConceptVuMarkIdentificationWebcam extends LinearOpMode {
         /*
          * Retrieve the camera we are to use.
          */
-        webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
+        webcamName = hardwareMap.get(WebcamName.class, "Webcam");
 
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
@@ -115,7 +115,7 @@ public class ConceptVuMarkIdentificationWebcam extends LinearOpMode {
          * Once you've obtained a license key, copy the string from the Vuforia web site
          * and paste it in to your code on the next line, between the double quotes.
          */
-        parameters.vuforiaLicenseKey = " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+        parameters.vuforiaLicenseKey = "AZ7AcNj/////AAABmdKSAUs6jUbsp930wtIqmTIRxjvnBoJicMSGMSRBRbhQXiAWgOguLnfnmd4VY/dCrYjng3gsv1I5Ay+eqb/l35mf6A2IuMtk67j2418iymTvTLGolY0+WhbIGrOwoF8GEjnqqn0fGDSZQGJbrpIKvNvDyj87SiV7cqDvtpyKzU8IqmlPzxSq8S5+opn6ai7Rl3w6P/uDSIThMYNi9Eb/BelfNf/OjToOO5JXqx4muxjz8wJbGSIC++GYHjoPPn+oPSEvHEKaLMIy43JsTMC1lilc8XK2JBnUjQf+b7rmphbz8kMwI6Kr6rv/ubUkvwIor2lBKw7SPeGIawSWBoVdVncDgyUylbWBmh5RHIx1g2nX";
 
 
         /**

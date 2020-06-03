@@ -70,7 +70,7 @@ public class Robot {
         foundationMoverModule = new FoundationMoverModule();
     }
 
-    public void update(){
+    public void update() {
         // put all sensors on rev 2
         hardwareCollection.refreshData2();
         hardwareCollection.updateTime();
@@ -83,8 +83,8 @@ public class Robot {
         outtakeModule.update(this, hardwareCollection);
         foundationMoverModule.update(this, hardwareCollection);
 
-        // TODO does this actually work? delete when answer found
-        if (linearOpMode.isStopRequested() && isDebug){
+        // TODO does this actually work?
+        if (linearOpMode.isStopRequested() && isDebug) {
             dump(this, hardwareCollection.currTime + "_ALL_DATA");
         }
     }

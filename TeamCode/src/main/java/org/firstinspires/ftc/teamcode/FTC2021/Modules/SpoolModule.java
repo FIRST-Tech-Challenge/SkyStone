@@ -13,7 +13,7 @@ public class SpoolModule {
 
     public StringBuilder spoolData;
 
-    public SpoolModule(){
+    public SpoolModule() {
         spoolPower = 0.0;
         autoLevel = false;
         level = 0;
@@ -24,9 +24,9 @@ public class SpoolModule {
         spoolData.append("\n");
     }
 
-    public synchronized void update(Robot robot, HardwareCollection hardwareCollection){
+    public synchronized void update(Robot robot, HardwareCollection hardwareCollection) {
 
-        if (robot.isDebug){
+        if (robot.isDebug) {
             spoolData.append(spoolPower);
             spoolData.append(" ");
             spoolData.append(level);
@@ -37,7 +37,7 @@ public class SpoolModule {
             spoolData.append("\n");
         }
 
-        if (autoLevel){
+        if (autoLevel) {
             // implement spool logic here
         }
 

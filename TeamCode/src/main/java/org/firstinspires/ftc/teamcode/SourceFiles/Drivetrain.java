@@ -7,14 +7,18 @@ public class Drivetrain {
 
     private HardwareMap hardwareMap;
 
-    public DcMotor frontLeftDrive;
-    public DcMotor frontRightDrive;
-    public DcMotor rearLeftDrive;
-    public DcMotor rearRightDrive;
+    private DcMotor frontLeftDrive;
+    private DcMotor frontRightDrive;
+    private DcMotor rearLeftDrive;
+    private DcMotor rearRightDrive;
 
     // start with full speed
-    public boolean isSpeedReduced = false;
-    public String speedStatus = "Pending";
+    private boolean isSpeedReduced = false;
+    private String speedStatus = "Pending";
+
+    // direction public variables
+    public String LEFT = "left";
+    public String RIGHT = "right";
 
     public Drivetrain(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
@@ -44,11 +48,10 @@ public class Drivetrain {
     public void setFrontRightDrive(DcMotor frontRightDrive) {this.frontRightDrive = frontRightDrive;}
     public void setRearLeftDrive(DcMotor rearLeftDrive) {this.rearLeftDrive = rearLeftDrive;}
     public void setRearRightDrive(DcMotor rearRightDrive) {this.rearRightDrive = rearRightDrive;}
-
     public void setSpeedReduced(boolean speedReduced) {isSpeedReduced = speedReduced;}
-
     public void setSpeedStatus(String speedStatus) {this.speedStatus = speedStatus;}
 
+    // Utility
     public void drive(double leftPower, double rightPower) {
         if (!isSpeedReduced) {
             frontLeftDrive.setPower(leftPower);
@@ -84,20 +87,20 @@ public class Drivetrain {
     }
 
     public void turn(String direction, double degrees) {
-        if (direction.toUpperCase().equals("LEFT")) {
+        if (direction == LEFT) {
             // TODO: implement function body
-        } else if (direction.toUpperCase().equals("RIGHT")) {
+        } else if (direction == RIGHT) {
             // TODO: implement function body
         }
     }
 
     public void strafe(String direction) {
-        if (direction.toUpperCase().equals("LEFT")) {
+        if (direction == LEFT) {
             frontLeftDrive.setPower(1);
             frontRightDrive.setPower(-1);
             rearLeftDrive.setPower(-1);
             rearRightDrive.setPower(1);
-        } else if (direction.toUpperCase().equals("RIGHT")) {
+        } else if (direction == RIGHT) {
             frontLeftDrive.setPower(-1);
             frontRightDrive.setPower(1);
             rearLeftDrive.setPower(1);

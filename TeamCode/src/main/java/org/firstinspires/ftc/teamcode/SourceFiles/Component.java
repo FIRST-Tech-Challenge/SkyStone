@@ -21,12 +21,12 @@ public class Component {
     private String latchStatus = "Pending";
 
     // enum variables
-    public int LATCH = 1;
-    public int UNLATCH = 0;
+    public final int LATCH = 1;
+    public final int UNLATCH = 0;
 
-    public int STOP = 0;
-    public int INTAKE = 1;
-    public int RELEASE = 2;
+    public final int STOP = 0;
+    public final int INTAKE = 1;
+    public final int RELEASE = 2;
 
     public Component(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;

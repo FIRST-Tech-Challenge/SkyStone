@@ -16,8 +16,8 @@ public class Drivetrain {
     private String speedStatus = "Pending";
 
     // enum variables
-    public int LEFT = -1;
-    public int RIGHT = 1;
+    public final int LEFT = -1;
+    public final int RIGHT = 1;
 
     public Drivetrain(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;

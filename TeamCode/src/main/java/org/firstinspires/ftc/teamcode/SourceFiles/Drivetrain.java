@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Drivetrain {
+
     private HardwareMap hardwareMap;
 
     public DcMotor frontLeftDrive;
@@ -12,8 +13,8 @@ public class Drivetrain {
     public DcMotor rearRightDrive;
 
     // start with full speed
-    public boolean speedReduction = false;
-    public String speedReductionStatus = "Pending";
+    public boolean isSpeedReduced = false;
+    public String speedStatus = "Pending";
 
     public Drivetrain(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
@@ -28,9 +29,28 @@ public class Drivetrain {
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         rearLeftDrive.setDirection(DcMotor.Direction.REVERSE);
     }
+    
+    // Accessor/Mutator
+    public HardwareMap getHardwareMap() {return hardwareMap;}
+    public DcMotor getFrontLeftDrive() {return frontLeftDrive;}
+    public DcMotor getFrontRightDrive() {return frontRightDrive;}
+    public DcMotor getRearLeftDrive() {return rearLeftDrive;}
+    public DcMotor getRearRightDrive() {return rearRightDrive;}
+    public boolean isSpeedReduced() {return isSpeedReduced;}
+    public String getSpeedStatus() {return speedStatus;}
+
+    public void setHardwareMap(HardwareMap hardwareMap) {this.hardwareMap = hardwareMap;}
+    public void setFrontLeftDrive(DcMotor frontLeftDrive) {this.frontLeftDrive = frontLeftDrive;}
+    public void setFrontRightDrive(DcMotor frontRightDrive) {this.frontRightDrive = frontRightDrive;}
+    public void setRearLeftDrive(DcMotor rearLeftDrive) {this.rearLeftDrive = rearLeftDrive;}
+    public void setRearRightDrive(DcMotor rearRightDrive) {this.rearRightDrive = rearRightDrive;}
+
+    public void setSpeedReduced(boolean speedReduced) {isSpeedReduced = speedReduced;}
+
+    public void setSpeedStatus(String speedStatus) {this.speedStatus = speedStatus;}
 
     public void drive(double leftPower, double rightPower) {
-        if (!speedReduction) {
+        if (!isSpeedReduced) {
             frontLeftDrive.setPower(leftPower);
             frontRightDrive.setPower(rightPower);
             rearLeftDrive.setPower(leftPower);

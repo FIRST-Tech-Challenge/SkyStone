@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Drivetrain {
-
     private HardwareMap hardwareMap;
 
     private DcMotor frontLeftDrive;
@@ -16,7 +15,7 @@ public class Drivetrain {
     private boolean isSpeedReduced = false;
     private String speedStatus = "Pending";
 
-    // direction public variables
+    // enum variables
     public String LEFT = "left";
     public String RIGHT = "right";
 

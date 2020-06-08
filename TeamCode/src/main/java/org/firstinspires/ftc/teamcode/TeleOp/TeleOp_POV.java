@@ -29,7 +29,7 @@ public class TeleOp_POV extends LinearOpMode {
         telemetry.update();
 
         trobot = new Trobot(hardwareMap);
-        trobot.disable(trobot.component.rightLatch);
+        trobot.disable(trobot.getComponent().getRightLatch());
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -43,35 +43,35 @@ public class TeleOp_POV extends LinearOpMode {
             double rightPower = Range.clip(gamepad1.left_stick_y + gamepad1.right_stick_x, -1.0, 1.0);
 
             // Send calculated power to wheels
-            trobot.drivetrain.drive(leftPower, rightPower);
+            trobot.getDrivetrain().drive(leftPower, rightPower);
 
             // Set D-Pad for strafing -> not used for Joe 2019-2020
             if (gamepad1.dpad_left) {
-                trobot.drivetrain.strafe("LEFT");
+                trobot.getDrivetrain().strafe("LEFT");
             } else if (gamepad1.dpad_right) {
-                trobot.drivetrain.strafe("RIGHT");
+                trobot.getDrivetrain().strafe("RIGHT");
             }
 
             // Map triggers to intake motors
             if (gamepad1.left_trigger > 0 && gamepad1.right_trigger == 0) {
-                trobot.component.intake("INTAKE");
+                trobot.getComponent().intake(trobot.getComponent().INTAKE);
             } else if (gamepad1.right_trigger > 0 && gamepad1.left_trigger == 0) {
-                trobot.component.intake("RELEASE");
+                trobot.getComponent().intake(trobot.getComponent().RELEASE);
             } else {
-                trobot.component.intake("STOP");
+                trobot.getComponent().intake(trobot.getComponent().STOP);
             }
 
             // Map bumpers to foundation latches
             if (gamepad1.left_bumper) {
-                trobot.component.latch("LATCH");
+                trobot.getComponent().latch(trobot.getComponent().LATCH);
             } else if (gamepad1.right_bumper) {
-                trobot.component.latch("UNLATCH");
+                trobot.getComponent().latch(trobot.getComponent().UNLATCH);
             }
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + trobot.runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", -gamepad1.left_stick_y, -gamepad1.right_stick_y);
-            telemetry.addData("Servos", trobot.component.latchStatus);
+            telemetry.addData("Servos", trobot.getComponent().getLatchStatus());
             telemetry.update();
         }
     }

@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Trobot {
     private HardwareMap hardwareMap;
 
-    public Drivetrain drivetrain;
-    public Component component;
+    private Drivetrain drivetrain;
+    private Component component;
 
     public ElapsedTime runtime;
 
@@ -28,6 +28,18 @@ public class Trobot {
         runtime = new ElapsedTime();
     }
 
+    // Accessor/Mutator
+    public HardwareMap getHardwareMap() {return hardwareMap;}
+    public Drivetrain getDrivetrain() {return drivetrain;}
+    public Component getComponent() {return component;}
+    public ElapsedTime getRuntime() {return runtime;}
+
+    public void setHardwareMap(HardwareMap hardwareMap) {this.hardwareMap = hardwareMap; }
+    public void setDrivetrain(Drivetrain drivetrain) {this.drivetrain = drivetrain;}
+    public void setComponent(Component component) {this.component = component;}
+    public void setElapsedTime(ElapsedTime runtime) {this.runtime = runtime;}
+
+    // Resource
     public void disable(DcMotor dcMotor) {dcMotor = null;}
     public void disable(Servo servo) {servo = null;}
 }

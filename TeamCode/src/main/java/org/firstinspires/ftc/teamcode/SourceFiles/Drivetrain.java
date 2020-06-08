@@ -16,8 +16,8 @@ public class Drivetrain {
     private String speedStatus = "Pending";
 
     // enum variables
-    public String LEFT = "left";
-    public String RIGHT = "right";
+    public int LEFT = -1;
+    public int RIGHT = 1;
 
     public Drivetrain(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
@@ -85,7 +85,7 @@ public class Drivetrain {
         //time = Math.abs((int)((distance/(72.5*speed))*1000));
     }
 
-    public void turn(String direction, double degrees) {
+    public void turn(int direction, double degrees) {
         if (direction == LEFT) {
             // TODO: implement function body
         } else if (direction == RIGHT) {
@@ -93,7 +93,7 @@ public class Drivetrain {
         }
     }
 
-    public void strafe(String direction) {
+    public void strafe(int direction) {
         if (direction == LEFT) {
             frontLeftDrive.setPower(1);
             frontRightDrive.setPower(-1);

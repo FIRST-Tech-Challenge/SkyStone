@@ -33,7 +33,7 @@ public class TeleOp_POV extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        trobot.runtime.reset();
+        trobot.getRuntime().reset();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -69,7 +69,7 @@ public class TeleOp_POV extends LinearOpMode {
             }
 
             // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + trobot.runtime.toString());
+            telemetry.addData("Status", "Run Time: " + trobot.getRuntime().toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", -gamepad1.left_stick_y, -gamepad1.right_stick_y);
             telemetry.addData("Servos", trobot.getComponent().getLatchStatus());
             telemetry.update();

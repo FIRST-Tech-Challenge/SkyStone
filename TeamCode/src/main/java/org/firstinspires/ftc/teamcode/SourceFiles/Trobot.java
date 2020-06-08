@@ -11,7 +11,7 @@ public class Trobot {
     private Drivetrain drivetrain;
     private Component component;
 
-    public ElapsedTime runtime;
+    private ElapsedTime runtime;
 
     public Trobot() {
         // Constructor must utilize a Hardware Map from the source. However, Java always automatically

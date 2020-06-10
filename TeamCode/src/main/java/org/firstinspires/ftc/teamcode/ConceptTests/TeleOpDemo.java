@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.ConceptTests;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.SourceFiles.Trobot;
@@ -22,8 +23,15 @@ import org.firstinspires.ftc.teamcode.SourceFiles.Trobot;
 public class TeleOpDemo extends LinearOpMode {
     public Trobot trobot;
 
+    private DcMotor frontLeftDrive = hardwareMap.get(DcMotor.class, "front left");
+    private DcMotor frontRightDrive = hardwareMap.get(DcMotor.class, "front right");
+    private DcMotor rearLeftDrive = hardwareMap.get(DcMotor.class, "rear left");
+    private DcMotor rearRightDrive = hardwareMap.get(DcMotor.class, "rear right");
+
     @Override
     public void runOpMode() {
+
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -42,13 +50,22 @@ public class TeleOpDemo extends LinearOpMode {
             double rightPower = Range.clip(gamepad1.left_stick_y + gamepad1.right_stick_x, -1.0, 1.0);
 
             // Send calculated power to wheels
-            trobot.getDrivetrain().drive(leftPower, rightPower);
+            frontLeftDrive.setPower(leftPower);
+            frontRightDrive.setPower(rightPower);
+            rearLeftDrive.setPower(leftPower);
+            rearRightDrive.setPower(rightPower);
 
             // Set D-Pad for strafing -> not used for Joe 2019-2020
             if (gamepad1.dpad_left) {
-                trobot.getDrivetrain().strafe(trobot.getDrivetrain().LEFT);
+                frontLeftDrive.setPower(1);
+                frontRightDrive.setPower(-1);
+                rearLeftDrive.setPower(-1);
+                rearRightDrive.setPower(1);
             } else if (gamepad1.dpad_right) {
-                trobot.getDrivetrain().strafe(trobot.getDrivetrain().RIGHT);
+                frontLeftDrive.setPower(-1);
+                frontRightDrive.setPower(1);
+                rearLeftDrive.setPower(1);
+                rearRightDrive.setPower(-1);
             }
 
             // Map triggers to intake motors

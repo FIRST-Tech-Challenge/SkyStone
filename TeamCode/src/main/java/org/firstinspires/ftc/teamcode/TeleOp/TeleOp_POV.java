@@ -47,9 +47,9 @@ public class TeleOp_POV extends LinearOpMode {
 
             // Set D-Pad for strafing -> not used for Joe 2019-2020
             if (gamepad1.dpad_left) {
-                trobot.getDrivetrain().strafe(trobot.getDrivetrain().LEFT);
+                trobot.getDrivetrain().strafe(trobot.getDrivetrain().LEFT, 1);
             } else if (gamepad1.dpad_right) {
-                trobot.getDrivetrain().strafe(trobot.getDrivetrain().RIGHT);
+                trobot.getDrivetrain().strafe(trobot.getDrivetrain().RIGHT, 1);
             }
 
             // Map triggers to intake motors

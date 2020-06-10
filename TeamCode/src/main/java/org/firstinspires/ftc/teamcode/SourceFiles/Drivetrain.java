@@ -51,6 +51,13 @@ public class Drivetrain {
     public void setSpeedStatus(String speedStatus) {this.speedStatus = speedStatus;}
 
     // Utility
+    public void drive(double power) {
+        frontLeftDrive.setPower(power);
+        frontRightDrive.setPower(power);
+        rearLeftDrive.setPower(power);
+        rearRightDrive.setPower(power);
+    }
+
     public void drive(double leftPower, double rightPower) {
         if (!isSpeedReduced) {
             frontLeftDrive.setPower(leftPower);
@@ -138,5 +145,12 @@ public class Drivetrain {
         frontRightDrive.setPower(0);
         rearLeftDrive.setPower(0);
         rearRightDrive.setPower(0);
+    }
+
+    public void brake() {
+        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rearRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 }

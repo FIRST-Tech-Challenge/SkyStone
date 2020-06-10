@@ -65,24 +65,50 @@ public class Drivetrain {
         }
     }
 
-    public void autoDrive(double speed, double distance) {
-        if (speed > 1) {
-            speed = 1;
-        }
+//    public void autoDrive(double power, double distance) {
+//        if (power > 1) {
+//            power = 1;
+//        }
+//
+//        if (distance > 0) {
+//            frontLeftDrive.setPower(power);
+//            frontRightDrive.setPower(power);
+//            rearLeftDrive.setPower(power);
+//            rearRightDrive.setPower(power);
+//        } else if (distance < 0) {
+//            frontLeftDrive.setPower(-power);
+//            frontRightDrive.setPower(-power);
+//            rearLeftDrive.setPower(-power);
+//            rearRightDrive.setPower(-power);
+//        }
+//
+//        time = Math.abs((int)((distance/(72.5*power))*1000));
+//    }
 
-        if (distance > 0) {
-            frontLeftDrive.setPower(speed);
-            frontRightDrive.setPower(speed);
-            rearLeftDrive.setPower(speed);
-            rearRightDrive.setPower(speed);
-        } else if (distance < 0) {
-            frontLeftDrive.setPower(-speed);
-            frontRightDrive.setPower(-speed);
-            rearLeftDrive.setPower(-speed);
-            rearRightDrive.setPower(-speed);
-        }
+    public void encoderDrive(double power, double distance) {
+        double threadsPerCentimeter = ((1120*2)/(10*3.1415));
 
-        //time = Math.abs((int)((distance/(72.5*speed))*1000));
+        frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rearLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rearRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        frontLeftDrive.setTargetPosition((int)(distance * threadsPerCentimeter));
+        frontRightDrive.setTargetPosition((int)(distance * threadsPerCentimeter));
+        rearLeftDrive.setTargetPosition((int)(distance * threadsPerCentimeter));
+        rearRightDrive.setTargetPosition((int)(distance * threadsPerCentimeter));
+
+        frontLeftDrive.setPower(power);
+        frontRightDrive.setPower(power);
+        rearLeftDrive.setPower(power);
+        rearRightDrive.setPower(power);
+
+        while (frontLeftDrive.isBusy() && rearRightDrive.isBusy()) {}
+
+        frontLeftDrive.setPower(0);
+        frontRightDrive.setPower(0);
+        rearLeftDrive.setPower(0);
+        rearRightDrive.setPower(0);
     }
 
     public void turn(int direction, double degrees) {
@@ -93,17 +119,17 @@ public class Drivetrain {
         }
     }
 
-    public void strafe(int direction) {
+    public void strafe(int direction, double power) {
         if (direction == LEFT) {
-            frontLeftDrive.setPower(1);
-            frontRightDrive.setPower(-1);
-            rearLeftDrive.setPower(-1);
-            rearRightDrive.setPower(1);
+            frontLeftDrive.setPower(power);
+            frontRightDrive.setPower(-power);
+            rearLeftDrive.setPower(-power);
+            rearRightDrive.setPower(power);
         } else if (direction == RIGHT) {
-            frontLeftDrive.setPower(-1);
-            frontRightDrive.setPower(1);
-            rearLeftDrive.setPower(1);
-            rearRightDrive.setPower(-1);
+            frontLeftDrive.setPower(-power);
+            frontRightDrive.setPower(power);
+            rearLeftDrive.setPower(power);
+            rearRightDrive.setPower(-power);
         }
     }
 

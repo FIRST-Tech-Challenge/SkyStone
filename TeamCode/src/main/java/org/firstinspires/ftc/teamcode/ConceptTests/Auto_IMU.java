@@ -1,5 +1,5 @@
 // Simple autonomous program that drives bot forward until end of period
-// or touch sensor is hit. If touched, backs up a bit and turns 90 degrees
+// or touch sensor is hit. If touch.isPressed(), backs up a bit and turns 90 degrees
 // right and keeps going. Demonstrates obstacle avoidance and use of the
 // REV Hub's built in IMU in place of a gyro. Also uses gamepad1 buttons to
 // simulate touch sensor press and supports left as well as right turn.
@@ -29,7 +29,6 @@ public class Auto_IMU extends LinearOpMode {
     private BNO055IMU imu;
     private Orientation lastAngles = new Orientation();
     private double globalAngle, power = .30, correction;
-    private boolean aButton, bButton, touched;
 
     private Trobot trobot;
 
@@ -97,25 +96,23 @@ public class Auto_IMU extends LinearOpMode {
             // one place with time passing between those places. See the lesson on
             // Timing Considerations to know why.
 
-            aButton = gamepad1.a;
-            bButton = gamepad1.b;
-            touched = touch.isPressed();
-
-            if (touched || aButton || bButton)
-            {
-                // backup.
+            if (touch.isPressed() || gamepad1.a || gamepad1.b) {
+                // backup
                 trobot.getDrivetrain().drive(power);
-
                 sleep(500);
 
-                // stop.
+                // stop
                 trobot.getDrivetrain().stop();
 
-                // turn 90 degrees right.
-                if (touched || aButton) rotate(-90, power);
+                // turn 90 degrees right
+                if (touch.isPressed() || gamepad1.a) {
+                    rotate(-90, power);
+                }
 
-                // turn 90 degrees left.
-                if (bButton) rotate(90, power);
+                // turn 90 degrees left
+                if (gamepad1.b) {
+                    rotate(90, power);
+                }
             }
         }
 
@@ -126,8 +123,7 @@ public class Auto_IMU extends LinearOpMode {
     /**
      * Resets the cumulative angle tracking to zero.
      */
-    private void resetAngle()
-    {
+    private void resetAngle() {
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         globalAngle = 0;
@@ -137,8 +133,7 @@ public class Auto_IMU extends LinearOpMode {
      * Get current cumulative angle rotation from last reset.
      * @return Angle in degrees. + = left, - = right.
      */
-    private double getAngle()
-    {
+    private double getAngle() {
         // We experimentally determined the Z axis is the axis we want to use for heading angle.
         // We have to process the angle because the imu works in euler angles so the Z axis is
         // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes
@@ -148,13 +143,13 @@ public class Auto_IMU extends LinearOpMode {
 
         double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
 
-        if (deltaAngle < -180)
+        if (deltaAngle < -180) {
             deltaAngle += 360;
-        else if (deltaAngle > 180)
+        } else if (deltaAngle > 180) {
             deltaAngle -= 360;
+        }
 
         globalAngle += deltaAngle;
-
         lastAngles = angles;
 
         return globalAngle;
@@ -164,8 +159,7 @@ public class Auto_IMU extends LinearOpMode {
      * See if we are moving in a straight line and if not return a power correction value.
      * @return Power adjustment, + is adjust left - is adjust right.
      */
-    private double checkDirection()
-    {
+    private double checkDirection() {
         // The gain value determines how sensitive the correction is to direction changes.
         // You will have to experiment with your robot to get small smooth direction changes
         // to stay on a straight line.
@@ -173,10 +167,11 @@ public class Auto_IMU extends LinearOpMode {
 
         angle = getAngle();
 
-        if (angle == 0)
+        if (angle == 0) {
             correction = 0;             // no adjustment.
-        else
+        } else {
             correction = -angle;        // reverse sign of angle for correction.
+        }
 
         correction = correction * gain;
 
@@ -187,8 +182,7 @@ public class Auto_IMU extends LinearOpMode {
      * Rotate left or right the number of degrees. Does not support turning more than 180 degrees.
      * @param degrees Degrees to turn, + is left - is right
      */
-    private void rotate(int degrees, double power)
-    {
+    private void rotate(int degrees, double power) {
         double  leftPower, rightPower;
 
         // restart imu movement tracking.

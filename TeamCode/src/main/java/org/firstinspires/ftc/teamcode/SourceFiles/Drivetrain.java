@@ -22,8 +22,6 @@ public class Drivetrain {
     public final int LEFT = -1;
     public final int RIGHT = 1;
 
-
-
     public Drivetrain(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
 
@@ -32,10 +30,13 @@ public class Drivetrain {
         rearLeftDrive = hardwareMap.get(DcMotor.class, "rear left");
         rearRightDrive = hardwareMap.get(DcMotor.class, "rear right");
 
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         rearLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rearRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     
     // Accessor/Mutator
@@ -77,12 +78,12 @@ public class Drivetrain {
         }
     }
 
-    public void autoDrive(double power, double time) {
-        frontLeftDrive.setPower(power);
-        frontRightDrive.setPower(power);
-        rearLeftDrive.setPower(power);
-        rearRightDrive.setPower(power);
-    }
+//    public void autoDrive(double power, double time) {
+//        frontLeftDrive.setPower(power);
+//        frontRightDrive.setPower(power);
+//        rearLeftDrive.setPower(power);
+//        rearRightDrive.setPower(power);
+//    }
 
 //    public void autoDrive(double power, double distance) {
 //        if (power > 1) {
@@ -101,7 +102,7 @@ public class Drivetrain {
 //            rearRightDrive.setPower(-power);
 //        }
 //
-//        time = Math.abs((int)((distance/(72.5*power))*1000));
+//        double time = Math.abs((int)((distance / (72.5 * power)) * 1000));
 //    }
 
     public void encoderDrive(double power, double distance) {
@@ -157,12 +158,5 @@ public class Drivetrain {
         frontRightDrive.setPower(0);
         rearLeftDrive.setPower(0);
         rearRightDrive.setPower(0);
-    }
-
-    public void brake() {
-        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 }

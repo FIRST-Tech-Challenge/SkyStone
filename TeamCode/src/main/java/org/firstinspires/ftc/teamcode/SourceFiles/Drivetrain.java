@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.SourceFiles;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.TimestampedI2cData;
+import com.qualcomm.robotcore.util.RobotLog;
+import com.qualcomm.robotcore.util.ThreadPool;
 
 public class Drivetrain {
     private HardwareMap hardwareMap;
@@ -18,6 +21,8 @@ public class Drivetrain {
     // enum variables
     public final int LEFT = -1;
     public final int RIGHT = 1;
+
+
 
     public Drivetrain(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
@@ -72,6 +77,13 @@ public class Drivetrain {
         }
     }
 
+    public void autoDrive(double power, double time) {
+        frontLeftDrive.setPower(power);
+        frontRightDrive.setPower(power);
+        rearLeftDrive.setPower(power);
+        rearRightDrive.setPower(power);
+    }
+
 //    public void autoDrive(double power, double distance) {
 //        if (power > 1) {
 //            power = 1;
@@ -93,7 +105,7 @@ public class Drivetrain {
 //    }
 
     public void encoderDrive(double power, double distance) {
-        double threadsPerCentimeter = ((1120*2)/(10*3.1415));
+        double threadsPerCentimeter = ((1120 * 2) / (10 * Math.PI));
 
         frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

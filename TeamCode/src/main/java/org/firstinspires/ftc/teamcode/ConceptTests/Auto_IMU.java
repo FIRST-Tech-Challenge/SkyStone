@@ -11,7 +11,6 @@ package org.firstinspires.ftc.teamcode.ConceptTests;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -59,8 +58,7 @@ public class Auto_IMU extends LinearOpMode {
         telemetry.update();
 
         // make sure the imu gyro is calibrated before continuing.
-        while (!isStopRequested() && !imu.isGyroCalibrated())
-        {
+        while (!isStopRequested() && !imu.isGyroCalibrated()) {
             sleep(50);
             idle();
         }
@@ -80,8 +78,7 @@ public class Auto_IMU extends LinearOpMode {
 
         // drive until end of period.
 
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
             // Use gyro to drive in a straight line.
             correction = checkDirection();
 
@@ -94,8 +91,7 @@ public class Auto_IMU extends LinearOpMode {
 
             // We record the sensor values because we will test them in more than
             // one place with time passing between those places. See the lesson on
-            // Timing Considerations to know why.
-
+            // Timing Considerations to know why
             if (touch.isPressed() || gamepad1.a || gamepad1.b) {
                 // backup
                 trobot.getDrivetrain().drive(power);
@@ -207,15 +203,13 @@ public class Auto_IMU extends LinearOpMode {
         trobot.getDrivetrain().drive(leftPower, rightPower);
 
         // rotate until turn is completed.
-        if (degrees < 0)
-        {
-            // On right turn we have to get off zero first.
+        if (degrees < 0) { // On right turn we have to get off zero first.
             while (opModeIsActive() && getAngle() == 0) {}
 
             while (opModeIsActive() && getAngle() > degrees) {}
-        }
-        else    // left turn.
+        } else { // left turn.
             while (opModeIsActive() && getAngle() < degrees) {}
+        }
 
         // turn the motors off.
         trobot.getDrivetrain().stop();

@@ -29,7 +29,7 @@ public class TeleOp_POV extends LinearOpMode {
         telemetry.update();
 
         trobot = new Trobot(hardwareMap);
-        trobot.disable(trobot.getComponent().getRightLatch());
+        trobot.getComponent().setRightIntake(null);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();

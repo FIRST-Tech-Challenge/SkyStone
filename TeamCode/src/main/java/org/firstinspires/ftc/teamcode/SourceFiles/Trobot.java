@@ -1,3 +1,13 @@
+/**
+ * Copyright (c) 2020, All Rights Reserved
+ *
+ * Trobot is the master file that each OpMode, whether TeleOp or autonomous, will implement. It
+ * uses composition to include 'DriveTrain' and 'Component'.
+ *
+ * Written by Timothy (Tikki) Cui
+ */
+
+
 package org.firstinspires.ftc.teamcode.SourceFiles;
 
 import com.qualcomm.robotcore.hardware.DcMotor;

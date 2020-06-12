@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2019, All Rights Reserved
+ *
+ *
+ * Written by Timothy (Tikki) Cui
+ */
+
+
 package org.firstinspires.ftc.teamcode.SourceFiles;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -83,6 +91,12 @@ public class Drivetrain {
         frontRightDrive.setPower(power);
         rearLeftDrive.setPower(power);
         rearRightDrive.setPower(power);
+
+        try {
+            Thread.sleep((long)(time));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     public void autoDriveDistance(double power, double distance) {

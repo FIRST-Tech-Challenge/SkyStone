@@ -31,6 +31,8 @@ public class Drivetrain {
     // enum variables
     public final int LEFT = -1;
     public final int RIGHT = 1;
+    public final int FORWARD = 1;
+    public final int BACKWARD = -1;
 
     public Drivetrain(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
@@ -88,42 +90,60 @@ public class Drivetrain {
         }
     }
 
-    public void autoDriveTime(double power, double time) {
-        frontLeftDrive.setPower(power);
-        frontRightDrive.setPower(power);
-        rearLeftDrive.setPower(power);
-        rearRightDrive.setPower(power);
+//    public void autoDriveTime(double power, double time) {
+//        frontLeftDrive.setPower(power);
+//        frontRightDrive.setPower(power);
+//        rearLeftDrive.setPower(power);
+//        rearRightDrive.setPower(power);
+//
+//        try {
+//            Thread.sleep((long)(time));
+//        } catch (InterruptedException e) {
+//            Thread.currentThread().interrupt();
+//        }
+//    }
+//
+//    public void autoDriveDistance(double power, double distance) {
+//        if (distance > 0) {
+//            frontLeftDrive.setPower(power);
+//            frontRightDrive.setPower(power);
+//            rearLeftDrive.setPower(power);
+//            rearRightDrive.setPower(power);
+//        } else if (distance < 0) {
+//            frontLeftDrive.setPower(-power);
+//            frontRightDrive.setPower(-power);
+//            rearLeftDrive.setPower(-power);
+//            rearRightDrive.setPower(-power);
+//        }
+//
+//        // Source code for 'sleep'
+//        try {
+//            Thread.sleep(Math.abs((int)((distance / (72.5 * power)) * 1000)));
+//        } catch (InterruptedException e) {
+//            Thread.currentThread().interrupt();
+//        }
+//    }
 
-        try {
-            Thread.sleep((long)(time));
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+
+    public void resetEncoder() {
+        frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rearLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rearRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
-    public void autoDriveDistance(double power, double distance) {
-        if (distance > 0) {
-            frontLeftDrive.setPower(power);
-            frontRightDrive.setPower(power);
-            rearLeftDrive.setPower(power);
-            rearRightDrive.setPower(power);
-        } else if (distance < 0) {
-            frontLeftDrive.setPower(-power);
-            frontRightDrive.setPower(-power);
-            rearLeftDrive.setPower(-power);
-            rearRightDrive.setPower(-power);
-        }
+    public void setPosition(int distance) {
 
-        // Source code for 'sleep'
-        try {
-            Thread.sleep(Math.abs((int)((distance / (72.5 * power)) * 1000)));
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
     }
 
-    public void encoderDrive(double power, double distance) {
+    public void autoDriveEncoder(double power, double distance) {
+        // TODO: Confirm measurements
         double threadsPerCentimeter = ((1120 * 2) / (10 * Math.PI));
+
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -135,12 +155,17 @@ public class Drivetrain {
         rearLeftDrive.setTargetPosition((int)(distance * threadsPerCentimeter));
         rearRightDrive.setTargetPosition((int)(distance * threadsPerCentimeter));
 
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rearLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rearRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         frontLeftDrive.setPower(power);
         frontRightDrive.setPower(power);
         rearLeftDrive.setPower(power);
         rearRightDrive.setPower(power);
 
-        while (frontLeftDrive.isBusy() && rearRightDrive.isBusy()) {}
+        while (frontLeftDrive.isBusy() || rearRightDrive.isBusy()) {}
 
         frontLeftDrive.setPower(0);
         frontRightDrive.setPower(0);

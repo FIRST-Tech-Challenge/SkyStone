@@ -38,8 +38,4 @@ public class Trobot {
     public void setDrivetrain(Drivetrain drivetrain) {this.drivetrain = drivetrain;}
     public void setComponent(Component component) {this.component = component;}
     public void setElapsedTime(ElapsedTime runtime) {this.runtime = runtime;}
-
-    // Resource
-    public void disable(DcMotor dcMotor) {dcMotor = null;}
-    public void disable(Servo servo) {servo = null;}
 }

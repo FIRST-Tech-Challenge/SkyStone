@@ -29,8 +29,6 @@ public class Auto_IMU extends LinearOpMode {
 
     private Trobot trobot;
 
-    // called when init button is  pressed.
-    @Override
     public void runOpMode() throws InterruptedException {
         trobot = new Trobot(hardwareMap);
         trobot.getDrivetrain().stop();

@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.SummerFiles;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.SourceFiles.Trobot;
@@ -25,7 +23,6 @@ import org.firstinspires.ftc.teamcode.SourceFiles.Trobot;
 
 @Autonomous(name = "Encoder (beta)", group = "Autonomous")
 public class Auto_Encoder extends LinearOpMode {
-    private ElapsedTime runtime = new ElapsedTime();
     private double TPI_F = 1120 / (Math.PI * 4);
     private double TPI_B = TPI_F * 0.5;
 
@@ -44,35 +41,14 @@ public class Auto_Encoder extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        runtime.reset();
+        trobot.getRuntime().reset();
 
-        trobot.getDrivetrain().drive(0.5);
-        sleep(3000);
-
-        trobot.getDrivetrain().stop();
-        sleep(1000);
-
-        trobot.getDrivetrain().strafe(-1, 0.5);
-        sleep(3000);
-
-        trobot.getDrivetrain().stop();
-        sleep(1000);
-
-        trobot.getDrivetrain().drive(-0.5);
-        sleep(3000);
-
-        trobot.getDrivetrain().stop();
-        sleep(1000);
-
-        trobot.getDrivetrain().strafe(1, 0.5);
-        sleep(3000);
-
-        trobot.getDrivetrain().stop();
-        sleep(1000);
+        trobot.getDrivetrain().autoDriveEncoder(0.5, 1000);
+        while (trobot.getDrivetrain().isBusy() && opModeIsActive()) {}
 
         // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Status", "Run Time: " + trobot.getRuntime().toString());
+        telemetry.addData("Encoder Position", trobot.getDrivetrain().getPosition());
         telemetry.update();
-        //}
     }
 }

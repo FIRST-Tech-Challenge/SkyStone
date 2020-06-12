@@ -90,7 +90,30 @@ public class Drivetrain {
         }
     }
 
-//    public void autoDriveTime(double power, double time) {
+    public void stop() {
+        frontLeftDrive.setPower(0);
+        frontRightDrive.setPower(0);
+        rearLeftDrive.setPower(0);
+        rearRightDrive.setPower(0);
+    }
+
+
+
+    public void strafe(int direction, double power) {
+        if (direction == LEFT) {
+            frontLeftDrive.setPower(power);
+            frontRightDrive.setPower(-power);
+            rearLeftDrive.setPower(-power);
+            rearRightDrive.setPower(power);
+        } else if (direction == RIGHT) {
+            frontLeftDrive.setPower(-power);
+            frontRightDrive.setPower(power);
+            rearLeftDrive.setPower(power);
+            rearRightDrive.setPower(-power);
+        }
+    }
+
+    //    public void autoDriveTime(double power, double time) {
 //        frontLeftDrive.setPower(power);
 //        frontRightDrive.setPower(power);
 //        rearLeftDrive.setPower(power);
@@ -181,24 +204,12 @@ public class Drivetrain {
         }
     }
 
-    public void strafe(int direction, double power) {
-        if (direction == LEFT) {
-            frontLeftDrive.setPower(power);
-            frontRightDrive.setPower(-power);
-            rearLeftDrive.setPower(-power);
-            rearRightDrive.setPower(power);
-        } else if (direction == RIGHT) {
-            frontLeftDrive.setPower(-power);
-            frontRightDrive.setPower(power);
-            rearLeftDrive.setPower(power);
-            rearRightDrive.setPower(-power);
-        }
+    public boolean isBusy() {
+        return frontLeftDrive.isBusy() || frontRightDrive.isBusy() || rearLeftDrive.isBusy() || rearRightDrive.isBusy();
     }
 
-    public void stop() {
-        frontLeftDrive.setPower(0);
-        frontRightDrive.setPower(0);
-        rearLeftDrive.setPower(0);
-        rearRightDrive.setPower(0);
+    public double getPosition() {
+        return (frontLeftDrive.getCurrentPosition() + frontRightDrive.getCurrentPosition()
+               + rearLeftDrive.getCurrentPosition() + rearRightDrive.getCurrentPosition()) / 4.0;
     }
 }

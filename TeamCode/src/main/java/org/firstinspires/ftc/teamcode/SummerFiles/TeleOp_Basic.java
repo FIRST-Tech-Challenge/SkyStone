@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.ConceptTests;
+package org.firstinspires.ftc.teamcode.SummerFiles;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.SourceFiles.Trobot;
+
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
  * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
@@ -19,24 +19,17 @@ import org.firstinspires.ftc.teamcode.SourceFiles.Trobot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name = "TeleOpDemo", group = "Demo")
-public class TeleOpDemo extends LinearOpMode {
+@TeleOp(name = "POV Mode", group = "POV Mode")
+public class TeleOp_Basic extends LinearOpMode {
     public Trobot trobot;
-
-    private DcMotor frontLeftDrive = hardwareMap.get(DcMotor.class, "front left");
-    private DcMotor frontRightDrive = hardwareMap.get(DcMotor.class, "front right");
-    private DcMotor rearLeftDrive = hardwareMap.get(DcMotor.class, "rear left");
-    private DcMotor rearRightDrive = hardwareMap.get(DcMotor.class, "rear right");
 
     @Override
     public void runOpMode() {
-
-
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         trobot = new Trobot(hardwareMap);
-        trobot.disable(trobot.getComponent().getRightLatch());
+        trobot.getComponent().setRightIntake(null);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -50,22 +43,13 @@ public class TeleOpDemo extends LinearOpMode {
             double rightPower = Range.clip(gamepad1.left_stick_y + gamepad1.right_stick_x, -1.0, 1.0);
 
             // Send calculated power to wheels
-            frontLeftDrive.setPower(leftPower);
-            frontRightDrive.setPower(rightPower);
-            rearLeftDrive.setPower(leftPower);
-            rearRightDrive.setPower(rightPower);
+            trobot.getDrivetrain().drive(leftPower, rightPower);
 
             // Set D-Pad for strafing -> not used for Joe 2019-2020
             if (gamepad1.dpad_left) {
-                frontLeftDrive.setPower(1);
-                frontRightDrive.setPower(-1);
-                rearLeftDrive.setPower(-1);
-                rearRightDrive.setPower(1);
+                trobot.getDrivetrain().strafe(trobot.getDrivetrain().LEFT, 1);
             } else if (gamepad1.dpad_right) {
-                frontLeftDrive.setPower(-1);
-                frontRightDrive.setPower(1);
-                rearLeftDrive.setPower(1);
-                rearRightDrive.setPower(-1);
+                trobot.getDrivetrain().strafe(trobot.getDrivetrain().RIGHT, 1);
             }
 
             // Map triggers to intake motors

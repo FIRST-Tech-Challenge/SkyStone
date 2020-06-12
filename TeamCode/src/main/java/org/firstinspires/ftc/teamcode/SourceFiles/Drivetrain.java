@@ -1,6 +1,8 @@
 /**
  * Copyright (c) 2019, All Rights Reserved
  *
+ * 'Drivetrain' controls the robot's movement. It contains the drive motor variables as well
+ * as containing many utility methods
  *
  * Written by Timothy (Tikki) Cui
  */

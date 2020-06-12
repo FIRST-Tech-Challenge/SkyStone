@@ -1,3 +1,12 @@
+/**
+ * Copyright (c) 2019, All Rights Reserved
+ *
+ * 'Component' controls the robot's featurs. It contains the variables for each component (e.g.
+ * latches, intake motors, elevator, etc.) as well as containing many utility methods
+ *
+ * Written by Timothy (Tikki) Cui
+ */
+
 package org.firstinspires.ftc.teamcode.SourceFiles;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;

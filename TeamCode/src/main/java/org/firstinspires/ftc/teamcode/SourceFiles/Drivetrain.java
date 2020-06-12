@@ -78,32 +78,33 @@ public class Drivetrain {
         }
     }
 
-//    public void autoDrive(double power, double time) {
-//        frontLeftDrive.setPower(power);
-//        frontRightDrive.setPower(power);
-//        rearLeftDrive.setPower(power);
-//        rearRightDrive.setPower(power);
-//    }
+    public void autoDriveTime(double power, double time) {
+        frontLeftDrive.setPower(power);
+        frontRightDrive.setPower(power);
+        rearLeftDrive.setPower(power);
+        rearRightDrive.setPower(power);
+    }
 
-//    public void autoDrive(double power, double distance) {
-//        if (power > 1) {
-//            power = 1;
-//        }
-//
-//        if (distance > 0) {
-//            frontLeftDrive.setPower(power);
-//            frontRightDrive.setPower(power);
-//            rearLeftDrive.setPower(power);
-//            rearRightDrive.setPower(power);
-//        } else if (distance < 0) {
-//            frontLeftDrive.setPower(-power);
-//            frontRightDrive.setPower(-power);
-//            rearLeftDrive.setPower(-power);
-//            rearRightDrive.setPower(-power);
-//        }
-//
-//        double time = Math.abs((int)((distance / (72.5 * power)) * 1000));
-//    }
+    public void autoDriveDistance(double power, double distance) {
+        if (distance > 0) {
+            frontLeftDrive.setPower(power);
+            frontRightDrive.setPower(power);
+            rearLeftDrive.setPower(power);
+            rearRightDrive.setPower(power);
+        } else if (distance < 0) {
+            frontLeftDrive.setPower(-power);
+            frontRightDrive.setPower(-power);
+            rearLeftDrive.setPower(-power);
+            rearRightDrive.setPower(-power);
+        }
+
+        // Source code for 'sleep'
+        try {
+            Thread.sleep(Math.abs((int)((distance / (72.5 * power)) * 1000)));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
 
     public void encoderDrive(double power, double distance) {
         double threadsPerCentimeter = ((1120 * 2) / (10 * Math.PI));

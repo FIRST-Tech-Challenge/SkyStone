@@ -12,9 +12,6 @@ package org.firstinspires.ftc.teamcode.SourceFiles;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.TimestampedI2cData;
-import com.qualcomm.robotcore.util.RobotLog;
-import com.qualcomm.robotcore.util.ThreadPool;
 
 public class Drivetrain {
     private HardwareMap hardwareMap;
@@ -97,8 +94,6 @@ public class Drivetrain {
         rearRightDrive.setPower(0);
     }
 
-
-
     public void strafe(int direction, double power) {
         if (direction == LEFT) {
             frontLeftDrive.setPower(power);
@@ -113,50 +108,45 @@ public class Drivetrain {
         }
     }
 
-    //    public void autoDriveTime(double power, double time) {
-//        frontLeftDrive.setPower(power);
-//        frontRightDrive.setPower(power);
-//        rearLeftDrive.setPower(power);
-//        rearRightDrive.setPower(power);
-//
-//        try {
-//            Thread.sleep((long)(time));
-//        } catch (InterruptedException e) {
-//            Thread.currentThread().interrupt();
-//        }
-//    }
-//
-//    public void autoDriveDistance(double power, double distance) {
-//        if (distance > 0) {
-//            frontLeftDrive.setPower(power);
-//            frontRightDrive.setPower(power);
-//            rearLeftDrive.setPower(power);
-//            rearRightDrive.setPower(power);
-//        } else if (distance < 0) {
-//            frontLeftDrive.setPower(-power);
-//            frontRightDrive.setPower(-power);
-//            rearLeftDrive.setPower(-power);
-//            rearRightDrive.setPower(-power);
-//        }
-//
-//        // Source code for 'sleep'
-//        try {
-//            Thread.sleep(Math.abs((int)((distance / (72.5 * power)) * 1000)));
-//        } catch (InterruptedException e) {
-//            Thread.currentThread().interrupt();
-//        }
-//    }
+    public void autoDriveTime(double power, double time) {
+        frontLeftDrive.setPower(power);
+        frontRightDrive.setPower(power);
+        rearLeftDrive.setPower(power);
+        rearRightDrive.setPower(power);
 
+        try {
+            Thread.sleep((long)(time));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public void autoDriveDistance(double power, double distance) {
+        if (distance > 0) {
+            frontLeftDrive.setPower(power);
+            frontRightDrive.setPower(power);
+            rearLeftDrive.setPower(power);
+            rearRightDrive.setPower(power);
+        } else if (distance < 0) {
+            frontLeftDrive.setPower(-power);
+            frontRightDrive.setPower(-power);
+            rearLeftDrive.setPower(-power);
+            rearRightDrive.setPower(-power);
+        }
+
+        // Source code for 'sleep'
+        try {
+            Thread.sleep(Math.abs((int)((distance / (72.5 * power)) * 1000)));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
 
     public void resetEncoder() {
         frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rearLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rearRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
-
-    public void setPosition(int distance) {
-
     }
 
     public void autoDriveEncoder(double power, double distance) {

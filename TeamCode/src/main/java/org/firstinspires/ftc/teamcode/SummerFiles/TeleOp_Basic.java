@@ -2,6 +2,10 @@ package org.firstinspires.ftc.teamcode.SummerFiles;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.SourceFiles.Trobot;
@@ -21,19 +25,50 @@ import org.firstinspires.ftc.teamcode.SourceFiles.Trobot;
 
 @TeleOp(name = "POV Mode", group = "POV Mode")
 public class TeleOp_Basic extends LinearOpMode {
-    public Trobot trobot;
+    private ElapsedTime runtime;
+
+    private DcMotor frontLeftDrive;
+    private DcMotor frontRightDrive;
+    private DcMotor rearLeftDrive;
+    private DcMotor rearRightDrive;
+
+    private DcMotor leftIntake;
+    private DcMotor rightIntake;
+
+    private Servo leftLatch;
+    private Servo rightLatch;
+
+    String latchStatus = "Pending";
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        trobot = new Trobot(hardwareMap);
-        trobot.getComponent().setRightIntake(null);
+        runtime = new ElapsedTime();
+
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "front left");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "front right");
+        rearLeftDrive = hardwareMap.get(DcMotor.class, "rear left");
+        rearRightDrive = hardwareMap.get(DcMotor.class, "rear right");
+
+        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        rearLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rearLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rearRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftIntake = hardwareMap.dcMotor.get("left intake");
+        rightIntake = hardwareMap.dcMotor.get("right intake");
+
+        leftLatch = hardwareMap.servo.get("left latch");
+        rightLatch = hardwareMap.servo.get("right latch");
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        trobot.getRuntime().reset();
+        runtime.reset();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -43,35 +78,53 @@ public class TeleOp_Basic extends LinearOpMode {
             double rightPower = Range.clip(gamepad1.left_stick_y + gamepad1.right_stick_x, -1.0, 1.0);
 
             // Send calculated power to wheels
-            trobot.getDrivetrain().drive(leftPower, rightPower);
+            frontLeftDrive.setPower(leftPower);
+            frontRightDrive.setPower(rightPower);
+            rearLeftDrive.setPower(leftPower);
+            rearRightDrive.setPower(rightPower);
 
             // Set D-Pad for strafing -> not used for Joe 2019-2020
             if (gamepad1.dpad_left) {
-                trobot.getDrivetrain().strafe(trobot.getDrivetrain().LEFT, 1);
+                frontLeftDrive.setPower(0.7);
+                frontRightDrive.setPower(-0.7);
+                rearLeftDrive.setPower(-0.7);
+                rearRightDrive.setPower(0.7);
             } else if (gamepad1.dpad_right) {
-                trobot.getDrivetrain().strafe(trobot.getDrivetrain().RIGHT, 1);
+                frontLeftDrive.setPower(-0.7);
+                frontRightDrive.setPower(0.7);
+                rearLeftDrive.setPower(0.7);
+                rearRightDrive.setPower(-0.7);
             }
 
             // Map triggers to intake motors
-            if (gamepad1.left_trigger > 0 && gamepad1.right_trigger == 0) {
-                trobot.getComponent().intake(trobot.getComponent().INTAKE);
-            } else if (gamepad1.right_trigger > 0 && gamepad1.left_trigger == 0) {
-                trobot.getComponent().intake(trobot.getComponent().RELEASE);
+            if (gamepad1.left_trigger > 0 && gamepad1.right_trigger == 0) { // intake is more power because the brick can be slippery
+                leftIntake.setPower(0.5);
+                rightIntake.setPower(-0.5);
+            } else if (gamepad1.right_trigger > 0 && gamepad1.left_trigger == 0) { // release is less power so it doesn't shoot the brick
+                leftIntake.setPower(-0.2);
+                rightIntake.setPower(0.2);
             } else {
-                trobot.getComponent().intake(trobot.getComponent().STOP);
+                leftIntake.setPower(0);
+                rightIntake.setPower(0);
             }
 
-            // Map bumpers to foundation latches
+            // Map bumpers to foundation latches (Servo angles were determined by lab measurements)
             if (gamepad1.left_bumper) {
-                trobot.getComponent().latch(trobot.getComponent().LATCH);
+                leftLatch.setPosition(0.5);
+                rightLatch.setPosition(0.3);
+
+                latchStatus = "Latched";
             } else if (gamepad1.right_bumper) {
-                trobot.getComponent().latch(trobot.getComponent().UNLATCH);
+                leftLatch.setPosition(1);
+                rightLatch.setPosition(0);
+
+                latchStatus = "Unlatched";
             }
 
             // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + trobot.getRuntime().toString());
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", -gamepad1.left_stick_y, -gamepad1.right_stick_y);
-            telemetry.addData("Servos", trobot.getComponent().getLatchStatus());
+            telemetry.addData("Servos", latchStatus);
             telemetry.update();
         }
     }

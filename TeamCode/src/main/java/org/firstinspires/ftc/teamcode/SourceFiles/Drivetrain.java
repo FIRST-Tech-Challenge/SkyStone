@@ -7,7 +7,6 @@
  * Written by Timothy (Tikki) Cui
  */
 
-
 package org.firstinspires.ftc.teamcode.SourceFiles;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -23,7 +22,7 @@ public class Drivetrain {
 
     // start with full speed
     private boolean isSpeedReduced = false;
-    private String speedStatus = "Pending";
+    private String speedStatus = "Normal";
 
     // enum variables
     public final int LEFT = -1;
@@ -67,10 +66,17 @@ public class Drivetrain {
 
     // Utility
     public void drive(double power) {
-        frontLeftDrive.setPower(power);
-        frontRightDrive.setPower(power);
-        rearLeftDrive.setPower(power);
-        rearRightDrive.setPower(power);
+        if (!isSpeedReduced) {
+            frontLeftDrive.setPower(power);
+            frontRightDrive.setPower(power);
+            rearLeftDrive.setPower(power);
+            rearRightDrive.setPower(power);
+        } else {
+            frontLeftDrive.setPower(power * 0.65);
+            frontRightDrive.setPower(power * 0.65);
+            rearLeftDrive.setPower(power * 0.65);
+            rearRightDrive.setPower(power * 0.65);
+        }
     }
 
     public void drive(double leftPower, double rightPower) {
@@ -84,6 +90,16 @@ public class Drivetrain {
             frontRightDrive.setPower(rightPower * 0.65);
             rearLeftDrive.setPower(leftPower * 0.65);
             rearRightDrive.setPower(rightPower * 0.65);
+        }
+    }
+
+    public void switchSpeed() {
+        isSpeedReduced = !isSpeedReduced;
+
+        if (isSpeedReduced) {
+            speedStatus = "Reduced";
+        } else {
+            speedStatus = "Normal";
         }
     }
 
@@ -121,26 +137,26 @@ public class Drivetrain {
         }
     }
 
-    public void autoDriveDistance(double power, double distance) {
-        if (distance > 0) {
-            frontLeftDrive.setPower(power);
-            frontRightDrive.setPower(power);
-            rearLeftDrive.setPower(power);
-            rearRightDrive.setPower(power);
-        } else if (distance < 0) {
-            frontLeftDrive.setPower(-power);
-            frontRightDrive.setPower(-power);
-            rearLeftDrive.setPower(-power);
-            rearRightDrive.setPower(-power);
-        }
-
-        // Source code for 'sleep'
-        try {
-            Thread.sleep(Math.abs((int)((distance / (72.5 * power)) * 1000)));
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
+//    public void autoDriveDistance(double power, double distance) {
+//        if (distance > 0) {
+//            frontLeftDrive.setPower(power);
+//            frontRightDrive.setPower(power);
+//            rearLeftDrive.setPower(power);
+//            rearRightDrive.setPower(power);
+//        } else if (distance < 0) {
+//            frontLeftDrive.setPower(-power);
+//            frontRightDrive.setPower(-power);
+//            rearLeftDrive.setPower(-power);
+//            rearRightDrive.setPower(-power);
+//        }
+//
+//        // Source code for 'sleep'
+//        try {
+//            Thread.sleep(Math.abs((int)((distance / (72.5 * power)) * 1000)));
+//        } catch (InterruptedException e) {
+//            Thread.currentThread().interrupt();
+//        }
+//    }
 
     public void resetEncoder() {
         frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

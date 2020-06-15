@@ -45,6 +45,11 @@ public class TeleOp_POV extends LinearOpMode {
             // Send calculated power to wheels
             trobot.getDrivetrain().drive(leftPower, rightPower);
 
+            // Set a-button for speed reduction
+            if (gamepad1.a) {
+                trobot.getDrivetrain().switchSpeed();
+            }
+
             // Set D-Pad for strafing -> not used for Joe 2019-2020
             if (gamepad1.dpad_left) {
                 trobot.getDrivetrain().strafe(trobot.getDrivetrain().LEFT, 1);
@@ -72,6 +77,7 @@ public class TeleOp_POV extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + trobot.getRuntime().toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", -gamepad1.left_stick_y, -gamepad1.right_stick_y);
             telemetry.addData("Servos", trobot.getComponent().getLatchStatus());
+            telemetry.addData("Speed", trobot.getDrivetrain().getSpeedStatus());
             telemetry.update();
         }
     }

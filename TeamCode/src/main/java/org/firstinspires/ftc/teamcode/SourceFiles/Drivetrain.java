@@ -1,8 +1,15 @@
 /**
- * Copyright (c) 2019, All Rights Reserved
+ * Copyright (c) 2020, All Rights Reserved
  *
- * 'Drivetrain' controls the robot's movement. It contains the drive motor variables as well
- * as containing many utility methods
+ * 'Drivetrain' controls the motion motors of 'Trobot'. It contains the drive motor variables as well
+ * as containing many utility methods.
+ *
+ * Key features include:
+ * - driving with power inputs
+ * - strafing
+ * - auto-drive using encoders
+ * - speed reduction
+ * - checking motor statuses *
  *
  * Written by Timothy (Tikki) Cui
  */
@@ -93,13 +100,11 @@ public class Drivetrain {
         }
     }
 
-    public void switchSpeed() {
-        isSpeedReduced = !isSpeedReduced;
-
-        if (isSpeedReduced) {
-            speedStatus = "Reduced";
-        } else {
-            speedStatus = "Normal";
+    public void turn(int direction, double degrees) {
+        if (direction == LEFT) {
+            // TODO: implement function body
+        } else if (direction == RIGHT) {
+            // TODO: implement function body
         }
     }
 
@@ -108,6 +113,16 @@ public class Drivetrain {
         frontRightDrive.setPower(0);
         rearLeftDrive.setPower(0);
         rearRightDrive.setPower(0);
+    }
+
+    public void switchSpeed() {
+        isSpeedReduced = !isSpeedReduced;
+
+        if (isSpeedReduced) {
+            speedStatus = "Reduced";
+        } else {
+            speedStatus = "Normal";
+        }
     }
 
     public void strafe(int direction, double power) {
@@ -158,13 +173,6 @@ public class Drivetrain {
 //        }
 //    }
 
-    public void resetEncoder() {
-        frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rearLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rearRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
-
     public void autoDriveEncoder(double power, double distance) {
         // TODO: Confirm measurements
         double threadsPerCentimeter = ((1120 * 2) / (10 * Math.PI));
@@ -202,20 +210,19 @@ public class Drivetrain {
         rearRightDrive.setPower(0);
     }
 
-    public void turn(int direction, double degrees) {
-        if (direction == LEFT) {
-            // TODO: implement function body
-        } else if (direction == RIGHT) {
-            // TODO: implement function body
-        }
+    public double getPosition() {
+        return (frontLeftDrive.getCurrentPosition() + frontRightDrive.getCurrentPosition()
+                + rearLeftDrive.getCurrentPosition() + rearRightDrive.getCurrentPosition()) / 4.0;
+    }
+
+    public void resetEncoder() {
+        frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rearLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rearRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public boolean isBusy() {
         return frontLeftDrive.isBusy() || frontRightDrive.isBusy() || rearLeftDrive.isBusy() || rearRightDrive.isBusy();
-    }
-
-    public double getPosition() {
-        return (frontLeftDrive.getCurrentPosition() + frontRightDrive.getCurrentPosition()
-               + rearLeftDrive.getCurrentPosition() + rearRightDrive.getCurrentPosition()) / 4.0;
     }
 }

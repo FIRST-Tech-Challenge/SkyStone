@@ -1,8 +1,10 @@
 /**
  * Copyright (c) 2020, All Rights Reserved
  *
- * Trobot is the master file that each OpMode, whether TeleOp or autonomous, will implement. It
- * uses composition to include 'DriveTrain' and 'Component'.
+ * Trobot is a composition of 'Drivetrain' and 'Component'. It is the master file that each OpMode,
+ * whether TeleOp or autonomous, will implement. While it doesn't have any utility methods, it
+ * improves code concision by combining different parts into a single object that the user can
+ * import and implement.
  *
  * Written by Timothy (Tikki) Cui
  */
@@ -10,9 +12,7 @@
 
 package org.firstinspires.ftc.teamcode.SourceFiles;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Trobot {

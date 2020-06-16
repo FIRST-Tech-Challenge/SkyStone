@@ -1,8 +1,12 @@
 /**
- * Copyright (c) 2019, All Rights Reserved
+ * Copyright (c) 2020, All Rights Reserved
  *
- * 'Component' controls the robot's featurs. It contains the variables for each component (e.g.
- * latches, intake motors, elevator, etc.) as well as containing many utility methods
+ * 'Component' controls the robot's features, mostly mechanisms designed to score points. It
+ * controls robot features such as latches, claws, elevators, intake motors, etc.
+ *
+ * Key features include:
+ * - intake motors
+ * - foundation latches
  *
  * Written by Timothy (Tikki) Cui
  */

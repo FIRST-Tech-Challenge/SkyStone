@@ -1,15 +1,18 @@
 /**
  * Copyright (c) 2020, All Rights Reserved
  *
- * 'Drivetrain' controls the motion motors of 'Trobot'. It contains the drive motor variables as well
- * as containing many utility methods.
+ * 'Drivetrain' controls the motion motors of 'Trobot'. It contains the drive motor variables as
+ * well as containing many utility methods.
  *
  * Key features include:
  * - driving with power inputs
  * - strafing
  * - auto-drive using encoders
  * - speed reduction
- * - checking motor statuses *
+ * - checking motor statuses
+ *
+ * 'Drivetrain' remains relatively constant through each season since a different game theme doesn't
+ * affect a robot's basic movement abilites.
  *
  * Written by Timothy (Tikki) Cui
  */

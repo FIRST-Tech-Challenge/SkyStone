@@ -8,6 +8,9 @@
  * - intake motors
  * - foundation latches
  *
+ * 'Component' needs a lot of rework each season as the game theme will have a major impact on
+ * a robot's components since each component is usually specifically designed to score points
+ *
  * Written by Timothy (Tikki) Cui
  */
 

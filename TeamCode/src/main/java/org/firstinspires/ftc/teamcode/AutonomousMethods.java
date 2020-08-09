@@ -34,8 +34,6 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.Odometry.OdometryGlobalCoordinatePosition;
 
 public class AutonomousMethods {
-    public int stoneSpot = 5;
-
     BNO055IMU imu;
     Orientation orientation = new Orientation();
     DcMotor.RunMode newRun;
@@ -63,13 +61,16 @@ public class AutonomousMethods {
     private double constant;
     private int tempSleep = 0;
     private Robot robot;
-    public AutonomousMethods(DcMotor.RunMode runMode, HardwareMap importedMap, boolean blue) {
+    public AutonomousMethods(DcMotor.RunMode runMode, HardwareMap importedMap, side side) {
         newRun = runMode;
         map = importedMap;
-        this.blue = blue;
+        this.side = side;
         robot = new Robot(runMode, map,0, 0,0, 0);
     }
-
+    enum side{
+        blue,
+        red
+    }
     //all variable related to the dimensions of the robot or field
     private final double FieldSide = 141; //11.75 ft or 141 inches
     public final double ticksPerRev = 560;//dependent on the motor we use
@@ -79,7 +80,7 @@ public class AutonomousMethods {
 
     //alliance color
 
-    public boolean blue;
+    public side side;
     //side of the field
     public boolean foundation = false;
     public boolean sample = false;
@@ -90,14 +91,7 @@ public class AutonomousMethods {
 
 
     //coordinate system related variables
-    public Coordinate foundationLocation = new Coordinate(0, 0);//univeral coordinate to move and add stones to foundation
-    public Coordinate buildZone = new Coordinate(50, 100);
-    public Coordinate[] sampleSpots = new Coordinate[6];//locations for every stone during sampling stage
-    //if we want to intake stones
-//    public Coordinate skystone = new Coordinate(-1, -1);//spot that a new skystone can be found
-    public Coordinate bridge = new Coordinate(0, 0);//for parking
-    public CurvePoint[] suckSpots = new CurvePoint[6];
-    public CurvePoint initCurve = new CurvePoint();
+
 
     public int inchesToTicks(double inches) {
         return (int) ((inches / (Math.PI * wheelDiameter)) * ticksPerRev);//dividing the total revolutions completed by the motor(found by diving the desired inches by the wheel circumference), by the motor's encoder count for 1 rev.
@@ -105,7 +99,7 @@ public class AutonomousMethods {
     }
 
     public boolean motorsAreBusy() {
-        return robot.topLeft.isBusy() && topRight.isBusy() && botLeft.isBusy() && botRight.isBusy();
+        return robot.topLeft.isBusy() && robot.topRight.isBusy() && robot.botLeft.isBusy() && robot.botRight.isBusy();
     }
     private int TLMin;
     public int TL(){
@@ -113,18 +107,18 @@ public class AutonomousMethods {
     }
     private int TRMin;
     public int TR(){
-        return topRight.getCurrentPosition() - TRMin;
+        return robot.topRight.getCurrentPosition() - TRMin;
     }
     private int BLMin;
     public int BL(){
-        return  botLeft.getCurrentPosition() - BLMin;
+        return  robot.botLeft.getCurrentPosition() - BLMin;
     }
     private int BRMin;
     public int BR(){
-        return botRight.getCurrentPosition() - BRMin;
+        return robot.botRight.getCurrentPosition() - BRMin;
     }
     public int avgTicks() {
-        //return Math.abs(robot.topLeft.getCurrentPosition() + topRight.getCurrentPosition() + botLeft.getCurrentPosition() + botRight.getCurrentPosition())/4;
+        //return Math.abs(robot.topLeft.getCurrentPosition() + robot.topRight.getCurrentPosition() + robot.botLeft.getCurrentPosition() + robot.botRight.getCurrentPosition())/4;
         return Math.abs(TL() + TR() + BL() + BR())/4;
     }
     public int strafeTicks(){
@@ -200,53 +194,53 @@ public class AutonomousMethods {
     }
 
     public void resetTicks() {
-//        topRight.setMode(DcMotor.RunMode.RESET_ENCODERS);
+//        robot.topRight.setMode(DcMotor.RunMode.RESET_ENCODERS);
 //        robot.topLeft.setMode(DcMotor.RunMode.RESET_ENCODERS);
-//        botRight.setMode(DcMotor.RunMode.RESET_ENCODERS);
-//        botLeft.setMode(DcMotor.RunMode.RESET_ENCODERS);
+//        robot.botRight.setMode(DcMotor.RunMode.RESET_ENCODERS);
+//        robot.botLeft.setMode(DcMotor.RunMode.RESET_ENCODERS);
         robot.topLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        topRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        botLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        botRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-//        topRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.topRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        robot.botLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        robot.botRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+//        robot.topRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        robot.topLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        botRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        botLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        topRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.botRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.botLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.topRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.topLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        botRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        botLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.botRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.botLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         TLMin = robot.topLeft.getCurrentPosition();
-        TRMin = topRight.getCurrentPosition();
-        BLMin = botLeft.getCurrentPosition();
-        BRMin = botRight.getCurrentPosition();
+        TRMin = robot.topRight.getCurrentPosition();
+        BLMin = robot.botLeft.getCurrentPosition();
+        BRMin = robot.botRight.getCurrentPosition();
     }
     public void stopAndResetTicks(){
 //        robot.topLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        topRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        botLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        botRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        topRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.topRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        robot.botLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        robot.botRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.topRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.topLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        botRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        botLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.botRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.botLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         TLMin = robot.topLeft.getCurrentPosition();
-        TRMin = topRight.getCurrentPosition();
-        BLMin = botLeft.getCurrentPosition();
-        BRMin = botRight.getCurrentPosition();
+        TRMin = robot.topRight.getCurrentPosition();
+        BLMin = robot.botLeft.getCurrentPosition();
+        BRMin = robot.botRight.getCurrentPosition();
     }
 
     public void setRunMode(boolean runToPosition) {
         if (runToPosition) {
             robot.topLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            topRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            botLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            botRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.topRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.botLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.botRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         } else {
             robot.topLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            topRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            botLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            botRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.topRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.botLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.botRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
@@ -378,20 +372,20 @@ public class AutonomousMethods {
         //pidStrafe.enable();
         correction = pidDrive.performPID(getAngle());
         robot.topLeft.setTargetPosition(robot.topLeft.getCurrentPosition() + target);
-        topRight.setTargetPosition(topRight.getCurrentPosition() -target);
-        botLeft.setTargetPosition(botLeft.getCurrentPosition() -target);
-        botRight.setTargetPosition(botRight.getCurrentPosition() + target);
+        robot.topRight.setTargetPosition(robot.topRight.getCurrentPosition() -target);
+        robot.botLeft.setTargetPosition(robot.botLeft.getCurrentPosition() -target);
+        robot.botRight.setTargetPosition(robot.botRight.getCurrentPosition() + target);
         setRunMode(true);
         robot.topLeft.setPower(power + correction);
-        topRight.setPower(-power - correction);
-        botLeft.setPower(-power - correction);
-        botRight.setPower(power + correction);
+        robot.topRight.setPower(-power - correction);
+        robot.botLeft.setPower(-power - correction);
+        robot.botRight.setPower(power + correction);
         while (motorsAreBusy()) {
             correction = pidDrive.performPID(getAngle());
             robot.topLeft.setPower(power + correction);
-            topRight.setPower(-power - correction);
-            botLeft.setPower(-power - correction);
-            botRight.setPower(power + correction);
+            robot.topRight.setPower(-power - correction);
+            robot.botLeft.setPower(-power - correction);
+            robot.botRight.setPower(power + correction);
             robot.pt.add(xCovered(angle, ticksToStrafe(strafeTicks() - prev)), yCovered(angle, ticksToStrafe(strafeTicks() - prev)));
             prev = strafeTicks();
             angle = getHeading() + 90;
@@ -435,20 +429,20 @@ public class AutonomousMethods {
         correction = pidDrive.performPID(getAngle());
         int target = strafeToTicks(distance);
         robot.topLeft.setTargetPosition(robot.topLeft.getCurrentPosition() -target);
-        topRight.setTargetPosition(topRight.getCurrentPosition() + target);
-        botLeft.setTargetPosition(botLeft.getCurrentPosition() + target);
-        botRight.setTargetPosition(botRight.getCurrentPosition() -target);
+        robot.topRight.setTargetPosition(robot.topRight.getCurrentPosition() + target);
+        robot.botLeft.setTargetPosition(robot.botLeft.getCurrentPosition() + target);
+        robot.botRight.setTargetPosition(robot.botRight.getCurrentPosition() -target);
         setRunMode(true);
         robot.topLeft.setPower(-power + correction);
-        topRight.setPower(power - correction);
-        botLeft.setPower(power - correction);
-        botRight.setPower(-power + correction);
+        robot.topRight.setPower(power - correction);
+        robot.botLeft.setPower(power - correction);
+        robot.botRight.setPower(-power + correction);
         while (motorsAreBusy()) {
             correction = pidDrive.performPID(getAngle());
             robot.topLeft.setPower(-power + correction);
-            topRight.setPower(power - correction);
-            botLeft.setPower(power - correction);
-            botRight.setPower(-power + correction);
+            robot.topRight.setPower(power - correction);
+            robot.botLeft.setPower(power - correction);
+            robot.botRight.setPower(-power + correction);
             robot.pt.add(xCovered(angle, ticksToStrafe(strafeTicks() - prev)), yCovered(angle, ticksToStrafe(strafeTicks() - prev)));
             prev = strafeTicks();
             angle = getHeading() - 90;
@@ -476,9 +470,9 @@ public class AutonomousMethods {
         setRunMode(false);
         //double inital = referenceRange();
         robot.topLeft.setPower(-power);
-        topRight.setPower(power);
-        botLeft.setPower(power);
-        botRight.setPower(-power);
+        robot.topRight.setPower(power);
+        robot.botLeft.setPower(power);
+        robot.botRight.setPower(-power);
         sleep((long) (time * 1000));
         /*while (Math.abs(referenceRange() - inital) < distance) {
 
@@ -494,9 +488,9 @@ public class AutonomousMethods {
         //double inital = referenceRange();
         setRunMode(false);
         robot.topLeft.setPower(power);
-        topRight.setPower(-power);
-        botLeft.setPower(-power);
-        botRight.setPower(power);
+        robot.topRight.setPower(-power);
+        robot.botLeft.setPower(-power);
+        robot.botRight.setPower(power);
         sleep((long) (time * 1000));//don't execute further code until after the wheels are done turning
         //updateCoordinates();
         resetTicks();
@@ -510,139 +504,14 @@ public class AutonomousMethods {
         }
     }
 
-    private String formatAngle(AngleUnit angleUnit, double angle) {
-        return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
-    }
 
-    private String formatDegrees(double degrees) {
-        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
-    }
 
-    private void resetAngle()//for PID
-    {
-        lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        globalAngle = 0;
-    }
-
-    public double getAngle()//for PID
-    {
-        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
-        double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
-
-        if (deltaAngle < -180)
-            deltaAngle += 360;
-        else if (deltaAngle > 180)
-            deltaAngle -= 360;
-
-        globalAngle += deltaAngle;
-
-        lastAngles = angles;
-
-        return globalAngle;
-    }
-
-    public double getHeading() {//for overall
-        orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double val = Double.parseDouble(formatAngle(orientation.angleUnit, orientation.firstAngle)) - constant;
-        if (val > 180) {
-            val -= 360;
-        } else if (val < -180) {
-            val += 360;
-        }
-        return val;
-    }
-    public void setHeading(double desired){
-        constant = getHeading() - desired;
-    }
-
-    public void rotate(double power, double degrees) {
-        // restart imu angle tracking.
-        setRunMode(false);
-        resetAngle();
-
-        // if degrees > 359 we cap at 359 with same sign as original degrees.
-        if (Math.abs(degrees) > 359) degrees = (int) Math.copySign(359, degrees);
-
-        // start pid controller. PID controller will monitor the turn angle with respect to the
-        // target angle and reduce power as we approach the target angle. This is to prevent the
-        // robots momentum from overshooting the turn after we turn off the power. The PID controller
-        // reports onTarget() = true when the difference between turn angle and target angle is within
-        // 1% of target (tolerance) which is about 1 degree. This helps prevent overshoot. Overshoot is
-        // dependant on the motor and gearing configuration, starting power, weight of the robot and the
-        // on target tolerance. If the controller overshoots, it will reverse the sign of the output
-        // turning the robot back toward the setpoint value.
-
-        pidRotate.reset();
-        pidRotate.setSetpoint(degrees);
-        pidRotate.setInputRange(0, degrees);
-        pidRotate.setOutputRange(0, power);
-        pidRotate.setTolerance(5);
-        pidRotate.enable();
-
-        // getAngle() returns + when rotating counter clockwise (left) and - when rotating
-        // clockwise (right).
-
-        // rotate until turn is completed.
-
-        if (degrees < 0) {
-            // On right turn we have to get off zero first.
-            while (getAngle() == 0) {
-                robot.topLeft.setPower(-power);
-                botLeft.setPower(-power);
-                topRight.setPower(power);
-                botRight.setPower(power);
-                sleep(100);
-            }
-
-            do {
-                power = pidRotate.performPID(getAngle()); // power will be - on right turn.
-                robot.topLeft.setPower(power);
-                botLeft.setPower(power);
-                topRight.setPower(-power);
-                botRight.setPower(-power);
-            } while (!pidRotate.onTarget());
-        } else    // left turn.
-            do {
-                power = pidRotate.performPID(getAngle()); // power will be + on left turn.
-                robot.topLeft.setPower(power);
-                botLeft.setPower(power);
-                topRight.setPower(-power);
-                botRight.setPower(-power);
-            } while (!pidRotate.onTarget());
-
-        // turn the motors off.
-        stopAndResetTicks();
-
-        rotation = getAngle();
-
-        // wait for rotation to stop.
-        if (!sleepReq) {
-            sleep(tempSleep);
-        }
-        sleepReq = false;
-        // reset angle tracking on new heading.
-        resetAngle();
-        updateOrientation();
-    }
-
-    public boolean offTrack = false;
-    public double ultimate = 0;
-    public boolean grabbed;
     public void forward(double power, double distance) {
         updateOrientation();
-        resetAngle();
+
         resetTicks();
         distance = Math.abs(distance);
-        int prev = avgTicks();
-        double initial = homingBeacon() - getHeading();//auto correct to straight heading
-        if (offTrack) {
-            initial = 0;//don't auto correct to a straight heading and keep on inital course
-            offTrack = false;
-        }
-        if (ultimate != 0) {
-            initial = ultimate - getHeading();
-        }
+        double initial = homingBeacon() - robot.getHeading();//auto correct to straight heading
         if(initial > 180){
             initial -= 360;
         }
@@ -659,43 +528,23 @@ public class AutonomousMethods {
         //setRunMode(false);//set the motors to RUN_USING_ENCODER
         resetTicks();//reset encoder at the very beginning in case we didn't already do so
         robot.topLeft.setTargetPosition(robot.topLeft.getCurrentPosition() + inchesToTicks(distance));//inches to ticks conversion
-        topRight.setTargetPosition(topRight.getCurrentPosition() + inchesToTicks(distance));
-        botLeft.setTargetPosition(botLeft.getCurrentPosition() + inchesToTicks(distance));
-        botRight.setTargetPosition(botRight.getCurrentPosition() + inchesToTicks(distance));
+        robot.topRight.setTargetPosition(robot.topRight.getCurrentPosition() + inchesToTicks(distance));
+        robot.botLeft.setTargetPosition(robot.botLeft.getCurrentPosition() + inchesToTicks(distance));
+        robot.botRight.setTargetPosition(robot.botRight.getCurrentPosition() + inchesToTicks(distance));
         setRunMode(true);//set the motors to RUN_TO_POSITION mode
         robot.topLeft.setPower(Range.clip(power + correction, -1, 1));
-        botLeft.setPower(Range.clip(power + correction, -1, 1));
-        topRight.setPower(Range.clip(power - correction, -1, 1));
-        botRight.setPower(Range.clip(power - correction, -1, 1));
+        robot.botLeft.setPower(Range.clip(power + correction, -1, 1));
+        robot.topRight.setPower(Range.clip(power - correction, -1, 1));
+        robot.botRight.setPower(Range.clip(power - correction, -1, 1));
         while (motorsAreBusy()) {
             updateOrientation();
             pidDrive.setSetpoint(initial);
             correction = pidDrive.performPID(getAngle());//use PID to autocoreect to desired location
             robot.topLeft.setPower(Range.clip(power + correction, -1, 1));
-            botLeft.setPower(Range.clip(power + correction, -1, 1));
-            topRight.setPower(Range.clip(power - correction, -1, 1));
-            botRight.setPower(Range.clip(power - correction, -1, 1));
-            if(foundReq){
-                robot.pullUp();
-                foundReq = false;
-                foundationLocation.setPoint(bridge.getX(), robot.pt.getY());
-            }
-            if (intakeReq) {
-                intake();
-                armIn();
-                release();
-                if (blockDistance.getDistance(DistanceUnit.CM) < 10) {
-                    intakeOff();
-                    grip();
-                    grabbed = true;
-                    break;
-                }
-            }
-            if (armReq && avgTicks() > robot.topLeft.getTargetPosition() / 4) {
-                release();
-                armIn();
-                armReq = false;
-            }
+            robot.botLeft.setPower(Range.clip(power + correction, -1, 1));
+            robot.topRight.setPower(Range.clip(power - correction, -1, 1));
+            robot.botRight.setPower(Range.clip(power - correction, -1, 1));
+
             idle();
             sleep(200);
         }//don't execute further code until after the wheels are done turning
@@ -752,49 +601,22 @@ public class AutonomousMethods {
         //setRunMode(false);//set the motors to RUN_USING_ENCODER
         resetTicks();//reset encoder at the very beginning in case we didn't already do so
         robot.topLeft.setTargetPosition(robot.topLeft.getCurrentPosition() + inchesToTicks(distance));//inches to ticks conversion
-        topRight.setTargetPosition(topRight.getCurrentPosition() + inchesToTicks(distance));
-        botLeft.setTargetPosition(botLeft.getCurrentPosition() + inchesToTicks(distance));
-        botRight.setTargetPosition(botRight.getCurrentPosition() + inchesToTicks(distance));
+        robot.topRight.setTargetPosition(robot.topRight.getCurrentPosition() + inchesToTicks(distance));
+        robot.botLeft.setTargetPosition(robot.botLeft.getCurrentPosition() + inchesToTicks(distance));
+        robot.botRight.setTargetPosition(robot.botRight.getCurrentPosition() + inchesToTicks(distance));
         setRunMode(true);//set the motors to RUN_TO_POSITION mode
         robot.topLeft.setPower(Range.clip(power + correction, -1, 1));
-        botLeft.setPower(Range.clip(power + correction, -1, 1));
-        topRight.setPower(Range.clip(power - correction, -1, 1));
-        botRight.setPower(Range.clip(power - correction, -1, 1));
+        robot.botLeft.setPower(Range.clip(power + correction, -1, 1));
+        robot.topRight.setPower(Range.clip(power - correction, -1, 1));
+        robot.botRight.setPower(Range.clip(power - correction, -1, 1));
         while (motorsAreBusy()) {
             pidCurve.setSetpoint(initial);
             correction = pidCurve.performPID(getAngle());//use PID to autocoreect to desired location
             robot.topLeft.setPower(Range.clip(power + correction, -1, 1));
-            botLeft.setPower(Range.clip(power + correction, -1, 1));
-            topRight.setPower(Range.clip(power - correction, -1, 1));
-            botRight.setPower(Range.clip(power - correction, -1, 1));
-            prev = avgTicks();//setting the last known tick count
-            if(chase){
-                resetAngle();
-                initial = robot.pt.angleTo(curve.getTarget(), true) - getHeading();
-                if(initial > 180){
-                    initial -= 360;
-                }
-                else if(initial < -180){
-                    initial += 360;
-                }
-            }
-            /*if(Math.abs(initial - getAngle()) <= 10){
-                updateOrientation();
-                resetTicks();
-                offTrack = off;
-                foundReq = foundation;
-                intakeReq = intake;
-                pidCurve.disable();
-                if(ulty == 0){
-                    ultimate = robot.pt.angleTo(curve.getTarget(), true);
-                }
-                else{
-                    ultimate = ulty;
-                }
-                sleepReq = cont;
-                forward(power, robot.pt.distanceTo(curve.getTarget()));
-                return;
-            }*/
+            robot.botLeft.setPower(Range.clip(power + correction, -1, 1));
+            robot.topRight.setPower(Range.clip(power - correction, -1, 1));
+            robot.botRight.setPower(Range.clip(power - correction, -1, 1));
+
             idle();
             sleep(200);
         }//don't execute further code until after the wheels are done turning
@@ -807,103 +629,7 @@ public class AutonomousMethods {
         updateOrientation();
         ultimate = 0;
     }
-    public void curveBack(double power, CurvePoint curve, boolean chase, boolean foundation, boolean intake, boolean arm, boolean off, boolean cont, double ulty, double multy) {
-        double distance;
-        if(curve.isCurveY()){
-            distance = robot.pt.getMatchY(curve, getHeading());
-        }
-        else{
-            distance = robot.pt.getMatchX(curve, getHeading());
-        }
-        //distance = Math.abs(distance);
-        offTrack = off;
-        sleepReq = true;
-        drive(power, distance);
 
-        resetAngle();
-        resetTicks();
-        distance = Math.abs(robot.pt.distanceTo(curve.getTarget()));
-        double initial = robot.pt.angleTo(curve.getTarget(), false) - getHeading();
-        int prev = avgTicks();
-        if (ulty != 0) {
-            initial = ulty - getHeading();
-        }
-        if(initial > 180){
-            initial -= 360;
-        }
-        else if(initial < -180){
-            initial +=360;
-        }
-        //setRunMode(false);
-        pidCurve.reset();
-        pidCurve.setSetpoint(initial);
-        pidCurve.setOutputRange(0, 4*power/2);
-        pidCurve.setInputRange(-90, 90);
-        //pidCurve.setInputRange(0, initial);
-        pidCurve.enable();
-        pidCurve.enable();
-        correction = pidCurve.performPID(getAngle());
-        resetTicks();
-        robot.topLeft.setTargetPosition(robot.topLeft.getCurrentPosition()-inchesToTicks(distance));//inches to ticks conversion
-        topRight.setTargetPosition(topRight.getCurrentPosition()-inchesToTicks(distance));
-        botLeft.setTargetPosition(botLeft.getCurrentPosition()-inchesToTicks(distance));
-        botRight.setTargetPosition(botRight.getCurrentPosition()-inchesToTicks(distance));
-
-        setRunMode(true);
-
-        robot.topLeft.setPower(Range.clip(-power + correction, -1, 1));
-        botLeft.setPower(Range.clip(-power + correction, -1, 1));
-        topRight.setPower(Range.clip(-power - correction, -1, 1));
-        botRight.setPower(Range.clip(-power - correction, -1, 1));
-        while (motorsAreBusy()) {
-            pidCurve.setSetpoint(initial);
-            correction = pidCurve.performPID(getAngle());
-            robot.topLeft.setPower(Range.clip(-power + correction, -1, 1));
-            botLeft.setPower(Range.clip(-power + correction, -1, 1));
-            topRight.setPower(Range.clip(-power - correction, -1, 1));
-            botRight.setPower(Range.clip(-power - correction, -1, 1));
-            //robot.pt.add(xCovered(getHeading(), -ticksToInches(Math.abs(avgTicks()) - Math.abs(prev))), yCovered(getHeading(), -ticksToInches(Math.abs(avgTicks()) - Math.abs(prev))));
-            robot.pt.add(xCovered(getHeading(), -ticksToInches(Math.abs(avgTicks()) - prev)), yCovered(getHeading(), -ticksToInches(Math.abs(avgTicks() - prev))));
-            prev = avgTicks();
-            if(Math.abs(initial - getAngle()) <= 10){
-                foundReq = foundation;
-                intakeReq = intake;
-                armReq = arm;
-                offTrack = off;
-                updateOrientation();
-                sleepReq = cont;
-                if(ulty == 0) {
-                    ultimate = robot.pt.angleTo(curve.getTarget(), false);
-                }
-                else{
-                    ultimate = ulty;
-                }
-                pidCurve.disable();
-                backward(power*multy, robot.pt.distanceTo(curve.getTarget()));
-                return;
-            }
-            if(chase){
-                resetAngle();
-                initial = robot.pt.angleTo(curve.getTarget(), false) - getHeading();
-                if(initial > 180){
-                    initial -= 360;
-                }
-                else if(initial < -180){
-                    initial += 360;
-                }
-                //chase = false;
-            }
-            idle();
-            sleep(100);
-        }//don't execute further code until after the wheels are done turning
-        resetTicks();//stop and reset tick count on wheels
-        if (!sleepReq) {
-            sleep(tempSleep);
-        }
-        sleepReq = false;
-        pidCurve.disable();
-        updateOrientation();
-    }
 
     public void reset(){
         sleepReq = false;
@@ -942,24 +668,24 @@ public class AutonomousMethods {
         correction = pidDrive.performPID(getAngle());
 
         robot.topLeft.setTargetPosition(robot.topLeft.getCurrentPosition() -inchesToTicks(distance));//inches to ticks conversion
-        topRight.setTargetPosition(topRight.getCurrentPosition() -inchesToTicks(distance));
-        botLeft.setTargetPosition(botLeft.getCurrentPosition() -inchesToTicks(distance));
-        botRight.setTargetPosition(botRight.getCurrentPosition() -inchesToTicks(distance));
+        robot.topRight.setTargetPosition(robot.topRight.getCurrentPosition() -inchesToTicks(distance));
+        robot.botLeft.setTargetPosition(robot.botLeft.getCurrentPosition() -inchesToTicks(distance));
+        robot.botRight.setTargetPosition(robot.botRight.getCurrentPosition() -inchesToTicks(distance));
 
         setRunMode(true);
 
         robot.topLeft.setPower(Range.clip(-power + correction, -1, 1));
-        botLeft.setPower(Range.clip(-power + correction, -1, 1));
-        topRight.setPower(Range.clip(-power - correction, -1, 1));
-        botRight.setPower(Range.clip(-power - correction, -1, 1));
+        robot.botLeft.setPower(Range.clip(-power + correction, -1, 1));
+        robot.topRight.setPower(Range.clip(-power - correction, -1, 1));
+        robot.botRight.setPower(Range.clip(-power - correction, -1, 1));
         while (motorsAreBusy()) {
             updateOrientation();
             pidDrive.setSetpoint(initial);
             correction = pidDrive.performPID(getAngle());
             robot.topLeft.setPower(Range.clip(-power + correction, -1, 1));
-            botLeft.setPower(Range.clip(-power + correction, -1, 1));
-            topRight.setPower(Range.clip(-power - correction, -1, 1));
-            botRight.setPower(Range.clip(-power - correction, -1, 1));
+            robot.botLeft.setPower(Range.clip(-power + correction, -1, 1));
+            robot.topRight.setPower(Range.clip(-power - correction, -1, 1));
+            robot.botRight.setPower(Range.clip(-power - correction, -1, 1));
             //robot.pt.add(xCovered(getHeading(), -ticksToInches(avgTicks()) - prev), yCovered(getHeading(), -ticksToInches(avgTicks() - prev)));
             //robot.pt.add(xCovered(getHeading(), -ticksToInches(Math.abs(avgTicks()- prev))), yCovered(getHeading(), -ticksToInches(Math.abs(avgTicks() - prev))));
             prev = avgTicks();
@@ -1015,9 +741,9 @@ public class AutonomousMethods {
     public void timeForward(double power, double time) {
         setRunMode(false);
         robot.topLeft.setPower(power);
-        topRight.setPower(power);
-        botLeft.setPower(power);
-        botRight.setPower(power);
+        robot.topRight.setPower(power);
+        robot.botLeft.setPower(power);
+        robot.botRight.setPower(power);
         sleep((long) (time * 1000));
         resetTicks();
     }
@@ -1025,9 +751,9 @@ public class AutonomousMethods {
     public void timeBackward(double power, double time) {
         setRunMode(false);
         robot.topLeft.setPower(-power);
-        topRight.setPower(-power);
-        botLeft.setPower(-power);
-        botRight.setPower(-power);
+        robot.topRight.setPower(-power);
+        robot.botLeft.setPower(-power);
+        robot.botRight.setPower(-power);
         sleep((long) (time * 1000));
         resetTicks();
     }

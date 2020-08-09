@@ -35,26 +35,8 @@ public class Robot {
     public DcMotor topRight;
     public DcMotor botLeft;
     public DcMotor botRight;
-    public DcMotor intakeR;
-    public DcMotor intakeL;
 
-    private DcMotor winchL;
-    private DcMotor winchR;
-    private Servo pullL;
-    private Servo pullR;
 
-    private Servo clawF;
-    private Servo clawB;
-
-    private Servo armL;
-    private Servo armR;
-
-    private Servo intakeServoL;
-    private Servo intakeServoR;
-
-    private DistanceSensor blockDistance;
-
-    BNO055IMU imu;
     Orientation orientation = new Orientation();
     Orientation lastAngles = new Orientation();
     double globalAngle, power = .30, correction, rotation, constant;
@@ -71,26 +53,8 @@ public class Robot {
         topRight = map.dcMotor.get("topRight");
         botLeft = map.dcMotor.get("botLeft");
         botRight = map.dcMotor.get("botRight");
-        winchL = map.dcMotor.get("winchL");
-        winchR = map.dcMotor.get("winchR");
-
-        intakeL = map.dcMotor.get("intakeL");
-        intakeR = map.dcMotor.get("intakeR");
-
-        pullL = map.servo.get("pullL");
-        pullR = map.servo.get("pullR");
-
-        armL = map.servo.get("armL");
-        armR = map.servo.get("armR");
-
-        clawF = map.servo.get("clawF");
-        clawB = map.servo.get("clawB");
 
 
-        intakeServoL = map.servo.get("intakeServoL");
-        intakeServoR = map.servo.get("intakeServoR");
-
-        blockDistance = map.get(DistanceSensor.class, "distance");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -99,12 +63,6 @@ public class Robot {
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = false;
         //set reading to degrees
-
-        imu = map.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);//axes order based on revHub orientation
-        orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
         pidRotate = new PIDController(.013, 0, 0.00007);
         // Set PID proportional value to produce non-zero correction value when robot veers off
         // straight line. P value controls samhow sensitive the correction is.
@@ -116,10 +74,6 @@ public class Robot {
         pidCorrection = new PIDController(0,0,0);
 
         // make sure the imu gyro is calibrated before continuing.
-        while (!imu.isGyroCalibrated()) {
-            idle();
-            sleep(50);
-        }
         constant = getHeading();//constant is meant to compensate for any difference marked at the beginning. We should be starting at 0 manually
         topLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         topRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -131,21 +85,12 @@ public class Robot {
         botLeft.setMode(newRun);
         botRight.setMode(newRun);
 
-        winchL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        winchR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        intakeL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        intakeR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         topLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         topRight.setDirection(DcMotorSimple.Direction.REVERSE);//in reverse because of motor direction
         botLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         botRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        topLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        topRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        botLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        botRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //bot = new OdometryGlobalCoordinatePosition(topLeft, topRight, botLeft, 560, 760, x, y);
         pt  = new OdometryGlobalCoordinatePosition(topLeft, topRight, botLeft, 307.699557, 760, x, y);
         frame = new Rectangle(robotLength, robotWidth);
@@ -187,15 +132,7 @@ public class Robot {
     }
 
     public double getHeading() {//for overall
-//        orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-//        double val = Double.parseDouble(formatAngle(orientation.angleUnit, orientation.firstAngle)) - constant;
-//        if (val > 180) {
-//            val -= 360;
-//        } else if (val < -180) {
-//            val += 360;
-//        }
-//        return val;
-        return pt.returnOrientation();
+        return pt.returnOrientation() - constant;
     }
     public void resetHeading(){
         constant = getHeading();
@@ -209,37 +146,5 @@ public class Robot {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-    }
-    public void initialDown() {
-        armL.setPosition(.3);
-        armR.setPosition(.7);
-        intakeServoL.setPosition(0.1);
-        intakeServoR.setPosition(.85);
-    }
-
-    public void pullDown() {
-        pullL.setPosition(.46);
-        pullR.setPosition(.49);
-    }
-
-    public void pullUp() {
-        pullL.setPosition(.9);
-        pullR.setPosition(0.05);
-    }
-
-    public void pullMid() {
-        pullL.setPosition(.6);
-        pullR.setPosition(.2);
-    }
-
-    public void intake() {
-        intakeL.setPower(1);
-        intakeR.setPower(-1);
-
-    }
-
-    public void intakeOff() {
-        intakeL.setPower(0);
-        intakeR.setPower(0);
     }
 }

@@ -77,11 +77,11 @@ public class Robot {
 
         // update all modules
         odometryModule.update(this, hardwareCollection);
-        pathModule.update(this);
+//        pathModule.update(this);
         driveModule.update(this, hardwareCollection);
-        intakeModule.update(this, hardwareCollection);
-        outtakeModule.update(this, hardwareCollection);
-        foundationMoverModule.update(this, hardwareCollection);
+//        intakeModule.update(this, hardwareCollection);
+//        outtakeModule.update(this, hardwareCollection);
+//        foundationMoverModule.update(this, hardwareCollection);
 
         // TODO does this actually work?
         if (linearOpMode.isStopRequested() && isDebug) {

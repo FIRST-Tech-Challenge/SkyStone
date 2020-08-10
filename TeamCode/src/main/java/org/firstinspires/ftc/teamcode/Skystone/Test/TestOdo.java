@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.Skystone.ThreadLoop;
 
 @Deprecated
 @TeleOp
+@Disabled
+
 public class TestOdo extends LinearOpMode {
     Robot robot;
 

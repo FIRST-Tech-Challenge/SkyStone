@@ -74,36 +74,6 @@ public class HardwareCollection {
         if (bRight != null) {
             bRight.setDirection(DcMotor.Direction.REVERSE);
         }
-
-        intakeLeft = getDcMotor("intakeLeft");
-        if (intakeLeft != null) {
-            intakeLeft.setDirection(DcMotor.Direction.REVERSE);
-        }
-
-        intakeRight = getDcMotor("intakeRight");
-        if (intakeRight != null) {
-            intakeRight.setDirection(DcMotor.Direction.FORWARD);
-        }
-
-        outtakeSpool = getDcMotor("outtakeSpool");
-        if (outtakeSpool != null) {
-            outtakeSpool.setDirection(DcMotor.Direction.REVERSE);
-        }
-
-        outtakeSpool2 = getDcMotor("outtakeSpool2");
-        if (outtakeSpool2 != null) {
-            outtakeSpool2.setDirection(DcMotor.Direction.REVERSE);
-        }
-
-        outtakeExtender = getServo("outtakeExtender");
-        backClamp = getServo("backClamp");
-        frontClamp = getServo("frontClamp");
-        intakePusher = getServo("intakePusher");
-
-        leftFoundation = getServo("leftFoundation");
-        rightFoundation = getServo("rightFoundation");
-
-        intakeStoneDistance = hardwareMap.get(DistanceSensor.class, "intakeStoneDistance");
     }
 
     public void refreshData1(){

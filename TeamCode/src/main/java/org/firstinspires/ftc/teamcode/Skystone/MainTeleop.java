@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Skystone;
 
 import android.os.SystemClock;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 import java.util.LinkedList;
 import java.util.Queue;
 
+@Disabled
 @TeleOp(name = "MainTeleOpSky2", group = "Linear Opmode")
 public class MainTeleop extends LinearOpMode {
     Robot robot;

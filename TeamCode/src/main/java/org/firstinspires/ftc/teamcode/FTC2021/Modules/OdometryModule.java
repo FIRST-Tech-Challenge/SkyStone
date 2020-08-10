@@ -57,6 +57,8 @@ public class OdometryModule {
         lastStartTime = startTime;
         startTime = SystemClock.elapsedRealtime();
         robot.telemetry.addLine("update speed: " + (startTime - lastStartTime));
+        robot.telemetry.addLine("left: " + robot.hardwareCollection.fLeft.getCurrentPosition());
+        robot.telemetry.update();
 
         double leftPodNew = -hardwareCollection.fLeft.getCurrentPosition();
         double rightPodNew = -hardwareCollection.fRight.getCurrentPosition();

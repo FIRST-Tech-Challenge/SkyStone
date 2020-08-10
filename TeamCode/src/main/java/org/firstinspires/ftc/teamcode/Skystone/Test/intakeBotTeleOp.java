@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.Skystone.Test;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Deprecated
 @TeleOp
+@Disabled
+
 public class intakeBotTeleOp extends LinearOpMode {
     DcMotor fLeft;
     DcMotor fRight;

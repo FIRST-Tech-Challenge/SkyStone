@@ -12,10 +12,10 @@ public class DriveModule {
     public double turnMovement;
     public boolean isSlowDrive;
 
-    private double fLeftPower;
-    private double fRightPower;
-    private double bLeftPower;
-    private double bRightPower;
+    public double fLeftPower;
+    public double fRightPower;
+    public double bLeftPower;
+    public double bRightPower;
 
     private HardwareCollection hardwareCollection;
     private Robot robot;
@@ -56,40 +56,40 @@ public class DriveModule {
             driveData.append("\n");
         }
 
-        // this is applyMove
-
-        // convert movements to motor powers
-        fLeftPower = (yMovement * 1.414 + turnMovement + xMovement);
-        fRightPower = (-yMovement * 1.414 - turnMovement + xMovement);
-        bLeftPower = (-yMovement * 1.414 + turnMovement + xMovement);
-        bRightPower = (yMovement * 1.414 - turnMovement + xMovement);
-
-        //scale all powers to below 1
-        double maxPower = Math.abs(fLeftPower);
-        if (Math.abs(bLeftPower) > maxPower) {
-            maxPower = Math.abs(bLeftPower);
-        }
-        if (Math.abs(bRightPower) > maxPower) {
-            maxPower = Math.abs(bRightPower);
-        }
-        if (Math.abs(fRightPower) > maxPower) {
-            maxPower = Math.abs(fRightPower);
-        }
-        double scaleDownAmount = 1.0;
-        if (maxPower > 1.0) {
-            scaleDownAmount = 1.0 / maxPower;
-        }
-        fLeftPower *= scaleDownAmount;
-        fRightPower *= scaleDownAmount;
-        bLeftPower *= scaleDownAmount;
-        bRightPower *= scaleDownAmount;
-
-        if (isSlowDrive){
-            fLeftPower *= 0.3;
-            fRightPower *= 0.3;
-            bLeftPower *= 0.3;
-            bRightPower *= 0.3;
-        }
+//        // this is applyMove
+//
+//        // convert movements to motor powers
+//        fLeftPower = (yMovement * 1.414 + turnMovement + xMovement);
+//        fRightPower = (-yMovement * 1.414 - turnMovement + xMovement);
+//        bLeftPower = (-yMovement * 1.414 + turnMovement + xMovement);
+//        bRightPower = (yMovement * 1.414 - turnMovement + xMovement);
+//
+//        //scale all powers to below 1
+//        double maxPower = Math.abs(fLeftPower);
+//        if (Math.abs(bLeftPower) > maxPower) {
+//            maxPower = Math.abs(bLeftPower);
+//        }
+//        if (Math.abs(bRightPower) > maxPower) {
+//            maxPower = Math.abs(bRightPower);
+//        }
+//        if (Math.abs(fRightPower) > maxPower) {
+//            maxPower = Math.abs(fRightPower);
+//        }
+//        double scaleDownAmount = 1.0;
+//        if (maxPower > 1.0) {
+//            scaleDownAmount = 1.0 / maxPower;
+//        }
+//        fLeftPower *= scaleDownAmount;
+//        fRightPower *= scaleDownAmount;
+//        bLeftPower *= scaleDownAmount;
+//        bRightPower *= scaleDownAmount;
+//
+//        if (isSlowDrive){
+//            fLeftPower *= 0.3;
+//            fRightPower *= 0.3;
+//            bLeftPower *= 0.3;
+//            bRightPower *= 0.3;
+//        }
 
         setMotorPowers(fLeftPower, fRightPower, bLeftPower, bRightPower);
     }

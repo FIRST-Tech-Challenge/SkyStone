@@ -27,6 +27,8 @@ public class ThreadLoop extends Thread {
         }
     }
 
+
+
     public void terminate() {
         terminateRequested = true;
     }

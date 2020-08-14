@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Skystone;
+package org.firstinspires.ftc.teamcode.Skystone.Accessories;
 
 import org.firstinspires.ftc.teamcode.Skystone.MotionProfiler.Point;
 
@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import static java.lang.Math.*;
 
+@Deprecated
 public class MathFunctions {
 
     public static double angleWrap(double angle) {

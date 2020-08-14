@@ -10,7 +10,9 @@ import org.firstinspires.ftc.teamcode.Skystone.Robot;
 
 import java.util.concurrent.CancellationException;
 
+@Deprecated
 @Disabled
+
 @Autonomous(name="TestFileWriting", group ="LinearOpmode")
 public class TestFileWriting extends LinearOpMode {
     @Override

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Skystone;
 
+@Deprecated
 public class Constants {
     // Outtake Slide Positions
     public static final double OUTTAKE_SLIDE_EXTENDED = 0.09;

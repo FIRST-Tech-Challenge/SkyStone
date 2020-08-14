@@ -2,13 +2,14 @@ package org.firstinspires.ftc.teamcode.Skystone.MotionProfiler;
 
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
 
+@Deprecated
 public class CatmullRomSplineUtils {
     public static Point[] subdividePoints(Point[] points, int subdivisions, Robot robot) {
         assert points != null;
         assert points.length >= 3;
         //TODO add robot position as first point
 
-        points[0] = new Point(robot.getRobotPos().x, robot.getRobotPos().y);
+        points[0] = new Point(robot.odometryModule.worldX, robot.odometryModule.worldY);
 
         Point[] subdividedPoints = new Point[((points.length - 1) * subdivisions) + 1];
 

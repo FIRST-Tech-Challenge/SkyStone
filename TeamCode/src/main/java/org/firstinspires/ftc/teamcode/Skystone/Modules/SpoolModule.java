@@ -3,23 +3,40 @@ package org.firstinspires.ftc.teamcode.Skystone.Modules;
 import org.firstinspires.ftc.teamcode.Skystone.HardwareCollection;
 import org.firstinspires.ftc.teamcode.Skystone.Robot;
 
+@Deprecated
 public class SpoolModule {
 
     public double spoolPower;
     public boolean autoLevel;
 
     public int level;
-    public boolean raised;
+    public boolean alignHeight;
 
+    public StringBuilder spoolData;
 
     public SpoolModule(){
         spoolPower = 0.0;
         autoLevel = false;
         level = 0;
-        raised = false;
+        alignHeight = false;
+
+        spoolData = new StringBuilder();
+        spoolData.append("spoolPower level autoLevel alignHeight");
+        spoolData.append("\n");
     }
 
-    public synchronized void update(HardwareCollection hardwareCollection){
+    public synchronized void update(Robot robot, HardwareCollection hardwareCollection){
+
+        if (robot.isDebug){
+            spoolData.append(spoolPower);
+            spoolData.append(" ");
+            spoolData.append(level);
+            spoolData.append(" ");
+            spoolData.append(autoLevel);
+            spoolData.append(" ");
+            spoolData.append(alignHeight);
+            spoolData.append("\n");
+        }
 
         if (autoLevel){
             // implement spool logic here

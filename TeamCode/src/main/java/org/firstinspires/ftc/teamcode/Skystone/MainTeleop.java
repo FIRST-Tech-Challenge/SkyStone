@@ -2,16 +2,20 @@ package org.firstinspires.ftc.teamcode.Skystone;
 
 import android.os.SystemClock;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Skystone.Auto.Actions.MotionAction;
+import org.firstinspires.ftc.teamcode.Skystone.Odometry.Position2D;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
+@Disabled
 @TeleOp(name = "MainTeleOpSky2", group = "Linear Opmode")
 public class MainTeleop extends LinearOpMode {
     Robot robot;
@@ -29,6 +33,17 @@ public class MainTeleop extends LinearOpMode {
     private double fRPower;
     private double bLPower;
     private double bRPower;
+
+    private double intakeLeftPower;
+    private double intakeRightPower;
+
+    private double spoolPosition;
+
+    private double lastDropPosition = 0;
+    private double spoolTargetPosition = 0;
+
+    private boolean isMovingSpoolToPosition;
+    private boolean isG2DPDPushed = false;
 
     private boolean onSlowDrive, changedSlowDrive = false;
     private boolean toggleMode = true;
@@ -55,6 +70,8 @@ public class MainTeleop extends LinearOpMode {
 
     private boolean isIntakeMode = false;
 
+    private Position2D position2D;
+
     @Override
     public void runOpMode() {
         resetRobot();
@@ -62,8 +79,11 @@ public class MainTeleop extends LinearOpMode {
 
         waitForStart();
 
+        position2D = new Position2D(robot);
+        position2D.startOdometry();
+
         while (opModeIsActive()) {
-            intakeModeLogic();
+            robotModeLogic();
 
             slowDriveLogic();
             driveLogic();
@@ -81,30 +101,121 @@ public class MainTeleop extends LinearOpMode {
                 telemetry.addLine("CURRENT ROBOT MODE: INTAKE BOT");
             }
 
-
-            // TODO: change to isDebug
-            if (true) {
+            if (robot.isDebug()) {
                 telemetry.addLine("xPos: " + robot.getRobotPos().x);
                 telemetry.addLine("yPos: " + robot.getRobotPos().y);
                 telemetry.addLine("angle: " + Math.toDegrees(robot.getAnglePos()));
                 telemetry.addLine("XPODLeft " + robot.getfLeft().getCurrentPosition());
                 telemetry.addLine("XPODRight " + robot.getfRight().getCurrentPosition());
                 telemetry.addLine("YPOD " + robot.getbLeft().getCurrentPosition());
-//                telemetry.addLine("target:" + spoolTargetPosition);
-//                telemetry.addLine("lastDropPosition:" + lastDropPosition);
-//                telemetry.addLine("index:" + indexPosition);
-//
-//                telemetry.addLine("spoolPower: " + spoolPower);
-//                telemetry.addLine("isMovingSpoolToPosition: " + isMovingSpoolToPosition);
-//                telemetry.addLine("targetSpoolPosition: " + spoolTargetPosition);
-//                telemetry.addLine("Spool Position " + spoolPosition);
+                telemetry.addLine("target:" + spoolTargetPosition);
+                telemetry.addLine("lastDropPosition:" + lastDropPosition);
+                telemetry.addLine("index:" + indexPosition);
+
+                telemetry.addLine("spoolPower: " + spoolPower);
+                telemetry.addLine("isMovingSpoolToPosition: " + isMovingSpoolToPosition);
+                telemetry.addLine("targetSpoolPosition: " + spoolTargetPosition);
+                telemetry.addLine("Spool Position " + spoolPosition);
             }
 
             telemetry.update();
         }
     }
 
+    private void spoolLogic() {
+        spoolPosition = robot.getOuttakeSpool().getCurrentPosition();
 
+        if (gamepad2.dpad_down && !isG2DPDPushed) {
+            isMovingSpoolToPosition = true;
+            if (lastDropPosition == 0) {
+                spoolTargetPosition = 0;
+            } else {
+                if (isCapped) {
+                    spoolTargetPosition = spoolTargetPosition - 200;
+                } else {
+                    spoolTargetPosition = spoolTargetPosition - 150;
+                }
+            }
+
+            isG2DPDPushed = true;
+        } else if (!gamepad2.dpad_down) {
+            isG2DPDPushed = false;
+        }
+
+        if (gamepad2.right_bumper && !isTogglingRB) {
+            isTogglingRB = true;
+            double centerPosition = lastDropPosition;
+
+            if (lastDropPosition == 0) {
+                indexPosition = 0;
+            } else {
+                for (int i = 0; i < robot.spoolHeights.length; i++) {
+                    if (robot.spoolHeights[i] > centerPosition) {
+                        indexPosition = i + 1;
+                        break;
+                    }
+                }
+            }
+
+            spoolTargetPosition = robot.spoolHeights[indexPosition];
+
+            isMovingSpoolToPosition = true;
+        } else if (!gamepad2.right_bumper) {
+            isTogglingRB = false;
+        }
+
+        if (isMovingSpoolToPosition) {
+            if (spoolTargetPosition < 0) {
+                spoolTargetPosition = 0;
+            }
+            if (Math.abs(spoolPosition - spoolTargetPosition) < 50) {
+                spoolPower = .125;
+            } else if (spoolTargetPosition < spoolPosition) {
+                spoolPower = (spoolTargetPosition - spoolPosition) / 1500;
+            } else {
+                spoolPower = (spoolTargetPosition - spoolPosition) / 200;
+            }
+        }
+
+        //override mode
+        if (gamepad2.left_stick_y != 0) {
+            isMovingSpoolToPosition = false;
+            isTogglingRB = false;
+        }
+        if (!isMovingSpoolToPosition) {
+            spoolPower = -gamepad2.left_stick_y;
+        }
+        if (gamepad2.left_trigger != 0 && gamepad2.left_stick_y != 0) {
+            spoolPower = -gamepad2.left_stick_y / 10000;
+        } else if (gamepad2.left_trigger != 0) {
+            isTogglingRB = false;
+
+            spoolPower = .125;
+        }
+
+        if (spoolPosition >= 4200) {
+            if (spoolPower == 0) {
+                spoolPower = 0.125;
+            }
+            spoolPower = Math.min(spoolPower / 2, 0.15);
+        }
+
+        if (spoolPosition <= 0 && spoolPower < 0) {
+            spoolPower = 0;
+        }
+
+        if (gamepad2.left_bumper) {
+            spoolPower = -gamepad2.left_stick_y;
+            isOverridingSlideFloor = true;
+        } else if (isOverridingSlideFloor) {
+            isOverridingSlideFloor = false;
+            robot.getOuttakeSpool().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+
+
+        robot.getOuttakeSpool().setPower(spoolPower);
+        robot.getOuttakeSpool2().setPower(spoolPower);
+    }
 
     private void resetRobot() {
         robot = new Robot(hardwareMap, telemetry, this);
@@ -124,7 +235,7 @@ public class MainTeleop extends LinearOpMode {
         robot.getIntakeLeft().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.getIntakeRight().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        robot.driveMotorsBreakZeroBehavior();
+        robot.setBrakeModeDriveMotors();
     }
 
     //teleop methods
@@ -182,7 +293,7 @@ public class MainTeleop extends LinearOpMode {
             long startTime = SystemClock.elapsedRealtime();
 
             while (SystemClock.elapsedRealtime() - startTime <= 1000) {
-                intakeModeLogic();
+                robotModeLogic();
 
                 slowDriveLogic();
                 driveLogic();
@@ -199,7 +310,7 @@ public class MainTeleop extends LinearOpMode {
             robot.getFrontClamp().setPosition(robot.FRONTCLAMP_ACTIVATECAPSTONE);
 
             while (SystemClock.elapsedRealtime() - startTime <= 500) {
-                intakeModeLogic();
+                robotModeLogic();
 
                 slowDriveLogic();
                 driveLogic();
@@ -213,7 +324,7 @@ public class MainTeleop extends LinearOpMode {
             robot.getIntakePusher().setPosition(robot.PUSHER_RETRACTED);
 
             while (SystemClock.elapsedRealtime() - startTime <= 200) {
-                intakeModeLogic();
+                robotModeLogic();
 
                 slowDriveLogic();
                 driveLogic();
@@ -241,6 +352,42 @@ public class MainTeleop extends LinearOpMode {
         } else if (!gamepad1.left_bumper) {
             changedSlowDrive = false;
         }
+    }
+
+    private boolean stoneInIntake = false;
+
+    private void intakeLogic() {
+        intakeLeftPower = gamepad2.right_stick_y;
+        intakeRightPower = gamepad2.right_stick_y;
+
+        if (isIntakeMode) {
+            robot.setAutoStopIntake(true);
+            robot.getBackClamp().setPosition(robot.BACKCLAMP_CLAMPED);
+            robot.getFrontClamp().setPosition(robot.FRONTCLAMP_CLAMPED);
+            robot.getIntakePusher().setPosition(robot.PUSHER_PUSHED);
+
+            if (Double.isNaN(robot.getIntakeStoneDistance().getDistance(DistanceUnit.CM))) {
+                stoneInIntake = false;
+            }else if (robot.getIntakeStoneDistance().getDistance(DistanceUnit.CM) < 40) {
+                stoneInIntake = true;
+            }
+
+            if (stoneInIntake) {
+                if (intakeLeftPower > 0) {
+                    intakeLeftPower = 0;
+                }
+                if (intakeRightPower > 0) {
+                    intakeRightPower = 0;
+                }
+            }
+        } else if(intakeRightPower != 0 && intakeLeftPower != 0) {
+            robot.setAutoStopIntake(false);
+            robot.getBackClamp().setPosition(robot.BACKCLAMP_CLAMPED);
+            robot.getFrontClamp().setPosition(robot.FRONTCLAMP_RELEASED);
+        }
+
+        robot.getIntakeLeft().setPower(intakeLeftPower);
+        robot.getIntakeRight().setPower(intakeRightPower);
     }
 
     private void outtakeLogic() {
@@ -329,18 +476,18 @@ public class MainTeleop extends LinearOpMode {
 
     private void foundationMoveLogic() {
         if (gamepad1.a) {
-            robot.foundationMoverModule.isExtend = true;
+            robot.foundationMovers(true);
 
-            robot.driveModule.setDrivetrainMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.driveModule.setDrivetrainMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.setDrivetrainMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.setDrivetrainMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            robot.odometryModule.resetOdometry();
+            position2D.o.resetOdometry();
 
             robot.moveToPoint(24.5, 0, 1, 0.9, 0);
         }
     }
 
-    private void intakeModeLogic() {
+    private void robotModeLogic() {
         if (gamepad1.y && gamepad1.b && toggleMode) {
             isIntakeMode = !isIntakeMode;
 

@@ -3,7 +3,12 @@ package org.firstinspires.ftc.teamcode.rework.Robot.Modules;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class ReworkDrivetrain extends Module {
+import org.firstinspires.ftc.teamcode.rework.Robot.ReworkRobot;
+
+
+public class ReworkDrivetrain implements Module {
+    private ReworkRobot robot;
+
     // States
     private double yMovement;
     private double mecanumMovement;
@@ -21,16 +26,15 @@ public class ReworkDrivetrain extends Module {
     private DcMotor bLeft;
     private DcMotor bRight;
 
-    public ReworkDrivetrain(HardwareMap hardwareMap) {
-        this.hardwareMap = hardwareMap;
-        init();
+    public ReworkDrivetrain(ReworkRobot robot) {
+        this.robot = robot;
     }
 
     public void init() {
-        fLeft = getDcMotor("fLeft");
-        fRight = getDcMotor("fRight");
-        bLeft = getDcMotor("bLeft");
-        bRight = getDcMotor("bRight");
+        fLeft = robot.getDcMotor("fLeft");
+        fRight = robot.getDcMotor("fRight");
+        bLeft = robot.getDcMotor("bLeft");
+        bRight = robot.getDcMotor("bRight");
 
         setDrivetrainDirection(DcMotor.Direction.REVERSE);
         setDrivetrainZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

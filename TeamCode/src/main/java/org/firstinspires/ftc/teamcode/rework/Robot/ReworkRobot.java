@@ -2,27 +2,33 @@ package org.firstinspires.ftc.teamcode.rework.Robot;
 
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.rework.Robot.Modules.Module;
 import org.firstinspires.ftc.teamcode.rework.Robot.Modules.ModuleExecutor;
 import org.firstinspires.ftc.teamcode.rework.Robot.Modules.ReworkDrivetrain;
 
 public class ReworkRobot {
+    // All modules in the robot (remember to update initModules() and updateModules() when adding)
+
+    public ReworkDrivetrain drivetrain;
+
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
     private LinearOpMode linearOpMode;
 
     ModuleExecutor moduleExecutor;
 
-    // All modules in the robot (remember to update initModules() and updateModules() when adding)
-    public ReworkDrivetrain drivetrain;
+    // Array that all modules will be loaded into for easier access
+    private Module[] modules;
 
     // REV Hubs
     private LynxModule revHub1;
     private LynxModule revHub2;
 
-    // Data
+    // Data holders
     private LynxModule.BulkData revHub1Data;
     private LynxModule.BulkData revHub2Data;
 
@@ -39,7 +45,9 @@ public class ReworkRobot {
      * Updates all the modules in robot.
      */
     public void updateModules() {
-        drivetrain.update();
+        for(Module module : modules) {
+            module.update();
+        }
     }
 
     /**
@@ -50,7 +58,17 @@ public class ReworkRobot {
      * the modules if the opMode is not active yet.
      */
     public void initModules() {
-        drivetrain = new ReworkDrivetrain(hardwareMap);
+        // Add individual modules into the array here
+        this.drivetrain = new ReworkDrivetrain(this);
+
+        this.modules = new Module[] {
+            this.drivetrain
+        };
+
+        // Initialize modules
+        for(Module module : modules) {
+            module.init();
+        }
 
         // Start the thread for executing modules.
         moduleExecutor = new ModuleExecutor(this);
@@ -90,6 +108,21 @@ public class ReworkRobot {
 
     public synchronized LynxModule.BulkData getRevHub2Data() {
         return revHub2Data;
+    }
+
+    /**
+     * Gets a DcMotor from the hardwareMap given the name of the motor, returning null if the
+     * motor does not exist.
+     *
+     * @param name of the DcMotor to return.
+     * @return DcMotor from hardwareMap, or null if the motor does not exist.
+     */
+    public DcMotor getDcMotor(String name) {
+        try {
+            return hardwareMap.dcMotor.get(name);
+        } catch (IllegalArgumentException exception) {
+            throw new Error("Motor with name " + name + " could not be found. Exception: " + exception);
+        }
     }
 
     /**

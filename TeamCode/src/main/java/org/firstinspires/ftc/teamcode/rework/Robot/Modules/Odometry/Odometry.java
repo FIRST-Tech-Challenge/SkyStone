@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.rework.Robot.ReworkRobot;
  * Odometry includes all everything required to calculate the robot's position throughout
  * TeleOp or Autonomous.
  */
-public class Odometry extends Module {
+public class Odometry implements Module {
     RobotPosition robotPosition;
 
     ReworkRobot robot;
@@ -20,8 +20,6 @@ public class Odometry extends Module {
     public Odometry(ReworkRobot robot) {
         this.robot = robot; // Odometry needs robot in order to be able to get data from robot
         // Odometry is the only module that won't need the hardwareMap, as it doesn't move anything
-
-        init();
     }
 
     public void init() {}

@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.FTC2021.Robot;
  * Calls robot.update() repeatedly on a separate thread until stopped
  */
 public class ThreadLoop extends Thread {
-
     private volatile boolean terminateRequested = false;
     private Robot robot;
     private LinearOpMode linearOpMode;
@@ -26,8 +25,6 @@ public class ThreadLoop extends Thread {
             robot.update();
         }
     }
-
-
 
     public void terminate() {
         terminateRequested = true;

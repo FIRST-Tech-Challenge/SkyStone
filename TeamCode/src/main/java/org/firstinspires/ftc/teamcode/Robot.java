@@ -107,7 +107,7 @@ public class Robot {
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
 
-    private void resetAngle()//for PID
+    public void resetAngle()//for PID
     {
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         globalAngle = 0;
@@ -146,5 +146,11 @@ public class Robot {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+    enum heading{
+        forward,
+        backward,
+        left,
+        right
     }
 }

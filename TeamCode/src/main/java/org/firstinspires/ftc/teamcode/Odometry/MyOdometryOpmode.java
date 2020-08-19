@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.MathFunctions;
+
 
 /**
  * Created by Sarthak on 10/4/2019.
@@ -119,6 +121,19 @@ public class MyOdometryOpmode extends LinearOpMode {
             botLeft.setPower(Range.clip(ly - lx + rx, -power, power));
             botRight.setPower(Range.clip(ly + lx - rx, -power, power));
         }
+    }
+    public void goTo(double x, double y, double power){
+        double distance = Math.hypot(x - globalPositionUpdate.getX(), y - globalPositionUpdate.getY());
+        double absAngleToTarget = Math.atan2(y - Math.toRadians(globalPositionUpdate.returnOrientation()), x - Math.toRadians(globalPositionUpdate.returnOrientation()));
+        double relAngleToPoint = MathFunctions.AngleWrap(absAngleToTarget - (Math.toRadians(globalPositionUpdate.returnOrientation())));
+        double relativeXToPoint = Math.cos(relAngleToPoint) * distance;
+        double relativeYToPoint = Math.sin(relAngleToPoint) * distance;
+        double movementXPower = (relativeXToPoint / Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint)) * power;
+        double movementYPower = (relativeYToPoint / Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint)) * power;
+        topLeft.setPower(Range.clip(movementYPower + movementXPower , -power, power));
+        topRight.setPower(Range.clip(movementYPower - movementXPower, -power, power));
+        botLeft.setPower(Range.clip(movementYPower - movementXPower , -power, power));
+        botRight.setPower(Range.clip(movementYPower + movementXPower, -power, power));
     }
     /**
      * Calculate the power in the x direction

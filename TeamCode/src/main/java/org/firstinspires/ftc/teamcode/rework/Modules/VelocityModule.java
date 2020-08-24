@@ -52,6 +52,10 @@ public class VelocityModule implements Module {
         robot.telemetryDump.addData("angleVel: ", angleVel);
     }
 
+    public void fileDump(){
+
+    }
+
     public boolean isOn(){
         return isOn;
     }

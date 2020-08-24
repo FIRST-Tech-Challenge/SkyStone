@@ -39,7 +39,9 @@ public class Robot {
     public HardwareMap hardwareMap;
     private Telemetry telemetry;
     private LinearOpMode linearOpMode;
+
     public TelemetryDump telemetryDump;
+    public FileDump fileDump;
 
     // New thread that updates modules
     ModuleExecutor moduleExecutor;
@@ -51,13 +53,15 @@ public class Robot {
     private LynxModule revHub1;
     private LynxModule revHub2;
 
+    public final boolean isFileDump = true;
+
     public Robot(HardwareMap hardwareMap, Telemetry telemetry, LinearOpMode linearOpMode) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.linearOpMode = linearOpMode;
-        this.telemetryDump = new TelemetryDump(telemetry);
 
-        movements = new Movements(this);
+        this.telemetryDump = new TelemetryDump(telemetry);
+        fileDump = new FileDump();
 
         initHubs();
         initModules();
@@ -72,6 +76,9 @@ public class Robot {
             if(module.isOn()) {
                 module.update();
                 module.telemetry();
+                if(isFileDump) {
+                    module.fileDump();
+                }
             }
         }
     }
@@ -81,6 +88,7 @@ public class Robot {
         this.drivetrainModule = new DrivetrainModule(this,true);
         this.odometryModule = new OdometryModule(this,true);
         this.velocityModule = new VelocityModule(this,true);
+        movements = new Movements(this, true);
 
         this.modules = new Module[] {
                 this.drivetrainModule, this.odometryModule, this.velocityModule
@@ -141,27 +149,7 @@ public class Robot {
         return linearOpMode.opModeIsActive();
     }
 
-    public static void writeToFile(String directoryName, String fileName, String data) {
-        File captureDirectory = new File(AppUtil.ROBOT_DATA_DIR, "/" + directoryName + "/");
-        if (!captureDirectory.exists()) {
-            boolean isFileCreated = captureDirectory.mkdirs();
-            Log.d("DumpToFile", " " + isFileCreated);
-        }
-        Log.d("DumpToFile", " hey ");
-        File file = new File(captureDirectory, fileName);
-        try {
-            FileOutputStream outputStream = new FileOutputStream(file);
-            OutputStreamWriter writer = new OutputStreamWriter(outputStream);
-            try {
-                writer.write(data);
-                writer.flush();
-                Log.d("DumpToFile", data);
-            } finally {
-                outputStream.close();
-                Log.d("DumpToFile", file.getAbsolutePath());
-            }
-        } catch (IOException e) {
-            RobotLog.ee("TAG", e, "exception in captureFrameToFile()");
-        }
+    public boolean isStopRequested(){
+        return linearOpMode.isStopRequested();
     }
 }

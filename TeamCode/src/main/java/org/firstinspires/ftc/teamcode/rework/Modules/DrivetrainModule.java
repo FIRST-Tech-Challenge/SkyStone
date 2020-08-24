@@ -88,6 +88,10 @@ public class DrivetrainModule implements Module {
         robot.telemetryDump.addData("turnMovement: ", turnMovement);
     }
 
+    public void fileDump(){
+
+    }
+
     private void setMotorPowers(double fLPower, double fRPower, double bLPower, double bRPower) {
         fLeft.setPower(fLPower);
         fRight.setPower(fRPower);

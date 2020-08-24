@@ -52,7 +52,6 @@ public class OdometryModule implements Module {
 
     public synchronized void update() {
         calculateRobotPosition();
-
     }
 
     public void telemetry() {
@@ -60,6 +59,10 @@ public class OdometryModule implements Module {
         robot.telemetryDump.addData("x: ", worldX);
         robot.telemetryDump.addData("y: ", worldY);
         robot.telemetryDump.addData("heading: ", Math.toDegrees(worldAngleRad));
+    }
+
+    public void fileDump(){
+        robot.fileDump.addData(new StringBuilder().append(robot.movements.currentTrip).append("_odometry.txt").toString(), new StringBuilder().append(worldX).append(" ").append(worldY).toString());
     }
 
     /**

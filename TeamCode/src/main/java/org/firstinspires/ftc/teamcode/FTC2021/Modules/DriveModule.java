@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.FTC2021.HardwareCollection;
 import org.firstinspires.ftc.teamcode.FTC2021.Robot;
 
 public class DriveModule {
-
+    // States
     public double xMovement;
     public double yMovement;
     public double turnMovement;

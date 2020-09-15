@@ -24,7 +24,7 @@ public class Vuforia extends LinearOpMode {
     VuforiaTrackable target;
     VuforiaTrackableDefaultListener listener;
 
-    autoMethodsCopy auto = new autoMethodsCopy(DcMotor.RunMode.RUN_USING_ENCODER, hardwareMap);
+
 
     OpenGLMatrix lastKnownLocation;
     OpenGLMatrix phoneLocation;
@@ -43,7 +43,7 @@ public class Vuforia extends LinearOpMode {
 
         waitForStart();
 
-        auto.drive(0.7, 20);
+
 
         visionTargets.activate();
 

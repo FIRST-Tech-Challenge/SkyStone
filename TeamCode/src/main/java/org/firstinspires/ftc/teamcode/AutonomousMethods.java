@@ -567,69 +567,6 @@ public class AutonomousMethods {
     }
     public boolean foundReq = false;
     public boolean intakeReq = false;
-    public void curveForward(double power, CurvePoint curve, boolean chase, boolean foundation, boolean intake, boolean off, double ulty, boolean cont){
-        double distance;
-        if(curve.isCurveX()){
-            distance = robot.pt.getMatchX(curve, robot.getHeading());
-        }
-        else{
-            distance = robot.pt.getMatchY(curve, robot.getHeading());
-        }
-        //distance = Math.abs(distance);
-
-        sleepReq = true;
-        drive(power, distance);
-        robot.resetAngle();
-        distance = Math.abs(robot.pt.distanceTo(curve.getTarget()));
-        int prev = avgTicks();
-        double initial = robot.pt.angleTo(curve.getTarget(), true) - robot.getHeading();//auto correct to straight heading
-        if(ulty != 0){
-            initial = ulty - robot.getHeading();
-        }
-        if(initial > 180){
-            initial -= 360;
-        }
-        else if(initial < -180){
-            initial += 360;
-        }
-        pidCurve.reset();
-        pidCurve.setSetpoint(initial);
-        pidCurve.setOutputRange(0, 4*power/2);
-        pidCurve.setInputRange(-150, 150);
-        //pidCurve.setInputRange(0, initial);
-        pidCurve.enable();
-        correction = pidCurve.performPID(robot.getAngle());
-        //setRunMode(false);//set the motors to RUN_USING_ENCODER
-        resetTicks();//reset encoder at the very beginning in case we didn't already do so
-        robot.topLeft.setTargetPosition(robot.topLeft.getCurrentPosition() + inchesToTicks(distance));//inches to ticks conversion
-        robot.topRight.setTargetPosition(robot.topRight.getCurrentPosition() + inchesToTicks(distance));
-        robot.botLeft.setTargetPosition(robot.botLeft.getCurrentPosition() + inchesToTicks(distance));
-        robot.botRight.setTargetPosition(robot.botRight.getCurrentPosition() + inchesToTicks(distance));
-        setRunMode(true);//set the motors to RUN_TO_POSITION mode
-        robot.topLeft.setPower(Range.clip(power + correction, -1, 1));
-        robot.botLeft.setPower(Range.clip(power + correction, -1, 1));
-        robot.topRight.setPower(Range.clip(power - correction, -1, 1));
-        robot.botRight.setPower(Range.clip(power - correction, -1, 1));
-        while (motorsAreBusy()) {
-            pidCurve.setSetpoint(initial);
-            correction = pidCurve.performPID(robot.getAngle());//use PID to autocoreect to desired location
-            robot.topLeft.setPower(Range.clip(power + correction, -1, 1));
-            robot.botLeft.setPower(Range.clip(power + correction, -1, 1));
-            robot.topRight.setPower(Range.clip(power - correction, -1, 1));
-            robot.botRight.setPower(Range.clip(power - correction, -1, 1));
-
-            idle();
-            sleep(200);
-        }//don't execute further code until after the wheels are done turning
-        resetTicks();//stop and reset tick count on wheels
-        if (!sleepReq) {
-            sleep(tempSleep);
-        }
-        sleepReq = false;
-        pidCurve.disable();
-        updateOrientation();
-
-    }
 
 
     public void reset(){
@@ -707,7 +644,7 @@ public class AutonomousMethods {
     }
 
     public void turnTo(double power, Coordinate desired, boolean facing) {
-        offTrack = true;
+
         orient(power, robot.pt.angleTo(desired, facing));
     }
 

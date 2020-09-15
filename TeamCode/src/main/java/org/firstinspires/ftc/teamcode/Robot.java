@@ -39,11 +39,10 @@ public class Robot {
 
     Orientation orientation = new Orientation();
     Orientation lastAngles = new Orientation();
-    double globalAngle, power = .30, correction, rotation, constant;
     PIDController pidRotate, pidDrive, pidStrafe, pidCurve, pidCorrection;
     DcMotor.RunMode newRun;
     HardwareMap map;
-    Rectangle frame;
+
     private boolean auto;
     public Robot(DcMotor.RunMode runMode, HardwareMap imported, double x, double y, double robotLength, double robotWidth) {
         auto = true;
@@ -55,26 +54,11 @@ public class Robot {
         botRight = map.dcMotor.get("botRight");
 
 
-
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-        parameters.mode = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled = false;
         //set reading to degrees
-        pidRotate = new PIDController(.013, 0, 0.00007);
-        // Set PID proportional value to produce non-zero correction value when robot veers off
-        // straight line. P value controls samhow sensitive the correction is.
-        pidDrive = new PIDController(0.009, 0.00006, 0.00008);
 
-        pidCurve = new PIDController(0.5, 0, 0.0007);
-        //pidStrafe = new PIDController(0, 0, 0);
-        pidStrafe = new PIDController(0.008, 0.0004, 0);
-        pidCorrection = new PIDController(0,0,0);
 
         // make sure the imu gyro is calibrated before continuing.
-        constant = getHeading();//constant is meant to compensate for any difference marked at the beginning. We should be starting at 0 manually
+
         topLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         topRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         botLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -93,7 +77,7 @@ public class Robot {
 
         //bot = new OdometryGlobalCoordinatePosition(topLeft, topRight, botLeft, 560, 760, x, y);
         pt  = new OdometryGlobalCoordinatePosition(topLeft, topRight, botLeft, 307.699557, 760, x, y);
-        frame = new Rectangle(robotLength, robotWidth);
+
     }
     public void init(){
        Thread newThread = new Thread(pt);
@@ -107,35 +91,9 @@ public class Robot {
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
 
-    public void resetAngle()//for PID
-    {
-        lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        globalAngle = 0;
-    }
-
-    public double getAngle()//for PID
-    {
-        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
-        double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
-
-        if (deltaAngle < -180)
-            deltaAngle += 360;
-        else if (deltaAngle > 180)
-            deltaAngle -= 360;
-
-        globalAngle += deltaAngle;
-
-        lastAngles = angles;
-
-        return globalAngle;
-    }
 
     public double getHeading() {//for overall
-        return pt.returnOrientation() - constant;
-    }
-    public void resetHeading(){
-        constant = getHeading();
+        return pt.returnOrientation();
     }
     public final void idle() {
         Thread.yield();

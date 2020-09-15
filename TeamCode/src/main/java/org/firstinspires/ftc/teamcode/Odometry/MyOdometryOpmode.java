@@ -122,7 +122,7 @@ public class MyOdometryOpmode extends LinearOpMode {
             botRight.setPower(Range.clip(ly + lx - rx, -power, power));
         }
     }
-    public void goTo(double x, double y, double power){
+    public void goTo(double x, double y, double power, double preferredAngle, double turnSpeed){
         double distance = Math.hypot(x - globalPositionUpdate.getX(), y - globalPositionUpdate.getY());
         double absAngleToTarget = Math.atan2(y - Math.toRadians(globalPositionUpdate.returnOrientation()), x - Math.toRadians(globalPositionUpdate.returnOrientation()));
         double relAngleToPoint = MathFunctions.AngleWrap(absAngleToTarget - (Math.toRadians(globalPositionUpdate.returnOrientation())));
@@ -134,6 +134,8 @@ public class MyOdometryOpmode extends LinearOpMode {
         topRight.setPower(Range.clip(movementYPower - movementXPower, -power, power));
         botLeft.setPower(Range.clip(movementYPower - movementXPower , -power, power));
         botRight.setPower(Range.clip(movementYPower + movementXPower, -power, power));
+        double relativeTurnAngle = relAngleToPoint - Math.toRadians(180) + preferredAngle;
+        double movementTurn = Range.clip(relativeTurnAngle/Math.toRadians(30),-1,1)*turnSpeed;
     }
     /**
      * Calculate the power in the x direction

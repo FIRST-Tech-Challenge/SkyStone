@@ -6,16 +6,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous
 public class parkBlue extends LinearOpMode {
-    AutonomousMethods bot;
+    Robot robot;
     @Override
     public void runOpMode() throws InterruptedException{
-        bot = new AutonomousMethods(DcMotor.RunMode.RUN_USING_ENCODER, hardwareMap);
-        bot.locate(true, false, true);
-        waitForStart();
-        bot.initialDown();
-        sleep(2000);
-        bot.armIn();
-        sleep(1000);
-        bot.forward(0.5, 15);
+        robot = new Robot(DcMotor.RunMode.RUN_USING_ENCODER, hardwareMap, 0,0)
     }
 }

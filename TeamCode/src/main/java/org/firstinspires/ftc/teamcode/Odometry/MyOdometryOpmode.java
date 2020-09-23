@@ -6,7 +6,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.Coordinate;
+import org.firstinspires.ftc.teamcode.CurvePoint;
 import org.firstinspires.ftc.teamcode.MathFunctions;
+
+import java.util.ArrayList;
+
+import static org.firstinspires.ftc.teamcode.MathFunctions.*;
 
 
 /**
@@ -136,6 +142,30 @@ public class MyOdometryOpmode extends LinearOpMode {
         botRight.setPower(Range.clip(movementYPower + movementXPower, -power, power));
         double relativeTurnAngle = relAngleToPoint - Math.toRadians(180) + preferredAngle;
         double movementTurn = Range.clip(relativeTurnAngle/Math.toRadians(30),-1,1)*turnSpeed;
+    }
+    public  void followCurve(ArrayList<CurvePoint> allPoints, double followAngle){
+        CurvePoint followMe = getFollowPointPath(allPoints, globalPositionUpdate, allPoints.get(0).followDistance);
+        goTo(followMe.getX(), followMe.getY(), followMe.moveSpeed, followAngle, followMe.turnSpeed);
+    }
+    public  CurvePoint getFollowPointPath(ArrayList<CurvePoint> pathPoints, Coordinate location, double followRadius){
+        CurvePoint followMe = new CurvePoint(pathPoints.get(0));
+        for(int i = 0; i < pathPoints.size() - 1; i++){
+            CurvePoint startLine = pathPoints.get(i);
+            CurvePoint endLine = pathPoints.get(i + 1);
+
+            ArrayList<Coordinate> intersections =  lineCircleIntersection(location, followRadius, startLine.toPoint(), endLine.toPoint());
+            double closestAngle = 100000000;
+            for(Coordinate thisIntersection : intersections){
+                //double ang = globalPositionUpdate.angleTo(thisIntersection, true);
+                double angle = Math.atan2(thisIntersection.getY() - globalPositionUpdate.getX(), thisIntersection.getY() - globalPositionUpdate.getY());
+                double deltaAngle = Math.abs(AngleWrap(angle - globalPositionUpdate.returnOrientation()));
+                if(deltaAngle < closestAngle){
+                    closestAngle = deltaAngle;
+                    followMe.setPoint(thisIntersection);
+                }
+            }
+        }
+        return followMe;
     }
     /**
      * Calculate the power in the x direction

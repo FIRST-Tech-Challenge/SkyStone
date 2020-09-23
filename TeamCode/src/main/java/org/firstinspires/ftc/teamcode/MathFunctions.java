@@ -50,7 +50,7 @@ public class MathFunctions {
             double yRoot2 = m1 * (xRoot2 - x1) + y1;
             xRoot2 += circleCenter.getX();
             yRoot2 += circleCenter.getY();
-            if(xRoot1 > minX && xRoot1 < maxX){
+            if(xRoot2 > minX && xRoot2 < maxX){
                 allPoints.add(new Coordinate(xRoot2, yRoot2));
             }
         }

@@ -136,16 +136,31 @@ public class MyOdometryOpmode extends LinearOpMode {
         double relativeYToPoint = Math.sin(relAngleToPoint) * distance;
         double movementXPower = (relativeXToPoint / Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint)) * power;
         double movementYPower = (relativeYToPoint / Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint)) * power;
-        topLeft.setPower(Range.clip(movementYPower + movementXPower , -power, power));
-        topRight.setPower(Range.clip(movementYPower - movementXPower, -power, power));
-        botLeft.setPower(Range.clip(movementYPower - movementXPower , -power, power));
-        botRight.setPower(Range.clip(movementYPower + movementXPower, -power, power));
         double relativeTurnAngle = relAngleToPoint - Math.toRadians(180) + preferredAngle;
         double movementTurn = Range.clip(relativeTurnAngle/Math.toRadians(30),-1,1)*turnSpeed;
+        topLeft.setPower(Range.clip(movementYPower + movementXPower + movementTurn, -power, power));
+        topRight.setPower(Range.clip(movementYPower - movementXPower - movementTurn, -power, power));
+        botLeft.setPower(Range.clip(movementYPower - movementXPower + movementTurn, -power, power));
+        botRight.setPower(Range.clip(movementYPower + movementXPower - movementTurn, -power, power));
+    }
+    public void goTo(Coordinate pt, double power, double preferredAngle, double turnSpeed){
+        double distance = Math.hypot(pt.getX() - globalPositionUpdate.getX(), pt.getY() - globalPositionUpdate.getY());
+        double absAngleToTarget = Math.atan2(pt.getY() - Math.toRadians(globalPositionUpdate.returnOrientation()), pt.getX() - Math.toRadians(globalPositionUpdate.returnOrientation()));
+        double relAngleToPoint = MathFunctions.AngleWrap(absAngleToTarget - (Math.toRadians(globalPositionUpdate.returnOrientation())));
+        double relativeXToPoint = Math.cos(relAngleToPoint) * distance;
+        double relativeYToPoint = Math.sin(relAngleToPoint) * distance;
+        double movementXPower = (relativeXToPoint / Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint)) * power;
+        double movementYPower = (relativeYToPoint / Math.abs(relativeXToPoint) + Math.abs(relativeYToPoint)) * power;
+        double relativeTurnAngle = relAngleToPoint - Math.toRadians(180) + preferredAngle;
+        double movementTurn = Range.clip(relativeTurnAngle/Math.toRadians(30),-1,1)*turnSpeed;
+        topLeft.setPower(Range.clip(movementYPower + movementXPower + movementTurn, -power, power));
+        topRight.setPower(Range.clip(movementYPower - movementXPower - movementTurn, -power, power));
+        botLeft.setPower(Range.clip(movementYPower - movementXPower + movementTurn, -power, power));
+        botRight.setPower(Range.clip(movementYPower + movementXPower - movementTurn, -power, power));
     }
     public  void followCurve(ArrayList<CurvePoint> allPoints, double followAngle){
         CurvePoint followMe = getFollowPointPath(allPoints, globalPositionUpdate, allPoints.get(0).followDistance);
-        goTo(followMe.getX(), followMe.getY(), followMe.moveSpeed, followAngle, followMe.turnSpeed);
+        goTo(followMe, followMe.moveSpeed, followAngle, followMe.turnSpeed);
     }
     public  CurvePoint getFollowPointPath(ArrayList<CurvePoint> pathPoints, Coordinate location, double followRadius){
         CurvePoint followMe = new CurvePoint(pathPoints.get(0));

@@ -8,5 +8,4 @@ public class Launcher {
     public DcMotor launchWheel;
     public double height;
     public double vAngle;
-
 }

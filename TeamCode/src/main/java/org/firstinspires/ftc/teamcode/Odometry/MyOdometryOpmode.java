@@ -110,24 +110,24 @@ public class MyOdometryOpmode extends LinearOpMode {
         telemetry.addData("Status", "Hardware Map Init Complete");
         telemetry.update();
     }
-    public void goToPosition(double targetX, double targetY, double power, double desiredOrientation, double allowableDistanceError){
-        double distanceToX = targetX - globalPositionUpdate.getX();
-        double distanceToY = targetY - globalPositionUpdate.getY();
-        double distance = Math.hypot(distanceToX, distanceToY);
-        while(opModeIsActive() && distance > allowableDistanceError) {
-            distanceToX = targetX - globalPositionUpdate.getX();
-            distanceToY = targetY - globalPositionUpdate.getY();
-            distance = Math.hypot(distanceToX, distanceToY);
-            double robotMovementAngle = Math.toDegrees(Math.atan2(distanceToX, distanceToY));
-            double ly = calculateY(robotMovementAngle, power);
-            double lx = calculateX(robotMovementAngle, power);
-            double rx = desiredOrientation - globalPositionUpdate.returnOrientation();
-            topLeft.setPower(Range.clip(ly + lx + rx, -power, power));
-            topRight.setPower(Range.clip(ly - lx - rx, -power, power));
-            botLeft.setPower(Range.clip(ly - lx + rx, -power, power));
-            botRight.setPower(Range.clip(ly + lx - rx, -power, power));
-        }
-    }
+//    public void goToPosition(double targetX, double targetY, double power, double desiredOrientation, double allowableDistanceError){
+//        double distanceToX = targetX - globalPositionUpdate.getX();
+//        double distanceToY = targetY - globalPositionUpdate.getY();
+//        double distance = Math.hypot(distanceToX, distanceToY);
+//        while(opModeIsActive() && distance > allowableDistanceError) {
+//            distanceToX = targetX - globalPositionUpdate.getX();
+//            distanceToY = targetY - globalPositionUpdate.getY();
+//            distance = Math.hypot(distanceToX, distanceToY);
+//            double robotMovementAngle = Math.toDegrees(Math.atan2(distanceToX, distanceToY));
+//            double ly = calculateY(robotMovementAngle, power);
+//            double lx = calculateX(robotMovementAngle, power);
+//            double rx = desiredOrientation - globalPositionUpdate.returnOrientation();
+//            topLeft.setPower(Range.clip(ly + lx + rx, -power, power));
+//            topRight.setPower(Range.clip(ly - lx - rx, -power, power));
+//            botLeft.setPower(Range.clip(ly - lx + rx, -power, power));
+//            botRight.setPower(Range.clip(ly + lx - rx, -power, power));
+//        }
+//    }
     public void goTo(double x, double y, double power, double preferredAngle, double turnSpeed){
         double distance = Math.hypot(x - globalPositionUpdate.getX(), y - globalPositionUpdate.getY());
         double absAngleToTarget = Math.atan2(y - Math.toRadians(globalPositionUpdate.returnOrientation()), x - Math.toRadians(globalPositionUpdate.returnOrientation()));

@@ -33,7 +33,7 @@ public class MyOdometryOpmode extends LinearOpMode {
     String verticalLeftEncoderName = "iL", verticalRightEncoderName = rbName, horizontalEncoderName = "iR";
 
     OdometryGlobalCoordinatePosition globalPositionUpdate;
-
+    
     @Override
     public void runOpMode() throws InterruptedException {
         //Initialize hardware map values. PLEASE UPDATE THESE VALUES TO MATCH YOUR CONFIGURATION
@@ -54,8 +54,9 @@ public class MyOdometryOpmode extends LinearOpMode {
         globalPositionUpdate.reverseLeftEncoder();
         globalPositionUpdate.reverseRightEncoder();
         globalPositionUpdate.reverseNormalEncoder();
-        followCurve(allPoints, Math.toRadians(90));
+
         while(opModeIsActive()){
+            followCurve(allPoints, Math.toRadians(90));
             //Display Global (x, y, theta) coordinates
             telemetry.addData("X Position", globalPositionUpdate.getX()/ COUNTS_PER_INCH);
             telemetry.addData("Y Position", globalPositionUpdate.getY() / COUNTS_PER_INCH);

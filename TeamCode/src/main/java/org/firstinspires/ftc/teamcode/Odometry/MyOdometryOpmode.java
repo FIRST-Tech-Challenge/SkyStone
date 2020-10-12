@@ -38,7 +38,11 @@ public class MyOdometryOpmode extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         //Initialize hardware map values. PLEASE UPDATE THESE VALUES TO MATCH YOUR CONFIGURATION
         initDriveHardwareMap(rfName, rbName, lfName, lbName, verticalLeftEncoderName, verticalRightEncoderName, horizontalEncoderName);
-
+        ArrayList<CurvePoint> allPoints = new ArrayList<CurvePoint>();
+        allPoints.add(new CurvePoint(0,0,0.2,0.3,50,Math.toRadians(0), 1));
+        allPoints.add(new CurvePoint(0,48 * COUNTS_PER_INCH,0.2,0.3,50,Math.toRadians(90), 1));
+        allPoints.add(new CurvePoint(24 * COUNTS_PER_INCH,48 * COUNTS_PER_INCH,0.2,0.3,50,Math.toRadians(90), 1));
+        allPoints.add(new CurvePoint(0,0,0.2,0.3,50,Math.toRadians(0), 1));
         telemetry.addData("Status", "Init Complete");
         telemetry.update();
         waitForStart();

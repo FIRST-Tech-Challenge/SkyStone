@@ -25,11 +25,12 @@ public class MyOdometryOpmode extends LinearOpMode {
     //Odometry Wheels
     DcMotor verticalLeft, verticalRight, horizontal;
 
-    final double COUNTS_PER_INCH = 307.699557;
+    final double COUNTS_PER_INCH = 1000;
+            //307.699557;
 
     //Hardware Map Names for drive motors and odometry wheels. THIS WILL CHANGE ON EACH ROBOT, YOU NEED TO UPDATE THESE VALUES ACCORDINGLY
     String rfName = "fr", rbName = "br", lfName = "fl", lbName = "bl";
-    String verticalLeftEncoderName = rfName, verticalRightEncoderName = "iR", horizontalEncoderName = rbName;
+    String verticalLeftEncoderName = "iL", verticalRightEncoderName = rbName, horizontalEncoderName = "iR";
 
     OdometryGlobalCoordinatePosition globalPositionUpdate;
 
@@ -46,7 +47,7 @@ public class MyOdometryOpmode extends LinearOpMode {
         globalPositionUpdate = new OdometryGlobalCoordinatePosition(verticalLeft, verticalRight, horizontal, COUNTS_PER_INCH, 75, 0, 0);
         Thread positionThread = new Thread(globalPositionUpdate);
         positionThread.start();
-
+        globalPositionUpdate.reverseLeftEncoder();
         globalPositionUpdate.reverseRightEncoder();
         globalPositionUpdate.reverseNormalEncoder();
 

@@ -56,7 +56,8 @@ public class MyOdometryOpmode extends LinearOpMode {
         globalPositionUpdate.reverseNormalEncoder();
 
         while(opModeIsActive()){
-            followCurve(allPoints, Math.toRadians(90));
+            goTo(20*COUNTS_PER_INCH, 20*COUNTS_PER_INCH, 0.3, 0 , 0.3);
+            //followCurve(allPoints, Math.toRadians(90));
             //Display Global (x, y, theta) coordinates
             telemetry.addData("X Position", globalPositionUpdate.getX()/ COUNTS_PER_INCH);
             telemetry.addData("Y Position", globalPositionUpdate.getY() / COUNTS_PER_INCH);

@@ -66,8 +66,8 @@ public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
 
         while(opModeIsActive()){
             //Display Global (x, y, theta) coordinates
-            telemetry.addData("X Position", globalPositionUpdate.getX() / COUNTS_PER_INCH);
-            telemetry.addData("Y Position", globalPositionUpdate.getY() / COUNTS_PER_INCH);
+            //telemetry.addData("X Position", globalPositionUpdate.getX() / COUNTS_PER_INCH);
+            //telemetry.addData("Y Position", globalPositionUpdate.getY() / COUNTS_PER_INCH);
             telemetry.addData("Orientation (Degrees)", globalPositionUpdate.returnOrientation());
             telemetry.addData("Thread Active", positionThread.isAlive());
             telemetry.update();

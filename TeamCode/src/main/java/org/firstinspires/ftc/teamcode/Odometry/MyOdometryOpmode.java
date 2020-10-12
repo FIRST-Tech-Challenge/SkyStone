@@ -39,10 +39,10 @@ public class MyOdometryOpmode extends LinearOpMode {
         //Initialize hardware map values. PLEASE UPDATE THESE VALUES TO MATCH YOUR CONFIGURATION
         initDriveHardwareMap(rfName, rbName, lfName, lbName, verticalLeftEncoderName, verticalRightEncoderName, horizontalEncoderName);
         ArrayList<CurvePoint> allPoints = new ArrayList<CurvePoint>();
-        allPoints.add(new CurvePoint(0,0,0.2,0.3,50,Math.toRadians(0), 1));
-        allPoints.add(new CurvePoint(0,48 * COUNTS_PER_INCH,0.2,0.3,50,Math.toRadians(90), 1));
-        allPoints.add(new CurvePoint(24 * COUNTS_PER_INCH,48 * COUNTS_PER_INCH,0.2,0.3,50,Math.toRadians(90), 1));
-        allPoints.add(new CurvePoint(0,0,0.2,0.3,50,Math.toRadians(0), 1));
+        allPoints.add(new CurvePoint(0,0,0.3,0.3,50,Math.toRadians(50), 1));
+        allPoints.add(new CurvePoint(20 * COUNTS_PER_INCH,48 * COUNTS_PER_INCH,0.3,0.3,50,Math.toRadians(50), 1));
+        //allPoints.add(new CurvePoint(24 * COUNTS_PER_INCH,48 * COUNTS_PER_INCH,0.2,0.3,50,Math.toRadians(50), 1));
+        //allPoints.add(new CurvePoint(0,0,0.2,0.3,50,Math.toRadians(50), 1));
         telemetry.addData("Status", "Init Complete");
         telemetry.update();
         waitForStart();
@@ -54,7 +54,7 @@ public class MyOdometryOpmode extends LinearOpMode {
         globalPositionUpdate.reverseLeftEncoder();
         globalPositionUpdate.reverseRightEncoder();
         globalPositionUpdate.reverseNormalEncoder();
-
+        followCurve(allPoints, Math.toRadians(90));
         while(opModeIsActive()){
             //Display Global (x, y, theta) coordinates
             telemetry.addData("X Position", globalPositionUpdate.getX()/ COUNTS_PER_INCH);

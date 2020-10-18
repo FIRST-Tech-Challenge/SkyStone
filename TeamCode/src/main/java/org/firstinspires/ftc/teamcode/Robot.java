@@ -36,7 +36,7 @@ public class Robot {
     public DcMotor botLeft;
     public DcMotor botRight;
 
-
+    public Launcher dlskfj;
     Orientation orientation = new Orientation();
     Orientation lastAngles = new Orientation();
     PIDController pidRotate, pidDrive, pidStrafe, pidCurve, pidCorrection;

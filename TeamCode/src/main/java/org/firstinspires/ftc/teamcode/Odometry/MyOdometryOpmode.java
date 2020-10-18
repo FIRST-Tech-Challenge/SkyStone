@@ -33,7 +33,7 @@ public class MyOdometryOpmode extends LinearOpMode {
     String verticalLeftEncoderName = "iL", verticalRightEncoderName = rbName, horizontalEncoderName = "iR";
 
     OdometryGlobalCoordinatePosition globalPositionUpdate;
-    
+
     @Override
     public void runOpMode() throws InterruptedException {
         //Initialize hardware map values. PLEASE UPDATE THESE VALUES TO MATCH YOUR CONFIGURATION
